@@ -1,0 +1,33 @@
+From e3281ac686321a12cbd1473595f4bb1f027281b5 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Sun, 10 Mar 2019 17:29:41 +0200
+Subject: [PATCH] POM Changes
+
+---
+ pom.xml | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/pom.xml b/pom.xml
+index 5c9fefbe..00fef82c 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -4,13 +4,13 @@
+     <modelVersion>4.0.0</modelVersion>
+ 
+     <parent>
+-        <groupId>io.github.waterfallmc</groupId>
+-        <artifactId>waterfall-super</artifactId>
++        <groupId>eu.mikroskeem</groupId>
++        <artifactId>mikrocord-super</artifactId>
+         <version>dev-SNAPSHOT</version>
+         <relativePath>../pom.xml</relativePath>
+     </parent>
+ 
+-    <groupId>io.github.waterfallmc</groupId>
++    <groupId>eu.mikroskeem</groupId>
+     <artifactId>waterfall-parent</artifactId>
+     <version>1.13-SNAPSHOT</version>
+     <packaging>pom</packaging>
+-- 
+2.21.0
+
