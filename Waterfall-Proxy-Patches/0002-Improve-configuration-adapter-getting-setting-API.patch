@@ -12,7 +12,7 @@ index ccfefd26..870f744d 100644
       *
       * @return the used configuration adapter
       */
-+    @Deprecated // Waterfall
++    @Deprecated // MikroCord
      public abstract ConfigurationAdapter getConfigurationAdapter();
  
      /**
@@ -20,10 +20,10 @@ index ccfefd26..870f744d 100644
       *
       * @param adapter the adapter to use
       */
-+    @Deprecated // Waterfall
++    @Deprecated // MikroCord
      public abstract void setConfigurationAdapter(ConfigurationAdapter adapter);
  
-+    // Waterfall start - Configuration adapters
++    // MikroCord start - Configuration adapters
 +    /**
 +     * Returns the currently in use configuration adapter by {@link ConfigurationType}.
 +     *
@@ -40,7 +40,7 @@ index ccfefd26..870f744d 100644
 +     * @param configurationType The configuration type
 +     */
 +    public abstract void setConfigurationAdapter(ConfigurationType configurationType, ConfigurationAdapter adapter);
-+    // Waterfall end
++    // MikroCord end
 +
      /**
       * Get the currently in use reconnect handler.
@@ -49,7 +49,7 @@ index ccfefd26..870f744d 100644
       */
      public abstract Title createTitle();
  
-+    // Waterfall start - Configuration adapters
++    // MikroCord start - Configuration adapters
 +    public enum ConfigurationType {
 +        /**
 +         * Generic BungeeCord configuration
@@ -62,7 +62,7 @@ index ccfefd26..870f744d 100644
 +        WATERFALL,
 +        ;
 +    }
-+    // Waterfall end
++    // MikroCord end
  }
 diff --git a/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java b/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
 index 42b17a69..871b7ca5 100644
@@ -96,7 +96,7 @@ index 4ff03488..89b52442 100644
      private ConnectionThrottle connectionThrottle;
      private final ModuleManager moduleManager = new ModuleManager();
  
-+    // Waterfall start - Configuration adapters
++    // MikroCord start - Configuration adapters
 +    private ConfigurationAdapter waterfallConfigurationAdapter = new YamlConfig(new File("waterfall.yml")) {
 +        @Override
 +        public void load() {
@@ -126,7 +126,7 @@ index 4ff03488..89b52442 100644
 +                break;
 +        }
 +    }
-+    // Waterfall end
++    // MikroCord end
      
      {
          // TODO: Proper fallback when we interface the manager
