@@ -1,0 +1,135 @@
+From 51579386dcfdae394f205080bc99199644ce57f6 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Tue, 19 Mar 2019 22:11:14 +0200
+Subject: [PATCH] Improve configuration adapter getting/setting API
+
+
+diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java b/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
+index ccfefd26..870f744d 100644
+--- a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
++++ b/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
+@@ -134,6 +134,7 @@ public abstract class ProxyServer
+      *
+      * @return the used configuration adapter
+      */
++    @Deprecated // Waterfall
+     public abstract ConfigurationAdapter getConfigurationAdapter();
+ 
+     /**
+@@ -142,8 +143,28 @@ public abstract class ProxyServer
+      *
+      * @param adapter the adapter to use
+      */
++    @Deprecated // Waterfall
+     public abstract void setConfigurationAdapter(ConfigurationAdapter adapter);
+ 
++    // Waterfall start - Configuration adapters
++    /**
++     * Returns the currently in use configuration adapter by {@link ConfigurationType}.
++     *
++     * @param configurationType The configuration type
++     * @return the used configuration adapter
++     */
++    public abstract ConfigurationAdapter getConfigurationAdapter(ConfigurationType configurationType);
++
++    /**
++     * Set the configuration adapter to be used with given {@link ConfigurationType}. Must be called from
++     * {@link Plugin#onLoad()}.
++     *
++     * @param adapter the adapter to use
++     * @param configurationType The configuration type
++     */
++    public abstract void setConfigurationAdapter(ConfigurationType configurationType, ConfigurationAdapter adapter);
++    // Waterfall end
++
+     /**
+      * Get the currently in use reconnect handler.
+      *
+@@ -312,4 +333,18 @@ public abstract class ProxyServer
+      */
+     public abstract Title createTitle();
+ 
++    // Waterfall start - Configuration adapters
++    public enum ConfigurationType {
++        /**
++         * Generic BungeeCord configuration
++         */
++        BUNGEECORD,
++
++        /**
++         * Waterfall-specific configuration
++         */
++        WATERFALL,
++        ;
++    }
++    // Waterfall end
+ }
+diff --git a/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java b/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
+index 42b17a69..871b7ca5 100644
+--- a/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
++++ b/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
+@@ -1,6 +1,8 @@
+ package io.github.waterfallmc.waterfall.conf;
+ 
+ import com.google.common.base.Joiner;
++import net.md_5.bungee.api.ProxyServer;
++import net.md_5.bungee.api.config.ConfigurationAdapter;
+ import net.md_5.bungee.conf.Configuration;
+ import net.md_5.bungee.conf.YamlConfig;
+ import net.md_5.bungee.protocol.ProtocolConstants;
+@@ -65,8 +67,8 @@ public class WaterfallConfiguration extends Configuration {
+     @Override
+     public void load() {
+         super.load();
+-        YamlConfig config = new YamlConfig(new File("waterfall.yml"));
+-        config.load(false); // Load, but no permissions
++        ConfigurationAdapter config = ProxyServer.getInstance().getConfigurationAdapter(ProxyServer.ConfigurationType.WATERFALL);
++        config.load();
+         logServerListPing = config.getBoolean( "log_server_list_ping", logServerListPing );
+         logInitialHandlerConnections = config.getBoolean( "log_initial_handler_connections", logInitialHandlerConnections );
+         gameVersion = config.getString("game_version", "").isEmpty() ? Joiner.on(", ").join(ProtocolConstants.SUPPORTED_VERSIONS) : config.getString("game_version", "");
+diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
+index 4ff03488..89b52442 100644
+--- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
++++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
+@@ -166,6 +166,37 @@ public class BungeeCord extends ProxyServer
+     private ConnectionThrottle connectionThrottle;
+     private final ModuleManager moduleManager = new ModuleManager();
+ 
++    // Waterfall start - Configuration adapters
++    private ConfigurationAdapter waterfallConfigurationAdapter = new YamlConfig(new File("waterfall.yml")) {
++        @Override
++        public void load() {
++            super.load(false);
++        }
++    };
++
++    @Override
++    public ConfigurationAdapter getConfigurationAdapter(ConfigurationType configurationType) {
++        switch (configurationType) {
++            case BUNGEECORD:
++                return configurationAdapter;
++            case WATERFALL:
++                return waterfallConfigurationAdapter;
++        }
++        return null;
++    }
++
++    @Override
++    public void setConfigurationAdapter(ConfigurationType configurationType, ConfigurationAdapter adapter) {
++        switch (configurationType) {
++            case BUNGEECORD:
++                configurationAdapter = adapter;
++                break;
++            case WATERFALL:
++                waterfallConfigurationAdapter = adapter;
++                break;
++        }
++    }
++    // Waterfall end
+     
+     {
+         // TODO: Proper fallback when we interface the manager
+-- 
+2.21.0
+
