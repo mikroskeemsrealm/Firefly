@@ -1,0 +1,144 @@
+From 3b2440a0e3f6471dfa0de0d78df4d17e435406c1 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Tue, 19 Mar 2019 23:17:23 +0200
+Subject: [PATCH] Add /grestart command
+
+
+diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
+index 92070fcf..819db852 100644
+--- a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
++++ b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
+@@ -198,4 +198,14 @@ public interface ProxyConfig
+      * @return Should we disable entity metadata rewriting?
+      */
+     boolean isDisableEntityMetadataRewrite();
++
++    /**
++     * @return Player disconnect message on restart attempt
++     */
++    String getRestartMessage();
++
++    /**
++     * @return Script to be run on restart attempt
++     */
++    String getRestartScriptPath();
+ }
+diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/command/CommandRestart.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/command/CommandRestart.java
+new file mode 100644
+index 00000000..4974a9bd
+--- /dev/null
++++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/command/CommandRestart.java
+@@ -0,0 +1,51 @@
++package eu.mikroskeem.mikrocord.command;
++
++import com.google.common.base.Joiner;
++import net.md_5.bungee.BungeeCord;
++import net.md_5.bungee.api.CommandSender;
++import net.md_5.bungee.api.plugin.Command;
++
++import java.nio.file.Files;
++import java.nio.file.Path;
++import java.nio.file.Paths;
++import java.util.Locale;
++
++/**
++ * Proxy restart command
++ *
++ * @author Mark Vainomaa
++ */
++public final class CommandRestart extends Command {
++    public CommandRestart() {
++        super("grestart", "mikrocord.command.restart");
++    }
++
++    @Override
++    public void execute(CommandSender sender, String[] args) {
++        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
++            Path scriptPath = Paths.get(BungeeCord.getInstance().getConfig().getRestartScriptPath()).toAbsolutePath();
++            if(Files.exists(scriptPath)) {
++                System.out.println("Attempting to restart with " + scriptPath);
++            } else {
++                System.out.println("Startup script '" + scriptPath + "' does not exist! Stopping proxy.");
++            }
++
++            try {
++                String os = System.getProperty("os.name").toLowerCase(Locale.ENGLISH);
++                if (os.contains("win")) {
++                    Runtime.getRuntime().exec("cmd /c start " + scriptPath);
++                } else {
++                    Runtime.getRuntime().exec("sh " + scriptPath);
++                }
++            } catch (Exception e) {
++                e.printStackTrace();
++            }
++        }, "Restart thread"));
++
++        if ( args.length == 0 ) {
++            BungeeCord.getInstance().stop(BungeeCord.getInstance().getConfig().getRestartMessage());
++        } else {
++            BungeeCord.getInstance().stop(Joiner.on( ' ' ).join(args));
++        }
++    }
++}
+diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
+index 0b613f67..52172f3e 100644
+--- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
++++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
+@@ -8,10 +8,27 @@ import net.md_5.bungee.api.config.ConfigurationAdapter;
+  * @author Mark Vainomaa
+  */
+ public class MikroCordConfiguration extends WaterfallConfiguration {
++    private String restartMessage = "Proxy is restarting";
++
++    private String restartScriptPath = "./restart.sh";
++
+     @Override
+     public void load() {
+         super.load();
+         ConfigurationAdapter config = ProxyServer.getInstance().getConfigurationAdapter(ProxyServer.ConfigurationType.MIKROCORD);
+         config.load();
++
++        restartMessage = config.getString("restart_message", restartMessage);
++        restartScriptPath = config.getString("restart_script_path", restartScriptPath);
++    }
++
++    @Override
++    public String getRestartMessage() {
++        return restartMessage;
++    }
++
++    @Override
++    public String getRestartScriptPath() {
++        return restartScriptPath;
+     }
+ }
+diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
+index 9b63d6ec..0b7b40f4 100644
+--- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
++++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
+@@ -270,6 +270,9 @@ public class BungeeCord extends ProxyServer
+         getPluginManager().registerCommand( null, new CommandIP() );
+         getPluginManager().registerCommand( null, new CommandBungee() );
+         getPluginManager().registerCommand( null, new CommandPerms() );
++        // MikroCord start - Fork specific commands
++        getPluginManager().registerCommand(null, new eu.mikroskeem.mikrocord.command.CommandRestart());
++        // MikroCord end
+ 
+         if ( !Boolean.getBoolean( "net.md_5.bungee.native.disable" ) )
+         {
+diff --git a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
+index 44011a96..2401f95e 100644
+--- a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
++++ b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
+@@ -103,7 +103,7 @@ public class YamlConfig implements ConfigurationAdapter
+             } ) );
+             set( "permissions.admin", Arrays.asList( new String[]
+             {
+-                "bungeecord.command.alert", "bungeecord.command.end", "bungeecord.command.ip", "bungeecord.command.reload"
++                "bungeecord.command.alert", "bungeecord.command.end", "bungeecord.command.ip", "bungeecord.command.reload", "mikrocord.command.restart" // MikroCord - /grestart command
+             } ) );
+         }
+ 
+-- 
+2.21.0
+

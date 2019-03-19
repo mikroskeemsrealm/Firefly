@@ -1,0 +1,112 @@
+From 0999467b500f399d0a7965934c4ab1d30ef821bc Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Tue, 19 Mar 2019 23:05:17 +0200
+Subject: [PATCH] Add support for MikroCord-specific configuration
+
+
+diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java b/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
+index 870f744d..58c897fa 100644
+--- a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
++++ b/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
+@@ -344,6 +344,11 @@ public abstract class ProxyServer
+          * Waterfall-specific configuration
+          */
+         WATERFALL,
++
++        /**
++         * MikroCord-specific configuration
++         */
++        MIKROCORD,
+         ;
+     }
+     // Waterfall end
+diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
+new file mode 100644
+index 00000000..0b613f67
+--- /dev/null
++++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
+@@ -0,0 +1,17 @@
++package eu.mikroskeem.mikrocord.conf;
++
++import io.github.waterfallmc.waterfall.conf.WaterfallConfiguration;
++import net.md_5.bungee.api.ProxyServer;
++import net.md_5.bungee.api.config.ConfigurationAdapter;
++
++/**
++ * @author Mark Vainomaa
++ */
++public class MikroCordConfiguration extends WaterfallConfiguration {
++    @Override
++    public void load() {
++        super.load();
++        ConfigurationAdapter config = ProxyServer.getInstance().getConfigurationAdapter(ProxyServer.ConfigurationType.MIKROCORD);
++        config.load();
++    }
++}
+diff --git a/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java b/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
+index 871b7ca5..0452e815 100644
+--- a/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
++++ b/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
+@@ -9,7 +9,7 @@ import net.md_5.bungee.protocol.ProtocolConstants;
+ 
+ import java.io.File;
+ 
+-public class WaterfallConfiguration extends Configuration {
++public abstract class WaterfallConfiguration extends Configuration { // MikroCord - make abstract
+ 
+     /**
+      * Whether we log server list pings
+diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
+index 89b52442..9b63d6ec 100644
+--- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
++++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
+@@ -105,7 +105,7 @@ public class BungeeCord extends ProxyServer
+      * Configuration.
+      */
+     @Getter
+-    public final Configuration config = new WaterfallConfiguration();
++    public final Configuration config = new eu.mikroskeem.mikrocord.conf.MikroCordConfiguration(); // MikroCord - Fork specific configuration
+     /**
+      * Localization bundle.
+      */
+@@ -173,6 +173,14 @@ public class BungeeCord extends ProxyServer
+             super.load(false);
+         }
+     };
++    // MikroCord start - Fork specific configuration
++    private ConfigurationAdapter mikrocordConfigurationAdapter = new YamlConfig(new File("mikrocord.yml")) {
++        @Override
++        public void load() {
++            super.load(false);
++        }
++    };
++    // MikroCord end
+ 
+     @Override
+     public ConfigurationAdapter getConfigurationAdapter(ConfigurationType configurationType) {
+@@ -181,6 +189,10 @@ public class BungeeCord extends ProxyServer
+                 return configurationAdapter;
+             case WATERFALL:
+                 return waterfallConfigurationAdapter;
++            // Mikrocord start - Fork specific configuration
++            case MIKROCORD:
++                return mikrocordConfigurationAdapter;
++            // MikroCord end
+         }
+         return null;
+     }
+@@ -194,6 +206,11 @@ public class BungeeCord extends ProxyServer
+             case WATERFALL:
+                 waterfallConfigurationAdapter = adapter;
+                 break;
++            // Mikrocord start - Fork specific configuration
++            case MIKROCORD:
++                mikrocordConfigurationAdapter = adapter;
++                break;
++            // MikroCord end
+         }
+     }
+     // Waterfall end
+-- 
+2.21.0
+
