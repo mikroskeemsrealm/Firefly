@@ -1,5 +1,5 @@
 # MikroCord
 
-Ignore this.
+mikroskeem's special Waterfall fork
 
-Scripts are taken from https://github.com/PaperMC/Travertine
+Scripts are taken from [Travertine](https://github.com/PaperMC/Travertine)
