@@ -1,14 +1,14 @@
-From 51579386dcfdae394f205080bc99199644ce57f6 Mon Sep 17 00:00:00 2001
+From c1dd06fa702290fb94d7464338667760f72196b2 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Tue, 19 Mar 2019 22:11:14 +0200
 Subject: [PATCH] Improve configuration adapter getting/setting API
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java b/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
-index ccfefd26..870f744d 100644
+index 4965b234..859c19f4 100644
 --- a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
 +++ b/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
-@@ -134,6 +134,7 @@ public abstract class ProxyServer
+@@ -137,6 +137,7 @@ public abstract class ProxyServer
       *
       * @return the used configuration adapter
       */
@@ -16,7 +16,7 @@ index ccfefd26..870f744d 100644
      public abstract ConfigurationAdapter getConfigurationAdapter();
  
      /**
-@@ -142,8 +143,28 @@ public abstract class ProxyServer
+@@ -145,8 +146,28 @@ public abstract class ProxyServer
       *
       * @param adapter the adapter to use
       */
@@ -45,7 +45,7 @@ index ccfefd26..870f744d 100644
      /**
       * Get the currently in use reconnect handler.
       *
-@@ -312,4 +333,18 @@ public abstract class ProxyServer
+@@ -315,4 +336,18 @@ public abstract class ProxyServer
       */
      public abstract Title createTitle();
  
@@ -65,7 +65,7 @@ index ccfefd26..870f744d 100644
 +    // MikroCord end
  }
 diff --git a/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java b/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
-index 42b17a69..871b7ca5 100644
+index 41a71f65..ed427492 100644
 --- a/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
 +++ b/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
 @@ -1,6 +1,8 @@
@@ -77,7 +77,7 @@ index 42b17a69..871b7ca5 100644
  import net.md_5.bungee.conf.Configuration;
  import net.md_5.bungee.conf.YamlConfig;
  import net.md_5.bungee.protocol.ProtocolConstants;
-@@ -65,8 +67,8 @@ public class WaterfallConfiguration extends Configuration {
+@@ -58,8 +60,8 @@ public class WaterfallConfiguration extends Configuration {
      @Override
      public void load() {
          super.load();
@@ -85,11 +85,11 @@ index 42b17a69..871b7ca5 100644
 -        config.load(false); // Load, but no permissions
 +        ConfigurationAdapter config = ProxyServer.getInstance().getConfigurationAdapter(ProxyServer.ConfigurationType.WATERFALL);
 +        config.load();
-         logServerListPing = config.getBoolean( "log_server_list_ping", logServerListPing );
          logInitialHandlerConnections = config.getBoolean( "log_initial_handler_connections", logInitialHandlerConnections );
          gameVersion = config.getString("game_version", "").isEmpty() ? Joiner.on(", ").join(ProtocolConstants.SUPPORTED_VERSIONS) : config.getString("game_version", "");
+         useNettyDnsResolver = config.getBoolean("use_netty_dns_resolver", useNettyDnsResolver);
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 4ff03488..89b52442 100644
+index 4ff03488..1971d321 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -166,6 +166,37 @@ public class BungeeCord extends ProxyServer

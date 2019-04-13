@@ -1,14 +1,14 @@
-From a55778f2af0a7fdea87ad762c93c28ffe35618c3 Mon Sep 17 00:00:00 2001
+From 2ee06845b3e8a8feb200803458b6b971698623f3 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Tue, 19 Mar 2019 23:05:17 +0200
 Subject: [PATCH] Add support for MikroCord-specific configuration
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java b/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
-index 5957a203..a876aa16 100644
+index 859c19f4..e1892c19 100644
 --- a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
 +++ b/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
-@@ -344,6 +344,11 @@ public abstract class ProxyServer
+@@ -347,6 +347,11 @@ public abstract class ProxyServer
           * Waterfall-specific configuration
           */
          WATERFALL,
@@ -44,7 +44,7 @@ index 00000000..0b613f67
 +    }
 +}
 diff --git a/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java b/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
-index 871b7ca5..0452e815 100644
+index ed427492..dfd74f1e 100644
 --- a/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
 +++ b/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
 @@ -9,7 +9,7 @@ import net.md_5.bungee.protocol.ProtocolConstants;
@@ -55,7 +55,7 @@ index 871b7ca5..0452e815 100644
 +public abstract class WaterfallConfiguration extends Configuration { // MikroCord - make abstract
  
      /**
-      * Whether we log server list pings
+      * Whether we log InitialHandler connections
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 index 1971d321..a3bc38d4 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java

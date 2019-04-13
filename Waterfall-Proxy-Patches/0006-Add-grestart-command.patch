@@ -1,14 +1,14 @@
-From 3b2440a0e3f6471dfa0de0d78df4d17e435406c1 Mon Sep 17 00:00:00 2001
+From bc7622dfea93f0d19b5c7c4287f2a51cebe30484 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Tue, 19 Mar 2019 23:17:23 +0200
 Subject: [PATCH] Add /grestart command
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-index 92070fcf..819db852 100644
+index 89f21690..4b899455 100644
 --- a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
 +++ b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-@@ -198,4 +198,14 @@ public interface ProxyConfig
+@@ -240,4 +240,14 @@ public interface ProxyConfig
       * @return Should we disable entity metadata rewriting?
       */
      boolean isDisableEntityMetadataRewrite();
@@ -113,7 +113,7 @@ index 0b613f67..52172f3e 100644
      }
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 9b63d6ec..0b7b40f4 100644
+index a3bc38d4..c5a49879 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -270,6 +270,9 @@ public class BungeeCord extends ProxyServer
