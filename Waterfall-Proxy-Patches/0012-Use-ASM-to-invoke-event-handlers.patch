@@ -1,4 +1,4 @@
-From ea0e031a19e37fe250433468a2b83c3734c35fe1 Mon Sep 17 00:00:00 2001
+From b4e2e3ac904ed9f5f23b3a574f339a39f1e12acb Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sat, 13 Apr 2019 22:08:57 +0300
 Subject: [PATCH] Use ASM to invoke event handlers
@@ -137,13 +137,14 @@ index 00000000..0386c1f0
 \ No newline at end of file
 diff --git a/event/src/main/java/eu/mikroskeem/mikrocord/event/EventExecutor.java b/event/src/main/java/eu/mikroskeem/mikrocord/event/EventExecutor.java
 new file mode 100644
-index 00000000..a6e63157
+index 00000000..ad7bcbf6
 --- /dev/null
 +++ b/event/src/main/java/eu/mikroskeem/mikrocord/event/EventExecutor.java
-@@ -0,0 +1,15 @@
+@@ -0,0 +1,20 @@
 +package eu.mikroskeem.mikrocord.event;
 +
 +import java.lang.reflect.Method;
++import java.lang.reflect.Modifier;
 +
 +/**
 + * @author Mark Vainomaa
@@ -152,8 +153,55 @@ index 00000000..a6e63157
 +    void execute(Object listener, Object event);
 +
 +    static EventExecutor create(Method method) {
-+        // TODO: Fall back to MethodHandle & reflection
-+        return ASMEventExecutor.getEventExecutor(method);
++        if(Modifier.isPublic(method.getModifiers())) {
++            return ASMEventExecutor.getEventExecutor(method);
++        } else {
++            method.setAccessible(true);
++            return new MethodHandleEventExecutor(method);
++        }
++    }
++}
+diff --git a/event/src/main/java/eu/mikroskeem/mikrocord/event/MethodHandleEventExecutor.java b/event/src/main/java/eu/mikroskeem/mikrocord/event/MethodHandleEventExecutor.java
+new file mode 100644
+index 00000000..696f33c0
+--- /dev/null
++++ b/event/src/main/java/eu/mikroskeem/mikrocord/event/MethodHandleEventExecutor.java
+@@ -0,0 +1,37 @@
++package eu.mikroskeem.mikrocord.event;
++
++import lombok.SneakyThrows;
++
++import java.lang.invoke.MethodHandle;
++import java.lang.invoke.MethodHandles;
++import java.lang.reflect.Method;
++import java.lang.reflect.Modifier;
++
++/**
++ * @author Mark Vainomaa
++ */
++class MethodHandleEventExecutor implements EventExecutor {
++    private final Class<?> eventClass;
++    private final MethodHandle handle;
++    private final boolean isStatic;
++
++    @SneakyThrows
++    MethodHandleEventExecutor(Method method) {
++        this.eventClass = method.getParameterTypes()[0];
++        this.handle = MethodHandles.lookup().unreflect(method);
++        this.isStatic = Modifier.isStatic(method.getModifiers());
++    }
++
++    @Override
++    @SneakyThrows
++    public void execute(Object listener, Object event) {
++        if(!eventClass.isInstance(event))
++            return; // Uhh?
++
++        if(isStatic) {
++            this.handle.invoke(event);
++        } else {
++            this.handle.invoke(listener, event);
++        }
 +    }
 +}
 diff --git a/event/src/main/java/net/md_5/bungee/event/EventBus.java b/event/src/main/java/net/md_5/bungee/event/EventBus.java
