@@ -1,4 +1,4 @@
-From 5eae04728eff0534736fe8ffef299d14f174b7e4 Mon Sep 17 00:00:00 2001
+From 0f0943bf7a27d1b707b9eedb8cfe5280afe6e39b Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sat, 13 Apr 2019 20:13:53 +0300
 Subject: [PATCH] Make packet manipulation easier
@@ -20,6 +20,19 @@ index 00000000..834540a4
 +public interface ChannelHolder {
 +    Channel getChannel();
 +}
+diff --git a/api/src/main/java/net/md_5/bungee/api/connection/Connection.java b/api/src/main/java/net/md_5/bungee/api/connection/Connection.java
+index eb7e3947..5c196bd9 100644
+--- a/api/src/main/java/net/md_5/bungee/api/connection/Connection.java
++++ b/api/src/main/java/net/md_5/bungee/api/connection/Connection.java
+@@ -10,7 +10,7 @@ import net.md_5.bungee.protocol.DefinedPacket;
+  * It should expose information about the remote peer, however not be specific
+  * to a type of connection, whether server or player.
+  */
+-public interface Connection
++public interface Connection extends eu.mikroskeem.mikrocord.api.network.ChannelHolder // MikroCord - make packet manipulation easier
+ {
+ 
+     /**
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/Protocol.java b/protocol/src/main/java/net/md_5/bungee/protocol/Protocol.java
 index 01af5c1c..3c784e49 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/Protocol.java
@@ -145,6 +158,21 @@ index e649678e..5230ac46 100644
          return disableEntityMetadaRewrite;
      }
      // Waterfall end
++    // MikroCord start - make packet manipulation easier
++    @Override
++    public io.netty.channel.Channel getChannel() {
++        return ch.getHandle();
++    }
++    // MikroCord end
+ }
+diff --git a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
+index 765731d8..09d51703 100644
+--- a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
++++ b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
+@@ -640,4 +640,10 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+     {
+         return !ch.isClosed();
+     }
 +    // MikroCord start - make packet manipulation easier
 +    @Override
 +    public io.netty.channel.Channel getChannel() {
