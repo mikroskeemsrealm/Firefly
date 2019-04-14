@@ -1,4 +1,4 @@
-From c25aec26b61c7239c7e46295210fe27e4278e9f5 Mon Sep 17 00:00:00 2001
+From c6ed9bb909850cc92381358d510c18d8ea0a7f5e Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 14 Apr 2019 20:47:31 +0300
 Subject: [PATCH] Wrap localization into configuration API
@@ -22,10 +22,10 @@ index e1892c19..6ef7adf1 100644
           */
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/ResourceBundleConfigurationWrapper.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/ResourceBundleConfigurationWrapper.java
 new file mode 100644
-index 00000000..89ae33ad
+index 00000000..8e228ae9
 --- /dev/null
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/ResourceBundleConfigurationWrapper.java
-@@ -0,0 +1,63 @@
+@@ -0,0 +1,61 @@
 +package eu.mikroskeem.mikrocord.misc;
 +
 +import lombok.RequiredArgsConstructor;
@@ -45,9 +45,7 @@ index 00000000..89ae33ad
 +    private final BungeeCord bungeeCord;
 +
 +    @Override
-+    public void load() {
-+        bungeeCord.reloadMessages();
-+    }
++    public void load() {}
 +
 +    @Override
 +    public String getString(String path, String def) {
@@ -90,14 +88,14 @@ index 00000000..89ae33ad
 +    }
 +}
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 5366cda8..23485c3c 100644
+index 5366cda8..a5a7b3e8 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -111,6 +111,7 @@ public class BungeeCord extends ProxyServer
       */
      private ResourceBundle baseBundle;
      private ResourceBundle customBundle;
-+    private ConfigurationAdapter localizationBundleWrapper; // MikroCord - Wrap localization into configuration API
++    public ConfigurationAdapter localizationBundleWrapper; // MikroCord - Wrap localization into configuration API
      public EventLoopGroup bossEventLoopGroup, workerEventLoopGroup;
      /**
       * locations.yml save thread.
@@ -120,15 +118,23 @@ index 5366cda8..23485c3c 100644
              case WATERFALL:
                  waterfallConfigurationAdapter = adapter;
                  break;
-@@ -239,6 +245,7 @@ public class BungeeCord extends ProxyServer
+@@ -238,6 +244,7 @@ public class BungeeCord extends ProxyServer
+         {
              baseBundle = ResourceBundle.getBundle( "messages", Locale.ENGLISH );
          }
-         reloadMessages();
 +        localizationBundleWrapper = new eu.mikroskeem.mikrocord.misc.ResourceBundleConfigurationWrapper(this); // MikroCord - Wrap localization into configuration API
+         reloadMessages();
  
          // Waterfall start - Use TerminalConsoleAppender and Log4J
-         /*
-@@ -575,6 +582,16 @@ public class BungeeCord extends ProxyServer
+@@ -560,6 +567,7 @@ public class BungeeCord extends ProxyServer
+ 
+     public void reloadMessages()
+     {
++        localizationBundleWrapper.load(); // MikroCord - Wrap localization into configuration API
+         File file = new File( "messages.properties" );
+         if ( file.isFile() )
+         {
+@@ -575,6 +583,16 @@ public class BungeeCord extends ProxyServer
  
      @Override
      public String getTranslation(String name, Object... args)
