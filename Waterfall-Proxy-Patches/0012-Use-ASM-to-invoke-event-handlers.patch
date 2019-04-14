@@ -1,4 +1,4 @@
-From b4e2e3ac904ed9f5f23b3a574f339a39f1e12acb Mon Sep 17 00:00:00 2001
+From 0d6363e6418eb65432824481f28f64a59932b8e7 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sat, 13 Apr 2019 22:08:57 +0300
 Subject: [PATCH] Use ASM to invoke event handlers
@@ -205,19 +205,24 @@ index 00000000..696f33c0
 +    }
 +}
 diff --git a/event/src/main/java/net/md_5/bungee/event/EventBus.java b/event/src/main/java/net/md_5/bungee/event/EventBus.java
-index 5b5d4201..cab7d005 100644
+index 5b5d4201..f05d1dd7 100644
 --- a/event/src/main/java/net/md_5/bungee/event/EventBus.java
 +++ b/event/src/main/java/net/md_5/bungee/event/EventBus.java
-@@ -115,7 +115,7 @@ public class EventBus
+@@ -115,8 +115,12 @@ public class EventBus
                          currentPriorityMap = new HashMap<>();
                          prioritiesMap.put( entry.getKey(), currentPriorityMap );
                      }
--                    Method[] baked = new Method[ entry.getValue().size() ];
-+                    Method[] baked = new Method[ 0 ]; // MikroCord - 0 is faster
-                     currentPriorityMap.put( listener, entry.getValue().toArray( baked ) );
++                    // MikroCord start - 0 is faster
++                    /*
+                     Method[] baked = new Method[ entry.getValue().size() ];
+-                    currentPriorityMap.put( listener, entry.getValue().toArray( baked ) );
++                    */
++                    currentPriorityMap.put( listener, entry.getValue().toArray( new Method[0] ) );
++                    // MikroCord end
                  }
                  bakeHandlers( e.getKey() );
-@@ -186,13 +186,13 @@ public class EventBus
+             }
+@@ -186,13 +190,13 @@ public class EventBus
                      {
                          for ( Method method : listenerHandlers.getValue() )
                          {
