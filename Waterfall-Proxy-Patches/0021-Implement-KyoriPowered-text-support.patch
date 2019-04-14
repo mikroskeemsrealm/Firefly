@@ -1,4 +1,4 @@
-From f0f655e97beb18558f64228ae1faad16136a65b6 Mon Sep 17 00:00:00 2001
+From b1c88f1c2fca11e26d4563b26f0fd0f7ba5b5e42 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 14 Apr 2019 21:48:01 +0300
 Subject: [PATCH] Implement KyoriPowered/text support
@@ -67,12 +67,13 @@ index b8301dde..5da7fa52 100644
  </project>
 diff --git a/chat/src/main/java/eu/mikroskeem/mikrocord/api/chat/AdapterComponent.java b/chat/src/main/java/eu/mikroskeem/mikrocord/api/chat/AdapterComponent.java
 new file mode 100644
-index 00000000..7d6920a0
+index 00000000..020f9143
 --- /dev/null
 +++ b/chat/src/main/java/eu/mikroskeem/mikrocord/api/chat/AdapterComponent.java
-@@ -0,0 +1,43 @@
+@@ -0,0 +1,50 @@
 +package eu.mikroskeem.mikrocord.api.chat;
 +
++import com.google.gson.GsonBuilder;
 +import com.google.gson.JsonElement;
 +import com.google.gson.JsonSerializationContext;
 +import com.google.gson.JsonSerializer;
@@ -80,6 +81,7 @@ index 00000000..7d6920a0
 +import lombok.NoArgsConstructor;
 +import lombok.RequiredArgsConstructor;
 +import net.kyori.text.Component;
++import net.kyori.text.serializer.gson.GsonComponentSerializer;
 +import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 +import net.md_5.bungee.api.chat.BaseComponent;
 +
@@ -113,21 +115,38 @@ index 00000000..7d6920a0
 +            return context.serialize(src.component);
 +        }
 +    }
++
++    public static GsonBuilder inject(GsonBuilder builder) {
++        return GsonComponentSerializer.populate(builder)
++                .registerTypeAdapter(AdapterComponent.class, AdapterComponent.Serializer.INSTANCE);
++    }
 +}
 diff --git a/chat/src/main/java/net/md_5/bungee/chat/ComponentSerializer.java b/chat/src/main/java/net/md_5/bungee/chat/ComponentSerializer.java
-index eaf9f79f..953f459e 100644
+index eaf9f79f..2870ad8f 100644
 --- a/chat/src/main/java/net/md_5/bungee/chat/ComponentSerializer.java
 +++ b/chat/src/main/java/net/md_5/bungee/chat/ComponentSerializer.java
-@@ -22,7 +22,8 @@ public class ComponentSerializer implements JsonDeserializer<BaseComponent>
+@@ -22,7 +22,7 @@ public class ComponentSerializer implements JsonDeserializer<BaseComponent>
  {
  
      private final static JsonParser JSON_PARSER = new JsonParser();
 -    private final static Gson gson = new GsonBuilder().
-+    private final static Gson gson = net.kyori.text.serializer.gson.GsonComponentSerializer.populate(new GsonBuilder()). // MikroCord - add KyoriPowered/text support
-+            registerTypeAdapter(eu.mikroskeem.mikrocord.api.chat.AdapterComponent.class, eu.mikroskeem.mikrocord.api.chat.AdapterComponent.Serializer.INSTANCE). // MikroCord - add KyoriPowered/text support
++    private final static Gson gson = eu.mikroskeem.mikrocord.api.chat.AdapterComponent.inject(new GsonBuilder()). // MikroCord - add KyoriPowered/text support
              registerTypeAdapter( BaseComponent.class, new ComponentSerializer() ).
              registerTypeAdapter( TextComponent.class, new TextComponentSerializer() ).
              registerTypeAdapter( TranslatableComponent.class, new TranslatableComponentSerializer() ).
+diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
+index a5a7b3e8..e4d17496 100644
+--- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
++++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
+@@ -154,7 +154,7 @@ public class BungeeCord extends ProxyServer
+     // Waterfall end
+     @Getter
+     private final Logger logger;
+-    public final Gson gson = new GsonBuilder()
++    public final Gson gson = eu.mikroskeem.mikrocord.api.chat.AdapterComponent.inject(new GsonBuilder()) // MikroCord - add KyoriPowered/text support
+             .registerTypeAdapter( BaseComponent.class, new ComponentSerializer() )
+             .registerTypeAdapter( TextComponent.class, new TextComponentSerializer() )
+             .registerTypeAdapter( TranslatableComponent.class, new TranslatableComponentSerializer() )
 -- 
 2.21.0
 
