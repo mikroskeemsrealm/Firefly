@@ -1,0 +1,83 @@
+From 2c552e943ab470cc69ab5aa851ade3ef61a99d4d Mon Sep 17 00:00:00 2001
+From: killme <killme-git@ibts.me>
+Date: Sat, 13 Apr 2019 13:18:19 +0200
+Subject: [PATCH] Let ThrottleTest work independently of real time
+
+
+diff --git a/proxy/src/main/java/net/md_5/bungee/ConnectionThrottle.java b/proxy/src/main/java/net/md_5/bungee/ConnectionThrottle.java
+index f1716a1f..0e40fcad 100644
+--- a/proxy/src/main/java/net/md_5/bungee/ConnectionThrottle.java
++++ b/proxy/src/main/java/net/md_5/bungee/ConnectionThrottle.java
+@@ -1,5 +1,7 @@
+ package net.md_5.bungee;
+ 
++import com.google.common.annotations.VisibleForTesting;
++import com.google.common.base.Ticker;
+ import com.google.common.cache.CacheBuilder;
+ import com.google.common.cache.CacheLoader;
+ import com.google.common.cache.LoadingCache;
+@@ -13,8 +15,15 @@ public class ConnectionThrottle
+     private final int throttleLimit;
+ 
+     public ConnectionThrottle(int throttleTime, int throttleLimit)
++    {
++        this(Ticker.systemTicker(), throttleTime, throttleLimit);
++    }
++
++    @VisibleForTesting
++    ConnectionThrottle(Ticker ticker, int throttleTime, int throttleLimit)
+     {
+         this.throttle = CacheBuilder.newBuilder()
++                .ticker(ticker)
+                 .concurrencyLevel( Runtime.getRuntime().availableProcessors() )
+                 .initialCapacity( 100 )
+                 .expireAfterWrite( throttleTime, TimeUnit.MILLISECONDS )
+diff --git a/proxy/src/test/java/net/md_5/bungee/ThrottleTest.java b/proxy/src/test/java/net/md_5/bungee/ThrottleTest.java
+index 881aa06a..f962f5c9 100644
+--- a/proxy/src/test/java/net/md_5/bungee/ThrottleTest.java
++++ b/proxy/src/test/java/net/md_5/bungee/ThrottleTest.java
+@@ -1,17 +1,31 @@
+ package net.md_5.bungee;
+ 
++import com.google.common.base.Ticker;
+ import java.net.InetAddress;
+ import java.net.UnknownHostException;
++import java.util.concurrent.TimeUnit;
++
+ import org.junit.Assert;
+ import org.junit.Test;
+ 
+ public class ThrottleTest
+ {
++    private class FixedTicker extends Ticker
++    {
++        private long value = 0;
++
++        @Override
++        public long read()
++        {
++            return value;
++        }
++    }
+ 
+     @Test
+     public void testThrottle() throws InterruptedException, UnknownHostException
+     {
+-        ConnectionThrottle throttle = new ConnectionThrottle( 10, 3 );
++        FixedTicker ticker = new FixedTicker();
++        ConnectionThrottle throttle = new ConnectionThrottle( ticker, 10, 3 );
+         InetAddress address;
+ 
+         try
+@@ -33,7 +47,7 @@ public class ThrottleTest
+         Assert.assertTrue( "Address should be throttled", throttle.throttle( address ) ); // 4
+ 
+         // Now test expiration
+-        Thread.sleep( 50 );
++        ticker.value += TimeUnit.MILLISECONDS.toNanos( 50 );
+         Assert.assertFalse( "Address should not be throttled", throttle.throttle( address ) );
+     }
+ }
+-- 
+2.21.0
+
