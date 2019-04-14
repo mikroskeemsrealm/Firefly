@@ -1,4 +1,4 @@
-From bc7622dfea93f0d19b5c7c4287f2a51cebe30484 Mon Sep 17 00:00:00 2001
+From c7c5cc1fe591ca408f2141f78a7c8e231596a666 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Tue, 19 Mar 2019 23:17:23 +0200
 Subject: [PATCH] Add /grestart command
@@ -81,7 +81,7 @@ index 00000000..4974a9bd
 +    }
 +}
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index 0b613f67..52172f3e 100644
+index 0b613f67..e6b65082 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 @@ -8,10 +8,27 @@ import net.md_5.bungee.api.config.ConfigurationAdapter;
@@ -98,8 +98,8 @@ index 0b613f67..52172f3e 100644
          ConfigurationAdapter config = ProxyServer.getInstance().getConfigurationAdapter(ProxyServer.ConfigurationType.MIKROCORD);
          config.load();
 +
-+        restartMessage = config.getString("restart_message", restartMessage);
-+        restartScriptPath = config.getString("restart_script_path", restartScriptPath);
++        restartMessage = config.getString("restart.message", restartMessage);
++        restartScriptPath = config.getString("restart.script_path", restartScriptPath);
 +    }
 +
 +    @Override
