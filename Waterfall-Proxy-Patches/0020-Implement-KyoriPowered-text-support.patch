@@ -1,4 +1,4 @@
-From b1c88f1c2fca11e26d4563b26f0fd0f7ba5b5e42 Mon Sep 17 00:00:00 2001
+From 6928106c7c45749d1479ec34b2192394b8542e9f Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 14 Apr 2019 21:48:01 +0300
 Subject: [PATCH] Implement KyoriPowered/text support
