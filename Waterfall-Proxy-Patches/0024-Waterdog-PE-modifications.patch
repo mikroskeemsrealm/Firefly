@@ -1,4 +1,4 @@
-From eee31ab57de9bbc9e421c1ecf0e2cf82d2c64ff7 Mon Sep 17 00:00:00 2001
+From 5844428113ecfcce97ba76ba573931dff4754522 Mon Sep 17 00:00:00 2001
 From: Colin Godsey <crgodsey@gmail.com>
 Date: Tue, 16 Apr 2019 20:28:38 +0300
 Subject: [PATCH] Waterdog PE (modifications)
@@ -284,57 +284,66 @@ index d4b03843..98ecafec 100644
 +    // Waterdog end
  }
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/Protocol.java b/protocol/src/main/java/net/md_5/bungee/protocol/Protocol.java
-index 2af84f8f..ba09f633 100644
+index 2af84f8f..df77bc2a 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/Protocol.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/Protocol.java
-@@ -50,6 +50,16 @@ public enum Protocol
+@@ -50,6 +50,18 @@ public enum Protocol
      {
  
          {
 +            // Waterdog start
 +            TO_SERVER.registerPacket(
 +                    network.ycc.waterdog.pe.packet.PEHandshake.class,
++                    network.ycc.waterdog.pe.packet.PEHandshake::new, // MikroCord - speed up packet construction
 +                    map( ProtocolConstants.MINECRAFT_PE_1_8, 0x01 )
 +            );
 +            TO_CLIENT.registerPacket(
 +                    KeepAlive.class,
++                    KeepAlive::new, // MikroCord - speed up packet construction
 +                    map( ProtocolConstants.MINECRAFT_PE_1_8, 0x00 )
 +            );
 +            // Waterdog end
              TO_SERVER.registerPacket(
                      Handshake.class,
                      Handshake::new, // MikroCord - speed up packet construction
-@@ -62,9 +72,40 @@ public enum Protocol
+@@ -62,9 +74,47 @@ public enum Protocol
      {
  
          {
 +            // Waterdog start
 +            TO_CLIENT.registerPacket(
 +                    network.ycc.waterdog.pe.packet.PEResourcePack.class,
++                    network.ycc.waterdog.pe.packet.PEResourcePack::new, // MikroCord - speed up packet construction
 +                    map( ProtocolConstants.MINECRAFT_PE_1_8, 0x06 )
 +            );
 +            TO_CLIENT.registerPacket(
 +                    network.ycc.waterdog.pe.packet.PEResourceStack.class,
++                    network.ycc.waterdog.pe.packet.PEResourceStack::new, // MikroCord - speed up packet construction
 +                    map( ProtocolConstants.MINECRAFT_PE_1_8, 0x07 )
 +            );
 +            TO_CLIENT.registerPacket(
 +                    network.ycc.waterdog.pe.packet.PELogin.class,
++                    network.ycc.waterdog.pe.packet.PELogin::new, // MikroCord - speed up packet construction
 +                    map( ProtocolConstants.MINECRAFT_PE_1_8, 0x0B )
 +            );
 +            TO_CLIENT.registerPacket(
 +                    network.ycc.waterdog.pe.packet.PETransfer.class,
++                    network.ycc.waterdog.pe.packet.PETransfer::new, // MikroCord - speed up packet construction
 +                    map( ProtocolConstants.MINECRAFT_PE_1_8, 0x55 )
 +            );
 +            TO_SERVER.registerPacket(
 +                    network.ycc.waterdog.pe.packet.PECommand.class,
++                    network.ycc.waterdog.pe.packet.PECommand::new, // MikroCord - speed up packet construction
 +                    map( ProtocolConstants.MINECRAFT_PE_1_8, 0x4D )
 +            );
 +            TO_SERVER.registerPacket(
 +                    network.ycc.waterdog.pe.packet.PEResourcePackResponse.class,
++                    network.ycc.waterdog.pe.packet.PEResourcePackResponse::new, // MikroCord - speed up packet construction
 +                    map( ProtocolConstants.MINECRAFT_PE_1_8, 0x08 )
 +            );
 +            TO_SERVER.registerPacket(
 +                    network.ycc.waterdog.pe.packet.PELocalPlayerInitialized.class,
++                    network.ycc.waterdog.pe.packet.PELocalPlayerInitialized::new, // MikroCord - speed up packet construction
 +                    map( ProtocolConstants.MINECRAFT_PE_1_8, 0x71 )
 +            );
 +            // Waterdog end
@@ -345,7 +354,7 @@ index 2af84f8f..ba09f633 100644
                      map( ProtocolConstants.MINECRAFT_1_8, 0x00 ),
                      map( ProtocolConstants.MINECRAFT_1_9, 0x1F ),
                      map( ProtocolConstants.MINECRAFT_1_13, 0x21 )
-@@ -79,6 +120,7 @@ public enum Protocol
+@@ -79,6 +129,7 @@ public enum Protocol
              TO_CLIENT.registerPacket(
                      Chat.class,
                      Chat::new, // MikroCord - speed up packet construction
@@ -353,7 +362,7 @@ index 2af84f8f..ba09f633 100644
                      map( ProtocolConstants.MINECRAFT_1_8, 0x02 ),
                      map( ProtocolConstants.MINECRAFT_1_9, 0x0F ),
                      map( ProtocolConstants.MINECRAFT_1_13, 0x0E )
-@@ -86,6 +128,7 @@ public enum Protocol
+@@ -86,6 +137,7 @@ public enum Protocol
              TO_CLIENT.registerPacket(
                      Respawn.class,
                      Respawn::new, // MikroCord - speed up packet construction
@@ -361,7 +370,7 @@ index 2af84f8f..ba09f633 100644
                      map( ProtocolConstants.MINECRAFT_1_8, 0x07 ),
                      map( ProtocolConstants.MINECRAFT_1_9, 0x33 ),
                      map( ProtocolConstants.MINECRAFT_1_12, 0x34 ),
-@@ -172,6 +215,7 @@ public enum Protocol
+@@ -172,6 +224,7 @@ public enum Protocol
              TO_CLIENT.registerPacket(
                      PluginMessage.class,
                      PluginMessage::new, // MikroCord - speed up packet construction
@@ -369,7 +378,7 @@ index 2af84f8f..ba09f633 100644
                      map( ProtocolConstants.MINECRAFT_1_8, 0x3F ),
                      map( ProtocolConstants.MINECRAFT_1_9, 0x18 ),
                      map( ProtocolConstants.MINECRAFT_1_13, 0x19 )
-@@ -179,6 +223,7 @@ public enum Protocol
+@@ -179,6 +232,7 @@ public enum Protocol
              TO_CLIENT.registerPacket(
                      Kick.class,
                      Kick::new, // MikroCord - speed up packet construction
@@ -377,7 +386,7 @@ index 2af84f8f..ba09f633 100644
                      map( ProtocolConstants.MINECRAFT_1_8, 0x40 ),
                      map( ProtocolConstants.MINECRAFT_1_9, 0x1A ),
                      map( ProtocolConstants.MINECRAFT_1_13, 0x1B )
-@@ -217,6 +262,7 @@ public enum Protocol
+@@ -217,6 +271,7 @@ public enum Protocol
              TO_SERVER.registerPacket(
                      KeepAlive.class,
                      KeepAlive::new, // MikroCord - speed up packet construction
@@ -385,7 +394,7 @@ index 2af84f8f..ba09f633 100644
                      map( ProtocolConstants.MINECRAFT_1_8, 0x00 ),
                      map( ProtocolConstants.MINECRAFT_1_9, 0x0B ),
                      map( ProtocolConstants.MINECRAFT_1_12, 0x0C ),
-@@ -226,6 +272,7 @@ public enum Protocol
+@@ -226,6 +281,7 @@ public enum Protocol
              TO_SERVER.registerPacket(
                      Chat.class,
                      Chat::new, // MikroCord - speed up packet construction
@@ -393,7 +402,7 @@ index 2af84f8f..ba09f633 100644
                      map( ProtocolConstants.MINECRAFT_1_8, 0x01 ),
                      map( ProtocolConstants.MINECRAFT_1_9, 0x02 ),
                      map( ProtocolConstants.MINECRAFT_1_12, 0x03 ),
-@@ -243,6 +290,7 @@ public enum Protocol
+@@ -243,6 +299,7 @@ public enum Protocol
              TO_SERVER.registerPacket(
                      ClientSettings.class,
                      ClientSettings::new, // MikroCord - speed up packet construction
@@ -401,7 +410,7 @@ index 2af84f8f..ba09f633 100644
                      map( ProtocolConstants.MINECRAFT_1_8, 0x15 ),
                      map( ProtocolConstants.MINECRAFT_1_9, 0x04 ),
                      map( ProtocolConstants.MINECRAFT_1_12, 0x05 ),
-@@ -251,6 +299,7 @@ public enum Protocol
+@@ -251,6 +308,7 @@ public enum Protocol
              TO_SERVER.registerPacket(
                      PluginMessage.class,
                      PluginMessage::new, // MikroCord - speed up packet construction
@@ -409,24 +418,26 @@ index 2af84f8f..ba09f633 100644
                      map( ProtocolConstants.MINECRAFT_1_8, 0x17 ),
                      map( ProtocolConstants.MINECRAFT_1_9, 0x09 ),
                      map( ProtocolConstants.MINECRAFT_1_12, 0x0A ),
-@@ -292,6 +341,16 @@ public enum Protocol
+@@ -292,6 +350,18 @@ public enum Protocol
      {
  
          {
 +            // Waterdog start
 +            TO_CLIENT.registerPacket(
 +                    network.ycc.waterdog.pe.packet.PEEncryptionRequest.class,
++                    network.ycc.waterdog.pe.packet.PEEncryptionRequest::new, // MikroCord - speed up packet construction
 +                    map( ProtocolConstants.MINECRAFT_PE_1_8, 0x03 )
 +            );
 +            TO_SERVER.registerPacket(
 +                    network.ycc.waterdog.pe.packet.PEEncryptionResponse.class,
++                    network.ycc.waterdog.pe.packet.PEEncryptionResponse::new, // MikroCord - speed up packet construction
 +                    map( ProtocolConstants.MINECRAFT_PE_1_8, 0x04 )
 +            );
 +            // Waterdog end
              TO_CLIENT.registerPacket(
                      Kick.class,
                      Kick::new, // MikroCord - speed up packet construction
-@@ -300,11 +359,13 @@ public enum Protocol
+@@ -300,11 +370,13 @@ public enum Protocol
              TO_CLIENT.registerPacket(
                      EncryptionRequest.class,
                      EncryptionRequest::new, // MikroCord - speed up packet construction
@@ -440,7 +451,7 @@ index 2af84f8f..ba09f633 100644
                      map( ProtocolConstants.MINECRAFT_1_8, 0x02 )
              );
              TO_CLIENT.registerPacket(
-@@ -433,6 +494,13 @@ public enum Protocol
+@@ -433,6 +505,13 @@ public enum Protocol
              return supportsForge || i >= 0 && i <= MAX_PACKET_ID;
          }
  
@@ -454,7 +465,7 @@ index 2af84f8f..ba09f633 100644
          public final DefinedPacket createPacket(int id, int version)
          {
              return createPacket(id, version, true);
-@@ -447,6 +515,7 @@ public enum Protocol
+@@ -447,6 +526,7 @@ public enum Protocol
              }
              if ( !hasPacket(id, supportsForge) )
              {
@@ -462,7 +473,7 @@ index 2af84f8f..ba09f633 100644
                  throw new BadPacketException( "Packet with id " + id + " outside of range " );
              }
  
-@@ -476,6 +545,13 @@ public enum Protocol
+@@ -476,6 +556,13 @@ public enum Protocol
                          continue;
                      }
  
