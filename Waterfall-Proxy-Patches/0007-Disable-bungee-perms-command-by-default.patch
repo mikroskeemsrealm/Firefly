@@ -1,11 +1,11 @@
-From 43601fce3506fc662ca9e48c2c664823f287ed4f Mon Sep 17 00:00:00 2001
+From c3a4f244e5938c4a276f696ed6a168d6fdfa62a7 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Tue, 19 Mar 2019 22:54:51 +0200
 Subject: [PATCH] Disable bungee & perms command by default
 
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java b/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java
-index 0482d74a..45acea86 100644
+index 5841cf63..51ddb412 100644
 --- a/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java
 +++ b/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java
 @@ -100,7 +100,7 @@ public abstract class Configuration implements ProxyConfig

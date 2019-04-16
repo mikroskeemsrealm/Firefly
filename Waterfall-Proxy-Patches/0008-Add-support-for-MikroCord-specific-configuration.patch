@@ -1,4 +1,4 @@
-From 2ee06845b3e8a8feb200803458b6b971698623f3 Mon Sep 17 00:00:00 2001
+From 96b4584950306824d1932bc2e4abdc3bf265abf5 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Tue, 19 Mar 2019 23:05:17 +0200
 Subject: [PATCH] Add support for MikroCord-specific configuration
@@ -57,7 +57,7 @@ index ed427492..dfd74f1e 100644
      /**
       * Whether we log InitialHandler connections
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 1971d321..a3bc38d4 100644
+index 8a28e722..82621599 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -105,7 +105,7 @@ public class BungeeCord extends ProxyServer

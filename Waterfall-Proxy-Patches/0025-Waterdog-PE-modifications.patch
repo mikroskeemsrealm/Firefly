@@ -1,4 +1,4 @@
-From 5844428113ecfcce97ba76ba573931dff4754522 Mon Sep 17 00:00:00 2001
+From b9e6ba71903fd8a2f0ac6671d26a21920058d511 Mon Sep 17 00:00:00 2001
 From: Colin Godsey <crgodsey@gmail.com>
 Date: Tue, 16 Apr 2019 20:28:38 +0300
 Subject: [PATCH] Waterdog PE (modifications)
@@ -815,11 +815,11 @@ index d0a7529e..032391fa 100644
          buf.writeByte( difficulty );
          buf.writeByte( gameMode );
 diff --git a/proxy/pom.xml b/proxy/pom.xml
-index d5c840d9..ee5cc3b7 100644
+index 6ba0f883..50d1ea69 100644
 --- a/proxy/pom.xml
 +++ b/proxy/pom.xml
-@@ -22,6 +22,15 @@
-         <maven.deploy.skip>true</maven.deploy.skip>
+@@ -23,6 +23,15 @@
+         <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format> <!-- MikroCord -->
      </properties>
  
 +    <!-- Waterdog start -->
@@ -834,7 +834,7 @@ index d5c840d9..ee5cc3b7 100644
      <dependencies>
          <dependency>
              <groupId>com.flowpowered</groupId>
-@@ -118,6 +127,28 @@
+@@ -119,6 +128,28 @@
              <scope>runtime</scope>
          </dependency>
          <!-- Waterfall end -->

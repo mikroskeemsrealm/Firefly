@@ -1,4 +1,4 @@
-From c7c5cc1fe591ca408f2141f78a7c8e231596a666 Mon Sep 17 00:00:00 2001
+From 4c0ffd271deca4d5069f16a8f184107fd68a106e Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Tue, 19 Mar 2019 23:17:23 +0200
 Subject: [PATCH] Add /grestart command
@@ -113,7 +113,7 @@ index 0b613f67..e6b65082 100644
      }
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index a3bc38d4..c5a49879 100644
+index 82621599..a286f35d 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -270,6 +270,9 @@ public class BungeeCord extends ProxyServer

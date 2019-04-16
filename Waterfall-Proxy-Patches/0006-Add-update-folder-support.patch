@@ -1,4 +1,4 @@
-From 3e37f1dad5222003de129256969464c26dab0157 Mon Sep 17 00:00:00 2001
+From 82900c7a257e3b046cf1cb1766cd536f3323ec54 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Tue, 19 Mar 2019 22:42:04 +0200
 Subject: [PATCH] Add update folder support

@@ -1,4 +1,4 @@
-From 3101af1a2034ce9d741f327c31d9f4e881afcf7e Mon Sep 17 00:00:00 2001
+From 16d5ad596de524d60bab9c8b7f92de9a735c5fc1 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sat, 13 Apr 2019 23:10:17 +0300
 Subject: [PATCH] Set sane default configuration values

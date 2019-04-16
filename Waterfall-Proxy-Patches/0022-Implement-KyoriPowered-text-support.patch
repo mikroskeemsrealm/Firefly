@@ -1,4 +1,4 @@
-From 6928106c7c45749d1479ec34b2192394b8542e9f Mon Sep 17 00:00:00 2001
+From f97ae42dbed6f52f4d5d969fa31a7a446bf3fe7e Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 14 Apr 2019 21:48:01 +0300
 Subject: [PATCH] Implement KyoriPowered/text support
@@ -135,7 +135,7 @@ index eaf9f79f..2870ad8f 100644
              registerTypeAdapter( TextComponent.class, new TextComponentSerializer() ).
              registerTypeAdapter( TranslatableComponent.class, new TranslatableComponentSerializer() ).
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index a5a7b3e8..e4d17496 100644
+index beeb52f5..a8019e2e 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -154,7 +154,7 @@ public class BungeeCord extends ProxyServer

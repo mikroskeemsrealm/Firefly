@@ -1,4 +1,4 @@
-From c1dd06fa702290fb94d7464338667760f72196b2 Mon Sep 17 00:00:00 2001
+From 48088bcb833dbd2ad49b6e8ae6b0acf34366de36 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Tue, 19 Mar 2019 22:11:14 +0200
 Subject: [PATCH] Improve configuration adapter getting/setting API
@@ -89,12 +89,12 @@ index 41a71f65..ed427492 100644
          gameVersion = config.getString("game_version", "").isEmpty() ? Joiner.on(", ").join(ProtocolConstants.SUPPORTED_VERSIONS) : config.getString("game_version", "");
          useNettyDnsResolver = config.getBoolean("use_netty_dns_resolver", useNettyDnsResolver);
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 4ff03488..1971d321 100644
+index ed530237..8a28e722 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -166,6 +166,37 @@ public class BungeeCord extends ProxyServer
      private ConnectionThrottle connectionThrottle;
-     private final ModuleManager moduleManager = new ModuleManager();
+     //private final ModuleManager moduleManager = new ModuleManager(); // MikroCord - drop modules support
  
 +    // MikroCord start - Configuration adapters
 +    private ConfigurationAdapter waterfallConfigurationAdapter = new YamlConfig(new File("waterfall.yml")) {

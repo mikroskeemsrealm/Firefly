@@ -1,0 +1,98 @@
+From e5d4de0ea0665d01d19514d21258fab3f22c2092 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Tue, 16 Apr 2019 21:20:13 +0300
+Subject: [PATCH] Disable useless bootstrap module
+
+
+diff --git a/pom.xml b/pom.xml
+index 86cb57c5..8a5a9c6b 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -51,7 +51,9 @@
+ 
+     <modules>
+         <module>api</module>
++        <!-- Mikrocord - remove useless bootstrap
+         <module>bootstrap</module>
++        -->
+         <module>chat</module>
+         <module>config</module>
+         <module>event</module>
+diff --git a/proxy/pom.xml b/proxy/pom.xml
+index d5c840d9..6ba0f883 100644
+--- a/proxy/pom.xml
++++ b/proxy/pom.xml
+@@ -20,6 +20,7 @@
+ 
+     <properties>
+         <maven.deploy.skip>true</maven.deploy.skip>
++        <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format> <!-- MikroCord -->
+     </properties>
+ 
+     <dependencies>
+@@ -141,5 +142,62 @@
+             </resource>
+             <!-- Waterfall end -->
+         </resources>
++        <!-- MikroCord start -->
++        <finalName>MikroCord</finalName>
++        <plugins>
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-jar-plugin</artifactId>
++                <version>3.0.2</version>
++                <configuration>
++                    <archive>
++                        <manifestEntries>
++                            <Main-Class>net.md_5.bungee.BungeeCordLauncher</Main-Class>
++                            <Implementation-Version>${describe}</Implementation-Version>
++                            <Specification-Version>${maven.build.timestamp}</Specification-Version>
++
++                            <!-- Log4j includes custom classes for Java 9+ (#293) -->
++                            <Multi-Release>true</Multi-Release>
++                        </manifestEntries>
++                    </archive>
++                </configuration>
++            </plugin>
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-shade-plugin</artifactId>
++                <version>3.0.0</version>
++                <executions>
++                    <execution>
++                        <phase>package</phase>
++                        <goals>
++                            <goal>shade</goal>
++                        </goals>
++                    </execution>
++                </executions>
++                <configuration>
++                    <filters>
++                        <filter>
++                            <artifact>*:*</artifact>
++                            <excludes>
++                                <exclude>**/*.java</exclude>
++                                <exclude>**/*.SF</exclude>
++                                <exclude>**/*.DSA</exclude>
++                            </excludes>
++                        </filter>
++                    </filters>
++                    <transformers>
++                        <transformer implementation="com.github.edwgiz.mavenShadePlugin.log4j2CacheTransformer.PluginsCacheFileTransformer" />
++                    </transformers>
++                </configuration>
++                <dependencies>
++                    <dependency>
++                        <groupId>com.github.edwgiz</groupId>
++                        <artifactId>maven-shade-plugin.log4j2-cachefile-transformer</artifactId>
++                        <version>2.8.1</version>
++                    </dependency>
++                </dependencies>
++            </plugin>
++        </plugins>
++        <!-- MikroCord end -->
+     </build>
+ </project>
+-- 
+2.21.0
+
