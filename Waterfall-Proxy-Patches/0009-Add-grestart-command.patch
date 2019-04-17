@@ -1,11 +1,11 @@
-From 4c0ffd271deca4d5069f16a8f184107fd68a106e Mon Sep 17 00:00:00 2001
+From 3ffe1e19178e08c6664bea7668a39295ead66e0d Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Tue, 19 Mar 2019 23:17:23 +0200
 Subject: [PATCH] Add /grestart command
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-index 89f21690..4b899455 100644
+index 89f216905..4b899455d 100644
 --- a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
 +++ b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
 @@ -240,4 +240,14 @@ public interface ProxyConfig
@@ -25,10 +25,10 @@ index 89f21690..4b899455 100644
  }
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/command/CommandRestart.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/command/CommandRestart.java
 new file mode 100644
-index 00000000..4974a9bd
+index 000000000..4564245e9
 --- /dev/null
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/command/CommandRestart.java
-@@ -0,0 +1,51 @@
+@@ -0,0 +1,52 @@
 +package eu.mikroskeem.mikrocord.command;
 +
 +import com.google.common.base.Joiner;
@@ -59,6 +59,7 @@ index 00000000..4974a9bd
 +                System.out.println("Attempting to restart with " + scriptPath);
 +            } else {
 +                System.out.println("Startup script '" + scriptPath + "' does not exist! Stopping proxy.");
++                return;
 +            }
 +
 +            try {
@@ -81,7 +82,7 @@ index 00000000..4974a9bd
 +    }
 +}
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index 0b613f67..e6b65082 100644
+index 0b613f678..e6b650822 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 @@ -8,10 +8,27 @@ import net.md_5.bungee.api.config.ConfigurationAdapter;
@@ -113,7 +114,7 @@ index 0b613f67..e6b65082 100644
      }
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 82621599..a286f35d 100644
+index 826215991..a286f35d4 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -270,6 +270,9 @@ public class BungeeCord extends ProxyServer
@@ -127,7 +128,7 @@ index 82621599..a286f35d 100644
          if ( !Boolean.getBoolean( "net.md_5.bungee.native.disable" ) )
          {
 diff --git a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
-index 44011a96..2401f95e 100644
+index 44011a965..2401f95e6 100644
 --- a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
 +++ b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
 @@ -103,7 +103,7 @@ public class YamlConfig implements ConfigurationAdapter
