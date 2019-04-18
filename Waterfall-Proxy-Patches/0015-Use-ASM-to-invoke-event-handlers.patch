@@ -1,4 +1,4 @@
-From 77beeb1361306518804e6b13541ff4d1588bdd6e Mon Sep 17 00:00:00 2001
+From 3e73bd6980658b4bfa1c02e7494fbb0ccd748c25 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sat, 13 Apr 2019 22:08:57 +0300
 Subject: [PATCH] Use ASM to invoke event handlers
@@ -163,10 +163,10 @@ index 000000000..ad7bcbf69
 +}
 diff --git a/event/src/main/java/eu/mikroskeem/mikrocord/event/MethodHandleEventExecutor.java b/event/src/main/java/eu/mikroskeem/mikrocord/event/MethodHandleEventExecutor.java
 new file mode 100644
-index 000000000..696f33c07
+index 000000000..72d8fd43b
 --- /dev/null
 +++ b/event/src/main/java/eu/mikroskeem/mikrocord/event/MethodHandleEventExecutor.java
-@@ -0,0 +1,37 @@
+@@ -0,0 +1,44 @@
 +package eu.mikroskeem.mikrocord.event;
 +
 +import lombok.SneakyThrows;
@@ -198,10 +198,17 @@ index 000000000..696f33c07
 +            return; // Uhh?
 +
 +        if(isStatic) {
-+            this.handle.invoke(event);
++            executeStatic(listener, event);
 +        } else {
 +            this.handle.invoke(listener, event);
 +        }
++    }
++
++    // This exists only to show up in stack trace what way was used to
++    // execute the event handler
++    @SneakyThrows
++    public void executeStatic(Object listener, Object event) {
++        this.handle.invoke(event);
 +    }
 +}
 diff --git a/event/src/main/java/net/md_5/bungee/event/EventBus.java b/event/src/main/java/net/md_5/bungee/event/EventBus.java
