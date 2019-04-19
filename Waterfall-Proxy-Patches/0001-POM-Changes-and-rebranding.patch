@@ -1,11 +1,11 @@
-From ead245d7f7e7cb656145a97f66b44f3c44f64ab1 Mon Sep 17 00:00:00 2001
+From f240688458d551e171af65dac3e6a0afdf1dad75 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 10 Mar 2019 17:29:41 +0200
 Subject: [PATCH] POM Changes and rebranding
 
 
 diff --git a/api/pom.xml b/api/pom.xml
-index 4d5a0fc3d..642e0e9aa 100644
+index 4d5a0fc3..642e0e9a 100644
 --- a/api/pom.xml
 +++ b/api/pom.xml
 @@ -4,42 +4,42 @@
@@ -65,7 +65,7 @@ index 4d5a0fc3d..642e0e9aa 100644
              <scope>compile</scope>
          </dependency>
 diff --git a/bootstrap/pom.xml b/bootstrap/pom.xml
-index 9d0e675e8..f442a92ff 100644
+index 9d0e675e..f442a92f 100644
 --- a/bootstrap/pom.xml
 +++ b/bootstrap/pom.xml
 @@ -4,19 +4,19 @@
@@ -114,7 +114,7 @@ index 9d0e675e8..f442a92ff 100644
              <plugin>
                  <groupId>org.apache.maven.plugins</groupId>
 diff --git a/chat/pom.xml b/chat/pom.xml
-index c3d721d28..560f45261 100644
+index c3d721d2..560f4526 100644
 --- a/chat/pom.xml
 +++ b/chat/pom.xml
 @@ -4,19 +4,19 @@
@@ -144,7 +144,7 @@ index c3d721d28..560f45261 100644
      <dependencies>
          <dependency>
 diff --git a/config/pom.xml b/config/pom.xml
-index 140b3f6de..9549ac71f 100644
+index 140b3f6d..9549ac71 100644
 --- a/config/pom.xml
 +++ b/config/pom.xml
 @@ -4,8 +4,8 @@
@@ -170,7 +170,7 @@ index 140b3f6de..9549ac71f 100644
      <dependencies>
          <dependency>
 diff --git a/event/pom.xml b/event/pom.xml
-index 017dd6f11..f0c172e48 100644
+index 017dd6f1..f0c172e4 100644
 --- a/event/pom.xml
 +++ b/event/pom.xml
 @@ -4,17 +4,17 @@
@@ -198,7 +198,7 @@ index 017dd6f11..f0c172e48 100644
 +    <description>Generic java event dispatching API intended for use with MikroCord.</description>
  </project>
 diff --git a/log/pom.xml b/log/pom.xml
-index f480e6ecc..95eeed2b6 100644
+index f480e6ec..95eeed2b 100644
 --- a/log/pom.xml
 +++ b/log/pom.xml
 @@ -4,19 +4,19 @@
@@ -239,7 +239,7 @@ index f480e6ecc..95eeed2b6 100644
              <scope>compile</scope>
          </dependency>
 diff --git a/log4j/pom.xml b/log4j/pom.xml
-index 1ac17d684..4c070ba3a 100644
+index 1ac17d68..4c070ba3 100644
 --- a/log4j/pom.xml
 +++ b/log4j/pom.xml
 @@ -3,19 +3,19 @@
@@ -294,7 +294,7 @@ index 1ac17d684..4c070ba3a 100644
      </dependencies>
  </project>
 diff --git a/module/cmd-alert/pom.xml b/module/cmd-alert/pom.xml
-index 7490e6139..a3106a6bf 100644
+index 7490e613..a3106a6b 100644
 --- a/module/cmd-alert/pom.xml
 +++ b/module/cmd-alert/pom.xml
 @@ -4,14 +4,14 @@
@@ -317,7 +317,7 @@ index 7490e6139..a3106a6bf 100644
      <packaging>jar</packaging>
  
 diff --git a/module/cmd-find/pom.xml b/module/cmd-find/pom.xml
-index b2163d69e..2bc98594f 100644
+index b2163d69..2bc98594 100644
 --- a/module/cmd-find/pom.xml
 +++ b/module/cmd-find/pom.xml
 @@ -4,14 +4,14 @@
@@ -340,7 +340,7 @@ index b2163d69e..2bc98594f 100644
      <packaging>jar</packaging>
  
 diff --git a/module/cmd-list/pom.xml b/module/cmd-list/pom.xml
-index 93eb73575..282f74e0d 100644
+index 93eb7357..282f74e0 100644
 --- a/module/cmd-list/pom.xml
 +++ b/module/cmd-list/pom.xml
 @@ -4,14 +4,14 @@
@@ -363,7 +363,7 @@ index 93eb73575..282f74e0d 100644
      <packaging>jar</packaging>
  
 diff --git a/module/cmd-send/pom.xml b/module/cmd-send/pom.xml
-index 701e018c5..33fdb358d 100644
+index 701e018c..33fdb358 100644
 --- a/module/cmd-send/pom.xml
 +++ b/module/cmd-send/pom.xml
 @@ -4,14 +4,14 @@
@@ -386,7 +386,7 @@ index 701e018c5..33fdb358d 100644
      <packaging>jar</packaging>
  
 diff --git a/module/cmd-server/pom.xml b/module/cmd-server/pom.xml
-index 69732072d..1c18f2367 100644
+index 69732072..1c18f236 100644
 --- a/module/cmd-server/pom.xml
 +++ b/module/cmd-server/pom.xml
 @@ -4,14 +4,14 @@
@@ -409,7 +409,7 @@ index 69732072d..1c18f2367 100644
      <packaging>jar</packaging>
  
 diff --git a/module/pom.xml b/module/pom.xml
-index 64299364a..523fc38b3 100644
+index 64299364..523fc38b 100644
 --- a/module/pom.xml
 +++ b/module/pom.xml
 @@ -4,19 +4,19 @@
@@ -450,7 +450,7 @@ index 64299364a..523fc38b3 100644
              <scope>compile</scope>
          </dependency>
 diff --git a/module/reconnect-yaml/pom.xml b/module/reconnect-yaml/pom.xml
-index 75d2c350c..f9bfb0f8a 100644
+index 75d2c350..f9bfb0f8 100644
 --- a/module/reconnect-yaml/pom.xml
 +++ b/module/reconnect-yaml/pom.xml
 @@ -4,14 +4,14 @@
@@ -473,7 +473,7 @@ index 75d2c350c..f9bfb0f8a 100644
      <packaging>jar</packaging>
  
 diff --git a/native/pom.xml b/native/pom.xml
-index f8a34db0e..c731096f3 100644
+index f8a34db0..c731096f 100644
 --- a/native/pom.xml
 +++ b/native/pom.xml
 @@ -4,19 +4,19 @@
@@ -503,7 +503,7 @@ index f8a34db0e..c731096f3 100644
      <dependencies>
          <dependency>
 diff --git a/pom.xml b/pom.xml
-index 0005b2503..4fba9e1b8 100644
+index 0005b250..4fba9e1b 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -4,25 +4,27 @@
@@ -565,7 +565,7 @@ index 0005b2503..4fba9e1b8 100644
  
      <distributionManagement>
 diff --git a/protocol/pom.xml b/protocol/pom.xml
-index cacf177b5..dc9dc98d9 100644
+index cacf177b..dc9dc98d 100644
 --- a/protocol/pom.xml
 +++ b/protocol/pom.xml
 @@ -4,19 +4,19 @@
@@ -606,7 +606,7 @@ index cacf177b5..dc9dc98d9 100644
              <scope>compile</scope>
          </dependency>
 diff --git a/proxy/pom.xml b/proxy/pom.xml
-index 651f77e4d..02caa9848 100644
+index 651f77e4..02caa984 100644
 --- a/proxy/pom.xml
 +++ b/proxy/pom.xml
 @@ -4,18 +4,18 @@
@@ -677,7 +677,7 @@ index 651f77e4d..02caa9848 100644
              <scope>compile</scope>
          </dependency>
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 03cee58a1..ba7e1ca67 100644
+index 03cee58a..ba7e1ca6 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -513,7 +513,7 @@ public class BungeeCord extends ProxyServer
@@ -689,8 +689,20 @@ index 03cee58a1..ba7e1ca67 100644
      }
  
      @Override
+diff --git a/proxy/src/main/java/net/md_5/bungee/command/CommandReload.java b/proxy/src/main/java/net/md_5/bungee/command/CommandReload.java
+index f5c028dd..6896525b 100644
+--- a/proxy/src/main/java/net/md_5/bungee/command/CommandReload.java
++++ b/proxy/src/main/java/net/md_5/bungee/command/CommandReload.java
+@@ -23,6 +23,7 @@ public class CommandReload extends Command
+         BungeeCord.getInstance().startListeners();
+         BungeeCord.getInstance().getPluginManager().callEvent( new ProxyReloadEvent( sender ) );
+ 
++        sender.sendMessage(ChatColor.GREEN + "MikroCord has been reloaded"); if(true) return; // MikroCord
+         sender.sendMessage( ChatColor.BOLD.toString() + ChatColor.RED.toString() + "Waterfall has been reloaded."
+                 + " This is NOT advisable and you will not be supported with any issues that arise! Please restart Waterfall ASAP." );
+     }
 diff --git a/proxy/src/main/java/net/md_5/bungee/module/JenkinsModuleSource.java b/proxy/src/main/java/net/md_5/bungee/module/JenkinsModuleSource.java
-index 9b20d0df5..fd9d0634b 100644
+index 9b20d0df..fd9d0634 100644
 --- a/proxy/src/main/java/net/md_5/bungee/module/JenkinsModuleSource.java
 +++ b/proxy/src/main/java/net/md_5/bungee/module/JenkinsModuleSource.java
 @@ -18,7 +18,7 @@ public class JenkinsModuleSource implements ModuleSource
@@ -703,7 +715,7 @@ index 9b20d0df5..fd9d0634b 100644
              // 15 second timeout at various stages
              con.setConnectTimeout( 15000 );
 diff --git a/query/pom.xml b/query/pom.xml
-index f2bfeb80b..52831e327 100644
+index f2bfeb80..52831e32 100644
 --- a/query/pom.xml
 +++ b/query/pom.xml
 @@ -4,19 +4,19 @@
