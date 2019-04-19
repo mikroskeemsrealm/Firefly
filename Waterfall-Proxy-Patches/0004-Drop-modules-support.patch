@@ -1,14 +1,14 @@
-From c132fa8817f3485a956cd8d4f58591ec98ba7eb1 Mon Sep 17 00:00:00 2001
+From 7f2779575b1fcc9df72954272bbbb148ea86ae1e Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sat, 13 Apr 2019 22:52:38 +0300
 Subject: [PATCH] Drop modules support
 
 
 diff --git a/pom.xml b/pom.xml
-index 2f680ed9..8e425494 100644
+index 5e8f2b521..026204b7e 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -61,7 +61,9 @@
+@@ -63,7 +63,9 @@
          <module>log</module>
          -->
          <module>log4j</module>
@@ -19,7 +19,7 @@ index 2f680ed9..8e425494 100644
          <module>proxy</module>
          <module>query</module>
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 4ff03488..ed530237 100644
+index ba7e1ca67..06e7701b9 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -164,7 +164,7 @@ public class BungeeCord extends ProxyServer

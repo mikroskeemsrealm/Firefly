@@ -1,14 +1,14 @@
-From 72a8d68a5e1173655228ff619a0bdcf9134ba9a9 Mon Sep 17 00:00:00 2001
+From e277a1605c2873c541cf7acfd1b17392f358caea Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Tue, 16 Apr 2019 21:51:47 +0300
 Subject: [PATCH] Get rid of Prometheus support
 
 
 diff --git a/proxy/pom.xml b/proxy/pom.xml
-index 50d1ea69..85ba25b4 100644
+index e0de709a3..01c785f90 100644
 --- a/proxy/pom.xml
 +++ b/proxy/pom.xml
-@@ -134,6 +134,7 @@
+@@ -145,6 +145,7 @@
              <artifactId>raknet</artifactId>
              <version>0.6-SNAPSHOT</version>
          </dependency>
@@ -16,7 +16,7 @@ index 50d1ea69..85ba25b4 100644
          <dependency>
              <groupId>io.prometheus</groupId>
              <artifactId>simpleclient</artifactId>
-@@ -149,6 +150,7 @@
+@@ -160,6 +161,7 @@
              <artifactId>simpleclient_httpserver</artifactId>
              <version>0.6.0</version>
          </dependency>
@@ -25,7 +25,7 @@ index 50d1ea69..85ba25b4 100644
      </dependencies>
  
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index fbcf6cd1..10b33a0a 100644
+index 2ddfb9a93..66f0f1331 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -407,7 +407,9 @@ public class BungeeCord extends ProxyServer
@@ -39,7 +39,7 @@ index fbcf6cd1..10b33a0a 100644
                      .handler(new network.ycc.waterdog.pe.PEPipelineUtils.ServerChannel(this, info))
                      .childHandler(network.ycc.waterdog.pe.PEPipelineUtils.SERVER_CHILD)
 diff --git a/proxy/src/main/java/network/ycc/waterdog/pe/PECompressor.java b/proxy/src/main/java/network/ycc/waterdog/pe/PECompressor.java
-index 0ae0109a..c651bf9c 100644
+index 0ae0109ac..c651bf9cf 100644
 --- a/proxy/src/main/java/network/ycc/waterdog/pe/PECompressor.java
 +++ b/proxy/src/main/java/network/ycc/waterdog/pe/PECompressor.java
 @@ -54,7 +54,9 @@ public class PECompressor extends ChannelOutboundHandlerAdapter {
@@ -67,7 +67,7 @@ index 0ae0109a..c651bf9c 100644
          ctx.write(out).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
      }
 diff --git a/proxy/src/main/java/network/ycc/waterdog/pe/PERakNetMetrics.java b/proxy/src/main/java/network/ycc/waterdog/pe/PERakNetMetrics.java
-index b2658d4c..1083fcf4 100644
+index b2658d4c8..1083fcf49 100644
 --- a/proxy/src/main/java/network/ycc/waterdog/pe/PERakNetMetrics.java
 +++ b/proxy/src/main/java/network/ycc/waterdog/pe/PERakNetMetrics.java
 @@ -1,11 +1,13 @@

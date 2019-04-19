@@ -1,14 +1,14 @@
-From 96b4584950306824d1932bc2e4abdc3bf265abf5 Mon Sep 17 00:00:00 2001
+From eedc46a2acc7c5cfd880b048a882abb0e2e42ed4 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Tue, 19 Mar 2019 23:05:17 +0200
 Subject: [PATCH] Add support for MikroCord-specific configuration
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java b/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
-index 859c19f4..e1892c19 100644
+index 812eba55c..021c5eea1 100644
 --- a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
 +++ b/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
-@@ -347,6 +347,11 @@ public abstract class ProxyServer
+@@ -353,6 +353,11 @@ public abstract class ProxyServer
           * Waterfall-specific configuration
           */
          WATERFALL,
@@ -22,7 +22,7 @@ index 859c19f4..e1892c19 100644
      // MikroCord end
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 new file mode 100644
-index 00000000..0b613f67
+index 000000000..0b613f678
 --- /dev/null
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 @@ -0,0 +1,17 @@
@@ -44,7 +44,7 @@ index 00000000..0b613f67
 +    }
 +}
 diff --git a/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java b/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
-index ed427492..dfd74f1e 100644
+index f6beb1482..1e344fd7c 100644
 --- a/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
 +++ b/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
 @@ -9,7 +9,7 @@ import net.md_5.bungee.protocol.ProtocolConstants;
@@ -57,7 +57,7 @@ index ed427492..dfd74f1e 100644
      /**
       * Whether we log InitialHandler connections
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 8a28e722..82621599 100644
+index fdbca9913..b8e4a8274 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -105,7 +105,7 @@ public class BungeeCord extends ProxyServer

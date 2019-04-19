@@ -1,95 +1,95 @@
-From ebaa5d04cdcb4d6c0d95b37374758b2518e6c047 Mon Sep 17 00:00:00 2001
+From ead245d7f7e7cb656145a97f66b44f3c44f64ab1 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 10 Mar 2019 17:29:41 +0200
-Subject: [PATCH] POM Changes
+Subject: [PATCH] POM Changes and rebranding
 
 
 diff --git a/api/pom.xml b/api/pom.xml
-index 0e46cbbe..470b1cd7 100644
+index 4d5a0fc3d..642e0e9aa 100644
 --- a/api/pom.xml
 +++ b/api/pom.xml
 @@ -4,42 +4,42 @@
      <modelVersion>4.0.0</modelVersion>
  
      <parent>
--        <groupId>io.github.waterfallmc</groupId>
--        <artifactId>waterfall-parent</artifactId>
+-        <groupId>network.ycc.waterdog</groupId>
+-        <artifactId>waterdog-parent</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-parent</artifactId>
          <version>1.13-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
--    <groupId>io.github.waterfallmc</groupId>
--    <artifactId>waterfall-api</artifactId>
+-    <groupId>network.ycc.waterdog</groupId>
+-    <artifactId>waterdog-api</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-api</artifactId>
      <version>1.13-SNAPSHOT</version>
      <packaging>jar</packaging>
  
--    <name>Waterfall-API</name>
-+    <name>mikrocord-API</name>
+-    <name>Waterdog-API</name>
++    <name>MikroCord-API</name>
      <description>API implemented by the Elastic Portal Suite</description>
  
      <dependencies>
          <dependency>
--            <groupId>io.github.waterfallmc</groupId>
--            <artifactId>waterfall-chat</artifactId>
+-            <groupId>network.ycc.waterdog</groupId>
+-            <artifactId>waterdog-chat</artifactId>
 +            <groupId>eu.mikroskeem.mikrocord</groupId>
 +            <artifactId>mikrocord-chat</artifactId>
              <version>${project.version}</version>
              <scope>compile</scope>
          </dependency>
          <dependency>
--            <groupId>io.github.waterfallmc</groupId>
--            <artifactId>waterfall-config</artifactId>
+-            <groupId>network.ycc.waterdog</groupId>
+-            <artifactId>waterdog-config</artifactId>
 +            <groupId>eu.mikroskeem.mikrocord</groupId>
 +            <artifactId>mikrocord-config</artifactId>
              <version>${project.version}</version>
              <scope>compile</scope>
          </dependency>
          <dependency>
--            <groupId>io.github.waterfallmc</groupId>
--            <artifactId>waterfall-event</artifactId>
+-            <groupId>network.ycc.waterdog</groupId>
+-            <artifactId>waterdog-event</artifactId>
 +            <groupId>eu.mikroskeem.mikrocord</groupId>
 +            <artifactId>mikrocord-event</artifactId>
              <version>${project.version}</version>
              <scope>compile</scope>
          </dependency>
          <dependency>
--            <groupId>io.github.waterfallmc</groupId>
--            <artifactId>waterfall-protocol</artifactId>
+-            <groupId>network.ycc.waterdog</groupId>
+-            <artifactId>waterdog-protocol</artifactId>
 +            <groupId>eu.mikroskeem.mikrocord</groupId>
 +            <artifactId>mikrocord-protocol</artifactId>
              <version>${project.version}</version>
              <scope>compile</scope>
          </dependency>
 diff --git a/bootstrap/pom.xml b/bootstrap/pom.xml
-index 6cacf112..f019ba68 100644
+index 9d0e675e8..f442a92ff 100644
 --- a/bootstrap/pom.xml
 +++ b/bootstrap/pom.xml
 @@ -4,19 +4,19 @@
      <modelVersion>4.0.0</modelVersion>
  
      <parent>
--        <groupId>io.github.waterfallmc</groupId>
--        <artifactId>waterfall-parent</artifactId>
+-        <groupId>network.ycc.waterdog</groupId>
+-        <artifactId>waterdog-parent</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-parent</artifactId>
          <version>1.13-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
--    <groupId>io.github.waterfallmc</groupId>
--    <artifactId>waterfall-bootstrap</artifactId>
+-    <groupId>network.ycc.waterdog</groupId>
+-    <artifactId>waterdog-bootstrap</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-bootstrap</artifactId>
      <version>1.13-SNAPSHOT</version>
      <packaging>jar</packaging>
  
--    <name>Waterfall-Bootstrap</name>
+-    <name>Waterdog-Bootstrap</name>
 -    <description>Java 1.6 loader for Waterfall</description>
-+    <name>mikrocord-Bootstrap</name>
++    <name>MikroCord-Bootstrap</name>
 +    <description>Java 1.6 loader for MikroCord</description>
  
      <properties>
@@ -98,8 +98,8 @@ index 6cacf112..f019ba68 100644
  
      <dependencies>
          <dependency>
--            <groupId>io.github.waterfallmc</groupId>
--            <artifactId>waterfall-proxy</artifactId>
+-            <groupId>network.ycc.waterdog</groupId>
+-            <artifactId>waterdog-proxy</artifactId>
 +            <groupId>eu.mikroskeem.mikrocord</groupId>
 +            <artifactId>mikrocord-proxy</artifactId>
              <version>${project.version}</version>
@@ -108,125 +108,121 @@ index 6cacf112..f019ba68 100644
      </dependencies>
  
      <build>
--        <finalName>Waterfall</finalName>
+-        <finalName>Waterdog</finalName>
 +        <finalName>MikroCord</finalName>
          <plugins>
              <plugin>
                  <groupId>org.apache.maven.plugins</groupId>
 diff --git a/chat/pom.xml b/chat/pom.xml
-index c9328ac3..b8301dde 100644
+index c3d721d28..560f45261 100644
 --- a/chat/pom.xml
 +++ b/chat/pom.xml
 @@ -4,19 +4,19 @@
      <modelVersion>4.0.0</modelVersion>
  
      <parent>
--        <groupId>io.github.waterfallmc</groupId>
--        <artifactId>waterfall-parent</artifactId>
+-        <groupId>network.ycc.waterdog</groupId>
+-        <artifactId>waterdog-parent</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-parent</artifactId>
          <version>1.13-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
--    <groupId>io.github.waterfallmc</groupId>
--    <artifactId>waterfall-chat</artifactId>
+-    <groupId>network.ycc.waterdog</groupId>
+-    <artifactId>waterdog-chat</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-chat</artifactId>
      <version>1.13-SNAPSHOT</version>
      <packaging>jar</packaging>
  
--    <name>Waterfall-Chat</name>
+-    <name>Waterdog-Chat</name>
 -    <description>Minecraft JSON chat API intended for use with Waterfall</description>
-+    <name>mikrocord-Chat</name>
++    <name>MikroCord-Chat</name>
 +    <description>Minecraft JSON chat API intended for use with MikroCord</description>
  
      <dependencies>
          <dependency>
 diff --git a/config/pom.xml b/config/pom.xml
-index 1bc01b9a..b4b29545 100644
+index 140b3f6de..9549ac71f 100644
 --- a/config/pom.xml
 +++ b/config/pom.xml
-@@ -4,19 +4,19 @@
+@@ -4,8 +4,8 @@
      <modelVersion>4.0.0</modelVersion>
  
      <parent>
--        <groupId>io.github.waterfallmc</groupId>
--        <artifactId>waterfall-parent</artifactId>
+-        <groupId>network.ycc.waterdog</groupId>
+-        <artifactId>waterdog-parent</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-parent</artifactId>
          <version>1.13-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
- 
--    <groupId>io.github.waterfallmc</groupId>
--    <artifactId>waterfall-config</artifactId>
-+    <groupId>eu.mikroskeem.mikrocord</groupId>
-+    <artifactId>mikrocord-config</artifactId>
+@@ -15,8 +15,8 @@
      <version>1.13-SNAPSHOT</version>
      <packaging>jar</packaging>
  
--    <name>Waterfall-Config</name>
+-    <name>Waterdog-Config</name>
 -    <description>Generic java configuration API intended for use with Waterfall</description>
-+    <name>mikrocord-Config</name>
++    <name>MikroCord-Config</name>
 +    <description>Generic java configuration API intended for use with MikroCord</description>
  
      <dependencies>
          <dependency>
 diff --git a/event/pom.xml b/event/pom.xml
-index e778b3d9..26865667 100644
+index 017dd6f11..f0c172e48 100644
 --- a/event/pom.xml
 +++ b/event/pom.xml
 @@ -4,17 +4,17 @@
      <modelVersion>4.0.0</modelVersion>
  
      <parent>
--        <groupId>io.github.waterfallmc</groupId>
--        <artifactId>waterfall-parent</artifactId>
+-        <groupId>network.ycc.waterdog</groupId>
+-        <artifactId>waterdog-parent</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-parent</artifactId>
          <version>1.13-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
--    <groupId>io.github.waterfallmc</groupId>
--    <artifactId>waterfall-event</artifactId>
+-    <groupId>network.ycc.waterdog</groupId>
+-    <artifactId>waterdog-event</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-event</artifactId>
      <version>1.13-SNAPSHOT</version>
      <packaging>jar</packaging>
  
--    <name>Waterfall-Event</name>
+-    <name>Waterdog-Event</name>
 -    <description>Generic java event dispatching API intended for use with Waterfall.</description>
-+    <name>mikrocord-Event</name>
++    <name>MikroCord-Event</name>
 +    <description>Generic java event dispatching API intended for use with MikroCord.</description>
  </project>
 diff --git a/log/pom.xml b/log/pom.xml
-index e24b3e40..712d0595 100644
+index f480e6ecc..95eeed2b6 100644
 --- a/log/pom.xml
 +++ b/log/pom.xml
 @@ -4,19 +4,19 @@
      <modelVersion>4.0.0</modelVersion>
  
      <parent>
--        <groupId>io.github.waterfallmc</groupId>
--        <artifactId>waterfall-parent</artifactId>
+-        <groupId>network.ycc.waterdog</groupId>
+-        <artifactId>waterdog-parent</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-parent</artifactId>
          <version>1.13-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
--    <groupId>io.github.waterfallmc</groupId>
--    <artifactId>waterfall-log</artifactId>
+-    <groupId>network.ycc.waterdog</groupId>
+-    <artifactId>waterdog-log</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-log</artifactId>
      <version>1.13-SNAPSHOT</version>
      <packaging>jar</packaging>
  
--    <name>Waterfall-Log</name>
+-    <name>Waterdog-Log</name>
 -    <description>Simplistic and performant java.util.Logger based logger and console API designed for use with Waterfall and Minecraft related applications.</description>
-+    <name>mikrocord-Log</name>
++    <name>MikroCord-Log</name>
 +    <description>Simplistic and performant java.util.Logger based logger and console API designed for use with MikroCord and Minecraft related applications.</description>
  
      <dependencies>
@@ -235,41 +231,43 @@ index e24b3e40..712d0595 100644
              <scope>compile</scope>
          </dependency>
          <dependency>
--            <groupId>io.github.waterfallmc</groupId>
--            <artifactId>waterfall-chat</artifactId>
+-            <groupId>network.ycc.waterdog</groupId>
+-            <artifactId>waterdog-chat</artifactId>
 +            <groupId>eu.mikroskeem.mikrocord</groupId>
 +            <artifactId>mikrocord-chat</artifactId>
              <version>${project.version}</version>
              <scope>compile</scope>
          </dependency>
 diff --git a/log4j/pom.xml b/log4j/pom.xml
-index 33f1b659..20d67326 100644
+index 1ac17d684..4c070ba3a 100644
 --- a/log4j/pom.xml
 +++ b/log4j/pom.xml
-@@ -3,18 +3,18 @@
+@@ -3,19 +3,19 @@
      <modelVersion>4.0.0</modelVersion>
  
      <parent>
--        <groupId>io.github.waterfallmc</groupId>
--        <artifactId>waterfall-parent</artifactId>
+-        <groupId>network.ycc.waterdog</groupId>
+-        <artifactId>waterdog-parent</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-parent</artifactId>
          <version>1.13-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
--    <groupId>io.github.waterfallmc</groupId>
--    <artifactId>waterfall-log4j</artifactId>
+-    <groupId>network.ycc.waterdog</groupId>
+-    <artifactId>waterdog-log4j</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-log4j</artifactId>
      <version>1.13-SNAPSHOT</version>
      <packaging>jar</packaging>
  
--    <name>Waterfall-Log</name>
-+    <name>mikrocord-Log</name>
-     <description>Simplistic and performant Log4j2 based logger and console API designed for use with Waterfall and Minecraft related applications.</description>
+-    <name>Waterdog-Log</name>
+-    <description>Simplistic and performant Log4j2 based logger and console API designed for use with Waterfall and Minecraft related applications.</description>
++    <name>MikroCord-Log</name>
++    <description>Simplistic and performant Log4j2 based logger and console API designed for use with MikroCord and Minecraft related applications.</description>
  
      <properties>
+         <log4j2.version>2.11.1</log4j2.version>
 @@ -50,5 +50,24 @@
              <version>3.4.2</version>
              <scope>runtime</scope>
@@ -296,144 +294,144 @@ index 33f1b659..20d67326 100644
      </dependencies>
  </project>
 diff --git a/module/cmd-alert/pom.xml b/module/cmd-alert/pom.xml
-index db149339..a3106a6b 100644
+index 7490e6139..a3106a6bf 100644
 --- a/module/cmd-alert/pom.xml
 +++ b/module/cmd-alert/pom.xml
 @@ -4,14 +4,14 @@
      <modelVersion>4.0.0</modelVersion>
  
      <parent>
--        <groupId>io.github.waterfallmc</groupId>
--        <artifactId>waterfall-module</artifactId>
+-        <groupId>network.ycc.waterdog</groupId>
+-        <artifactId>waterdog-module</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-module</artifactId>
          <version>1.13-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
--    <groupId>io.github.waterfallmc</groupId>
--    <artifactId>waterfall-module-cmd-alert</artifactId>
+-    <groupId>network.ycc.waterdog</groupId>
+-    <artifactId>waterdog-module-cmd-alert</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-module-cmd-alert</artifactId>
      <version>1.13-SNAPSHOT</version>
      <packaging>jar</packaging>
  
 diff --git a/module/cmd-find/pom.xml b/module/cmd-find/pom.xml
-index c8d9826d..2bc98594 100644
+index b2163d69e..2bc98594f 100644
 --- a/module/cmd-find/pom.xml
 +++ b/module/cmd-find/pom.xml
 @@ -4,14 +4,14 @@
      <modelVersion>4.0.0</modelVersion>
  
      <parent>
--        <groupId>io.github.waterfallmc</groupId>
--        <artifactId>waterfall-module</artifactId>
+-        <groupId>network.ycc.waterdog</groupId>
+-        <artifactId>waterdog-module</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-module</artifactId>
          <version>1.13-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
--    <groupId>io.github.waterfallmc</groupId>
--    <artifactId>waterfall-module-cmd-find</artifactId>
+-    <groupId>network.ycc.waterdog</groupId>
+-    <artifactId>waterdog-module-cmd-find</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-module-cmd-find</artifactId>
      <version>1.13-SNAPSHOT</version>
      <packaging>jar</packaging>
  
 diff --git a/module/cmd-list/pom.xml b/module/cmd-list/pom.xml
-index 461b26ee..282f74e0 100644
+index 93eb73575..282f74e0d 100644
 --- a/module/cmd-list/pom.xml
 +++ b/module/cmd-list/pom.xml
 @@ -4,14 +4,14 @@
      <modelVersion>4.0.0</modelVersion>
  
      <parent>
--        <groupId>io.github.waterfallmc</groupId>
--        <artifactId>waterfall-module</artifactId>
+-        <groupId>network.ycc.waterdog</groupId>
+-        <artifactId>waterdog-module</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-module</artifactId>
          <version>1.13-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
--    <groupId>io.github.waterfallmc</groupId>
--    <artifactId>waterfall-module-cmd-list</artifactId>
+-    <groupId>network.ycc.waterdog</groupId>
+-    <artifactId>waterdog-module-cmd-list</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-module-cmd-list</artifactId>
      <version>1.13-SNAPSHOT</version>
      <packaging>jar</packaging>
  
 diff --git a/module/cmd-send/pom.xml b/module/cmd-send/pom.xml
-index 1b687b3c..33fdb358 100644
+index 701e018c5..33fdb358d 100644
 --- a/module/cmd-send/pom.xml
 +++ b/module/cmd-send/pom.xml
 @@ -4,14 +4,14 @@
      <modelVersion>4.0.0</modelVersion>
  
      <parent>
--        <groupId>io.github.waterfallmc</groupId>
--        <artifactId>waterfall-module</artifactId>
+-        <groupId>network.ycc.waterdog</groupId>
+-        <artifactId>waterdog-module</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-module</artifactId>
          <version>1.13-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
--    <groupId>io.github.waterfallmc</groupId>
--    <artifactId>waterfall-module-cmd-send</artifactId>
+-    <groupId>network.ycc.waterdog</groupId>
+-    <artifactId>waterdog-module-cmd-send</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-module-cmd-send</artifactId>
      <version>1.13-SNAPSHOT</version>
      <packaging>jar</packaging>
  
 diff --git a/module/cmd-server/pom.xml b/module/cmd-server/pom.xml
-index 9bdc3aba..1c18f236 100644
+index 69732072d..1c18f2367 100644
 --- a/module/cmd-server/pom.xml
 +++ b/module/cmd-server/pom.xml
 @@ -4,14 +4,14 @@
      <modelVersion>4.0.0</modelVersion>
  
      <parent>
--        <groupId>io.github.waterfallmc</groupId>
--        <artifactId>waterfall-module</artifactId>
+-        <groupId>network.ycc.waterdog</groupId>
+-        <artifactId>waterdog-module</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-module</artifactId>
          <version>1.13-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
--    <groupId>io.github.waterfallmc</groupId>
--    <artifactId>waterfall-module-cmd-server</artifactId>
+-    <groupId>network.ycc.waterdog</groupId>
+-    <artifactId>waterdog-module-cmd-server</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-module-cmd-server</artifactId>
      <version>1.13-SNAPSHOT</version>
      <packaging>jar</packaging>
  
 diff --git a/module/pom.xml b/module/pom.xml
-index 6bed2ea0..523fc38b 100644
+index 64299364a..523fc38b3 100644
 --- a/module/pom.xml
 +++ b/module/pom.xml
 @@ -4,19 +4,19 @@
      <modelVersion>4.0.0</modelVersion>
  
      <parent>
--        <groupId>io.github.waterfallmc</groupId>
--        <artifactId>waterfall-parent</artifactId>
+-        <groupId>network.ycc.waterdog</groupId>
+-        <artifactId>waterdog-parent</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-parent</artifactId>
          <version>1.13-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
--    <groupId>io.github.waterfallmc</groupId>
--    <artifactId>waterfall-module</artifactId>
+-    <groupId>network.ycc.waterdog</groupId>
+-    <artifactId>waterdog-module</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-module</artifactId>
      <version>1.13-SNAPSHOT</version>
      <packaging>pom</packaging>
  
--    <name>Waterfall Modules</name>
+-    <name>Waterdog Modules</name>
 -    <description>Parent project for all Waterfall modules.</description>
 +    <name>MikroCord Modules</name>
 +    <description>Parent project for all MikroCord modules.</description>
@@ -444,99 +442,106 @@ index 6bed2ea0..523fc38b 100644
  
      <dependencies>
          <dependency>
--            <groupId>io.github.waterfallmc</groupId>
--            <artifactId>waterfall-api</artifactId>
+-            <groupId>network.ycc.waterdog</groupId>
+-            <artifactId>waterdog-api</artifactId>
 +            <groupId>eu.mikroskeem.mikrocord</groupId>
 +            <artifactId>mikrocord-api</artifactId>
              <version>${project.version}</version>
              <scope>compile</scope>
          </dependency>
 diff --git a/module/reconnect-yaml/pom.xml b/module/reconnect-yaml/pom.xml
-index ca9a7c61..f9bfb0f8 100644
+index 75d2c350c..f9bfb0f8a 100644
 --- a/module/reconnect-yaml/pom.xml
 +++ b/module/reconnect-yaml/pom.xml
 @@ -4,14 +4,14 @@
      <modelVersion>4.0.0</modelVersion>
  
      <parent>
--        <groupId>io.github.waterfallmc</groupId>
--        <artifactId>waterfall-module</artifactId>
+-        <groupId>network.ycc.waterdog</groupId>
+-        <artifactId>waterdog-module</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-module</artifactId>
          <version>1.13-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
--    <groupId>io.github.waterfallmc</groupId>
--    <artifactId>waterfall-module-reconnect-yaml</artifactId>
+-    <groupId>network.ycc.waterdog</groupId>
+-    <artifactId>waterdog-module-reconnect-yaml</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-module-reconnect-yaml</artifactId>
      <version>1.13-SNAPSHOT</version>
      <packaging>jar</packaging>
  
 diff --git a/native/pom.xml b/native/pom.xml
-index 7073b404..dec26fef 100644
+index f8a34db0e..c731096f3 100644
 --- a/native/pom.xml
 +++ b/native/pom.xml
 @@ -4,19 +4,19 @@
      <modelVersion>4.0.0</modelVersion>
  
      <parent>
--        <groupId>io.github.waterfallmc</groupId>
--        <artifactId>waterfall-parent</artifactId>
+-        <groupId>network.ycc.waterdog</groupId>
+-        <artifactId>waterdog-parent</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-parent</artifactId>
          <version>1.13-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
--    <groupId>io.github.waterfallmc</groupId>
--    <artifactId>waterfall-native</artifactId>
+-    <groupId>network.ycc.waterdog</groupId>
+-    <artifactId>waterdog-native</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-native</artifactId>
      <version>1.13-SNAPSHOT</version>
      <packaging>jar</packaging>
  
--    <name>Waterfall-Native</name>
+-    <name>Waterdog-Native</name>
 -    <description>Optional native code to speed up and enhance Waterfall functionality.</description>
-+    <name>mikrocord-Native</name>
++    <name>MikroCord-Native</name>
 +    <description>Optional native code to speed up and enhance MikroCord functionality.</description>
  
      <dependencies>
          <dependency>
 diff --git a/pom.xml b/pom.xml
-index 5c9fefbe..83a219d1 100644
+index 0005b2503..4fba9e1b8 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -4,20 +4,20 @@
+@@ -4,25 +4,27 @@
      <modelVersion>4.0.0</modelVersion>
  
      <parent>
--        <groupId>io.github.waterfallmc</groupId>
--        <artifactId>waterfall-super</artifactId>
+-        <groupId>network.ycc.waterdog</groupId>
+-        <artifactId>waterdog-super</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-super</artifactId>
          <version>dev-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
--    <groupId>io.github.waterfallmc</groupId>
--    <artifactId>waterfall-parent</artifactId>
+-    <groupId>network.ycc.waterdog</groupId>
+-    <artifactId>waterdog-parent</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-parent</artifactId>
      <version>1.13-SNAPSHOT</version>
      <packaging>pom</packaging>
  
--    <name>Waterfall-Parent</name>
+-    <name>Waterdog-Parent</name>
 -    <description>Parent project for all Waterfall modules.</description>
 -    <url>https://github.com/WaterfallMC/Waterfall</url>
-+    <name>mikrocord-Parent</name>
++    <name>MikroCord-Parent</name>
 +    <description>Parent project for all MikroCord modules.</description>
 +    <url>https://github.com/PaperMC/MikroCord</url>
      <inceptionYear>2015</inceptionYear>
++    <!-- MikroCord start - no organization
      <organization>
-         <name>WaterfallMC</name>
-@@ -65,17 +65,17 @@
+         <name>WaterdogMC</name>
+         <url>https://github.com/WaterfallMC</url>
+     </organization>
++    -->
+     <licenses>
+         <license>
+             <name>The BSD 3-Clause License</name>
+@@ -65,17 +67,17 @@
      </modules>
  
      <scm>
@@ -560,31 +565,31 @@ index 5c9fefbe..83a219d1 100644
  
      <distributionManagement>
 diff --git a/protocol/pom.xml b/protocol/pom.xml
-index ee513895..93216d17 100644
+index cacf177b5..dc9dc98d9 100644
 --- a/protocol/pom.xml
 +++ b/protocol/pom.xml
 @@ -4,19 +4,19 @@
      <modelVersion>4.0.0</modelVersion>
  
      <parent>
--        <groupId>io.github.waterfallmc</groupId>
--        <artifactId>waterfall-parent</artifactId>
+-        <groupId>network.ycc.waterdog</groupId>
+-        <artifactId>waterdog-parent</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-parent</artifactId>
          <version>1.13-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
--    <groupId>io.github.waterfallmc</groupId>
--    <artifactId>waterfall-protocol</artifactId>
+-    <groupId>network.ycc.waterdog</groupId>
+-    <artifactId>waterdog-protocol</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-protocol</artifactId>
      <version>1.13-SNAPSHOT</version>
      <packaging>jar</packaging>
  
--    <name>Waterfall-Protocol</name>
+-    <name>Waterdog-Protocol</name>
 -    <description>Minimal implementation of the Minecraft protocol for use in Waterfall</description>
-+    <name>mikrocord-Protocol</name>
++    <name>MikroCord-Protocol</name>
 +    <description>Minimal implementation of the Minecraft protocol for use in MikroCord</description>
  
      <!-- We really shouldn't depend on external repositories, but at least this is the Central staging one -->
@@ -593,103 +598,99 @@ index ee513895..93216d17 100644
              <scope>compile</scope>
          </dependency>
          <dependency>
--            <groupId>io.github.waterfallmc</groupId>
--            <artifactId>waterfall-chat</artifactId>
+-            <groupId>network.ycc.waterdog</groupId>
+-            <artifactId>waterdog-chat</artifactId>
 +            <groupId>eu.mikroskeem.mikrocord</groupId>
 +            <artifactId>mikrocord-chat</artifactId>
              <version>${project.version}</version>
              <scope>compile</scope>
          </dependency>
 diff --git a/proxy/pom.xml b/proxy/pom.xml
-index f0497f59..d5c840d9 100644
+index 651f77e4d..02caa9848 100644
 --- a/proxy/pom.xml
 +++ b/proxy/pom.xml
 @@ -4,18 +4,18 @@
      <modelVersion>4.0.0</modelVersion>
  
      <parent>
--        <groupId>io.github.waterfallmc</groupId>
--        <artifactId>waterfall-parent</artifactId>
+-        <groupId>network.ycc.waterdog</groupId>
+-        <artifactId>waterdog-parent</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-parent</artifactId>
          <version>1.13-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
--    <groupId>io.github.waterfallmc</groupId>
--    <artifactId>waterfall-proxy</artifactId>
+-    <groupId>network.ycc.waterdog</groupId>
+-    <artifactId>waterdog-proxy</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-proxy</artifactId>
      <version>1.13-SNAPSHOT</version>
      <packaging>jar</packaging>
  
--    <name>Waterfall-Proxy</name>
-+    <name>mikrocord-Proxy</name>
+-    <name>Waterdog-Proxy</name>
++    <name>MikroCord-Proxy</name>
      <description>Proxy component of the Elastic Portal Suite</description>
  
      <properties>
-@@ -41,14 +41,14 @@
-             <version>${netty.version}</version>
-             <scope>compile</scope>
-         </dependency>
--        <!-- Waterfall Start - add Netty DNS resolver -->
-+        <!-- MikroCord Start - add Netty DNS resolver -->
-         <dependency>
-             <groupId>io.netty</groupId>
-             <artifactId>netty-resolver-dns</artifactId>
-             <version>${netty.version}</version>
-             <scope>compile</scope>
-         </dependency>
--        <!-- Waterfall End -->
-+        <!-- MikroCord End -->
-         <dependency>
-             <groupId>io.netty</groupId>
-             <artifactId>netty-handler</artifactId>
-@@ -63,32 +63,32 @@
+@@ -72,32 +72,32 @@
              <scope>compile</scope>
          </dependency>
          <dependency>
--            <groupId>io.github.waterfallmc</groupId>
--            <artifactId>waterfall-api</artifactId>
+-            <groupId>network.ycc.waterdog</groupId>
+-            <artifactId>waterdog-api</artifactId>
 +            <groupId>eu.mikroskeem.mikrocord</groupId>
 +            <artifactId>mikrocord-api</artifactId>
              <version>${project.version}</version>
              <scope>compile</scope>
          </dependency>
          <dependency>
--            <groupId>io.github.waterfallmc</groupId>
--            <artifactId>waterfall-log4j</artifactId>
+-            <groupId>network.ycc.waterdog</groupId>
+-            <artifactId>waterdog-log4j</artifactId>
 +            <groupId>eu.mikroskeem.mikrocord</groupId>
 +            <artifactId>mikrocord-log4j</artifactId>
              <version>${project.version}</version>
              <scope>compile</scope>
          </dependency>
          <dependency>
--            <groupId>io.github.waterfallmc</groupId>
--            <artifactId>waterfall-native</artifactId>
+-            <groupId>network.ycc.waterdog</groupId>
+-            <artifactId>waterdog-native</artifactId>
 +            <groupId>eu.mikroskeem.mikrocord</groupId>
 +            <artifactId>mikrocord-native</artifactId>
              <version>${project.version}</version>
              <scope>compile</scope>
          </dependency>
          <dependency>
--            <groupId>io.github.waterfallmc</groupId>
--            <artifactId>waterfall-protocol</artifactId>
+-            <groupId>network.ycc.waterdog</groupId>
+-            <artifactId>waterdog-protocol</artifactId>
 +            <groupId>eu.mikroskeem.mikrocord</groupId>
 +            <artifactId>mikrocord-protocol</artifactId>
              <version>${project.version}</version>
              <scope>compile</scope>
          </dependency>
          <dependency>
--            <groupId>io.github.waterfallmc</groupId>
--            <artifactId>waterfall-query</artifactId>
+-            <groupId>network.ycc.waterdog</groupId>
+-            <artifactId>waterdog-query</artifactId>
 +            <groupId>eu.mikroskeem.mikrocord</groupId>
 +            <artifactId>mikrocord-query</artifactId>
              <version>${project.version}</version>
              <scope>compile</scope>
          </dependency>
+diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
+index 03cee58a1..ba7e1ca67 100644
+--- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
++++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
+@@ -513,7 +513,7 @@ public class BungeeCord extends ProxyServer
+     @Override
+     public String getName()
+     {
+-        return "Waterdog"; // Waterdog
++        return "MikroCord"; // Waterdog // MikroCord
+     }
+ 
+     @Override
 diff --git a/proxy/src/main/java/net/md_5/bungee/module/JenkinsModuleSource.java b/proxy/src/main/java/net/md_5/bungee/module/JenkinsModuleSource.java
-index 9b20d0df..fd9d0634 100644
+index 9b20d0df5..fd9d0634b 100644
 --- a/proxy/src/main/java/net/md_5/bungee/module/JenkinsModuleSource.java
 +++ b/proxy/src/main/java/net/md_5/bungee/module/JenkinsModuleSource.java
 @@ -18,7 +18,7 @@ public class JenkinsModuleSource implements ModuleSource
@@ -702,31 +703,31 @@ index 9b20d0df..fd9d0634 100644
              // 15 second timeout at various stages
              con.setConnectTimeout( 15000 );
 diff --git a/query/pom.xml b/query/pom.xml
-index 4ae682ee..6629275f 100644
+index f2bfeb80b..52831e327 100644
 --- a/query/pom.xml
 +++ b/query/pom.xml
 @@ -4,19 +4,19 @@
      <modelVersion>4.0.0</modelVersion>
  
      <parent>
--        <groupId>io.github.waterfallmc</groupId>
--        <artifactId>waterfall-parent</artifactId>
+-        <groupId>network.ycc.waterdog</groupId>
+-        <artifactId>waterdog-parent</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-parent</artifactId>
          <version>1.13-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
--    <groupId>io.github.waterfallmc</groupId>
--    <artifactId>waterfall-query</artifactId>
+-    <groupId>network.ycc.waterdog</groupId>
+-    <artifactId>waterdog-query</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-query</artifactId>
      <version>1.13-SNAPSHOT</version>
      <packaging>jar</packaging>
  
--    <name>Waterfall-Query</name>
+-    <name>Waterdog-Query</name>
 -    <description>Minecraft query implementation based on the Waterfall API.</description>
-+    <name>mikrocord-Query</name>
++    <name>MikroCord-Query</name>
 +    <description>Minecraft query implementation based on the MikroCord API.</description>
  
      <dependencies>
@@ -735,8 +736,8 @@ index 4ae682ee..6629275f 100644
              <scope>compile</scope>
          </dependency>
          <dependency>
--            <groupId>io.github.waterfallmc</groupId>
--            <artifactId>waterfall-api</artifactId>
+-            <groupId>network.ycc.waterdog</groupId>
+-            <artifactId>waterdog-api</artifactId>
 +            <groupId>eu.mikroskeem.mikrocord</groupId>
 +            <artifactId>mikrocord-api</artifactId>
              <version>${project.version}</version>

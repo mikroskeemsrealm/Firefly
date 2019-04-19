@@ -1,4 +1,4 @@
-From ec2a89579f97fdc0479a231dbb5b1c9362882b98 Mon Sep 17 00:00:00 2001
+From 239ab743bac03a83fd786b4a5c4a789f9fd6f72f Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sat, 13 Apr 2019 20:13:53 +0300
 Subject: [PATCH] Make packet manipulation easier
@@ -34,10 +34,10 @@ index eb7e39472..5c196bd9c 100644
  
      /**
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/Protocol.java b/protocol/src/main/java/net/md_5/bungee/protocol/Protocol.java
-index 01af5c1cc..3c784e49d 100644
+index 3a2bd7b61..c80c2ef09 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/Protocol.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/Protocol.java
-@@ -348,7 +348,7 @@ public enum Protocol
+@@ -409,7 +409,7 @@ public enum Protocol
      }
  
      @Data
@@ -46,7 +46,7 @@ index 01af5c1cc..3c784e49d 100644
      {
  
          private final int protocolVersion;
-@@ -356,16 +356,17 @@ public enum Protocol
+@@ -417,16 +417,17 @@ public enum Protocol
      }
  
      // Helper method
@@ -66,7 +66,7 @@ index 01af5c1cc..3c784e49d 100644
          private final Protocol protocolPhase;
          @Getter
          private final ProtocolConstants.Direction direction;
-@@ -381,7 +382,7 @@ public enum Protocol
+@@ -442,7 +443,7 @@ public enum Protocol
              }
          }
  
@@ -75,7 +75,7 @@ index 01af5c1cc..3c784e49d 100644
          {
              ProtocolData protocol = protocols.get( version );
              if ( protocol == null && ( protocolPhase != Protocol.GAME ) )
-@@ -422,7 +423,7 @@ public enum Protocol
+@@ -491,7 +492,7 @@ public enum Protocol
              }
          }
  
@@ -84,7 +84,7 @@ index 01af5c1cc..3c784e49d 100644
          {
              try
              {
-@@ -461,7 +462,7 @@ public enum Protocol
+@@ -537,7 +538,7 @@ public enum Protocol
              }
          }
  
@@ -118,11 +118,11 @@ index d11d601ec..789a8ec12 100644
 +    // MikroCord end
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-index 110ac4966..751328430 100644
+index 51c8d1f3b..402188ddf 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-@@ -53,7 +53,7 @@ import net.md_5.bungee.util.BufUtil;
- import net.md_5.bungee.util.QuietException;
+@@ -54,7 +54,7 @@ import net.md_5.bungee.util.QuietException;
+ import network.ycc.waterdog.pe.packet.PEHandshake;
  
  @RequiredArgsConstructor
 -public class ServerConnector extends PacketHandler
@@ -130,7 +130,7 @@ index 110ac4966..751328430 100644
  {
  
      private final ProxyServer bungee;
-@@ -429,4 +429,10 @@ public class ServerConnector extends PacketHandler
+@@ -478,4 +478,10 @@ public class ServerConnector extends PacketHandler
      {
          return "[" + user.getName() + "|" + user.getAddress() + "] <-> ServerConnector [" + target.getName() + "]";
      }
@@ -142,7 +142,7 @@ index 110ac4966..751328430 100644
 +    // MikroCord end
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/UserConnection.java b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-index ade817e96..3868ac143 100644
+index 0206301a7..994f53b64 100644
 --- a/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 +++ b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 @@ -65,7 +65,7 @@ import net.md_5.bungee.util.CaseInsensitiveSet;
@@ -154,7 +154,7 @@ index ade817e96..3868ac143 100644
  {
  
      /*========================================================================*/
-@@ -736,4 +736,10 @@ public final class UserConnection implements ProxiedPlayer
+@@ -787,4 +787,10 @@ public final class UserConnection implements ProxiedPlayer
          return entityRewrite == net.md_5.bungee.entitymap.EntityMap_Dummy.INSTANCE;
      }
      // Waterfall end
@@ -166,10 +166,10 @@ index ade817e96..3868ac143 100644
 +    // MikroCord end
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-index 765731d86..09d517034 100644
+index 694bafc64..119e80172 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-@@ -640,4 +640,10 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+@@ -666,4 +666,10 @@ public class InitialHandler extends PacketHandler implements PendingConnection
      {
          return !ch.isClosed();
      }
@@ -179,6 +179,23 @@ index 765731d86..09d517034 100644
 +        return ch.getHandle();
 +    }
 +    // MikroCord end
+ }
+diff --git a/proxy/src/main/java/network/ycc/waterdog/pe/PEProxyServerInfoHandler.java b/proxy/src/main/java/network/ycc/waterdog/pe/PEProxyServerInfoHandler.java
+index f0053ce1b..1afa77114 100644
+--- a/proxy/src/main/java/network/ycc/waterdog/pe/PEProxyServerInfoHandler.java
++++ b/proxy/src/main/java/network/ycc/waterdog/pe/PEProxyServerInfoHandler.java
+@@ -138,6 +138,12 @@ public class PEProxyServerInfoHandler extends UdpPacketHandler<UnconnectedPing>
+             return x -> {};
+         }
+ 
++        // MikroCord start - make packet manipulation easier
++        @Override
++        public io.netty.channel.Channel getChannel() {
++            throw new UnsupportedOperationException("PingConnection has no Channel");
++        }
++        // MikroCord end
+     }
+ 
  }
 -- 
 2.21.0

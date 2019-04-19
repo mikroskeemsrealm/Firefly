@@ -1,16 +1,16 @@
-From 3e73bd6980658b4bfa1c02e7494fbb0ccd748c25 Mon Sep 17 00:00:00 2001
+From 392679320abb26661b2533d42ae241db4270e387 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sat, 13 Apr 2019 22:08:57 +0300
 Subject: [PATCH] Use ASM to invoke event handlers
 
 
 diff --git a/event/pom.xml b/event/pom.xml
-index 268656679..4c9488e57 100644
+index f0c172e48..c02e5657f 100644
 --- a/event/pom.xml
 +++ b/event/pom.xml
 @@ -17,4 +17,13 @@
  
-     <name>mikrocord-Event</name>
+     <name>MikroCord-Event</name>
      <description>Generic java event dispatching API intended for use with MikroCord.</description>
 +    <!-- MikroCord start - Add ASM -->
 +    <dependencies>
