@@ -1,11 +1,11 @@
-From 3ffe1e19178e08c6664bea7668a39295ead66e0d Mon Sep 17 00:00:00 2001
+From cf58f94d599d6ddc45a5730c3134a556c0983003 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Tue, 19 Mar 2019 23:17:23 +0200
 Subject: [PATCH] Add /grestart command
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-index 89f216905..4b899455d 100644
+index 89f21690..4b899455 100644
 --- a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
 +++ b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
 @@ -240,4 +240,14 @@ public interface ProxyConfig
@@ -25,7 +25,7 @@ index 89f216905..4b899455d 100644
  }
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/command/CommandRestart.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/command/CommandRestart.java
 new file mode 100644
-index 000000000..4564245e9
+index 00000000..4564245e
 --- /dev/null
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/command/CommandRestart.java
 @@ -0,0 +1,52 @@
@@ -82,15 +82,25 @@ index 000000000..4564245e9
 +    }
 +}
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index 0b613f678..e6b650822 100644
+index 0b613f67..633e3093 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-@@ -8,10 +8,27 @@ import net.md_5.bungee.api.config.ConfigurationAdapter;
+@@ -1,6 +1,7 @@
+ package eu.mikroskeem.mikrocord.conf;
+ 
+ import io.github.waterfallmc.waterfall.conf.WaterfallConfiguration;
++import lombok.Getter;
+ import net.md_5.bungee.api.ProxyServer;
+ import net.md_5.bungee.api.config.ConfigurationAdapter;
+ 
+@@ -8,10 +9,19 @@ import net.md_5.bungee.api.config.ConfigurationAdapter;
   * @author Mark Vainomaa
   */
  public class MikroCordConfiguration extends WaterfallConfiguration {
++    @Getter
 +    private String restartMessage = "Proxy is restarting";
 +
++    @Getter
 +    private String restartScriptPath = "./restart.sh";
 +
      @Override
@@ -101,20 +111,10 @@ index 0b613f678..e6b650822 100644
 +
 +        restartMessage = config.getString("restart.message", restartMessage);
 +        restartScriptPath = config.getString("restart.script_path", restartScriptPath);
-+    }
-+
-+    @Override
-+    public String getRestartMessage() {
-+        return restartMessage;
-+    }
-+
-+    @Override
-+    public String getRestartScriptPath() {
-+        return restartScriptPath;
      }
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 826215991..a286f35d4 100644
+index b8e4a827..2065371e 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -270,6 +270,9 @@ public class BungeeCord extends ProxyServer
@@ -128,7 +128,7 @@ index 826215991..a286f35d4 100644
          if ( !Boolean.getBoolean( "net.md_5.bungee.native.disable" ) )
          {
 diff --git a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
-index 44011a965..2401f95e6 100644
+index e0a37fe3..660397a3 100644
 --- a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
 +++ b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
 @@ -103,7 +103,7 @@ public class YamlConfig implements ConfigurationAdapter
