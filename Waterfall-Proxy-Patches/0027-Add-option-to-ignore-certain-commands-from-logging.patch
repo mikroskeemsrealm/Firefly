@@ -1,0 +1,69 @@
+From 3291e7016eaac78f29cbd48009ff491f9d8a1245 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Fri, 19 Apr 2019 18:31:13 +0300
+Subject: [PATCH] Add option to ignore certain commands from logging
+
+
+diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
+index 7651fbbf..65573b91 100644
+--- a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
++++ b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
+@@ -252,4 +252,10 @@ public interface ProxyConfig
+      */
+     String getRestartScriptPath();
+     // MikroCord end
++    // MikroCord start - Add option to exclude certain commands from logging
++    /**
++     * @return Commands excluded from logging
++     */
++    java.util.Set<String> getIgnoredLogCommands();
++    // MikroCord end
+ }
+diff --git a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
+index 4e1989e9..9bede570 100644
+--- a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
++++ b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
+@@ -199,6 +199,7 @@ public class PluginManager
+             {
+                 if ( proxy.getConfig().isLogCommands() )
+                 {
++                    if(!proxy.getConfig().getIgnoredLogCommands().contains(split[0])) // MikroCord - Add option to exclude certain commands from logging
+                     proxy.getLogger().log( Level.INFO, "{0} executed command: /{1}", new Object[]
+                     {
+                         sender.getName(), commandLine
+diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
+index 633e3093..2a9b2840 100644
+--- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
++++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
+@@ -5,6 +5,11 @@ import lombok.Getter;
+ import net.md_5.bungee.api.ProxyServer;
+ import net.md_5.bungee.api.config.ConfigurationAdapter;
+ 
++import java.util.Arrays;
++import java.util.HashSet;
++import java.util.List;
++import java.util.Set;
++
+ /**
+  * @author Mark Vainomaa
+  */
+@@ -15,6 +20,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+     @Getter
+     private String restartScriptPath = "./restart.sh";
+ 
++    @Getter
++    private Set<String> ignoredLogCommands;
++
+     @Override
+     public void load() {
+         super.load();
+@@ -23,5 +31,6 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+ 
+         restartMessage = config.getString("restart.message", restartMessage);
+         restartScriptPath = config.getString("restart.script_path", restartScriptPath);
++        ignoredLogCommands = new HashSet<>((List<String>) config.getList("log.ignored_commands", Arrays.asList("login", "register", "changepassword")));
+     }
+ }
+-- 
+2.21.0
+
