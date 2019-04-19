@@ -1,18 +1,19 @@
-From cf58f94d599d6ddc45a5730c3134a556c0983003 Mon Sep 17 00:00:00 2001
+From 0c8e8fea1bc9b4ba356070438d84b9d6a2ab2f27 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Tue, 19 Mar 2019 23:17:23 +0200
 Subject: [PATCH] Add /grestart command
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-index 89f21690..4b899455 100644
+index 89f21690..7651fbbf 100644
 --- a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
 +++ b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-@@ -240,4 +240,14 @@ public interface ProxyConfig
+@@ -240,4 +240,16 @@ public interface ProxyConfig
       * @return Should we disable entity metadata rewriting?
       */
      boolean isDisableEntityMetadataRewrite();
 +
++    // MikroCord start - add /grestart command
 +    /**
 +     * @return Player disconnect message on restart attempt
 +     */
@@ -22,6 +23,7 @@ index 89f21690..4b899455 100644
 +     * @return Script to be run on restart attempt
 +     */
 +    String getRestartScriptPath();
++    // MikroCord end
  }
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/command/CommandRestart.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/command/CommandRestart.java
 new file mode 100644
