@@ -1,4 +1,4 @@
-From f240688458d551e171af65dac3e6a0afdf1dad75 Mon Sep 17 00:00:00 2001
+From 3e738f9da80622d7047f8328aa95740efcc4c3fd Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 10 Mar 2019 17:29:41 +0200
 Subject: [PATCH] POM Changes and rebranding
@@ -503,7 +503,7 @@ index f8a34db0..c731096f 100644
      <dependencies>
          <dependency>
 diff --git a/pom.xml b/pom.xml
-index 0005b250..4fba9e1b 100644
+index 9055d8bf..b1a8ce12 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -4,25 +4,27 @@
@@ -554,12 +554,12 @@ index 0005b250..4fba9e1b 100644
      </scm>
      <issueManagement>
          <system>GitHub</system>
--        <url>https://github.com/PaperMC/Waterfall/issues</url>
+-        <url>https://github.com/yesdog/Waterdog/issues</url>
 +        <url>https://github.com/PaperMC/MikroCord/issues</url>
      </issueManagement>
      <ciManagement>
          <system>jenkins</system>
--        <url>https://papermc.io/ci/job/Waterfall/</url>
+-        <url>https://ci.codemc.org/job/yesdog/job/Waterdog/</url>
 +        <url>https://papermc.io/ci/job/MikroCord/</url>
      </ciManagement>
  
@@ -702,14 +702,14 @@ index f5c028dd..6896525b 100644
                  + " This is NOT advisable and you will not be supported with any issues that arise! Please restart Waterfall ASAP." );
      }
 diff --git a/proxy/src/main/java/net/md_5/bungee/module/JenkinsModuleSource.java b/proxy/src/main/java/net/md_5/bungee/module/JenkinsModuleSource.java
-index 9b20d0df..fd9d0634 100644
+index 94711ac8..fd9d0634 100644
 --- a/proxy/src/main/java/net/md_5/bungee/module/JenkinsModuleSource.java
 +++ b/proxy/src/main/java/net/md_5/bungee/module/JenkinsModuleSource.java
 @@ -18,7 +18,7 @@ public class JenkinsModuleSource implements ModuleSource
          System.out.println( "Attempting to Jenkins download module " + module.getName() + " v" + version.getBuild() );
          try
          {
--            URL website = new URL( "https://papermc.io/ci/job/Waterfall/" + version.getBuild() + "/artifact/Waterfall-Proxy/module/" + module.getName().replace( '_', '-' ) + "/target/" + module.getName() + ".jar" );
+-            URL website = new URL( "https://ci.codemc.org/job/yesdog/job/Waterdog/" + version.getBuild() + "/artifact/Waterfall-Proxy/module/" + module.getName().replace( '_', '-' ) + "/target/" + module.getName() + ".jar" );
 +            URL website = new URL( "https://papermc.io/ci/job/MikroCord/" + version.getBuild() + "/artifact/mikrocord-Proxy/module/" + module.getName().replace( '_', '-' ) + "/target/" + module.getName() + ".jar" );
              URLConnection con = website.openConnection();
              // 15 second timeout at various stages

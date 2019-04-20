@@ -1,11 +1,11 @@
-From a714cce94726b23a284ff0555d0d00ed18c38894 Mon Sep 17 00:00:00 2001
+From b29fe872ee374a85e7fbfac585485dc2f3124e4b Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Wed, 20 Mar 2019 07:48:35 +0200
 Subject: [PATCH] Get rid of startup delay
 
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java b/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
-index 624eb5f0..e56d2831 100644
+index 173f2b68..cb383ef7 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
 @@ -48,11 +48,14 @@ public class BungeeCordLauncher
@@ -14,7 +14,7 @@ index 624eb5f0..e56d2831 100644
              {
 +                /* MikroCord start - remove this dumb delay
                  System.err.println( "*** Hey! This build is potentially outdated :( ***" );
-                 System.err.println( "*** Please check for a new build from https://papermc.io/ci/job/Waterfall/ ***" );
+                 System.err.println( "*** Please check for a new build from https://ci.codemc.org/job/yesdog/job/Waterdog/ ***" );
                  System.err.println( "*** Should this build be outdated, you will get NO support for it. ***" );
                  System.err.println( "*** Server will start in 10 seconds ***" );
                  Thread.sleep( TimeUnit.SECONDS.toMillis( 10 ) );
