@@ -1,14 +1,14 @@
-From 2e11ac6c483ff915d8427920cef7b5c7113fe264 Mon Sep 17 00:00:00 2001
+From ab9c12c894cfdc84c9b74f354c958f0dbd6f061b Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Wed, 17 Apr 2019 17:51:11 +0300
 Subject: [PATCH] Replace spaces in MCPE usernames with underscores
 
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-index 46bf1978..28e6a560 100644
+index b846a435..d52f5ac5 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-@@ -345,6 +345,14 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+@@ -344,6 +344,14 @@ public class InitialHandler extends PacketHandler implements PendingConnection
  
                      uniqueId = peHandshake.getUuid();
                      //TODO: loginProfile
@@ -24,5 +24,5 @@ index 46bf1978..28e6a560 100644
  
                      if (isOnlineMode() && !peHandshake.isAuthorized()) {
 -- 
-2.21.0
+2.20.1 (Apple Git-117)
 

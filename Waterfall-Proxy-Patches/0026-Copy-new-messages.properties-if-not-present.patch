@@ -1,14 +1,14 @@
-From 4ecd7b4c6c2c8e429806815f95e454d22624a947 Mon Sep 17 00:00:00 2001
+From 817bdf2de4f83726e2e0e869ad74b7feaf4e7ba0 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Fri, 19 Apr 2019 17:44:34 +0300
 Subject: [PATCH] Copy new messages.properties if not present
 
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 66f0f133..ed0543c1 100644
+index 5983d5aa..a060b847 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -598,6 +598,15 @@ public class BungeeCord extends ProxyServer
+@@ -597,6 +597,15 @@ public class BungeeCord extends ProxyServer
                  getLogger().log( Level.SEVERE, "Could not load custom messages.properties", ex );
              }
          }
@@ -25,5 +25,5 @@ index 66f0f133..ed0543c1 100644
  
      @Override
 -- 
-2.21.0
+2.20.1 (Apple Git-117)
 

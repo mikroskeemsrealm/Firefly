@@ -1,11 +1,11 @@
-From 7f2779575b1fcc9df72954272bbbb148ea86ae1e Mon Sep 17 00:00:00 2001
+From ce8ce4ea26f8392f7e0ac6c42fffa4973d9e949b Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sat, 13 Apr 2019 22:52:38 +0300
 Subject: [PATCH] Drop modules support
 
 
 diff --git a/pom.xml b/pom.xml
-index 5e8f2b521..026204b7e 100644
+index 2a7cde09..c2171aa6 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -63,7 +63,9 @@
@@ -19,7 +19,7 @@ index 5e8f2b521..026204b7e 100644
          <module>proxy</module>
          <module>query</module>
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index ba7e1ca67..06e7701b9 100644
+index 44e82540..88574661 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -164,7 +164,7 @@ public class BungeeCord extends ProxyServer
@@ -29,9 +29,9 @@ index ba7e1ca67..06e7701b9 100644
 -    private final ModuleManager moduleManager = new ModuleManager();
 +    //private final ModuleManager moduleManager = new ModuleManager(); // MikroCord - drop modules support
  
-     
      {
-@@ -260,9 +260,11 @@ public class BungeeCord extends ProxyServer
+         // TODO: Proper fallback when we interface the manager
+@@ -259,9 +259,11 @@ public class BungeeCord extends ProxyServer
          bossEventLoopGroup = PipelineUtils.newEventLoopGroup( 0, new ThreadFactoryBuilder().setNameFormat( "Netty Boss IO Thread #%1$d" ).build() );
          workerEventLoopGroup = PipelineUtils.newEventLoopGroup( 0, new ThreadFactoryBuilder().setNameFormat( "Netty Worker IO Thread #%1$d" ).build() );
  
@@ -44,5 +44,5 @@ index ba7e1ca67..06e7701b9 100644
          pluginsFolder.mkdir();
          pluginManager.detectPlugins( pluginsFolder );
 -- 
-2.21.0
+2.20.1 (Apple Git-117)
 

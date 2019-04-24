@@ -1,11 +1,11 @@
-From e277a1605c2873c541cf7acfd1b17392f358caea Mon Sep 17 00:00:00 2001
+From 03b1f9e1d4b9fef8c7660530f766a8a9b1c0279f Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Tue, 16 Apr 2019 21:51:47 +0300
 Subject: [PATCH] Get rid of Prometheus support
 
 
 diff --git a/proxy/pom.xml b/proxy/pom.xml
-index e0de709a3..01c785f90 100644
+index 3123727e..1986d6db 100644
 --- a/proxy/pom.xml
 +++ b/proxy/pom.xml
 @@ -145,6 +145,7 @@
@@ -25,10 +25,10 @@ index e0de709a3..01c785f90 100644
      </dependencies>
  
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 2ddfb9a93..66f0f1331 100644
+index 5047d617..5983d5aa 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -407,7 +407,9 @@ public class BungeeCord extends ProxyServer
+@@ -406,7 +406,9 @@ public class BungeeCord extends ProxyServer
                      //.option(UnixChannelOption.SO_REUSEPORT, true)
                      .childAttr(PipelineUtils.LISTENER, info)
                      .option(network.ycc.raknet.RakNet.SERVER_ID, UUID.randomUUID().getMostSignificantBits())
@@ -39,7 +39,7 @@ index 2ddfb9a93..66f0f1331 100644
                      .handler(new network.ycc.waterdog.pe.PEPipelineUtils.ServerChannel(this, info))
                      .childHandler(network.ycc.waterdog.pe.PEPipelineUtils.SERVER_CHILD)
 diff --git a/proxy/src/main/java/network/ycc/waterdog/pe/PECompressor.java b/proxy/src/main/java/network/ycc/waterdog/pe/PECompressor.java
-index 0ae0109ac..c651bf9cf 100644
+index 0ae0109a..c651bf9c 100644
 --- a/proxy/src/main/java/network/ycc/waterdog/pe/PECompressor.java
 +++ b/proxy/src/main/java/network/ycc/waterdog/pe/PECompressor.java
 @@ -54,7 +54,9 @@ public class PECompressor extends ChannelOutboundHandlerAdapter {
@@ -67,7 +67,7 @@ index 0ae0109ac..c651bf9cf 100644
          ctx.write(out).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
      }
 diff --git a/proxy/src/main/java/network/ycc/waterdog/pe/PERakNetMetrics.java b/proxy/src/main/java/network/ycc/waterdog/pe/PERakNetMetrics.java
-index b2658d4c8..1083fcf49 100644
+index b2658d4c..1083fcf4 100644
 --- a/proxy/src/main/java/network/ycc/waterdog/pe/PERakNetMetrics.java
 +++ b/proxy/src/main/java/network/ycc/waterdog/pe/PERakNetMetrics.java
 @@ -1,11 +1,13 @@
@@ -99,5 +99,5 @@ index b2658d4c8..1083fcf49 100644
 +    */ // MikroCord end
  }
 -- 
-2.21.0
+2.20.1 (Apple Git-117)
 

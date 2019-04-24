@@ -1,11 +1,11 @@
-From 3e738f9da80622d7047f8328aa95740efcc4c3fd Mon Sep 17 00:00:00 2001
+From e59765d712c9364492091e237c55d6cfeb0fca93 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 10 Mar 2019 17:29:41 +0200
 Subject: [PATCH] POM Changes and rebranding
 
 
 diff --git a/api/pom.xml b/api/pom.xml
-index 4d5a0fc3..642e0e9a 100644
+index 47642e1b..1a3b8beb 100644
 --- a/api/pom.xml
 +++ b/api/pom.xml
 @@ -4,42 +4,42 @@
@@ -16,7 +16,7 @@ index 4d5a0fc3..642e0e9a 100644
 -        <artifactId>waterdog-parent</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-parent</artifactId>
-         <version>1.13-SNAPSHOT</version>
+         <version>1.14-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
@@ -24,7 +24,7 @@ index 4d5a0fc3..642e0e9a 100644
 -    <artifactId>waterdog-api</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-api</artifactId>
-     <version>1.13-SNAPSHOT</version>
+     <version>1.14-SNAPSHOT</version>
      <packaging>jar</packaging>
  
 -    <name>Waterdog-API</name>
@@ -65,7 +65,7 @@ index 4d5a0fc3..642e0e9a 100644
              <scope>compile</scope>
          </dependency>
 diff --git a/bootstrap/pom.xml b/bootstrap/pom.xml
-index 9d0e675e..f442a92f 100644
+index 64488fb9..3d86c613 100644
 --- a/bootstrap/pom.xml
 +++ b/bootstrap/pom.xml
 @@ -4,19 +4,19 @@
@@ -76,7 +76,7 @@ index 9d0e675e..f442a92f 100644
 -        <artifactId>waterdog-parent</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-parent</artifactId>
-         <version>1.13-SNAPSHOT</version>
+         <version>1.14-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
@@ -84,7 +84,7 @@ index 9d0e675e..f442a92f 100644
 -    <artifactId>waterdog-bootstrap</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-bootstrap</artifactId>
-     <version>1.13-SNAPSHOT</version>
+     <version>1.14-SNAPSHOT</version>
      <packaging>jar</packaging>
  
 -    <name>Waterdog-Bootstrap</name>
@@ -114,7 +114,7 @@ index 9d0e675e..f442a92f 100644
              <plugin>
                  <groupId>org.apache.maven.plugins</groupId>
 diff --git a/chat/pom.xml b/chat/pom.xml
-index c3d721d2..560f4526 100644
+index 2e5814f2..72c4cc36 100644
 --- a/chat/pom.xml
 +++ b/chat/pom.xml
 @@ -4,19 +4,19 @@
@@ -125,7 +125,7 @@ index c3d721d2..560f4526 100644
 -        <artifactId>waterdog-parent</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-parent</artifactId>
-         <version>1.13-SNAPSHOT</version>
+         <version>1.14-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
@@ -133,7 +133,7 @@ index c3d721d2..560f4526 100644
 -    <artifactId>waterdog-chat</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-chat</artifactId>
-     <version>1.13-SNAPSHOT</version>
+     <version>1.14-SNAPSHOT</version>
      <packaging>jar</packaging>
  
 -    <name>Waterdog-Chat</name>
@@ -144,10 +144,10 @@ index c3d721d2..560f4526 100644
      <dependencies>
          <dependency>
 diff --git a/config/pom.xml b/config/pom.xml
-index 140b3f6d..9549ac71 100644
+index 066821f0..45a6796a 100644
 --- a/config/pom.xml
 +++ b/config/pom.xml
-@@ -4,8 +4,8 @@
+@@ -4,19 +4,19 @@
      <modelVersion>4.0.0</modelVersion>
  
      <parent>
@@ -155,11 +155,15 @@ index 140b3f6d..9549ac71 100644
 -        <artifactId>waterdog-parent</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-parent</artifactId>
-         <version>1.13-SNAPSHOT</version>
+         <version>1.14-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
-@@ -15,8 +15,8 @@
-     <version>1.13-SNAPSHOT</version>
+ 
+-    <groupId>network.ycc.waterdog</groupId>
+-    <artifactId>waterdog-config</artifactId>
++    <groupId>eu.mikroskeem.mikrocord</groupId>
++    <artifactId>mikrocord-config</artifactId>
+     <version>1.14-SNAPSHOT</version>
      <packaging>jar</packaging>
  
 -    <name>Waterdog-Config</name>
@@ -170,7 +174,7 @@ index 140b3f6d..9549ac71 100644
      <dependencies>
          <dependency>
 diff --git a/event/pom.xml b/event/pom.xml
-index 017dd6f1..f0c172e4 100644
+index c5c31876..7af258a5 100644
 --- a/event/pom.xml
 +++ b/event/pom.xml
 @@ -4,17 +4,17 @@
@@ -181,7 +185,7 @@ index 017dd6f1..f0c172e4 100644
 -        <artifactId>waterdog-parent</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-parent</artifactId>
-         <version>1.13-SNAPSHOT</version>
+         <version>1.14-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
@@ -189,7 +193,7 @@ index 017dd6f1..f0c172e4 100644
 -    <artifactId>waterdog-event</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-event</artifactId>
-     <version>1.13-SNAPSHOT</version>
+     <version>1.14-SNAPSHOT</version>
      <packaging>jar</packaging>
  
 -    <name>Waterdog-Event</name>
@@ -198,7 +202,7 @@ index 017dd6f1..f0c172e4 100644
 +    <description>Generic java event dispatching API intended for use with MikroCord.</description>
  </project>
 diff --git a/log/pom.xml b/log/pom.xml
-index f480e6ec..95eeed2b 100644
+index 58f67a6c..b8d1ca24 100644
 --- a/log/pom.xml
 +++ b/log/pom.xml
 @@ -4,19 +4,19 @@
@@ -209,7 +213,7 @@ index f480e6ec..95eeed2b 100644
 -        <artifactId>waterdog-parent</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-parent</artifactId>
-         <version>1.13-SNAPSHOT</version>
+         <version>1.14-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
@@ -217,7 +221,7 @@ index f480e6ec..95eeed2b 100644
 -    <artifactId>waterdog-log</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-log</artifactId>
-     <version>1.13-SNAPSHOT</version>
+     <version>1.14-SNAPSHOT</version>
      <packaging>jar</packaging>
  
 -    <name>Waterdog-Log</name>
@@ -239,7 +243,7 @@ index f480e6ec..95eeed2b 100644
              <scope>compile</scope>
          </dependency>
 diff --git a/log4j/pom.xml b/log4j/pom.xml
-index 1ac17d68..4c070ba3 100644
+index 11a26a1c..fcee10bb 100644
 --- a/log4j/pom.xml
 +++ b/log4j/pom.xml
 @@ -3,19 +3,19 @@
@@ -250,7 +254,7 @@ index 1ac17d68..4c070ba3 100644
 -        <artifactId>waterdog-parent</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-parent</artifactId>
-         <version>1.13-SNAPSHOT</version>
+         <version>1.14-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
@@ -258,7 +262,7 @@ index 1ac17d68..4c070ba3 100644
 -    <artifactId>waterdog-log4j</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-log4j</artifactId>
-     <version>1.13-SNAPSHOT</version>
+     <version>1.14-SNAPSHOT</version>
      <packaging>jar</packaging>
  
 -    <name>Waterdog-Log</name>
@@ -294,7 +298,7 @@ index 1ac17d68..4c070ba3 100644
      </dependencies>
  </project>
 diff --git a/module/cmd-alert/pom.xml b/module/cmd-alert/pom.xml
-index 7490e613..a3106a6b 100644
+index bdd0275e..167dec15 100644
 --- a/module/cmd-alert/pom.xml
 +++ b/module/cmd-alert/pom.xml
 @@ -4,14 +4,14 @@
@@ -305,7 +309,7 @@ index 7490e613..a3106a6b 100644
 -        <artifactId>waterdog-module</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-module</artifactId>
-         <version>1.13-SNAPSHOT</version>
+         <version>1.14-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
@@ -313,11 +317,11 @@ index 7490e613..a3106a6b 100644
 -    <artifactId>waterdog-module-cmd-alert</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-module-cmd-alert</artifactId>
-     <version>1.13-SNAPSHOT</version>
+     <version>1.14-SNAPSHOT</version>
      <packaging>jar</packaging>
  
 diff --git a/module/cmd-find/pom.xml b/module/cmd-find/pom.xml
-index b2163d69..2bc98594 100644
+index 9d869f2b..8db8c775 100644
 --- a/module/cmd-find/pom.xml
 +++ b/module/cmd-find/pom.xml
 @@ -4,14 +4,14 @@
@@ -328,7 +332,7 @@ index b2163d69..2bc98594 100644
 -        <artifactId>waterdog-module</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-module</artifactId>
-         <version>1.13-SNAPSHOT</version>
+         <version>1.14-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
@@ -336,11 +340,11 @@ index b2163d69..2bc98594 100644
 -    <artifactId>waterdog-module-cmd-find</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-module-cmd-find</artifactId>
-     <version>1.13-SNAPSHOT</version>
+     <version>1.14-SNAPSHOT</version>
      <packaging>jar</packaging>
  
 diff --git a/module/cmd-list/pom.xml b/module/cmd-list/pom.xml
-index 93eb7357..282f74e0 100644
+index a818a8cd..0cf352af 100644
 --- a/module/cmd-list/pom.xml
 +++ b/module/cmd-list/pom.xml
 @@ -4,14 +4,14 @@
@@ -351,7 +355,7 @@ index 93eb7357..282f74e0 100644
 -        <artifactId>waterdog-module</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-module</artifactId>
-         <version>1.13-SNAPSHOT</version>
+         <version>1.14-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
@@ -359,11 +363,11 @@ index 93eb7357..282f74e0 100644
 -    <artifactId>waterdog-module-cmd-list</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-module-cmd-list</artifactId>
-     <version>1.13-SNAPSHOT</version>
+     <version>1.14-SNAPSHOT</version>
      <packaging>jar</packaging>
  
 diff --git a/module/cmd-send/pom.xml b/module/cmd-send/pom.xml
-index 701e018c..33fdb358 100644
+index 3de9ca8c..b96dd762 100644
 --- a/module/cmd-send/pom.xml
 +++ b/module/cmd-send/pom.xml
 @@ -4,14 +4,14 @@
@@ -374,7 +378,7 @@ index 701e018c..33fdb358 100644
 -        <artifactId>waterdog-module</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-module</artifactId>
-         <version>1.13-SNAPSHOT</version>
+         <version>1.14-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
@@ -382,11 +386,11 @@ index 701e018c..33fdb358 100644
 -    <artifactId>waterdog-module-cmd-send</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-module-cmd-send</artifactId>
-     <version>1.13-SNAPSHOT</version>
+     <version>1.14-SNAPSHOT</version>
      <packaging>jar</packaging>
  
 diff --git a/module/cmd-server/pom.xml b/module/cmd-server/pom.xml
-index 69732072..1c18f236 100644
+index f422d0ba..eaf9d137 100644
 --- a/module/cmd-server/pom.xml
 +++ b/module/cmd-server/pom.xml
 @@ -4,14 +4,14 @@
@@ -397,7 +401,7 @@ index 69732072..1c18f236 100644
 -        <artifactId>waterdog-module</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-module</artifactId>
-         <version>1.13-SNAPSHOT</version>
+         <version>1.14-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
@@ -405,11 +409,11 @@ index 69732072..1c18f236 100644
 -    <artifactId>waterdog-module-cmd-server</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-module-cmd-server</artifactId>
-     <version>1.13-SNAPSHOT</version>
+     <version>1.14-SNAPSHOT</version>
      <packaging>jar</packaging>
  
 diff --git a/module/pom.xml b/module/pom.xml
-index 64299364..523fc38b 100644
+index f27ab45f..6536e443 100644
 --- a/module/pom.xml
 +++ b/module/pom.xml
 @@ -4,19 +4,19 @@
@@ -420,7 +424,7 @@ index 64299364..523fc38b 100644
 -        <artifactId>waterdog-parent</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-parent</artifactId>
-         <version>1.13-SNAPSHOT</version>
+         <version>1.14-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
@@ -428,7 +432,7 @@ index 64299364..523fc38b 100644
 -    <artifactId>waterdog-module</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-module</artifactId>
-     <version>1.13-SNAPSHOT</version>
+     <version>1.14-SNAPSHOT</version>
      <packaging>pom</packaging>
  
 -    <name>Waterdog Modules</name>
@@ -450,7 +454,7 @@ index 64299364..523fc38b 100644
              <scope>compile</scope>
          </dependency>
 diff --git a/module/reconnect-yaml/pom.xml b/module/reconnect-yaml/pom.xml
-index 75d2c350..f9bfb0f8 100644
+index ef50f84d..b16d46b3 100644
 --- a/module/reconnect-yaml/pom.xml
 +++ b/module/reconnect-yaml/pom.xml
 @@ -4,14 +4,14 @@
@@ -461,7 +465,7 @@ index 75d2c350..f9bfb0f8 100644
 -        <artifactId>waterdog-module</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-module</artifactId>
-         <version>1.13-SNAPSHOT</version>
+         <version>1.14-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
@@ -469,11 +473,11 @@ index 75d2c350..f9bfb0f8 100644
 -    <artifactId>waterdog-module-reconnect-yaml</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-module-reconnect-yaml</artifactId>
-     <version>1.13-SNAPSHOT</version>
+     <version>1.14-SNAPSHOT</version>
      <packaging>jar</packaging>
  
 diff --git a/native/pom.xml b/native/pom.xml
-index f8a34db0..c731096f 100644
+index fc2b6b73..34d97d1b 100644
 --- a/native/pom.xml
 +++ b/native/pom.xml
 @@ -4,19 +4,19 @@
@@ -484,7 +488,7 @@ index f8a34db0..c731096f 100644
 -        <artifactId>waterdog-parent</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-parent</artifactId>
-         <version>1.13-SNAPSHOT</version>
+         <version>1.14-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
@@ -492,7 +496,7 @@ index f8a34db0..c731096f 100644
 -    <artifactId>waterdog-native</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-native</artifactId>
-     <version>1.13-SNAPSHOT</version>
+     <version>1.14-SNAPSHOT</version>
      <packaging>jar</packaging>
  
 -    <name>Waterdog-Native</name>
@@ -503,7 +507,7 @@ index f8a34db0..c731096f 100644
      <dependencies>
          <dependency>
 diff --git a/pom.xml b/pom.xml
-index 9055d8bf..b1a8ce12 100644
+index 0295c1dd..26343861 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -4,25 +4,27 @@
@@ -522,7 +526,7 @@ index 9055d8bf..b1a8ce12 100644
 -    <artifactId>waterdog-parent</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-parent</artifactId>
-     <version>1.13-SNAPSHOT</version>
+     <version>1.14-SNAPSHOT</version>
      <packaging>pom</packaging>
  
 -    <name>Waterdog-Parent</name>
@@ -530,7 +534,7 @@ index 9055d8bf..b1a8ce12 100644
 -    <url>https://github.com/WaterfallMC/Waterfall</url>
 +    <name>MikroCord-Parent</name>
 +    <description>Parent project for all MikroCord modules.</description>
-+    <url>https://github.com/PaperMC/MikroCord</url>
++    <url>https://github.com/mikroskeem/MikroCord</url>
      <inceptionYear>2015</inceptionYear>
 +    <!-- MikroCord start - no organization
      <organization>
@@ -548,14 +552,14 @@ index 9055d8bf..b1a8ce12 100644
 -        <connection>scm:git:git@github.com:com:WaterfallMC/Waterfall.git</connection>
 -        <developerConnection>scm:git:git@github.com:WaterfallMC/Waterfall.git</developerConnection>
 -        <url>git@github.com:WaterfallMC/Waterfall.git</url>
-+        <connection>scm:git:git@github.com:com:PaperMC/MikroCord.git</connection>
-+        <developerConnection>scm:git:git@github.com:PaperMC/MikroCord.git</developerConnection>
-+        <url>git@github.com:PaperMC/MikroCord.git</url>
++        <connection>scm:git:git@github.com:com:mikroskeem/MikroCord.git</connection>
++        <developerConnection>scm:git:git@github.com:mikroskeem/MikroCord.git</developerConnection>
++        <url>git@github.com:mikroskeem/MikroCord.git</url>
      </scm>
      <issueManagement>
          <system>GitHub</system>
 -        <url>https://github.com/yesdog/Waterdog/issues</url>
-+        <url>https://github.com/PaperMC/MikroCord/issues</url>
++        <url>https://github.com/mikroskeem/MikroCord/issues</url>
      </issueManagement>
      <ciManagement>
          <system>jenkins</system>
@@ -565,7 +569,7 @@ index 9055d8bf..b1a8ce12 100644
  
      <distributionManagement>
 diff --git a/protocol/pom.xml b/protocol/pom.xml
-index cacf177b..dc9dc98d 100644
+index 2ed54c98..53e2b45e 100644
 --- a/protocol/pom.xml
 +++ b/protocol/pom.xml
 @@ -4,19 +4,19 @@
@@ -576,7 +580,7 @@ index cacf177b..dc9dc98d 100644
 -        <artifactId>waterdog-parent</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-parent</artifactId>
-         <version>1.13-SNAPSHOT</version>
+         <version>1.14-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
@@ -584,7 +588,7 @@ index cacf177b..dc9dc98d 100644
 -    <artifactId>waterdog-protocol</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-protocol</artifactId>
-     <version>1.13-SNAPSHOT</version>
+     <version>1.14-SNAPSHOT</version>
      <packaging>jar</packaging>
  
 -    <name>Waterdog-Protocol</name>
@@ -606,7 +610,7 @@ index cacf177b..dc9dc98d 100644
              <scope>compile</scope>
          </dependency>
 diff --git a/proxy/pom.xml b/proxy/pom.xml
-index 651f77e4..02caa984 100644
+index 2ef6e9ae..4a9c0496 100644
 --- a/proxy/pom.xml
 +++ b/proxy/pom.xml
 @@ -4,18 +4,18 @@
@@ -617,7 +621,7 @@ index 651f77e4..02caa984 100644
 -        <artifactId>waterdog-parent</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-parent</artifactId>
-         <version>1.13-SNAPSHOT</version>
+         <version>1.14-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
@@ -625,7 +629,7 @@ index 651f77e4..02caa984 100644
 -    <artifactId>waterdog-proxy</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-proxy</artifactId>
-     <version>1.13-SNAPSHOT</version>
+     <version>1.14-SNAPSHOT</version>
      <packaging>jar</packaging>
  
 -    <name>Waterdog-Proxy</name>
@@ -677,10 +681,10 @@ index 651f77e4..02caa984 100644
              <scope>compile</scope>
          </dependency>
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 03cee58a..ba7e1ca6 100644
+index 5b31c21b..44e82540 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -513,7 +513,7 @@ public class BungeeCord extends ProxyServer
+@@ -512,7 +512,7 @@ public class BungeeCord extends ProxyServer
      @Override
      public String getName()
      {
@@ -690,7 +694,7 @@ index 03cee58a..ba7e1ca6 100644
  
      @Override
 diff --git a/proxy/src/main/java/net/md_5/bungee/command/CommandReload.java b/proxy/src/main/java/net/md_5/bungee/command/CommandReload.java
-index f5c028dd..6896525b 100644
+index 720d0c3b..0ad37d4e 100644
 --- a/proxy/src/main/java/net/md_5/bungee/command/CommandReload.java
 +++ b/proxy/src/main/java/net/md_5/bungee/command/CommandReload.java
 @@ -23,6 +23,7 @@ public class CommandReload extends Command
@@ -715,7 +719,7 @@ index 94711ac8..fd9d0634 100644
              // 15 second timeout at various stages
              con.setConnectTimeout( 15000 );
 diff --git a/query/pom.xml b/query/pom.xml
-index f2bfeb80..52831e32 100644
+index f9f9e677..61bd8a37 100644
 --- a/query/pom.xml
 +++ b/query/pom.xml
 @@ -4,19 +4,19 @@
@@ -726,7 +730,7 @@ index f2bfeb80..52831e32 100644
 -        <artifactId>waterdog-parent</artifactId>
 +        <groupId>eu.mikroskeem.mikrocord</groupId>
 +        <artifactId>mikrocord-parent</artifactId>
-         <version>1.13-SNAPSHOT</version>
+         <version>1.14-SNAPSHOT</version>
          <relativePath>../pom.xml</relativePath>
      </parent>
  
@@ -734,7 +738,7 @@ index f2bfeb80..52831e32 100644
 -    <artifactId>waterdog-query</artifactId>
 +    <groupId>eu.mikroskeem.mikrocord</groupId>
 +    <artifactId>mikrocord-query</artifactId>
-     <version>1.13-SNAPSHOT</version>
+     <version>1.14-SNAPSHOT</version>
      <packaging>jar</packaging>
  
 -    <name>Waterdog-Query</name>
@@ -756,5 +760,5 @@ index f2bfeb80..52831e32 100644
              <scope>compile</scope>
          </dependency>
 -- 
-2.21.0
+2.20.1 (Apple Git-117)
 

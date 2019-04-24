@@ -1,11 +1,11 @@
-From 392679320abb26661b2533d42ae241db4270e387 Mon Sep 17 00:00:00 2001
+From 2a12a494c389e577979f8995a26433230f138e76 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sat, 13 Apr 2019 22:08:57 +0300
 Subject: [PATCH] Use ASM to invoke event handlers
 
 
 diff --git a/event/pom.xml b/event/pom.xml
-index f0c172e48..c02e5657f 100644
+index 7af258a5..95b13732 100644
 --- a/event/pom.xml
 +++ b/event/pom.xml
 @@ -17,4 +17,13 @@
@@ -24,7 +24,7 @@ index f0c172e48..c02e5657f 100644
  </project>
 diff --git a/event/src/main/java/eu/mikroskeem/mikrocord/event/ASMEventExecutor.java b/event/src/main/java/eu/mikroskeem/mikrocord/event/ASMEventExecutor.java
 new file mode 100644
-index 000000000..0386c1f0b
+index 00000000..0386c1f0
 --- /dev/null
 +++ b/event/src/main/java/eu/mikroskeem/mikrocord/event/ASMEventExecutor.java
 @@ -0,0 +1,106 @@
@@ -137,7 +137,7 @@ index 000000000..0386c1f0b
 \ No newline at end of file
 diff --git a/event/src/main/java/eu/mikroskeem/mikrocord/event/EventExecutor.java b/event/src/main/java/eu/mikroskeem/mikrocord/event/EventExecutor.java
 new file mode 100644
-index 000000000..ad7bcbf69
+index 00000000..ad7bcbf6
 --- /dev/null
 +++ b/event/src/main/java/eu/mikroskeem/mikrocord/event/EventExecutor.java
 @@ -0,0 +1,20 @@
@@ -163,7 +163,7 @@ index 000000000..ad7bcbf69
 +}
 diff --git a/event/src/main/java/eu/mikroskeem/mikrocord/event/MethodHandleEventExecutor.java b/event/src/main/java/eu/mikroskeem/mikrocord/event/MethodHandleEventExecutor.java
 new file mode 100644
-index 000000000..72d8fd43b
+index 00000000..72d8fd43
 --- /dev/null
 +++ b/event/src/main/java/eu/mikroskeem/mikrocord/event/MethodHandleEventExecutor.java
 @@ -0,0 +1,44 @@
@@ -212,7 +212,7 @@ index 000000000..72d8fd43b
 +    }
 +}
 diff --git a/event/src/main/java/net/md_5/bungee/event/EventBus.java b/event/src/main/java/net/md_5/bungee/event/EventBus.java
-index 5b5d42010..e8db3b1e0 100644
+index 5b5d4201..e8db3b1e 100644
 --- a/event/src/main/java/net/md_5/bungee/event/EventBus.java
 +++ b/event/src/main/java/net/md_5/bungee/event/EventBus.java
 @@ -50,9 +50,9 @@ public class EventBus
@@ -258,7 +258,7 @@ index 5b5d42010..e8db3b1e0 100644
          {
              byEventBaked.remove( eventClass );
 diff --git a/event/src/main/java/net/md_5/bungee/event/EventHandlerMethod.java b/event/src/main/java/net/md_5/bungee/event/EventHandlerMethod.java
-index ad19c020c..3d98102d2 100644
+index ad19c020..3d98102d 100644
 --- a/event/src/main/java/net/md_5/bungee/event/EventHandlerMethod.java
 +++ b/event/src/main/java/net/md_5/bungee/event/EventHandlerMethod.java
 @@ -13,9 +13,10 @@ public class EventHandlerMethod
@@ -273,6 +273,18 @@ index ad19c020c..3d98102d2 100644
 +        executor.execute( listener, event ); // MikroCord - Use ASM to invoke event handlers
      }
  }
+diff --git a/pom.xml b/pom.xml
+index c2171aa6..a298ed36 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -206,6 +206,7 @@
+                         <artifactId>java18</artifactId>
+                         <version>1.0</version>
+                     </signature>
++                    <ignores>java.lang.invoke.MethodHandle</ignores> <!-- MikroCord - MethodHandles produce false positives -->
+                 </configuration>
+             </plugin>
+         </plugins>
 -- 
-2.21.0
+2.20.1 (Apple Git-117)
 

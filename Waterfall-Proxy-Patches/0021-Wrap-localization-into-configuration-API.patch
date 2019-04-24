@@ -1,11 +1,11 @@
-From 77d2ce481741cdf645031afa0ed1d98191687134 Mon Sep 17 00:00:00 2001
+From f3b59ce3055908a1ffdeaaf4e2bdf92d6be1b770 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 14 Apr 2019 20:47:31 +0300
 Subject: [PATCH] Wrap localization into configuration API
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java b/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
-index 021c5eea1..d742c952e 100644
+index a62d21f6..d3f66c3d 100644
 --- a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
 +++ b/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
 @@ -349,6 +349,11 @@ public abstract class ProxyServer
@@ -22,7 +22,7 @@ index 021c5eea1..d742c952e 100644
           */
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/ResourceBundleConfigurationWrapper.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/ResourceBundleConfigurationWrapper.java
 new file mode 100644
-index 000000000..8e228ae9c
+index 00000000..8e228ae9
 --- /dev/null
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/ResourceBundleConfigurationWrapper.java
 @@ -0,0 +1,61 @@
@@ -88,7 +88,7 @@ index 000000000..8e228ae9c
 +    }
 +}
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 13a6802ff..95b4d3b29 100644
+index ee3d99a3..9bda14e5 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -111,6 +111,7 @@ public class BungeeCord extends ProxyServer
@@ -118,7 +118,7 @@ index 13a6802ff..95b4d3b29 100644
              case WATERFALL:
                  waterfallConfigurationAdapter = adapter;
                  break;
-@@ -238,6 +244,7 @@ public class BungeeCord extends ProxyServer
+@@ -237,6 +243,7 @@ public class BungeeCord extends ProxyServer
          {
              baseBundle = ResourceBundle.getBundle( "messages", Locale.ENGLISH );
          }
@@ -126,7 +126,7 @@ index 13a6802ff..95b4d3b29 100644
          reloadMessages();
  
          // Waterfall start - Use TerminalConsoleAppender and Log4J
-@@ -577,6 +584,7 @@ public class BungeeCord extends ProxyServer
+@@ -576,6 +583,7 @@ public class BungeeCord extends ProxyServer
  
      public void reloadMessages()
      {
@@ -134,7 +134,7 @@ index 13a6802ff..95b4d3b29 100644
          File file = new File( "messages.properties" );
          if ( file.isFile() )
          {
-@@ -592,6 +600,16 @@ public class BungeeCord extends ProxyServer
+@@ -591,6 +599,16 @@ public class BungeeCord extends ProxyServer
  
      @Override
      public String getTranslation(String name, Object... args)
@@ -152,5 +152,5 @@ index 13a6802ff..95b4d3b29 100644
          String translation = "<translation '" + name + "' missing>";
          try
 -- 
-2.21.0
+2.20.1 (Apple Git-117)
 

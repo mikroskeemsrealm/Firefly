@@ -1,11 +1,11 @@
-From f7315330df4de84ca42acc6220ffb15c43eadcb5 Mon Sep 17 00:00:00 2001
+From a7bde167c19dc45498063a26b7280e70eb105333 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 14 Apr 2019 23:25:25 +0300
 Subject: [PATCH] Server specific IP forwarding support
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java b/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
-index d742c952..fc4e0008 100644
+index d3f66c3d..56337855 100644
 --- a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
 +++ b/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
 @@ -243,13 +243,34 @@ public abstract class ProxyServer
@@ -62,10 +62,10 @@ index 30e41bd7..50b9f23c 100644
 +    // MikroCord end
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 1ef1724f..2ddfb9a9 100644
+index ddc5cfdf..5047d617 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -751,11 +751,20 @@ public class BungeeCord extends ProxyServer
+@@ -750,11 +750,20 @@ public class BungeeCord extends ProxyServer
          return getConfig().getGameVersion(); // Waterfall
      }
  
@@ -118,7 +118,7 @@ index d8163ecf..62c89989 100644
  
      @Getter
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-index acd91126..96b5f748 100644
+index ec2c21b1..a105f97a 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 @@ -106,7 +106,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
@@ -150,10 +150,10 @@ index 7b16fa08..835a48cd 100644
          }
  
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-index 7698b871..b8d5f068 100644
+index 1f8a2439..c83d39a8 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-@@ -138,7 +138,7 @@ public class DownstreamBridge extends PacketHandler
+@@ -136,7 +136,7 @@ public class DownstreamBridge extends PacketHandler
      @Override
      public void handle(PacketWrapper packet) throws Exception
      {
@@ -163,10 +163,10 @@ index 7698b871..b8d5f068 100644
      }
  
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java
-index 88f40286..ff5b4cc0 100644
+index 24cb79d3..9225c2ec 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java
-@@ -116,7 +116,7 @@ public class UpstreamBridge extends PacketHandler
+@@ -121,7 +121,7 @@ public class UpstreamBridge extends PacketHandler
      {
          if ( con.getServer() != null )
          {
@@ -176,10 +176,10 @@ index 88f40286..ff5b4cc0 100644
          }
      }
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
-index e9be4950..4fb1abe0 100644
+index 881d1281..d240edf2 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
-@@ -85,24 +85,28 @@ public abstract class EntityMap
+@@ -82,24 +82,28 @@ public abstract class EntityMap
          }
      }
  
@@ -215,10 +215,10 @@ index e9be4950..4fb1abe0 100644
  
      protected static void rewriteInt(ByteBuf packet, int oldId, int newId, int offset)
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_10.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_10.java
-index 1232e833..6dd3f19e 100644
+index 39efaf99..56c5b530 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_10.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_10.java
-@@ -49,9 +49,9 @@ class EntityMap_1_10 extends EntityMap
+@@ -48,9 +48,9 @@ class EntityMap_1_10 extends EntityMap
  
      @Override
      @SuppressFBWarnings("DLS_DEAD_LOCAL_STORE")
@@ -230,7 +230,7 @@ index 1232e833..6dd3f19e 100644
  
          // Special cases
          int readerIndex = packet.readerIndex();
-@@ -156,15 +156,15 @@ class EntityMap_1_10 extends EntityMap
+@@ -155,15 +155,15 @@ class EntityMap_1_10 extends EntityMap
      }
  
      @Override
@@ -250,10 +250,10 @@ index 1232e833..6dd3f19e 100644
              UUID uuid = DefinedPacket.readUUID( packet );
              ProxiedPlayer player;
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_11.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_11.java
-index 7048b01c..b1a7407f 100644
+index 6047fcb5..9eedfe1c 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_11.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_11.java
-@@ -49,9 +49,9 @@ class EntityMap_1_11 extends EntityMap
+@@ -48,9 +48,9 @@ class EntityMap_1_11 extends EntityMap
  
      @Override
      @SuppressFBWarnings("DLS_DEAD_LOCAL_STORE")
@@ -265,7 +265,7 @@ index 7048b01c..b1a7407f 100644
  
          // Special cases
          int readerIndex = packet.readerIndex();
-@@ -157,15 +157,15 @@ class EntityMap_1_11 extends EntityMap
+@@ -156,15 +156,15 @@ class EntityMap_1_11 extends EntityMap
      }
  
      @Override
@@ -285,10 +285,10 @@ index 7048b01c..b1a7407f 100644
              UUID uuid = DefinedPacket.readUUID( packet );
              ProxiedPlayer player;
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_12.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_12.java
-index 2152f94c..8041505a 100644
+index 54221465..763f6e11 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_12.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_12.java
-@@ -49,9 +49,9 @@ class EntityMap_1_12 extends EntityMap
+@@ -48,9 +48,9 @@ class EntityMap_1_12 extends EntityMap
  
      @Override
      @SuppressFBWarnings("DLS_DEAD_LOCAL_STORE")
@@ -300,7 +300,7 @@ index 2152f94c..8041505a 100644
  
          // Special cases
          int readerIndex = packet.readerIndex();
-@@ -157,15 +157,15 @@ class EntityMap_1_12 extends EntityMap
+@@ -156,15 +156,15 @@ class EntityMap_1_12 extends EntityMap
      }
  
      @Override
@@ -320,10 +320,10 @@ index 2152f94c..8041505a 100644
              UUID uuid = DefinedPacket.readUUID( packet );
              ProxiedPlayer player;
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_12_1.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_12_1.java
-index d8901eb7..3f7572f4 100644
+index 75d651c5..18db5a96 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_12_1.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_12_1.java
-@@ -49,9 +49,9 @@ class EntityMap_1_12_1 extends EntityMap
+@@ -48,9 +48,9 @@ class EntityMap_1_12_1 extends EntityMap
  
      @Override
      @SuppressFBWarnings("DLS_DEAD_LOCAL_STORE")
@@ -335,7 +335,7 @@ index d8901eb7..3f7572f4 100644
  
          // Special cases
          int readerIndex = packet.readerIndex();
-@@ -157,15 +157,15 @@ class EntityMap_1_12_1 extends EntityMap
+@@ -156,15 +156,15 @@ class EntityMap_1_12_1 extends EntityMap
      }
  
      @Override
@@ -355,10 +355,10 @@ index d8901eb7..3f7572f4 100644
              UUID uuid = DefinedPacket.readUUID( packet );
              ProxiedPlayer player;
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_13.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_13.java
-index 3d474dbb..09ccc7af 100644
+index d737fe25..7cccab01 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_13.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_13.java
-@@ -49,9 +49,9 @@ class EntityMap_1_13 extends EntityMap
+@@ -48,9 +48,9 @@ class EntityMap_1_13 extends EntityMap
  
      @Override
      @SuppressFBWarnings("DLS_DEAD_LOCAL_STORE")
@@ -370,7 +370,7 @@ index 3d474dbb..09ccc7af 100644
  
          // Special cases
          int readerIndex = packet.readerIndex();
-@@ -157,15 +157,15 @@ class EntityMap_1_13 extends EntityMap
+@@ -156,15 +156,15 @@ class EntityMap_1_13 extends EntityMap
      }
  
      @Override
@@ -389,8 +389,43 @@ index 3d474dbb..09ccc7af 100644
          {
              UUID uuid = DefinedPacket.readUUID( packet );
              ProxiedPlayer player;
+diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_14.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_14.java
+index 7c0ba80b..2968ec98 100644
+--- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_14.java
++++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_14.java
+@@ -47,9 +47,9 @@ class EntityMap_1_14 extends EntityMap
+ 
+     @Override
+     @SuppressFBWarnings("DLS_DEAD_LOCAL_STORE")
+-    public void rewriteClientbound(ByteBuf packet, int oldId, int newId, int protocolVersion)
++    public void rewriteClientbound(ByteBuf packet, int oldId, int newId, int protocolVersion, net.md_5.bungee.api.connection.Server server) // MikroCord - server specific IP forwarding
+     {
+-        super.rewriteClientbound( packet, oldId, newId );
++        super.rewriteClientbound( packet, oldId, newId, server ); // MikroCord - server specific IP forwarding
+ 
+         // Special cases
+         int readerIndex = packet.readerIndex();
+@@ -160,15 +160,15 @@ class EntityMap_1_14 extends EntityMap
+     }
+ 
+     @Override
+-    public void rewriteServerbound(ByteBuf packet, int oldId, int newId)
++    public void rewriteServerbound(ByteBuf packet, int oldId, int newId, net.md_5.bungee.api.connection.Server server) // MikroCord - server specific IP forwarding
+     {
+-        super.rewriteServerbound( packet, oldId, newId );
++        super.rewriteServerbound( packet, oldId, newId, server ); // MikroCord - server specific IP forwarding
+         // Special cases
+         int readerIndex = packet.readerIndex();
+         int packetId = DefinedPacket.readVarInt( packet );
+         int packetIdLength = packet.readerIndex() - readerIndex;
+ 
+-        if ( packetId == 0x2B /* Spectate : PacketPlayInSpectate */ && !BungeeCord.getInstance().getConfig().isIpForward() )
++        if ( packetId == 0x2B /* Spectate : PacketPlayInSpectate */ && !server.getInfo().isIpForward() ) // MikroCord - server specific IP forwarding
+         {
+             UUID uuid = DefinedPacket.readUUID( packet );
+             ProxiedPlayer player;
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_8.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_8.java
-index 4229fefa..62bd5ba4 100644
+index 8e2dbe69..06708830 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_8.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_8.java
 @@ -49,9 +49,9 @@ class EntityMap_1_8 extends EntityMap
@@ -425,10 +460,10 @@ index 4229fefa..62bd5ba4 100644
              UUID uuid = DefinedPacket.readUUID( packet );
              ProxiedPlayer player;
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_9.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_9.java
-index 55b65774..cd1ab203 100644
+index a4d0ea3f..56cb687c 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_9.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_9.java
-@@ -49,9 +49,9 @@ class EntityMap_1_9 extends EntityMap
+@@ -48,9 +48,9 @@ class EntityMap_1_9 extends EntityMap
  
      @Override
      @SuppressFBWarnings("DLS_DEAD_LOCAL_STORE")
@@ -440,7 +475,7 @@ index 55b65774..cd1ab203 100644
  
          // Special cases
          int readerIndex = packet.readerIndex();
-@@ -156,15 +156,15 @@ class EntityMap_1_9 extends EntityMap
+@@ -155,15 +155,15 @@ class EntityMap_1_9 extends EntityMap
      }
  
      @Override
@@ -460,10 +495,10 @@ index 55b65774..cd1ab203 100644
              UUID uuid = DefinedPacket.readUUID( packet );
              ProxiedPlayer player;
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_9_4.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_9_4.java
-index 3d41025f..209e7cea 100644
+index ae7ff10e..f3dc4ed0 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_9_4.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_9_4.java
-@@ -49,9 +49,9 @@ class EntityMap_1_9_4 extends EntityMap
+@@ -48,9 +48,9 @@ class EntityMap_1_9_4 extends EntityMap
  
      @Override
      @SuppressFBWarnings("DLS_DEAD_LOCAL_STORE")
@@ -475,7 +510,7 @@ index 3d41025f..209e7cea 100644
  
          // Special cases
          int readerIndex = packet.readerIndex();
-@@ -156,15 +156,15 @@ class EntityMap_1_9_4 extends EntityMap
+@@ -155,15 +155,15 @@ class EntityMap_1_9_4 extends EntityMap
      }
  
      @Override
@@ -544,5 +579,5 @@ index 97dffa9e..17ae4cd2 100644
          final ByteBuf to = from.duplicate();
          final int originalReader = from.readerIndex();
 -- 
-2.21.0
+2.20.1 (Apple Git-117)
 
