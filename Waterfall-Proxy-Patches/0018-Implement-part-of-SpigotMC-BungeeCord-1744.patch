@@ -1,4 +1,4 @@
-From d4ff2df7f4200805341fd616361bc22a628e071b Mon Sep 17 00:00:00 2001
+From 6501bedb329437beb47dde1f5f0d5ffaa76d1417 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 14 Apr 2019 18:38:49 +0300
 Subject: [PATCH] Implement part of SpigotMC/BungeeCord#1744
@@ -69,5 +69,5 @@ index 88c4328f..4e1989e9 100644
          return true;
      }
 -- 
-2.21.0
+2.20.1 (Apple Git-117)
 

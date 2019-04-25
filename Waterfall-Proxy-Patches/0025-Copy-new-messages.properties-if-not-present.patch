@@ -1,4 +1,4 @@
-From 817bdf2de4f83726e2e0e869ad74b7feaf4e7ba0 Mon Sep 17 00:00:00 2001
+From 7931104e4912b89e4c6970005324d1893128d4ea Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Fri, 19 Apr 2019 17:44:34 +0300
 Subject: [PATCH] Copy new messages.properties if not present

@@ -1,4 +1,4 @@
-From 03b1f9e1d4b9fef8c7660530f766a8a9b1c0279f Mon Sep 17 00:00:00 2001
+From 305dcae8c5b1063af93bd9781d696ae70db11aa3 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Tue, 16 Apr 2019 21:51:47 +0300
 Subject: [PATCH] Get rid of Prometheus support
