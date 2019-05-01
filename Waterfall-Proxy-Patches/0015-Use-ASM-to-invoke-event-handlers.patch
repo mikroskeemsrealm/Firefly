@@ -1,4 +1,4 @@
-From 2a12a494c389e577979f8995a26433230f138e76 Mon Sep 17 00:00:00 2001
+From 259c09b1aaabb01238da78987e09d826f09015e1 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sat, 13 Apr 2019 22:08:57 +0300
 Subject: [PATCH] Use ASM to invoke event handlers
@@ -274,10 +274,10 @@ index ad19c020..3d98102d 100644
      }
  }
 diff --git a/pom.xml b/pom.xml
-index c2171aa6..a298ed36 100644
+index a677e5f8..856c46c7 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -206,6 +206,7 @@
+@@ -204,6 +204,7 @@
                          <artifactId>java18</artifactId>
                          <version>1.0</version>
                      </signature>
@@ -286,5 +286,5 @@ index c2171aa6..a298ed36 100644
              </plugin>
          </plugins>
 -- 
-2.20.1 (Apple Git-117)
+2.21.0
 

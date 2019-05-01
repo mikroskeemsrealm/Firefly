@@ -1,4 +1,4 @@
-From e59765d712c9364492091e237c55d6cfeb0fca93 Mon Sep 17 00:00:00 2001
+From 8dd4382cbebff5849c08d1820f4ad7f313bfdf2c Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 10 Mar 2019 17:29:41 +0200
 Subject: [PATCH] POM Changes and rebranding
@@ -507,10 +507,10 @@ index fc2b6b73..34d97d1b 100644
      <dependencies>
          <dependency>
 diff --git a/pom.xml b/pom.xml
-index 0295c1dd..26343861 100644
+index d2a27566..48ab49c1 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -4,25 +4,27 @@
+@@ -4,26 +4,28 @@
      <modelVersion>4.0.0</modelVersion>
  
      <parent>
@@ -541,33 +541,51 @@ index 0295c1dd..26343861 100644
          <name>WaterdogMC</name>
          <url>https://github.com/WaterfallMC</url>
      </organization>
+-    
 +    -->
++
      <licenses>
          <license>
              <name>The BSD 3-Clause License</name>
-@@ -65,17 +67,17 @@
+@@ -65,6 +67,38 @@
+         <module>native</module>
      </modules>
  
-     <scm>
--        <connection>scm:git:git@github.com:com:WaterfallMC/Waterfall.git</connection>
--        <developerConnection>scm:git:git@github.com:WaterfallMC/Waterfall.git</developerConnection>
--        <url>git@github.com:WaterfallMC/Waterfall.git</url>
++    <scm>
 +        <connection>scm:git:git@github.com:com:mikroskeem/MikroCord.git</connection>
 +        <developerConnection>scm:git:git@github.com:mikroskeem/MikroCord.git</developerConnection>
 +        <url>git@github.com:mikroskeem/MikroCord.git</url>
-     </scm>
-     <issueManagement>
-         <system>GitHub</system>
--        <url>https://github.com/yesdog/Waterdog/issues</url>
++    </scm>
++    <issueManagement>
++        <system>GitHub</system>
 +        <url>https://github.com/mikroskeem/MikroCord/issues</url>
-     </issueManagement>
-     <ciManagement>
-         <system>jenkins</system>
--        <url>https://ci.codemc.org/job/yesdog/job/Waterdog/</url>
++    </issueManagement>
++    <ciManagement>
++        <system>jenkins</system>
 +        <url>https://papermc.io/ci/job/MikroCord/</url>
-     </ciManagement>
- 
-     <distributionManagement>
++    </ciManagement>
++    <distributionManagement>
++        <snapshotRepository>
++            <id>codemc-snapshots</id>
++            <url>https://repo.codemc.org/repository/maven-snapshots</url>
++        </snapshotRepository>
++        <repository>
++            <id>codemc-releases</id>
++            <url>https://repo.codemc.org/repository/maven-releases</url>
++        </repository>
++    </distributionManagement>
++    <properties>
++        <maven.deploy.skip>true</maven.deploy.skip> <!-- Waterdog -->
++        <build.number>unknown</build.number>
++        <netty.version>4.1.34.Final</netty.version>
++        <!-- Require Java 8 -->
++        <maven.compiler.source>1.8</maven.compiler.source>
++        <maven.compiler.target>1.8</maven.compiler.target>
++        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
++    </properties>
+     <dependencies>
+         <dependency>
+             <groupId>junit</groupId>
 diff --git a/protocol/pom.xml b/protocol/pom.xml
 index 2ed54c98..53e2b45e 100644
 --- a/protocol/pom.xml
@@ -610,7 +628,7 @@ index 2ed54c98..53e2b45e 100644
              <scope>compile</scope>
          </dependency>
 diff --git a/proxy/pom.xml b/proxy/pom.xml
-index 2ef6e9ae..4a9c0496 100644
+index 8a71cde3..f4b9fb7d 100644
 --- a/proxy/pom.xml
 +++ b/proxy/pom.xml
 @@ -4,18 +4,18 @@
@@ -681,10 +699,10 @@ index 2ef6e9ae..4a9c0496 100644
              <scope>compile</scope>
          </dependency>
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 5b31c21b..44e82540 100644
+index ba34c177..502cc8ea 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -512,7 +512,7 @@ public class BungeeCord extends ProxyServer
+@@ -511,7 +511,7 @@ public class BungeeCord extends ProxyServer
      @Override
      public String getName()
      {
@@ -760,5 +778,5 @@ index f9f9e677..61bd8a37 100644
              <scope>compile</scope>
          </dependency>
 -- 
-2.20.1 (Apple Git-117)
+2.21.0
 

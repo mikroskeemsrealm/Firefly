@@ -1,14 +1,14 @@
-From 8f18d0f578639fa692e8e66324ec9a2667d77eb0 Mon Sep 17 00:00:00 2001
+From 62e8954cba0e7ad67337537de06a3ee3cb1bed9e Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sat, 13 Apr 2019 20:30:37 +0300
 Subject: [PATCH] Speed up packet construction
 
 
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/Protocol.java b/protocol/src/main/java/net/md_5/bungee/protocol/Protocol.java
-index 1d195f63..f50a84e7 100644
+index be20fc59..f1aa225a 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/Protocol.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/Protocol.java
-@@ -53,15 +53,18 @@ public enum Protocol
+@@ -54,15 +54,18 @@ public enum Protocol
              // Waterdog start
              TO_SERVER.registerPacket(
                      network.ycc.waterdog.pe.packet.PEHandshake.class,
@@ -27,7 +27,7 @@ index 1d195f63..f50a84e7 100644
                      map( ProtocolConstants.MINECRAFT_1_8, 0x00 )
              );
          }
-@@ -103,6 +106,7 @@ public enum Protocol
+@@ -112,6 +115,7 @@ public enum Protocol
              // Waterdog end
              TO_CLIENT.registerPacket(
                      KeepAlive.class,
@@ -35,7 +35,7 @@ index 1d195f63..f50a84e7 100644
                      map( ProtocolConstants.MINECRAFT_PE_1_8, 0x00 ), // Waterdog
                      map( ProtocolConstants.MINECRAFT_1_8, 0x00 ),
                      map( ProtocolConstants.MINECRAFT_1_9, 0x1F ),
-@@ -111,12 +115,14 @@ public enum Protocol
+@@ -120,12 +124,14 @@ public enum Protocol
              );
              TO_CLIENT.registerPacket(
                      Login.class,
@@ -50,7 +50,7 @@ index 1d195f63..f50a84e7 100644
                      map( ProtocolConstants.MINECRAFT_PE_1_8, 0x09 ), // Waterdog
                      map( ProtocolConstants.MINECRAFT_1_8, 0x02 ),
                      map( ProtocolConstants.MINECRAFT_1_9, 0x0F ),
-@@ -124,6 +130,7 @@ public enum Protocol
+@@ -133,6 +139,7 @@ public enum Protocol
              );
              TO_CLIENT.registerPacket(
                      Respawn.class,
@@ -58,11 +58,12 @@ index 1d195f63..f50a84e7 100644
                      map( ProtocolConstants.MINECRAFT_PE_1_8, 0x3D ), // Waterdog
                      map( ProtocolConstants.MINECRAFT_1_8, 0x07 ),
                      map( ProtocolConstants.MINECRAFT_1_9, 0x33 ),
-@@ -134,11 +141,13 @@ public enum Protocol
+@@ -143,12 +150,14 @@ public enum Protocol
              );
              TO_CLIENT.registerPacket(
                      BossBar.class,
 +                    BossBar::new, // MikroCord - speed up packet construction
+                     map( ProtocolConstants.MINECRAFT_PE_1_8, 0x4A ), // Waterdog
                      map( ProtocolConstants.MINECRAFT_1_9, 0x0C )
              );
              // Waterfall start
@@ -72,7 +73,7 @@ index 1d195f63..f50a84e7 100644
                      map(ProtocolConstants.MINECRAFT_1_8, 0x1D),
                      map(ProtocolConstants.MINECRAFT_1_9, 0x4C),
                      map(ProtocolConstants.MINECRAFT_1_9_4, 0x4B),
-@@ -149,6 +158,7 @@ public enum Protocol
+@@ -159,6 +168,7 @@ public enum Protocol
              );
              TO_CLIENT.registerPacket(
                      EntityRemoveEffect.class,
@@ -80,7 +81,7 @@ index 1d195f63..f50a84e7 100644
                      map(ProtocolConstants.MINECRAFT_1_8, 0x1E),
                      map(ProtocolConstants.MINECRAFT_1_9, 0x31),
                      map(ProtocolConstants.MINECRAFT_1_12, 0x32),
-@@ -159,6 +169,7 @@ public enum Protocol
+@@ -169,6 +179,7 @@ public enum Protocol
              // Waterfall end
              TO_CLIENT.registerPacket(
                      PlayerListItem.class, // PlayerInfo
@@ -88,7 +89,7 @@ index 1d195f63..f50a84e7 100644
                      map( ProtocolConstants.MINECRAFT_1_8, 0x38 ),
                      map( ProtocolConstants.MINECRAFT_1_9, 0x2D ),
                      map( ProtocolConstants.MINECRAFT_1_12_1, 0x2E ),
-@@ -167,12 +178,14 @@ public enum Protocol
+@@ -177,12 +188,14 @@ public enum Protocol
              );
              TO_CLIENT.registerPacket(
                      TabCompleteResponse.class,
@@ -103,7 +104,7 @@ index 1d195f63..f50a84e7 100644
                      map( ProtocolConstants.MINECRAFT_1_8, 0x3B ),
                      map( ProtocolConstants.MINECRAFT_1_9, 0x3F ),
                      map( ProtocolConstants.MINECRAFT_1_12, 0x41 ),
-@@ -182,6 +195,7 @@ public enum Protocol
+@@ -192,6 +205,7 @@ public enum Protocol
              );
              TO_CLIENT.registerPacket(
                      ScoreboardScore.class,
@@ -111,7 +112,7 @@ index 1d195f63..f50a84e7 100644
                      map( ProtocolConstants.MINECRAFT_1_8, 0x3C ),
                      map( ProtocolConstants.MINECRAFT_1_9, 0x42 ),
                      map( ProtocolConstants.MINECRAFT_1_12, 0x44 ),
-@@ -191,6 +205,7 @@ public enum Protocol
+@@ -201,6 +215,7 @@ public enum Protocol
              );
              TO_CLIENT.registerPacket(
                      ScoreboardDisplay.class,
@@ -119,7 +120,7 @@ index 1d195f63..f50a84e7 100644
                      map( ProtocolConstants.MINECRAFT_1_8, 0x3D ),
                      map( ProtocolConstants.MINECRAFT_1_9, 0x38 ),
                      map( ProtocolConstants.MINECRAFT_1_12, 0x3A ),
-@@ -200,6 +215,7 @@ public enum Protocol
+@@ -210,6 +225,7 @@ public enum Protocol
              );
              TO_CLIENT.registerPacket(
                      Team.class,
@@ -127,7 +128,7 @@ index 1d195f63..f50a84e7 100644
                      map( ProtocolConstants.MINECRAFT_1_8, 0x3E ),
                      map( ProtocolConstants.MINECRAFT_1_9, 0x41 ),
                      map( ProtocolConstants.MINECRAFT_1_12, 0x43 ),
-@@ -209,6 +225,7 @@ public enum Protocol
+@@ -219,6 +235,7 @@ public enum Protocol
              );
              TO_CLIENT.registerPacket(
                      PluginMessage.class,
@@ -135,7 +136,7 @@ index 1d195f63..f50a84e7 100644
                      map( ProtocolConstants.MINECRAFT_PE_1_8, 0x75 ), // Waterdog
                      map( ProtocolConstants.MINECRAFT_1_8, 0x3F ),
                      map( ProtocolConstants.MINECRAFT_1_9, 0x18 ),
-@@ -217,6 +234,7 @@ public enum Protocol
+@@ -227,6 +244,7 @@ public enum Protocol
              );
              TO_CLIENT.registerPacket(
                      Kick.class,
@@ -143,7 +144,7 @@ index 1d195f63..f50a84e7 100644
                      map( ProtocolConstants.MINECRAFT_PE_1_8, 0x05 ), // Waterdog
                      map( ProtocolConstants.MINECRAFT_1_8, 0x40 ),
                      map( ProtocolConstants.MINECRAFT_1_9, 0x1A ),
-@@ -225,6 +243,7 @@ public enum Protocol
+@@ -235,6 +253,7 @@ public enum Protocol
              );
              TO_CLIENT.registerPacket(
                      Title.class,
@@ -151,7 +152,7 @@ index 1d195f63..f50a84e7 100644
                      map( ProtocolConstants.MINECRAFT_1_8, 0x45 ),
                      map( ProtocolConstants.MINECRAFT_1_12, 0x47 ),
                      map( ProtocolConstants.MINECRAFT_1_12_1, 0x48 ),
-@@ -233,6 +252,7 @@ public enum Protocol
+@@ -243,6 +262,7 @@ public enum Protocol
              );
              TO_CLIENT.registerPacket(
                      PlayerListHeaderFooter.class,
@@ -159,7 +160,7 @@ index 1d195f63..f50a84e7 100644
                      map( ProtocolConstants.MINECRAFT_1_8, 0x47 ),
                      map( ProtocolConstants.MINECRAFT_1_9, 0x48 ),
                      map( ProtocolConstants.MINECRAFT_1_9_4, 0x47 ),
-@@ -243,6 +263,7 @@ public enum Protocol
+@@ -253,6 +273,7 @@ public enum Protocol
              );
              TO_CLIENT.registerPacket(
                      EntityStatus.class,
@@ -167,13 +168,15 @@ index 1d195f63..f50a84e7 100644
                      map( ProtocolConstants.MINECRAFT_1_8, 0x1A ),
                      map( ProtocolConstants.MINECRAFT_1_9, 0x1B ),
                      map( ProtocolConstants.MINECRAFT_1_13, 0x1C ),
-@@ -250,11 +271,13 @@ public enum Protocol
+@@ -260,6 +281,7 @@ public enum Protocol
              );
              TO_CLIENT.registerPacket(
                      Commands.class,
 +                    Commands::new, // MikroCord - speed up packet construction
                      map( ProtocolConstants.MINECRAFT_1_13, 0x11 )
              );
+             TO_CLIENT.registerPacket(
+@@ -269,6 +291,7 @@ public enum Protocol
  
              TO_SERVER.registerPacket(
                      KeepAlive.class,
@@ -181,7 +184,7 @@ index 1d195f63..f50a84e7 100644
                      map( ProtocolConstants.MINECRAFT_PE_1_8, 0x00 ), // Waterdog
                      map( ProtocolConstants.MINECRAFT_1_8, 0x00 ),
                      map( ProtocolConstants.MINECRAFT_1_9, 0x0B ),
-@@ -265,6 +288,7 @@ public enum Protocol
+@@ -279,6 +302,7 @@ public enum Protocol
              );
              TO_SERVER.registerPacket(
                      Chat.class,
@@ -189,7 +192,7 @@ index 1d195f63..f50a84e7 100644
                      map( ProtocolConstants.MINECRAFT_PE_1_8, 0x09 ), // Waterdog
                      map( ProtocolConstants.MINECRAFT_1_8, 0x01 ),
                      map( ProtocolConstants.MINECRAFT_1_9, 0x02 ),
-@@ -274,6 +298,7 @@ public enum Protocol
+@@ -288,6 +312,7 @@ public enum Protocol
              );
              TO_SERVER.registerPacket(
                      TabCompleteRequest.class,
@@ -197,7 +200,7 @@ index 1d195f63..f50a84e7 100644
                      map( ProtocolConstants.MINECRAFT_1_8, 0x14 ),
                      map( ProtocolConstants.MINECRAFT_1_9, 0x01 ),
                      map( ProtocolConstants.MINECRAFT_1_12, 0x02 ),
-@@ -283,6 +308,7 @@ public enum Protocol
+@@ -297,6 +322,7 @@ public enum Protocol
              );
              TO_SERVER.registerPacket(
                      ClientSettings.class,
@@ -205,7 +208,7 @@ index 1d195f63..f50a84e7 100644
                      map( ProtocolConstants.MINECRAFT_PE_1_8, 0x45 ), // Waterdog
                      map( ProtocolConstants.MINECRAFT_1_8, 0x15 ),
                      map( ProtocolConstants.MINECRAFT_1_9, 0x04 ),
-@@ -292,6 +318,7 @@ public enum Protocol
+@@ -306,6 +332,7 @@ public enum Protocol
              );
              TO_SERVER.registerPacket(
                      PluginMessage.class,
@@ -213,7 +216,7 @@ index 1d195f63..f50a84e7 100644
                      map( ProtocolConstants.MINECRAFT_PE_1_8, 0x75 ), // Waterdog
                      map( ProtocolConstants.MINECRAFT_1_8, 0x17 ),
                      map( ProtocolConstants.MINECRAFT_1_9, 0x09 ),
-@@ -309,19 +336,23 @@ public enum Protocol
+@@ -323,19 +350,23 @@ public enum Protocol
          {
              TO_CLIENT.registerPacket(
                      StatusResponse.class,
@@ -237,7 +240,7 @@ index 1d195f63..f50a84e7 100644
                      map( ProtocolConstants.MINECRAFT_1_8, 0x01 )
              );
          }
-@@ -343,37 +374,45 @@ public enum Protocol
+@@ -357,37 +388,45 @@ public enum Protocol
              // Waterdog end
              TO_CLIENT.registerPacket(
                      Kick.class,
@@ -283,7 +286,7 @@ index 1d195f63..f50a84e7 100644
                      map( ProtocolConstants.MINECRAFT_1_13, 0x02 )
              );
          }
-@@ -424,7 +463,7 @@ public enum Protocol
+@@ -438,7 +477,7 @@ public enum Protocol
  
          private final int protocolVersion;
          private final TObjectIntMap<Class<? extends DefinedPacket>> packetMap = new TObjectIntHashMap<>( MAX_PACKET_ID );
@@ -292,7 +295,7 @@ index 1d195f63..f50a84e7 100644
      }
  
      @Data
-@@ -501,21 +540,21 @@ public enum Protocol
+@@ -515,21 +554,21 @@ public enum Protocol
                  throw new BadPacketException( "Packet with id " + id + " outside of range " );
              }
  
@@ -319,7 +322,7 @@ index 1d195f63..f50a84e7 100644
  
                  int mappingIndex = 0;
                  ProtocolMapping mapping = mappings[mappingIndex];
-@@ -551,11 +590,29 @@ public enum Protocol
+@@ -565,11 +604,29 @@ public enum Protocol
                      data.packetMap.put( packetClass, mapping.packetID );
                      data.packetConstructors[mapping.packetID] = constructor;
                  }
@@ -351,5 +354,5 @@ index 1d195f63..f50a84e7 100644
          public final int getId(Class<? extends DefinedPacket> packet, int version) // MikroCord - make packet manipulation easier
          {
 -- 
-2.20.1 (Apple Git-117)
+2.21.0
 

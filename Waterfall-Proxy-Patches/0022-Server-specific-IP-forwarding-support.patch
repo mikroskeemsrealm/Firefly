@@ -1,4 +1,4 @@
-From 2f583f26de5301752993b505f11f71a601e3d98b Mon Sep 17 00:00:00 2001
+From daab9d3941906bd6609491d653200453af9eaaae Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 14 Apr 2019 23:25:25 +0300
 Subject: [PATCH] Server specific IP forwarding support
@@ -62,10 +62,10 @@ index 30e41bd7..50b9f23c 100644
 +    // MikroCord end
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index ddc5cfdf..5047d617 100644
+index 8903da91..c0851383 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -750,11 +750,20 @@ public class BungeeCord extends ProxyServer
+@@ -749,11 +749,20 @@ public class BungeeCord extends ProxyServer
          return getConfig().getGameVersion(); // Waterfall
      }
  
@@ -118,10 +118,10 @@ index d8163ecf..62c89989 100644
  
      @Getter
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-index ec2c21b1..a105f97a 100644
+index 21ff9c05..bb01875e 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-@@ -106,7 +106,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
+@@ -107,7 +107,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
                      oPEHandshake.getUsername(), oPEHandshake.getUuid(), oPEHandshake.isAuthorized(), oPEHandshake.getClientInfo() );
          }
          // Waterdog end
@@ -150,7 +150,7 @@ index 7b16fa08..835a48cd 100644
          }
  
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-index 1f8a2439..c83d39a8 100644
+index 2e379e55..fa8f7441 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
 @@ -136,7 +136,7 @@ public class DownstreamBridge extends PacketHandler
@@ -559,25 +559,24 @@ index cb81d1dd..5fe5dca1 100644
  // Waterfall end
 \ No newline at end of file
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_PE.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_PE.java
-index 97dffa9e..17ae4cd2 100644
+index 3b922046..3131926c 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_PE.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_PE.java
-@@ -11,13 +11,13 @@ public class EntityMap_PE extends EntityMap {
+@@ -11,12 +11,12 @@ public class EntityMap_PE extends EntityMap {
      static final EntityMap_PE INSTANCE = new EntityMap_PE();
  
      @Override
--    public void rewriteServerbound(ByteBuf packet, int oldId, int newId)
-+    public void rewriteServerbound(ByteBuf packet, int oldId, int newId, net.md_5.bungee.api.connection.Server server) // MikroCord - server specific IP forwarding
-     {
- 
+-    public void rewriteServerbound(ByteBuf packet, int oldId, int newId) {
++    public void rewriteServerbound(ByteBuf packet, int oldId, int newId, net.md_5.bungee.api.connection.Server server) { // MikroCord - server specific IP forwarding
+         doRewrite(packet, oldId, newId);
      }
  
      @Override
--    public void rewriteClientbound(ByteBuf from, int oldId, int newId)
-+    public void rewriteClientbound(ByteBuf from, int oldId, int newId, net.md_5.bungee.api.connection.Server server) // MikroCord - server specific IP forwarding
-     {
-         final ByteBuf to = from.duplicate();
-         final int originalReader = from.readerIndex();
+-    public void rewriteClientbound(ByteBuf from, int oldId, int newId) {
++    public void rewriteClientbound(ByteBuf from, int oldId, int newId, net.md_5.bungee.api.connection.Server server) { // MikroCord - server specific IP forwarding
+         doRewrite(from, oldId, newId);
+     }
+ 
 -- 
-2.20.1 (Apple Git-117)
+2.21.0
 

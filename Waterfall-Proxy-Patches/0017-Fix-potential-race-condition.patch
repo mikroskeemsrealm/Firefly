@@ -1,14 +1,14 @@
-From af3ab099d050a9f396ceb409bf4f6b1fbc517ae0 Mon Sep 17 00:00:00 2001
+From 857189a3d40c335101d234082a824b61754b2af9 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 14 Apr 2019 17:18:40 +0300
 Subject: [PATCH] Fix potential race condition
 
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index acc6e9b3..ee3d99a3 100644
+index d49b63f7..a3d7c610 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -621,7 +621,14 @@ public class BungeeCord extends ProxyServer
+@@ -620,7 +620,14 @@ public class BungeeCord extends ProxyServer
      @Override
      public int getOnlineCount()
      {
@@ -24,5 +24,5 @@ index acc6e9b3..ee3d99a3 100644
  
      @Override
 -- 
-2.20.1 (Apple Git-117)
+2.21.0
 

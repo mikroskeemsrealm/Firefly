@@ -1,14 +1,14 @@
-From a0ae9d690a613498b469af711b2b28b58e8a8cc1 Mon Sep 17 00:00:00 2001
+From 60dfe7db1cba9279b3891c30fb470523007a8838 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Tue, 16 Apr 2019 21:20:13 +0300
 Subject: [PATCH] Disable useless bootstrap module
 
 
 diff --git a/pom.xml b/pom.xml
-index 4fba9e1b8..43eb109ef 100644
+index 48ab49c1..995ec547 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -53,7 +53,9 @@
+@@ -54,7 +54,9 @@
  
      <modules>
          <module>api</module>
@@ -19,7 +19,7 @@ index 4fba9e1b8..43eb109ef 100644
          <module>config</module>
          <module>event</module>
 diff --git a/proxy/pom.xml b/proxy/pom.xml
-index 02caa9848..e0de709a3 100644
+index f4b9fb7d..e3423e4e 100644
 --- a/proxy/pom.xml
 +++ b/proxy/pom.xml
 @@ -20,6 +20,7 @@
@@ -30,7 +30,7 @@ index 02caa9848..e0de709a3 100644
      </properties>
  
      <!-- Waterdog start -->
-@@ -183,5 +184,62 @@
+@@ -168,5 +169,62 @@
              </resource>
              <!-- Waterfall end -->
          </resources>

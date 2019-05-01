@@ -1,14 +1,14 @@
-From cfc882669bd4a76684e394a2cf88b333f6f3444f Mon Sep 17 00:00:00 2001
+From f9d8e2c4f14e44f40f1224a669972260445d216b Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Mon, 15 Apr 2019 00:46:36 +0300
 Subject: [PATCH] Drop useless module
 
 
 diff --git a/pom.xml b/pom.xml
-index 43eb109ef..5e8f2b521 100644
+index 995ec547..7c8eb6b5 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -59,7 +59,9 @@
+@@ -60,7 +60,9 @@
          <module>chat</module>
          <module>config</module>
          <module>event</module>

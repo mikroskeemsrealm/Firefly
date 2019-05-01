@@ -1,4 +1,4 @@
-From eac9f9298f63f71d105afe796cb6d091603d3fc3 Mon Sep 17 00:00:00 2001
+From 90f36569c3f9c19271a40349c1140107cb0a8c6a Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 14 Apr 2019 20:47:31 +0300
 Subject: [PATCH] Wrap localization into configuration API
@@ -88,7 +88,7 @@ index 00000000..8e228ae9
 +    }
 +}
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index ee3d99a3..9bda14e5 100644
+index a3d7c610..a2f76255 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -111,6 +111,7 @@ public class BungeeCord extends ProxyServer
@@ -126,7 +126,7 @@ index ee3d99a3..9bda14e5 100644
          reloadMessages();
  
          // Waterfall start - Use TerminalConsoleAppender and Log4J
-@@ -576,6 +583,7 @@ public class BungeeCord extends ProxyServer
+@@ -575,6 +582,7 @@ public class BungeeCord extends ProxyServer
  
      public void reloadMessages()
      {
@@ -134,7 +134,7 @@ index ee3d99a3..9bda14e5 100644
          File file = new File( "messages.properties" );
          if ( file.isFile() )
          {
-@@ -591,6 +599,16 @@ public class BungeeCord extends ProxyServer
+@@ -590,6 +598,16 @@ public class BungeeCord extends ProxyServer
  
      @Override
      public String getTranslation(String name, Object... args)
@@ -152,5 +152,5 @@ index ee3d99a3..9bda14e5 100644
          String translation = "<translation '" + name + "' missing>";
          try
 -- 
-2.20.1 (Apple Git-117)
+2.21.0
 
