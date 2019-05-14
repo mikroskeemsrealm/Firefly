@@ -1,4 +1,4 @@
-From daab9d3941906bd6609491d653200453af9eaaae Mon Sep 17 00:00:00 2001
+From d6a02c4b4de3ee086b59f5fef9a4e4347ca09863 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 14 Apr 2019 23:25:25 +0300
 Subject: [PATCH] Server specific IP forwarding support
@@ -118,7 +118,7 @@ index d8163ecf..62c89989 100644
  
      @Getter
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-index 21ff9c05..bb01875e 100644
+index 250611da..17441615 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 @@ -107,7 +107,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
@@ -176,10 +176,10 @@ index 24cb79d3..9225c2ec 100644
          }
      }
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
-index 881d1281..d240edf2 100644
+index 17874777..703c61d0 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
-@@ -82,24 +82,28 @@ public abstract class EntityMap
+@@ -83,24 +83,28 @@ public abstract class EntityMap
          }
      }
  
@@ -390,7 +390,7 @@ index d737fe25..7cccab01 100644
              UUID uuid = DefinedPacket.readUUID( packet );
              ProxiedPlayer player;
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_14.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_14.java
-index 7c0ba80b..2968ec98 100644
+index e9702b16..8afd3f5e 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_14.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_14.java
 @@ -47,9 +47,9 @@ class EntityMap_1_14 extends EntityMap
