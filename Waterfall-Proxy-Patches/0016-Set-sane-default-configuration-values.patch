@@ -1,11 +1,11 @@
-From 3c40a640c609b5271e449f5572b1f7a491506531 Mon Sep 17 00:00:00 2001
+From e8fae78af523b46157cb6cfe48afe81d351721f1 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sat, 13 Apr 2019 23:10:17 +0300
 Subject: [PATCH] Set sane default configuration values
 
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java b/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java
-index 51ddb4121..a181e62f2 100644
+index 51ddb412..a181e62f 100644
 --- a/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java
 +++ b/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java
 @@ -57,12 +57,12 @@ public abstract class Configuration implements ProxyConfig
@@ -24,7 +24,7 @@ index 51ddb4121..a181e62f2 100644
      private int compressionThreshold = 256;
      private boolean preventProxyConnections;
 diff --git a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
-index 660397a38..7b16fa086 100644
+index 2401f95e..353ea6a1 100644
 --- a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
 +++ b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
 @@ -110,7 +110,11 @@ public class YamlConfig implements ConfigurationAdapter
@@ -39,7 +39,7 @@ index 660397a38..7b16fa086 100644
          }
      }
  
-@@ -248,7 +252,7 @@ public class YamlConfig implements ConfigurationAdapter
+@@ -244,7 +248,7 @@ public class YamlConfig implements ConfigurationAdapter
              new HashMap()
          } ) );
          Map<String, String> forcedDef = new HashMap<>();

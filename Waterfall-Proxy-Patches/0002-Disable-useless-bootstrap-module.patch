@@ -1,14 +1,14 @@
-From 60dfe7db1cba9279b3891c30fb470523007a8838 Mon Sep 17 00:00:00 2001
+From 70c3310d2db2a22e906c3cb3bec6c5ee5a9cfe7b Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Tue, 16 Apr 2019 21:20:13 +0300
 Subject: [PATCH] Disable useless bootstrap module
 
 
 diff --git a/pom.xml b/pom.xml
-index 48ab49c1..995ec547 100644
+index 4c5c76f3..5214579b 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -54,7 +54,9 @@
+@@ -53,7 +53,9 @@
  
      <modules>
          <module>api</module>
@@ -19,7 +19,7 @@ index 48ab49c1..995ec547 100644
          <module>config</module>
          <module>event</module>
 diff --git a/proxy/pom.xml b/proxy/pom.xml
-index f4b9fb7d..e3423e4e 100644
+index 57116b81..77705224 100644
 --- a/proxy/pom.xml
 +++ b/proxy/pom.xml
 @@ -20,6 +20,7 @@
@@ -29,8 +29,8 @@ index f4b9fb7d..e3423e4e 100644
 +        <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format> <!-- MikroCord -->
      </properties>
  
-     <!-- Waterdog start -->
-@@ -168,5 +169,62 @@
+     <dependencies>
+@@ -141,5 +142,62 @@
              </resource>
              <!-- Waterfall end -->
          </resources>

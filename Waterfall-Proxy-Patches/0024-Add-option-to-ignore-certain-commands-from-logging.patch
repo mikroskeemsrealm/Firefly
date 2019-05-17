@@ -1,4 +1,4 @@
-From 14070b7262d59f98bedc3709416bbbb8b4f43817 Mon Sep 17 00:00:00 2001
+From 6f4389db194cba5f3365b384f329b1d19eb9fa95 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Fri, 19 Apr 2019 18:31:13 +0300
 Subject: [PATCH] Add option to ignore certain commands from logging

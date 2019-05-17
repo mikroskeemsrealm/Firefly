@@ -1,29 +1,24 @@
-From d6a02c4b4de3ee086b59f5fef9a4e4347ca09863 Mon Sep 17 00:00:00 2001
+From ecbce50f4caa22366e5b6311ab44466fab7048ea Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 14 Apr 2019 23:25:25 +0300
 Subject: [PATCH] Server specific IP forwarding support
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java b/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
-index d3f66c3d..56337855 100644
+index 1fd988ef..c1ff9952 100644
 --- a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
 +++ b/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
-@@ -243,13 +243,34 @@ public abstract class ProxyServer
+@@ -242,7 +242,27 @@ public abstract class ProxyServer
+      * @param restricted whether the server info restricted property will be set
       * @return the constructed instance
       */
-     // Waterdog start
--    public abstract ServerInfo constructServerInfo(String name, InetSocketAddress address, String motd, boolean restricted, boolean isRakNet, String transferGroup);
+-    public abstract ServerInfo constructServerInfo(String name, InetSocketAddress address, String motd, boolean restricted);
 +    // MikroCord start - server specific IP forwarding
-+    public ServerInfo constructServerInfo(String name, InetSocketAddress address, String motd, boolean restricted, boolean isRakNet, String transferGroup) {
-+        return constructServerInfo(name, address, motd, restricted, isRakNet, getConfig().isIpForward(), transferGroup);
++    public ServerInfo constructServerInfo(String name, InetSocketAddress address, String motd, boolean restricted) {
++        return constructServerInfo(name, address, motd, restricted, getConfig().isIpForward());
 +    }
 +    // MikroCord end
- 
-     public ServerInfo constructServerInfo(String name, InetSocketAddress address, String motd, boolean restricted) {
-         return constructServerInfo(name, address, motd, restricted, false, "default");
-     }
-     // Waterdog end
- 
++
 +    // MikroCord start - server specific IP forwarding
 +    /**
 +     * Factory method to construct an implementation specific server info
@@ -34,24 +29,22 @@ index d3f66c3d..56337855 100644
 +     * @param motd the motd when used as a forced server
 +     * @param restricted whether the server info restricted property will be set
 +     * @param isIpForward whether IP forwarding should be done for this server or not
-+     * @param isRakNet whether given server uses RakNet protocol or not
-+     * @param transferGroup MCPE transfer group name
 +     * @return the constructed instance
 +     */
-+    public abstract ServerInfo constructServerInfo(String name, InetSocketAddress address, String motd, boolean restricted, boolean isIpForward, boolean isRakNet, String transferGroup);
++    public abstract ServerInfo constructServerInfo(String name, InetSocketAddress address, String motd, boolean restricted, boolean isIpForward);
 +    // MikroCord end
 +
+ 
      /**
       * Returns the console overlord for this proxy. Being the console, this
-      * command server cannot have permissions or groups, and will be able to
 diff --git a/api/src/main/java/net/md_5/bungee/api/config/ServerInfo.java b/api/src/main/java/net/md_5/bungee/api/config/ServerInfo.java
-index 30e41bd7..50b9f23c 100644
+index 19773843..46fe6e64 100644
 --- a/api/src/main/java/net/md_5/bungee/api/config/ServerInfo.java
 +++ b/api/src/main/java/net/md_5/bungee/api/config/ServerInfo.java
-@@ -111,4 +111,12 @@ public interface ServerInfo
+@@ -104,4 +104,12 @@ public interface ServerInfo
+      * @param callback the callback to call when the count has been retrieved.
       */
-     boolean isRakNet();
-     // Waterdog end
+     void ping(Callback<ServerPing> callback);
 +    // MikroCord start - server specific IP forwarding
 +    /**
 +     * Returns whether this server requires IP forwarding or not
@@ -62,32 +55,23 @@ index 30e41bd7..50b9f23c 100644
 +    // MikroCord end
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 8903da91..c0851383 100644
+index 0317f34d..3564eaf7 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -749,11 +749,20 @@ public class BungeeCord extends ProxyServer
-         return getConfig().getGameVersion(); // Waterfall
+@@ -734,9 +734,9 @@ public class BungeeCord extends ProxyServer
      }
  
-+    // MikroCord start - server specific IP forwarding
-+    /*
      @Override
-     public ServerInfo constructServerInfo(String name, InetSocketAddress address, String motd, boolean restricted, boolean isRakNet, String transferGroup) // Waterdog
+-    public ServerInfo constructServerInfo(String name, InetSocketAddress address, String motd, boolean restricted)
++    public ServerInfo constructServerInfo(String name, InetSocketAddress address, String motd, boolean restricted, boolean isIpForward) // MikroCord - server specific IP forwarding
      {
-         return new BungeeServerInfo( name, address, motd, restricted, isRakNet, transferGroup ); // Waterdog
+-        return new BungeeServerInfo( name, address, motd, restricted );
++        return new BungeeServerInfo( name, address, motd, restricted, isIpForward ); // MikroCord - server specific IP forwarding
      }
-+    */
-+
-+    @Override
-+    public ServerInfo constructServerInfo(String name, InetSocketAddress address, String motd, boolean restricted, boolean isIpForward, boolean isRakNet, String transferGroup) {
-+        return new BungeeServerInfo( name, address, motd, restricted, isIpForward, isRakNet, transferGroup );
-+    }
-+    // MikroCord end
  
      @Override
-     public CommandSender getConsole()
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeServerInfo.java b/proxy/src/main/java/net/md_5/bungee/BungeeServerInfo.java
-index d8163ecf..62c89989 100644
+index 4c0637b9..68b2b7bc 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeServerInfo.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeServerInfo.java
 @@ -34,6 +34,7 @@ import net.md_5.bungee.protocol.packet.PluginMessage;
@@ -107,50 +91,38 @@ index d8163ecf..62c89989 100644
 +    private final boolean ipForward;
 +    // MikroCord end
  
-     // Waterdog start
-     public BungeeServerInfo(String name, InetSocketAddress address, String motd, boolean restricted) {
-@@ -58,6 +63,7 @@ public class BungeeServerInfo implements ServerInfo
-         this.restricted = restricted;
-         this.rakNet = true;
-         this.transferGroup = "default";
-+        this.ipForward = ProxyServer.getInstance().getConfig().isIpForward(); // MikroCord - server specific IP forwarding
-     }
- 
-     @Getter
+     @Synchronized("players")
+     public void addPlayer(ProxiedPlayer player)
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-index 250611da..17441615 100644
+index ee5d6986..c5687e21 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-@@ -107,7 +107,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
-                     oPEHandshake.getUsername(), oPEHandshake.getUuid(), oPEHandshake.isAuthorized(), oPEHandshake.getClientInfo() );
-         }
-         // Waterdog end
--        if ( BungeeCord.getInstance().config.isIpForward() && !target.isRakNet()) // Waterdog
-+        if ( target.isIpForward() && !target.isRakNet()) // Waterdog // MikroCord - server specific IP forwarding
+@@ -99,7 +99,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
+         Handshake originalHandshake = user.getPendingConnection().getHandshake();
+         Handshake copiedHandshake = new Handshake( originalHandshake.getProtocolVersion(), originalHandshake.getHost(), originalHandshake.getPort(), 2 );
+ 
+-        if ( BungeeCord.getInstance().config.isIpForward() )
++        if ( target.isIpForward() ) // MikroCord - server specific IP forwarding
          {
              String newHost = copiedHandshake.getHost() + "\00" + user.getAddress().getHostString() + "\00" + user.getUUID();
  
 diff --git a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
-index 7b16fa08..835a48cd 100644
+index 353ea6a1..d22db3b9 100644
 --- a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
 +++ b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
-@@ -230,12 +230,13 @@ public class YamlConfig implements ConfigurationAdapter
+@@ -230,8 +230,9 @@ public class YamlConfig implements ConfigurationAdapter
              String addr = get( "address", "localhost:25565", val );
              String motd = ChatColor.translateAlternateColorCodes( '&', get( "motd", "&1Just another Waterfall - Forced Host", val ) );
              boolean restricted = get( "restricted", false, val );
 +            boolean ipForward = get("ip_forward", ProxyServer.getInstance().getConfig().isIpForward(), val); // MikroCord - server specific IP forwarding
-             // Waterdog start
-             boolean isRakNet = get( "raknet", false, val );
-             String transferGroup = get( "transfer_group", "default", val );
-             // Waterdog end
              InetSocketAddress address = Util.getAddr( addr );
--            ServerInfo info = ProxyServer.getInstance().constructServerInfo( name, address, motd, restricted, isRakNet, transferGroup ); // Waterdog
-+            ServerInfo info = ProxyServer.getInstance().constructServerInfo( name, address, motd, restricted, ipForward, isRakNet, transferGroup ); // Waterdog // MikroCord - server specific IP forwarding
+-            ServerInfo info = ProxyServer.getInstance().constructServerInfo( name, address, motd, restricted );
++            ServerInfo info = ProxyServer.getInstance().constructServerInfo( name, address, motd, restricted, ipForward ); // MikroCord - server specific IP forwarding
              ret.put( name, info );
          }
  
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-index 2e379e55..fa8f7441 100644
+index 1f8a2439..c83d39a8 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
 @@ -136,7 +136,7 @@ public class DownstreamBridge extends PacketHandler
@@ -163,10 +135,10 @@ index 2e379e55..fa8f7441 100644
      }
  
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java
-index 24cb79d3..9225c2ec 100644
+index 51d0c6cf..24fce4de 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java
-@@ -121,7 +121,7 @@ public class UpstreamBridge extends PacketHandler
+@@ -116,7 +116,7 @@ public class UpstreamBridge extends PacketHandler
      {
          if ( con.getServer() != null )
          {
@@ -176,10 +148,10 @@ index 24cb79d3..9225c2ec 100644
          }
      }
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
-index 17874777..703c61d0 100644
+index 6ebbc04b..80b0a991 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
-@@ -83,24 +83,28 @@ public abstract class EntityMap
+@@ -78,24 +78,28 @@ public abstract class EntityMap
          }
      }
  
@@ -558,25 +530,6 @@ index cb81d1dd..5fe5dca1 100644
  }
  // Waterfall end
 \ No newline at end of file
-diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_PE.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_PE.java
-index 3b922046..3131926c 100644
---- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_PE.java
-+++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_PE.java
-@@ -11,12 +11,12 @@ public class EntityMap_PE extends EntityMap {
-     static final EntityMap_PE INSTANCE = new EntityMap_PE();
- 
-     @Override
--    public void rewriteServerbound(ByteBuf packet, int oldId, int newId) {
-+    public void rewriteServerbound(ByteBuf packet, int oldId, int newId, net.md_5.bungee.api.connection.Server server) { // MikroCord - server specific IP forwarding
-         doRewrite(packet, oldId, newId);
-     }
- 
-     @Override
--    public void rewriteClientbound(ByteBuf from, int oldId, int newId) {
-+    public void rewriteClientbound(ByteBuf from, int oldId, int newId, net.md_5.bungee.api.connection.Server server) { // MikroCord - server specific IP forwarding
-         doRewrite(from, oldId, newId);
-     }
- 
 -- 
 2.21.0
 
