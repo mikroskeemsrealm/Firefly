@@ -1,4 +1,4 @@
-From 4b659fa89d2ee6b367e5d60d3eb169d9cec34cd8 Mon Sep 17 00:00:00 2001
+From 86dbc1f192f43f5130add8acdf6a45af003c13e2 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Fri, 19 Apr 2019 18:31:13 +0300
 Subject: [PATCH] Add option to ignore certain commands from logging
@@ -32,40 +32,39 @@ index 4e1989e9..9bede570 100644
                      {
                          sender.getName(), commandLine
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index 633e3093..50393c31 100644
+index 633e3093..000a9861 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-@@ -1,10 +1,15 @@
+@@ -1,10 +1,14 @@
  package eu.mikroskeem.mikrocord.conf;
  
-+import com.google.common.collect.ImmutableSet;
++import com.google.common.collect.ImmutableList;
  import io.github.waterfallmc.waterfall.conf.WaterfallConfiguration;
  import lombok.Getter;
  import net.md_5.bungee.api.ProxyServer;
  import net.md_5.bungee.api.config.ConfigurationAdapter;
  
-+import java.util.Collection;
 +import java.util.HashSet;
 +import java.util.Set;
 +
  /**
   * @author Mark Vainomaa
   */
-@@ -15,6 +20,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -15,6 +19,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
      @Getter
      private String restartScriptPath = "./restart.sh";
  
 +    @Getter
-+    private Set<String> ignoredLogCommands = ImmutableSet.of("login", "register", "changepassword");
++    private Set<String> ignoredLogCommands;
 +
      @Override
      public void load() {
          super.load();
-@@ -23,5 +31,6 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -23,5 +30,6 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
  
          restartMessage = config.getString("restart.message", restartMessage);
          restartScriptPath = config.getString("restart.script_path", restartScriptPath);
-+        ignoredLogCommands = new HashSet<>((Collection<String>) config.getList("log.ignored_commands", () -> ImmutableSet.copyOf(ignoredLogCommands)));
++        ignoredLogCommands = new HashSet<>(config.getList("log.ignored_commands", () -> ImmutableList.of("login", "register", "changepassword")));
      }
  }
 -- 
