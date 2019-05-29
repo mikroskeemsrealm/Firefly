@@ -1,11 +1,11 @@
-From 768394e8542e773dad4e581d074742bca9998d87 Mon Sep 17 00:00:00 2001
+From 0485eb2fdd228e34bd38efc772f27045655eeaba Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Wed, 29 May 2019 20:16:16 +0300
 Subject: [PATCH] Improve event loop group implementation picking
 
 
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index 32ff04ec..8dbe8ecf 100644
+index 151cdce4..8edf20a3 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 @@ -1,6 +1,7 @@
@@ -23,7 +23,7 @@ index 32ff04ec..8dbe8ecf 100644
 +import net.md_5.bungee.netty.PipelineUtils;
  
  import java.nio.charset.StandardCharsets;
- import java.util.HashSet;
+ import java.util.Collection;
 @@ -62,7 +64,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
  
      private int setupTfo(int value) {
