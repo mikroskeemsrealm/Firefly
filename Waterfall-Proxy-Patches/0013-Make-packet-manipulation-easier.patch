@@ -1,4 +1,4 @@
-From e1c58e10b75001e0d1b03e2c22148251857c0c87 Mon Sep 17 00:00:00 2001
+From ed817ea9517919475d35d80c3ec6edb1eaaf97bb Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sat, 13 Apr 2019 20:13:53 +0300
 Subject: [PATCH] Make packet manipulation easier

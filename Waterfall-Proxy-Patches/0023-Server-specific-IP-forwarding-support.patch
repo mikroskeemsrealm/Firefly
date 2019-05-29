@@ -1,4 +1,4 @@
-From 181f8ee8ce87ef96fa1fbd3858fc77c8c9db8791 Mon Sep 17 00:00:00 2001
+From bec5dba19deb93c759c84c4375284bb4bbe99f1b Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 14 Apr 2019 23:25:25 +0300
 Subject: [PATCH] Server specific IP forwarding support
@@ -107,7 +107,7 @@ index ee5d6986..c5687e21 100644
              String newHost = copiedHandshake.getHost() + "\00" + user.getAddress().getHostString() + "\00" + user.getUUID();
  
 diff --git a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
-index 353ea6a1..d22db3b9 100644
+index e6b44d65..e8659df0 100644
 --- a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
 +++ b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
 @@ -230,8 +230,9 @@ public class YamlConfig implements ConfigurationAdapter

@@ -1,4 +1,4 @@
-From e8fae78af523b46157cb6cfe48afe81d351721f1 Mon Sep 17 00:00:00 2001
+From 6b33b2c1ccb24d18aa5c077e796e9f871be59603 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sat, 13 Apr 2019 23:10:17 +0300
 Subject: [PATCH] Set sane default configuration values
@@ -24,7 +24,7 @@ index 51ddb412..a181e62f 100644
      private int compressionThreshold = 256;
      private boolean preventProxyConnections;
 diff --git a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
-index 2401f95e..353ea6a1 100644
+index 5cd84940..e6b44d65 100644
 --- a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
 +++ b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
 @@ -110,7 +110,11 @@ public class YamlConfig implements ConfigurationAdapter

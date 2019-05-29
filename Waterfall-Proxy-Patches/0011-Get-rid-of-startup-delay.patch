@@ -1,4 +1,4 @@
-From ddbdd59b37500e484c0230f783f7118ca953a224 Mon Sep 17 00:00:00 2001
+From 3058f5fbf141fc1fee51751a532a4b46754f925f Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Wed, 20 Mar 2019 07:48:35 +0200
 Subject: [PATCH] Get rid of startup delay

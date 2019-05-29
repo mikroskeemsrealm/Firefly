@@ -1,4 +1,4 @@
-From d8fd701db8dfedd90189b51584dcdca455d5660a Mon Sep 17 00:00:00 2001
+From 3925fd85744521cac06b61f5a0dfe42719239bf1 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sat, 13 Apr 2019 19:51:09 +0300
 Subject: [PATCH] Add missing permissions nodes

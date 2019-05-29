@@ -1,4 +1,4 @@
-From c3a4f244e5938c4a276f696ed6a168d6fdfa62a7 Mon Sep 17 00:00:00 2001
+From 8b9b5e7474073ac3dc75f0ec3d0cd94051a6dc3e Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Tue, 19 Mar 2019 22:54:51 +0200
 Subject: [PATCH] Disable bungee & perms command by default

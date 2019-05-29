@@ -1,4 +1,4 @@
-From b6b649c0587f874424d7b5424193eba54da98f88 Mon Sep 17 00:00:00 2001
+From f661b80e0c26d39362a374e796c461c427749fd6 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 14 Apr 2019 20:47:31 +0300
 Subject: [PATCH] Wrap localization into configuration API

@@ -1,4 +1,4 @@
-From 6269c5547fb85c5f39c7fb13a0f08bb3faf61878 Mon Sep 17 00:00:00 2001
+From 5a844158f1b90c9d610a39eeaf9dd21362c42213 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Tue, 19 Mar 2019 23:17:23 +0200
 Subject: [PATCH] Add /grestart command
@@ -116,7 +116,7 @@ index 0b613f67..633e3093 100644
      }
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index c9726d68..acc6e9b3 100644
+index 7a98c8e3..b55cb83d 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -269,6 +269,9 @@ public class BungeeCord extends ProxyServer
@@ -130,7 +130,7 @@ index c9726d68..acc6e9b3 100644
          if ( !Boolean.getBoolean( "net.md_5.bungee.native.disable" ) )
          {
 diff --git a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
-index e0a37fe3..660397a3 100644
+index e62951d7..5cd84940 100644
 --- a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
 +++ b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
 @@ -103,7 +103,7 @@ public class YamlConfig implements ConfigurationAdapter
@@ -143,5 +143,5 @@ index e0a37fe3..660397a3 100644
          }
  
 -- 
-2.20.1 (Apple Git-117)
+2.21.0
 

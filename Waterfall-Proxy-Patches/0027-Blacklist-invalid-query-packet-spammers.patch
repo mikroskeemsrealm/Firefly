@@ -1,4 +1,4 @@
-From 0ea3ffe00dfbb4d4f23d6bcecafca083dd13b8f4 Mon Sep 17 00:00:00 2001
+From 3a53dea3689f3b1d8df189df012f19484b070cbe Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Wed, 29 May 2019 13:26:07 +0300
 Subject: [PATCH] Blacklist invalid query packet spammers

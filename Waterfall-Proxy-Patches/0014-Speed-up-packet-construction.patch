@@ -1,4 +1,4 @@
-From e6f562c6bfa3ef28aec2e496b709d968737f90dc Mon Sep 17 00:00:00 2001
+From 78bee6c744d8c1097b5bed2cce452fdc3d4a61fa Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sat, 13 Apr 2019 20:30:37 +0300
 Subject: [PATCH] Speed up packet construction
