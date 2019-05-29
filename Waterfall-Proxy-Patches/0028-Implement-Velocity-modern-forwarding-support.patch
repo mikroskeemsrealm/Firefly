@@ -1,4 +1,4 @@
-From 7ae763d3eefeb76c44f870159bb9473a0d4ed8b1 Mon Sep 17 00:00:00 2001
+From c806c3c9b666dd8e8243454917acc109160a0835 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Wed, 29 May 2019 14:34:43 +0300
 Subject: [PATCH] Implement Velocity modern forwarding support
@@ -59,13 +59,12 @@ index a8d6c8e3..5b0b1c5e 100644
  }
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/VelocitySupport.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/VelocitySupport.java
 new file mode 100644
-index 00000000..6977ee70
+index 00000000..eb21af89
 --- /dev/null
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/VelocitySupport.java
-@@ -0,0 +1,85 @@
+@@ -0,0 +1,83 @@
 +package eu.mikroskeem.mikrocord.misc;
 +
-+import io.github.waterfallmc.waterfall.utils.UUIDUtils;
 +import io.netty.buffer.ByteBuf;
 +import io.netty.buffer.Unpooled;
 +import net.md_5.bungee.UserConnection;
@@ -100,11 +99,10 @@ index 00000000..6977ee70
 +            DefinedPacket.writeString(user.getAddress().getHostString(), dataToForward);
 +            LoginResult profile = user.getPendingConnection().getLoginProfile();
 +            if (profile == null) {
-+                profile = new LoginResult(null, user.getName(), new LoginResult.Property[] {});
++                profile = new LoginResult(null, user.getName(), new LoginResult.Property[0]);
 +            }
-+            // Note: if profile is not present, then we're free to assume that player is in offline mode
-+            DefinedPacket.writeUUID(profile.getId() != null ? UUIDUtils.fromString(profile.getId()) : user.getPendingConnection().getOfflineId(), dataToForward);
-+            DefinedPacket.writeString(profile.getName() != null ? profile.getName() : user.getPendingConnection().getName(), dataToForward);
++            DefinedPacket.writeUUID(user.getPendingConnection().getUniqueId(), dataToForward);
++            DefinedPacket.writeString(user.getPendingConnection().getName(), dataToForward);
 +            DefinedPacket.writeVarInt(profile.getProperties() != null ? profile.getProperties().length : 0, dataToForward);
 +            if (profile.getProperties() != null) {
 +                for (LoginResult.Property property : profile.getProperties()) {
