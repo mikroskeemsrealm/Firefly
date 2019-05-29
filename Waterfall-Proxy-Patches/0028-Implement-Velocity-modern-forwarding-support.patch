@@ -1,4 +1,4 @@
-From 6e39a1ea027758c93a1aea0bb4d021866b771270 Mon Sep 17 00:00:00 2001
+From da48995009983399424ef52aecb98f8a0e19d4a7 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Wed, 29 May 2019 14:34:43 +0300
 Subject: [PATCH] Implement Velocity modern forwarding support
@@ -18,7 +18,7 @@ index 2a6e8730..d1b206a6 100644
 +    // MikroCord end
  }
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index cee835b4..6ba247c2 100644
+index cee835b4..6ca62381 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 @@ -1,11 +1,13 @@
@@ -53,7 +53,7 @@ index cee835b4..6ba247c2 100644
          ignoredLogCommands = new HashSet<>((List<String>) config.getList("log.ignored_commands", ignoredLogCommands));
          logInvalidQueryPackets = config.getBoolean("log.invalid_query_packets", logInvalidQueryPackets);
 +        velocityForwardingSupport = config.getBoolean("velocity_modern_forwarding.enabled", false);
-+        velocityForwardingSecret = config.getString("velocity_modern_forwarding.secret", VelocitySupport.generateRandomString(12)).getBytes(StandardCharsets.UTF_8);
++        velocityForwardingSecret = config.getString("velocity_modern_forwarding.secret", () -> VelocitySupport.generateRandomString(12)).getBytes(StandardCharsets.UTF_8);
      }
  }
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/VelocitySupport.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/VelocitySupport.java
