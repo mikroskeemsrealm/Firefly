@@ -1,0 +1,57 @@
+From 6cddc9c7161cb6fe1c768fba94e337950efb631f Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Wed, 29 May 2019 13:15:28 +0300
+Subject: [PATCH] Add option to exclude logging invalid query packets
+
+
+diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
+index 67a33110..2a6e8730 100644
+--- a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
++++ b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
+@@ -257,4 +257,10 @@ public interface ProxyConfig
+      */
+     java.util.Set<String> getIgnoredLogCommands();
+     // MikroCord end
++    // MikroCord start - Add option to exclude logging invalid query packets
++    /**
++     * @return Whether invalid query packets should be logged or not
++     */
++    boolean isLogInvalidQueryPackets();
++    // MikroCord end
+ }
+diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
+index 6f57a3d0..cee835b4 100644
+--- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
++++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
+@@ -23,6 +23,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+     @Getter
+     private Set<String> ignoredLogCommands = ImmutableSet.of("login", "register", "changepassword");
+ 
++    @Getter
++    private boolean logInvalidQueryPackets = false;
++
+     @Override
+     public void load() {
+         super.load();
+@@ -32,5 +35,6 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+         restartMessage = config.getString("restart.message", restartMessage);
+         restartScriptPath = config.getString("restart.script_path", restartScriptPath);
+         ignoredLogCommands = new HashSet<>((List<String>) config.getList("log.ignored_commands", ignoredLogCommands));
++        logInvalidQueryPackets = config.getBoolean("log.invalid_query_packets", logInvalidQueryPackets);
+     }
+ }
+diff --git a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
+index ac99d02c..7c0fa7da 100644
+--- a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
++++ b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
+@@ -69,6 +69,7 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket>
+         ByteBuf in = msg.content();
+         if ( in.readUnsignedByte() != 0xFE || in.readUnsignedByte() != 0xFD )
+         {
++            if (bungee.getConfig().isLogInvalidQueryPackets()) // MikroCord - Add option to exclude logging invalid query packets
+             bungee.getLogger().log( Level.WARNING, "Query - Incorrect magic!: {0}", msg.sender() );
+             return;
+         }
+-- 
+2.21.0
+

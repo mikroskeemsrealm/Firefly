@@ -1,4 +1,4 @@
-From 6f4389db194cba5f3365b384f329b1d19eb9fa95 Mon Sep 17 00:00:00 2001
+From 2c54c5f79ae252f272506fbb12440197494c2dec Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Fri, 19 Apr 2019 18:31:13 +0300
 Subject: [PATCH] Add option to ignore certain commands from logging
@@ -32,14 +32,18 @@ index 4e1989e9..9bede570 100644
                      {
                          sender.getName(), commandLine
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index 633e3093..2a9b2840 100644
+index 633e3093..6f57a3d0 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-@@ -5,6 +5,11 @@ import lombok.Getter;
+@@ -1,10 +1,15 @@
+ package eu.mikroskeem.mikrocord.conf;
+ 
++import com.google.common.collect.ImmutableSet;
+ import io.github.waterfallmc.waterfall.conf.WaterfallConfiguration;
+ import lombok.Getter;
  import net.md_5.bungee.api.ProxyServer;
  import net.md_5.bungee.api.config.ConfigurationAdapter;
  
-+import java.util.Arrays;
 +import java.util.HashSet;
 +import java.util.List;
 +import java.util.Set;
@@ -52,7 +56,7 @@ index 633e3093..2a9b2840 100644
      private String restartScriptPath = "./restart.sh";
  
 +    @Getter
-+    private Set<String> ignoredLogCommands;
++    private Set<String> ignoredLogCommands = ImmutableSet.of("login", "register", "changepassword");
 +
      @Override
      public void load() {
@@ -61,7 +65,7 @@ index 633e3093..2a9b2840 100644
  
          restartMessage = config.getString("restart.message", restartMessage);
          restartScriptPath = config.getString("restart.script_path", restartScriptPath);
-+        ignoredLogCommands = new HashSet<>((List<String>) config.getList("log.ignored_commands", Arrays.asList("login", "register", "changepassword")));
++        ignoredLogCommands = new HashSet<>((List<String>) config.getList("log.ignored_commands", ignoredLogCommands));
      }
  }
 -- 
