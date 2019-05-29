@@ -1,4 +1,4 @@
-From f661b80e0c26d39362a374e796c461c427749fd6 Mon Sep 17 00:00:00 2001
+From 6170e5b249c505b201bc856ef25d449dcf747b2f Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 14 Apr 2019 20:47:31 +0300
 Subject: [PATCH] Wrap localization into configuration API
@@ -88,7 +88,7 @@ index 00000000..8e228ae9
 +    }
 +}
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 4c96c5dd..f388ca50 100644
+index 4c96c5dd..9937f8ae 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -111,6 +111,7 @@ public class BungeeCord extends ProxyServer
@@ -142,7 +142,7 @@ index 4c96c5dd..f388ca50 100644
 +    {
 +        String translation = "<translation '" + name + "' missing>";
 +        String string;
-+        if((string = this.localizationBundleWrapper.getString(name, null)) != null)
++        if((string = this.localizationBundleWrapper.getString(name, (String) null)) != null)
 +            translation = (args.length == 0) ? string : MessageFormat.format(string, args);
 +        return translation;
 +    }
