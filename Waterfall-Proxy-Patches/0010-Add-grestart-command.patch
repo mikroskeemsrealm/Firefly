@@ -1,4 +1,4 @@
-From 5a844158f1b90c9d610a39eeaf9dd21362c42213 Mon Sep 17 00:00:00 2001
+From eadea54624074f79b7ac75e6aca5614212aa4f3f Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Tue, 19 Mar 2019 23:17:23 +0200
 Subject: [PATCH] Add /grestart command
@@ -27,13 +27,14 @@ index cbcf8a24..cd2f66a2 100644
  }
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/command/CommandRestart.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/command/CommandRestart.java
 new file mode 100644
-index 00000000..4564245e
+index 00000000..c95abc80
 --- /dev/null
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/command/CommandRestart.java
-@@ -0,0 +1,52 @@
+@@ -0,0 +1,51 @@
 +package eu.mikroskeem.mikrocord.command;
 +
 +import com.google.common.base.Joiner;
++import io.netty.util.internal.PlatformDependent;
 +import net.md_5.bungee.BungeeCord;
 +import net.md_5.bungee.api.CommandSender;
 +import net.md_5.bungee.api.plugin.Command;
@@ -41,7 +42,6 @@ index 00000000..4564245e
 +import java.nio.file.Files;
 +import java.nio.file.Path;
 +import java.nio.file.Paths;
-+import java.util.Locale;
 +
 +/**
 + * Proxy restart command
@@ -65,8 +65,7 @@ index 00000000..4564245e
 +            }
 +
 +            try {
-+                String os = System.getProperty("os.name").toLowerCase(Locale.ENGLISH);
-+                if (os.contains("win")) {
++                if (PlatformDependent.isWindows()) {
 +                    Runtime.getRuntime().exec("cmd /c start " + scriptPath);
 +                } else {
 +                    Runtime.getRuntime().exec("sh " + scriptPath);
