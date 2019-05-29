@@ -1,0 +1,24 @@
+From a8404b6b5f375d53edad3c682dde2350e1ac1cb9 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Wed, 29 May 2019 20:40:02 +0300
+Subject: [PATCH] Speed up shutdown
+
+
+diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
+index f7807ba7..e64074c8 100644
+--- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
++++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
+@@ -511,8 +511,8 @@ public class BungeeCord extends ProxyServer
+                 }
+ 
+                 getLogger().info( "Closing IO threads" );
+-                bossEventLoopGroup.shutdownGracefully();
+-                workerEventLoopGroup.shutdownGracefully();
++                bossEventLoopGroup.shutdownGracefully(100, 5000, TimeUnit.MILLISECONDS); // MikroCord - speed up shutdown
++                workerEventLoopGroup.shutdownGracefully(100, 5000, TimeUnit.MILLISECONDS); // MikroCord - speed up shutdown
+                 while (true) {
+                     try {
+                         bossEventLoopGroup.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+-- 
+2.21.0
+
