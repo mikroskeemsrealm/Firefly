@@ -1,4 +1,4 @@
-From 6e1c7a5a174da11a864a2d03368ddd2455d936bf Mon Sep 17 00:00:00 2001
+From a1799b32f4c5a2bb16a982e71acebaad200de86e Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Wed, 29 May 2019 14:34:43 +0300
 Subject: [PATCH] Implement Velocity modern forwarding support
@@ -58,10 +58,10 @@ index cee835b4..6ba247c2 100644
  }
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/VelocitySupport.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/VelocitySupport.java
 new file mode 100644
-index 00000000..c6a4e313
+index 00000000..6977ee70
 --- /dev/null
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/VelocitySupport.java
-@@ -0,0 +1,83 @@
+@@ -0,0 +1,85 @@
 +package eu.mikroskeem.mikrocord.misc;
 +
 +import io.github.waterfallmc.waterfall.utils.UUIDUtils;
@@ -99,21 +99,23 @@ index 00000000..c6a4e313
 +            DefinedPacket.writeString(user.getAddress().getHostString(), dataToForward);
 +            LoginResult profile = user.getPendingConnection().getLoginProfile();
 +            if (profile == null) {
-+                profile = new LoginResult(user.getUUID(), user.getName(), new LoginResult.Property[] {});
++                profile = new LoginResult(null, user.getName(), new LoginResult.Property[] {});
 +            }
-+            DefinedPacket.writeUUID(UUIDUtils.fromString(profile.getId()), dataToForward);
-+            DefinedPacket.writeString(profile.getName(), dataToForward);
-+            // Write properties
-+            DefinedPacket.writeVarInt(profile.getProperties().length, dataToForward);
-+            for (LoginResult.Property property : profile.getProperties()) {
-+                DefinedPacket.writeString(property.getName(), dataToForward);
-+                DefinedPacket.writeString(property.getValue(), dataToForward);
-+                String signature = property.getSignature();
-+                if (signature != null) {
-+                    dataToForward.writeBoolean(true);
-+                    DefinedPacket.writeString(signature, dataToForward);
-+                } else {
-+                    dataToForward.writeBoolean(false);
++            // Note: if profile is not present, then we're free to assume that player is in offline mode
++            DefinedPacket.writeUUID(profile.getId() != null ? UUIDUtils.fromString(profile.getId()) : user.getPendingConnection().getOfflineId(), dataToForward);
++            DefinedPacket.writeString(profile.getName() != null ? profile.getName() : user.getPendingConnection().getName(), dataToForward);
++            DefinedPacket.writeVarInt(profile.getProperties() != null ? profile.getProperties().length : 0, dataToForward);
++            if (profile.getProperties() != null) {
++                for (LoginResult.Property property : profile.getProperties()) {
++                    DefinedPacket.writeString(property.getName(), dataToForward);
++                    DefinedPacket.writeString(property.getValue(), dataToForward);
++                    String signature = property.getSignature();
++                    if (signature != null) {
++                        dataToForward.writeBoolean(true);
++                        DefinedPacket.writeString(signature, dataToForward);
++                    } else {
++                        dataToForward.writeBoolean(false);
++                    }
 +                }
 +            }
 +
