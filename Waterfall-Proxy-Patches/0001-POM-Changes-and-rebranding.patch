@@ -1,4 +1,4 @@
-From f88ae3c0762478c61bad1bb411def6ceb45a074e Mon Sep 17 00:00:00 2001
+From f6483cd38b0532761d0a5c1b13d353026ab16ffa Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 10 Mar 2019 17:29:41 +0200
 Subject: [PATCH] POM Changes and rebranding
@@ -714,6 +714,19 @@ index 8acdc22d..7301bf54 100644
      }
  
      @Override
+diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java b/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
+index 624eb5f0..ab6ddcc9 100644
+--- a/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
++++ b/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
+@@ -58,7 +58,7 @@ public class BungeeCordLauncher
+ 
+         BungeeCord bungee = new BungeeCord();
+         ProxyServer.setInstance( bungee );
+-        bungee.getLogger().info( "Enabled Waterfall version " + bungee.getVersion() );
++        bungee.getLogger().info( "Enabled MikroCord version " + bungee.getVersion() );
+         bungee.start();
+ 
+         if ( !options.has( "noconsole" ) )
 diff --git a/proxy/src/main/java/net/md_5/bungee/command/CommandReload.java b/proxy/src/main/java/net/md_5/bungee/command/CommandReload.java
 index 720d0c3b..0ad37d4e 100644
 --- a/proxy/src/main/java/net/md_5/bungee/command/CommandReload.java
