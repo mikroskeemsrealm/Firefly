@@ -1,4 +1,4 @@
-From 79be590574fd30797e7f3415eae51362bf46968f Mon Sep 17 00:00:00 2001
+From d7c25ae153328e17e1041d2e78966975fb6a37a0 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 14 Apr 2019 21:48:01 +0300
 Subject: [PATCH] Implement KyoriPowered/text support
@@ -39,7 +39,7 @@ index d5888311..46056f0b 100644
       * Get all groups this user is part of. This returns an unmodifiable
       * collection.
 diff --git a/chat/pom.xml b/chat/pom.xml
-index 72c4cc36..6a65f31d 100644
+index 72c4cc36..6c1afbdf 100644
 --- a/chat/pom.xml
 +++ b/chat/pom.xml
 @@ -25,5 +25,22 @@
@@ -50,17 +50,17 @@ index 72c4cc36..6a65f31d 100644
 +        <dependency>
 +            <groupId>net.kyori</groupId>
 +            <artifactId>text-api</artifactId>
-+            <version>2.0.0</version>
++            <version>3.0.0</version>
 +        </dependency>
 +        <dependency>
 +            <groupId>net.kyori</groupId>
 +            <artifactId>text-serializer-gson</artifactId>
-+            <version>2.0.0</version>
++            <version>3.0.0</version>
 +        </dependency>
 +        <dependency>
 +            <groupId>net.kyori</groupId>
 +            <artifactId>text-serializer-legacy</artifactId>
-+            <version>2.0.0</version>
++            <version>3.0.0</version>
 +        </dependency>
 +        <!-- MikroCord end -->
      </dependencies>
@@ -137,7 +137,7 @@ index 2a780694..a9950b4a 100644
              registerTypeAdapter( TextComponent.class, new TextComponentSerializer() ).
              registerTypeAdapter( TranslatableComponent.class, new TranslatableComponentSerializer() ).
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index f388ca50..0317f34d 100644
+index 9937f8ae..42b2f207 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -154,7 +154,7 @@ public class BungeeCord extends ProxyServer
