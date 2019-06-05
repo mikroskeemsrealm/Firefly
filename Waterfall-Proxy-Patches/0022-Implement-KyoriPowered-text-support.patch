@@ -1,4 +1,4 @@
-From d7c25ae153328e17e1041d2e78966975fb6a37a0 Mon Sep 17 00:00:00 2001
+From 09945ed5074e7e15bfb9c34b562d5e20e1259a14 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 14 Apr 2019 21:48:01 +0300
 Subject: [PATCH] Implement KyoriPowered/text support
@@ -39,7 +39,7 @@ index d5888311..46056f0b 100644
       * Get all groups this user is part of. This returns an unmodifiable
       * collection.
 diff --git a/chat/pom.xml b/chat/pom.xml
-index 72c4cc36..6c1afbdf 100644
+index 72c4cc36..dd5f10ec 100644
 --- a/chat/pom.xml
 +++ b/chat/pom.xml
 @@ -25,5 +25,22 @@
@@ -50,17 +50,17 @@ index 72c4cc36..6c1afbdf 100644
 +        <dependency>
 +            <groupId>net.kyori</groupId>
 +            <artifactId>text-api</artifactId>
-+            <version>3.0.0</version>
++            <version>3.0.1</version>
 +        </dependency>
 +        <dependency>
 +            <groupId>net.kyori</groupId>
 +            <artifactId>text-serializer-gson</artifactId>
-+            <version>3.0.0</version>
++            <version>3.0.1</version>
 +        </dependency>
 +        <dependency>
 +            <groupId>net.kyori</groupId>
 +            <artifactId>text-serializer-legacy</artifactId>
-+            <version>3.0.0</version>
++            <version>3.0.1</version>
 +        </dependency>
 +        <!-- MikroCord end -->
      </dependencies>
