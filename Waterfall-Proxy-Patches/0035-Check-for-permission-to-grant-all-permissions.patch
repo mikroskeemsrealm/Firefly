@@ -1,0 +1,22 @@
+From 2686a71e667f12d00a849670c6939072cee2de05 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Fri, 7 Jun 2019 21:34:45 +0300
+Subject: [PATCH] Check for '*' permission to grant all permissions
+
+
+diff --git a/proxy/src/main/java/net/md_5/bungee/UserConnection.java b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
+index 74182dfa..341dea6d 100644
+--- a/proxy/src/main/java/net/md_5/bungee/UserConnection.java
++++ b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
+@@ -557,7 +557,7 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.mikroc
+     @Override
+     public boolean hasPermission(String permission)
+     {
+-        return bungee.getPluginManager().callEvent( new PermissionCheckEvent( this, permission, permissions.contains( permission ) ) ).hasPermission();
++        return bungee.getPluginManager().callEvent( new PermissionCheckEvent( this, permission, permissions.contains("*") || permissions.contains( permission ) ) ).hasPermission(); // MikroCord - add '*' permission to grant all permissions
+     }
+ 
+     @Override
+-- 
+2.21.0
+
