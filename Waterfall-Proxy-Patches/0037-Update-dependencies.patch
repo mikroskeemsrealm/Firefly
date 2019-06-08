@@ -1,0 +1,67 @@
+From 99808d7d43805772d166835a729a29a2ebbc3e91 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Sun, 9 Jun 2019 01:47:21 +0300
+Subject: [PATCH] Update dependencies
+
+
+diff --git a/chat/pom.xml b/chat/pom.xml
+index dd5f10ec..e48ac9ae 100644
+--- a/chat/pom.xml
++++ b/chat/pom.xml
+@@ -22,7 +22,7 @@
+         <dependency>
+             <groupId>com.google.code.gson</groupId>
+             <artifactId>gson</artifactId>
+-            <version>2.8.0</version>
++            <version>2.8.5</version> <!-- MikroCord - update dependencies -->
+             <scope>compile</scope>
+         </dependency>
+         <!-- MikroCord start - add KyoriPowered/text support -->
+diff --git a/pom.xml b/pom.xml
+index fe215425..864337bf 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -117,7 +117,7 @@
+         <dependency>
+             <groupId>com.google.guava</groupId>
+             <artifactId>guava</artifactId>
+-            <version>20.0</version>
++            <version>27.1-jre</version> <!-- MikroCord - update dependencies -->
+             <scope>compile</scope>
+         </dependency>
+         <dependency>
+diff --git a/proxy/pom.xml b/proxy/pom.xml
+index c6e75fbe..b423fc46 100644
+--- a/proxy/pom.xml
++++ b/proxy/pom.xml
+@@ -102,7 +102,7 @@
+         <dependency>
+             <groupId>mysql</groupId>
+             <artifactId>mysql-connector-java</artifactId>
+-            <version>5.1.47</version>
++            <version>8.0.16</version> <!-- MikroCord - update dependencies -->
+             <scope>runtime</scope>
+         </dependency>
+ 
+diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
+index 1ca62370..653c1026 100644
+--- a/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
++++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
+@@ -43,11 +43,11 @@ public final class DependencyClassLoader extends URLClassLoader {
+     private static final String NETTY_VERSION = "4.1.34.Final";
+ 
+     private static final List<Dependency> DEPENDENCIES = Arrays.asList(
+-            new Dependency("com.google.guava", "guava", "20.0", "89507701249388e1ed5ddcf8c41f4ce1be7831ef"),
+-            new Dependency("mysql", "mysql-connector-java", "5.1.47", "9de4159aaf2d08817a276610b8114a825fca6cfd"),
++            new Dependency("com.google.guava", "guava", "27.1-jre", "e47b59c893079b87743cdcfb6f17ca95c08c592c"),
++            new Dependency("mysql", "mysql-connector-java", "8.0.16", "06088b7a25188ab4b3ab865422a8ec77ade29236"),
+             new Dependency("net.sf.trove4j", "core", "3.1.0", "5fd0207b685536b29dd65c86f4b3bf89befb885c"),
+             new Dependency("org.yaml", "snakeyaml", "1.23", "ec62d74fe50689c28c0ff5b35d3aebcaa8b5be68"),
+-            new Dependency("com.google.code.gson", "gson", "2.8.0", "c4ba5371a29ac9b2ad6129b1d39ea38750043eff"),
++            new Dependency("com.google.code.gson", "gson", "2.8.5", "f645ed69d595b24d4cf8b3fbb64cc505bede8829"),
+             new Dependency("com.flowpowered", "flow-nbt", "1.0.0", "cdb46ca1a493dfc635e53a5055ed6c7872c32941"),
+             new Dependency("io.netty", "netty-buffer", NETTY_VERSION, "8afc2027eadc7848127553ebb490ea0e2b199d4e"),
+             new Dependency("io.netty", "netty-codec", NETTY_VERSION, "0cb53baf46cc55768f2e28d15cde399063555ea8"),
+-- 
+2.21.0
+
