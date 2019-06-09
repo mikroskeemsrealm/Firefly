@@ -1,4 +1,4 @@
-From 73cbab6f716be655a2b560c2b88f91fcb9c9a3cf Mon Sep 17 00:00:00 2001
+From 1782295c335b86b10cafd1a8e78ab3b081e6d605 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Wed, 29 May 2019 14:34:43 +0300
 Subject: [PATCH] Implement Velocity modern forwarding support
@@ -59,10 +59,10 @@ index a8d6c8e3..5b0b1c5e 100644
  }
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/VelocitySupport.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/VelocitySupport.java
 new file mode 100644
-index 00000000..c6b19b61
+index 00000000..a5389c98
 --- /dev/null
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/VelocitySupport.java
-@@ -0,0 +1,81 @@
+@@ -0,0 +1,85 @@
 +package eu.mikroskeem.mikrocord.misc;
 +
 +import io.netty.buffer.ByteBuf;
@@ -84,6 +84,7 @@ index 00000000..c6b19b61
 +public final class VelocitySupport {
 +    private final static String chars = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890";
 +    private final static SecureRandom secureRandom = new SecureRandom();
++    private final static Mac mac;
 +
 +    private VelocitySupport() {}
 +
@@ -117,7 +118,6 @@ index 00000000..c6b19b61
 +            }
 +
 +            SecretKey key = new SecretKeySpec(hmacSecret, "HmacSHA256");
-+            Mac mac = Mac.getInstance("HmacSHA256");
 +            mac.init(key);
 +            mac.update(dataToForward.array(), dataToForward.arrayOffset(), dataToForward.readableBytes());
 +            byte[] sig = mac.doFinal();
@@ -127,10 +127,6 @@ index 00000000..c6b19b61
 +        } catch (InvalidKeyException e) {
 +            finalData.release();
 +            throw new RuntimeException("Unable to authenticate data", e);
-+        } catch (NoSuchAlgorithmException e) {
-+            // Should never happen
-+            finalData.release();
-+            throw new AssertionError(e);
 +        } finally {
 +            dataToForward.release();
 +        }
@@ -142,6 +138,14 @@ index 00000000..c6b19b61
 +            builder.append(chars.charAt(secureRandom.nextInt(chars.length())));
 +        }
 +        return builder.toString();
++    }
++
++    static {
++        try {
++            mac = Mac.getInstance("HmacSHA256");
++        } catch (Exception e) {
++            throw new AssertionError(e);
++        }
 +    }
 +}
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
