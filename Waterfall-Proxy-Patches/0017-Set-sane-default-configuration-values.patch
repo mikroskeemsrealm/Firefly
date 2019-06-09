@@ -1,9 +1,22 @@
-From 6b33b2c1ccb24d18aa5c077e796e9f871be59603 Mon Sep 17 00:00:00 2001
+From 6702aaee33fb616ee6474467d9c46ec466df9c3e Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sat, 13 Apr 2019 23:10:17 +0300
 Subject: [PATCH] Set sane default configuration values
 
 
+diff --git a/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java b/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
+index dfd74f1e..5ed309dc 100644
+--- a/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
++++ b/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
+@@ -16,7 +16,7 @@ public abstract class WaterfallConfiguration extends Configuration { // MikroCor
+      * <p>
+      * Default is true
+      */
+-    private boolean logInitialHandlerConnections = true;
++    private boolean logInitialHandlerConnections = false; // MikroCord - sane configuration defaults
+ 
+     /**
+      * The supported versions displayed to the client
 diff --git a/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java b/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java
 index 51ddb412..a181e62f 100644
 --- a/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java
