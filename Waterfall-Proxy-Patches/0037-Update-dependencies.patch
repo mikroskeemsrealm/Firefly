@@ -1,4 +1,4 @@
-From 99808d7d43805772d166835a729a29a2ebbc3e91 Mon Sep 17 00:00:00 2001
+From b6e60f4f1f1d0b38c8230e4ab67dec6189f34fcb Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 9 Jun 2019 01:47:21 +0300
 Subject: [PATCH] Update dependencies
@@ -44,11 +44,15 @@ index c6e75fbe..b423fc46 100644
          </dependency>
  
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
-index 1ca62370..653c1026 100644
+index 1ca62370..0ac08b7b 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
-@@ -43,11 +43,11 @@ public final class DependencyClassLoader extends URLClassLoader {
-     private static final String NETTY_VERSION = "4.1.34.Final";
+@@ -40,27 +40,27 @@ public final class DependencyClassLoader extends URLClassLoader {
+             "https://repo.maven.apache.org/maven2"
+     );
+ 
+-    private static final String NETTY_VERSION = "4.1.34.Final";
++    private static final String NETTY_VERSION = "4.1.36.Final";
  
      private static final List<Dependency> DEPENDENCIES = Arrays.asList(
 -            new Dependency("com.google.guava", "guava", "20.0", "89507701249388e1ed5ddcf8c41f4ce1be7831ef"),
@@ -60,8 +64,33 @@ index 1ca62370..653c1026 100644
 -            new Dependency("com.google.code.gson", "gson", "2.8.0", "c4ba5371a29ac9b2ad6129b1d39ea38750043eff"),
 +            new Dependency("com.google.code.gson", "gson", "2.8.5", "f645ed69d595b24d4cf8b3fbb64cc505bede8829"),
              new Dependency("com.flowpowered", "flow-nbt", "1.0.0", "cdb46ca1a493dfc635e53a5055ed6c7872c32941"),
-             new Dependency("io.netty", "netty-buffer", NETTY_VERSION, "8afc2027eadc7848127553ebb490ea0e2b199d4e"),
-             new Dependency("io.netty", "netty-codec", NETTY_VERSION, "0cb53baf46cc55768f2e28d15cde399063555ea8"),
+-            new Dependency("io.netty", "netty-buffer", NETTY_VERSION, "8afc2027eadc7848127553ebb490ea0e2b199d4e"),
+-            new Dependency("io.netty", "netty-codec", NETTY_VERSION, "0cb53baf46cc55768f2e28d15cde399063555ea8"),
+-            new Dependency("io.netty", "netty-codec-dns", NETTY_VERSION, "40352df88786faf68901fa01b0c51baafcad5115"),
+-            new Dependency("io.netty", "netty-codec-haproxy", NETTY_VERSION, "d8f64c174e7875e3be6a75f91b0ee3ba3316655e"),
+-            new Dependency("io.netty", "netty-codec-http", NETTY_VERSION, "02887d87fbc1b057657348f61dc538f7296daf79"),
+-            new Dependency("io.netty", "netty-common", NETTY_VERSION, "2dffa21967d36cae446b6905bd5fb39750fcba43"),
+-            new Dependency("io.netty", "netty-handler", NETTY_VERSION, "96169098bebda3d1432f5421c338958063b3da52"),
+-            new Dependency("io.netty", "netty-resolver", NETTY_VERSION, "528789e98eef519960a56e44569ecb2260782fd7"),
+-            new Dependency("io.netty", "netty-resolver-dns", NETTY_VERSION, "0ca536138bcc44997354cdd102933656f65f56c7"),
+-            new Dependency("io.netty", "netty-transport-native-epoll", NETTY_VERSION, "linux-x86_64", "4ee3e61c2429f280a63729d39b3973562318600b"),
+-            new Dependency("io.netty", "netty-transport-native-unix-common", NETTY_VERSION, "7e63ead8935a85d601646d44263a40fabe225771"),
+-            new Dependency("io.netty", "netty-transport", NETTY_VERSION, "f57be6509efa6766d90e537a775930101f26b35c"),
++            new Dependency("io.netty", "netty-buffer", NETTY_VERSION, "7f2db0921dd57df4db076229830ab09bba713aeb"),
++            new Dependency("io.netty", "netty-codec", NETTY_VERSION, "8462116d327bb3d1ec24258071f2e7345a73dbfc"),
++            new Dependency("io.netty", "netty-codec-dns", NETTY_VERSION, "8775964a38d6e5d2847c98fc91a91486665b1dcc"),
++            new Dependency("io.netty", "netty-codec-haproxy", NETTY_VERSION, "20f23c1e5a374cd04d76bb480ab3418f5775f7b2"),
++            new Dependency("io.netty", "netty-codec-http", NETTY_VERSION, "62b73d439dbddf3c0dde092b048580139695ab46"),
++            new Dependency("io.netty", "netty-common", NETTY_VERSION, "f6f38fde652a70ea579897edc80e52353e487ae6"),
++            new Dependency("io.netty", "netty-handler", NETTY_VERSION, "1c38a5920a10c01b1cce4cdc964447ec76abf1b5"),
++            new Dependency("io.netty", "netty-resolver", NETTY_VERSION, "e4d243fbf4e6837fa294f892bf97149e18129100"),
++            new Dependency("io.netty", "netty-resolver-dns", NETTY_VERSION, "071f0d061465651d90c7f1d40a66580f69821582"),
++            new Dependency("io.netty", "netty-transport-native-epoll", NETTY_VERSION, "linux-x86_64", "8ec8e248ef34b86cc7fae023fb40b9ffa8f5614f"),
++            new Dependency("io.netty", "netty-transport-native-unix-common", NETTY_VERSION, "d95d7033f400f9472db9da7834c443b96cd4bab0"),
++            new Dependency("io.netty", "netty-transport", NETTY_VERSION, "8546e6be47be587acab86bbd106ca023678f07d9"),
+             new Dependency("org.apache.logging.log4j", "log4j-iostreams", "2.11.1", "54219892aca8fe8b91d5c0e4e74d78b5ea613b1d"),
+             new Dependency("org.apache.logging.log4j", "log4j-jul", "2.11.1", "f94ff1933609c93844d48815eecbe9e7e4d26473"),
+             new Dependency("org.apache.logging.log4j", "log4j-slf4j-impl", "2.11.1", "4b41b53a3a2d299ce381a69d165381ca19f62912"),
 -- 
 2.21.0
 
