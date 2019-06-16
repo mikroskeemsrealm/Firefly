@@ -1,0 +1,33 @@
+From 7149f61201583a35945187c8964633acaed61720 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Sun, 16 Jun 2019 23:44:52 +0300
+Subject: [PATCH] Improve plugin manager logging
+
+
+diff --git a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
+index 0307c231..6fe64f41 100644
+--- a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
++++ b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
+@@ -285,9 +285,10 @@ public class PluginManager
+         for ( Map.Entry<String, PluginDescription> entry : toLoad.entrySet() )
+         {
+             PluginDescription plugin = entry.getValue();
++            ProxyServer.getInstance().getLogger().log( Level.INFO, "Loading plugin {0}...", plugin.getName()); // MikroCord - log when plugins are about to be enabled
+             if ( !enablePlugin( pluginStatuses, new Stack<PluginDescription>(), plugin ) )
+             {
+-                ProxyServer.getInstance().getLogger().log( Level.WARNING, "Failed to enable {0}", entry.getKey() );
++                ProxyServer.getInstance().getLogger().log( Level.WARNING, "Failed to load {0}", entry.getKey() ); // MikroCord - fix inaccurate log message
+             }
+         }
+         toLoad.clear();
+@@ -298,6 +299,7 @@ public class PluginManager
+     {
+         for ( Plugin plugin : plugins.values() )
+         {
++            ProxyServer.getInstance().getLogger().log( Level.INFO, "Enabling plugin {0}...", plugin.getDescription().getName()); // MikroCord - log when plugins are about to be enabled
+             try
+             {
+                 plugin.onEnable();
+-- 
+2.22.0
+
