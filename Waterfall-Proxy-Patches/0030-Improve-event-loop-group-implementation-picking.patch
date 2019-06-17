@@ -1,4 +1,4 @@
-From 6ddce68d169089f4920cbcce17fac0be21f6a3b0 Mon Sep 17 00:00:00 2001
+From 94f4c3e7c5aee25593bf967e93f87425e2ec72d4 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Wed, 29 May 2019 20:16:16 +0300
 Subject: [PATCH] Improve event loop group implementation picking
@@ -51,10 +51,10 @@ index 00000000..5afba538
 +    NIO
 +}
 diff --git a/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java b/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
-index ba37e373..f5aee01c 100644
+index bd2401fc..be665b12 100644
 --- a/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
 +++ b/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
-@@ -87,12 +87,16 @@ public class PipelineUtils
+@@ -92,12 +92,16 @@ public class PipelineUtils
      public static final String LEGACY_KICKER = "legacy-kick";
  
      private static boolean epoll;
@@ -73,7 +73,7 @@ index ba37e373..f5aee01c 100644
  
              if ( epoll = Epoll.isAvailable() )
              {
-@@ -102,6 +106,7 @@ public class PipelineUtils
+@@ -107,6 +111,7 @@ public class PipelineUtils
                  ProxyServer.getInstance().getLogger().log( Level.WARNING, "Epoll is not working, falling back to NIO: {0}", Util.exception( Epoll.unavailabilityCause() ) );
              }
          }
@@ -82,5 +82,5 @@ index ba37e373..f5aee01c 100644
  
      public static EventLoopGroup newEventLoopGroup(int threads, ThreadFactory factory)
 -- 
-2.21.0
+2.22.0
 
