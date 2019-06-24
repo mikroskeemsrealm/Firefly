@@ -1,4 +1,4 @@
-From bec5dba19deb93c759c84c4375284bb4bbe99f1b Mon Sep 17 00:00:00 2001
+From 6cf65249a1c77a72e61cce8bfb296539948eeac9 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 14 Apr 2019 23:25:25 +0300
 Subject: [PATCH] Server specific IP forwarding support
@@ -55,7 +55,7 @@ index 19773843..46fe6e64 100644
 +    // MikroCord end
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 0317f34d..3564eaf7 100644
+index 42b2f207..c984027d 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -734,9 +734,9 @@ public class BungeeCord extends ProxyServer
@@ -148,10 +148,10 @@ index 51d0c6cf..24fce4de 100644
          }
      }
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
-index 45a9686a..84848855 100644
+index 3855c0b9..3fcd7326 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
-@@ -79,24 +79,28 @@ public abstract class EntityMap
+@@ -80,24 +80,28 @@ public abstract class EntityMap
          }
      }
  
@@ -531,5 +531,5 @@ index cb81d1dd..5fe5dca1 100644
  // Waterfall end
 \ No newline at end of file
 -- 
-2.21.0
+2.22.0
 
