@@ -1,4 +1,4 @@
-From ed817ea9517919475d35d80c3ec6edb1eaaf97bb Mon Sep 17 00:00:00 2001
+From 0547795e087e2ee2640e81c965694508460d31ae Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sat, 13 Apr 2019 20:13:53 +0300
 Subject: [PATCH] Make packet manipulation easier
@@ -118,7 +118,7 @@ index d11d601e..789a8ec1 100644
 +    // MikroCord end
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-index 1375d1e2..ee5d6986 100644
+index 72f487dc..c37bc1d1 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 @@ -54,7 +54,7 @@ import net.md_5.bungee.util.BufUtil;
@@ -130,7 +130,7 @@ index 1375d1e2..ee5d6986 100644
  {
  
      private final ProxyServer bungee;
-@@ -434,4 +434,10 @@ public class ServerConnector extends PacketHandler
+@@ -439,4 +439,10 @@ public class ServerConnector extends PacketHandler
      {
          return "[" + user.getName() + "|" + user.getAddress() + "] <-> ServerConnector [" + target.getName() + "]";
      }
@@ -181,5 +181,5 @@ index 3a9dab68..ca7d5fd5 100644
 +    // MikroCord end
  }
 -- 
-2.21.0
+2.22.0
 

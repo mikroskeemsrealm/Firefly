@@ -1,4 +1,4 @@
-From 1782295c335b86b10cafd1a8e78ab3b081e6d605 Mon Sep 17 00:00:00 2001
+From 8bac39c3cbb718cc8a9002816664b35e1385f70c Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Wed, 29 May 2019 14:34:43 +0300
 Subject: [PATCH] Implement Velocity modern forwarding support
@@ -149,7 +149,7 @@ index 00000000..a5389c98
 +    }
 +}
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-index c5687e21..e29bad8a 100644
+index 661a98f7..0a4a7a4b 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 @@ -65,6 +65,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
@@ -172,7 +172,7 @@ index c5687e21..e29bad8a 100644
  
          // Only reset the Forge client when:
          // 1) The user is switching servers (so has a current server)
-@@ -440,4 +446,35 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
+@@ -445,4 +451,35 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
          return ch.getHandle();
      }
      // MikroCord end
@@ -211,5 +211,5 @@ index c5687e21..e29bad8a 100644
 +}
 \ No newline at end of file
 -- 
-2.21.0
+2.22.0
 
