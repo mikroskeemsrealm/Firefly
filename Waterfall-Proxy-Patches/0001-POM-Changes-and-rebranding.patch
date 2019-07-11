@@ -1,4 +1,4 @@
-From f6483cd38b0532761d0a5c1b13d353026ab16ffa Mon Sep 17 00:00:00 2001
+From 17717ffa10f2398f5b0292afb818ac9f27e946a3 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 10 Mar 2019 17:29:41 +0200
 Subject: [PATCH] POM Changes and rebranding
@@ -507,7 +507,7 @@ index b5aeb99e..34d97d1b 100644
      <dependencies>
          <dependency>
 diff --git a/pom.xml b/pom.xml
-index eff0bf2e..4c5c76f3 100644
+index eff0bf2e..03a2e04d 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -4,25 +4,27 @@
@@ -575,12 +575,12 @@ index eff0bf2e..4c5c76f3 100644
          <snapshotRepository>
 -            <id>papermc-snapshots</id>
 -            <url>https://papermc.io/repo/repository/maven-snapshots/</url>
-+            <id>codemc-snapshots</id>
-+            <url>https://repo.codemc.org/repository/maven-snapshots</url>
++            <id>cu-maven-public</id>
++            <url>https://maven.cu-mc.com/repository/maven-public</url>
          </snapshotRepository>
 +        <repository>
-+            <id>codemc-releases</id>
-+            <url>https://repo.codemc.org/repository/maven-releases</url>
++            <id>cu-maven-public</id>
++            <url>https://maven.cu-mc.com/repository/maven-public</url>
 +        </repository>
      </distributionManagement>
  
@@ -781,5 +781,5 @@ index 1fd54029..61bd8a37 100644
              <scope>compile</scope>
          </dependency>
 -- 
-2.21.0
+2.22.0
 
