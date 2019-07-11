@@ -1,4 +1,4 @@
-From 17717ffa10f2398f5b0292afb818ac9f27e946a3 Mon Sep 17 00:00:00 2001
+From 89fd9c0bb0d17c182d462537032fa243c41d7a12 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 10 Mar 2019 17:29:41 +0200
 Subject: [PATCH] POM Changes and rebranding
@@ -507,7 +507,7 @@ index b5aeb99e..34d97d1b 100644
      <dependencies>
          <dependency>
 diff --git a/pom.xml b/pom.xml
-index eff0bf2e..03a2e04d 100644
+index eff0bf2e..12cce3e5 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -4,25 +4,27 @@
@@ -589,6 +589,22 @@ index eff0bf2e..03a2e04d 100644
          <build.number>unknown</build.number>
          <netty.version>4.1.34.Final</netty.version>
          <!-- Require Java 8 -->
+@@ -256,6 +259,7 @@
+                             </execution>
+                         </executions>
+                     </plugin>
++                    <!-- MikroCord start - disable javadocs
+                     <plugin>
+                         <groupId>org.apache.maven.plugins</groupId>
+                         <artifactId>maven-javadoc-plugin</artifactId>
+@@ -292,6 +296,7 @@
+                             </execution>
+                         </executions>
+                     </plugin>
++                    MikroCord end -->
+                     <plugin>
+                         <groupId>org.apache.maven.plugins</groupId>
+                         <artifactId>maven-source-plugin</artifactId>
 diff --git a/protocol/pom.xml b/protocol/pom.xml
 index 2493fc17..53e2b45e 100644
 --- a/protocol/pom.xml
