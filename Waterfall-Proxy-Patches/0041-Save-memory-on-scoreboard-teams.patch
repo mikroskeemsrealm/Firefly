@@ -1,0 +1,153 @@
+From 2d7820df38bcc4bb14845c038072366f1dc4c8eb Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Mon, 17 Jun 2019 14:45:40 +0300
+Subject: [PATCH] Save memory on scoreboard teams
+
+
+diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
+index 30f94753..fb2e1b50 100644
+--- a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
++++ b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
+@@ -274,4 +274,7 @@ public interface ProxyConfig
+     // MikroCord start - don't rewrite tablist on online mode connections
+     boolean isAllowTablistRewrite();
+     // MikroCord end
++    // MikroCord start - save memory on scoreboard teams
++    boolean isInternScoreboardTeamStrings();
++    // MikroCord end
+ }
+diff --git a/api/src/main/java/net/md_5/bungee/api/score/Team.java b/api/src/main/java/net/md_5/bungee/api/score/Team.java
+index 25526320..7c0bef5d 100644
+--- a/api/src/main/java/net/md_5/bungee/api/score/Team.java
++++ b/api/src/main/java/net/md_5/bungee/api/score/Team.java
+@@ -18,8 +18,8 @@ public class Team
+     private String prefix;
+     private String suffix;
+     private byte friendlyFire;
+-    private String nameTagVisibility;
+-    private String collisionRule;
++    private NametagVisibility nameTagVisibility; // MikroCord - save memory on scoreboard teams
++    private CollisionRule collisionRule; // MikroCord - save memory on scoreboard teams
+     private int color;
+     private Set<String> players = LowMemorySet.create();
+ 
+@@ -37,4 +37,92 @@ public class Team
+     {
+         players.remove( name );
+     }
++
++    // MikroCord start - save memory on scoreboard teams
++    public void setDisplayName(String displayName) {
++        this.displayName = net.md_5.bungee.api.ProxyServer.getInstance().getConfig().isInternScoreboardTeamStrings() ? displayName.intern() : displayName;
++    }
++
++    public void setPrefix(String prefix) {
++        this.prefix = net.md_5.bungee.api.ProxyServer.getInstance().getConfig().isInternScoreboardTeamStrings() ? prefix.intern() : prefix;
++    }
++
++    public void setSuffix(String suffix) {
++        this.suffix = net.md_5.bungee.api.ProxyServer.getInstance().getConfig().isInternScoreboardTeamStrings() ? suffix.intern() : suffix;
++    }
++
++    @Deprecated
++    public String getNameTagVisibility() {
++        return nameTagVisibility.getValue();
++    }
++
++    @Deprecated
++    public void setNameTagVisibility(String value) {
++        NametagVisibility enumValue;
++        if (value == null) {
++            enumValue = NametagVisibility.ALWAYS;
++        } else if ((enumValue = NametagVisibility.VALUES.get(value)) == null) {
++            net.md_5.bungee.api.ProxyServer.getInstance().getLogger().log(java.util.logging.Level.WARNING, "Unknown team name tag visibility value: {0} -> {1}", new Object[] { name, value });
++            enumValue = NametagVisibility.ALWAYS;
++        }
++        this.nameTagVisibility = enumValue;
++    }
++
++    @Deprecated
++    public String getCollisionRule() {
++        return collisionRule.getValue();
++    }
++
++    @Deprecated
++    public void setCollisionRule(String value) {
++        CollisionRule enumValue;
++        if (value == null) {
++            enumValue = CollisionRule.ALWAYS;
++        } else if ((enumValue = CollisionRule.VALUES.get(value)) == null) {
++            net.md_5.bungee.api.ProxyServer.getInstance().getLogger().log(java.util.logging.Level.WARNING, "Unknown team collision rule value: {0} -> {1}", new Object[] { name, value });
++            enumValue = CollisionRule.ALWAYS;
++        }
++        this.collisionRule = enumValue;
++    }
++
++    @RequiredArgsConstructor
++    public enum CollisionRule {
++        ALWAYS("always"),
++        PUSH_OTHER_TEAMS("pushOtherTeams"),
++        PUSH_OWN_TEAM("pushOwnTeam"),
++        NEVER("never"),
++        ;
++
++        @Getter
++        private final String value;
++
++        public static final java.util.Map<String, CollisionRule> VALUES = new java.util.HashMap<>();
++
++        static {
++            for (CollisionRule value : values()) {
++                VALUES.put(value.getValue(), value);
++            }
++        }
++    }
++
++    @RequiredArgsConstructor
++    public enum NametagVisibility {
++        ALWAYS("always"),
++        HIDE_FOR_OTHER_TEAMS("hideForOtherTeams"),
++        HIDE_FOR_OWN_TEAM("hideForOwnTeam"),
++        NEVER("never"),
++        ;
++
++        @Getter
++        private final String value;
++
++        public static final java.util.Map<String, NametagVisibility> VALUES = new java.util.HashMap<>();
++
++        static {
++            for (NametagVisibility value : values()) {
++                VALUES.put(value.getValue(), value);
++            }
++        }
++    }
++    // MikroCord end
+ }
+diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
+index 483c9d69..8b37cc45 100644
+--- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
++++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
+@@ -47,6 +47,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+     @Getter
+     private boolean allowTablistRewrite = true;
+ 
++    @Getter
++    private boolean internScoreboardTeamStrings = false;
++
+     @Override
+     public void load() {
+         super.load();
+@@ -61,7 +64,8 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+         velocityForwardingSecret = config.getString("velocity_modern_forwarding.secret", () -> VelocitySupport.generateRandomString(12)).getBytes(StandardCharsets.UTF_8);
+         tcpFastOpenEnabled = config.getBoolean("networking.tcp_fast_open.enabled", tcpFastOpenEnabled);
+         tcpFastOpenMode = setupTfo(config.getInt("networking.tcp_fast_open.mode", tcpFastOpenMode));
+-        allowTablistRewrite = config.getBoolean("allow_tablist_rewrite", allowTablistRewrite);
++        allowTablistRewrite = config.getBoolean("performance.allow_tablist_rewrite", allowTablistRewrite);
++        internScoreboardTeamStrings = config.getBoolean("performance.intern_scoreboard_team_strings", internScoreboardTeamStrings);
+     }
+ 
+     private int setupTfo(int value) {
+-- 
+2.22.0
+

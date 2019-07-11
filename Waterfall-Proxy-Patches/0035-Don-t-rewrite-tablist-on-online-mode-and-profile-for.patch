@@ -1,0 +1,57 @@
+From feeb42fcb22772981a954dfe22c97dda2c048999 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Fri, 31 May 2019 13:10:44 +0300
+Subject: [PATCH] Don't rewrite tablist on online mode and profile forwarding
+ connections
+
+Credit goes to xxDark, https://github.com/PaperMC/Waterfall/pull/386
+
+diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
+index c69475ed..30f94753 100644
+--- a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
++++ b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
+@@ -271,4 +271,7 @@ public interface ProxyConfig
+     boolean isTcpFastOpenEnabled();
+     int getTcpFastOpenMode();
+     // MikroCord end
++    // MikroCord start - don't rewrite tablist on online mode connections
++    boolean isAllowTablistRewrite();
++    // MikroCord end
+ }
+diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
+index 3194c5d0..483c9d69 100644
+--- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
++++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
+@@ -44,6 +44,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+     @Getter
+     private int tcpFastOpenMode = TCPFastOpenMode.CLIENT_ONLY.value;
+ 
++    @Getter
++    private boolean allowTablistRewrite = true;
++
+     @Override
+     public void load() {
+         super.load();
+@@ -58,6 +61,7 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+         velocityForwardingSecret = config.getString("velocity_modern_forwarding.secret", () -> VelocitySupport.generateRandomString(12)).getBytes(StandardCharsets.UTF_8);
+         tcpFastOpenEnabled = config.getBoolean("networking.tcp_fast_open.enabled", tcpFastOpenEnabled);
+         tcpFastOpenMode = setupTfo(config.getInt("networking.tcp_fast_open.mode", tcpFastOpenMode));
++        allowTablistRewrite = config.getBoolean("allow_tablist_rewrite", allowTablistRewrite);
+     }
+ 
+     private int setupTfo(int value) {
+diff --git a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
+index c83d39a8..6dba4b8d 100644
+--- a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
++++ b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
+@@ -150,6 +150,7 @@ public class DownstreamBridge extends PacketHandler
+     @Override
+     public void handle(PlayerListItem playerList) throws Exception
+     {
++        if (!this.bungee.getConfig().isAllowTablistRewrite() && con.getPendingConnection().isOnlineMode() && (this.bungee.getConfig().isVelocityForwardingSupport() || this.server.getInfo().isIpForward())) { con.getTabListHandler().onUpdate(playerList); return; } // MikroCord - don't rewrite tablist on online mode connections
+         con.getTabListHandler().onUpdate( TabList.rewrite( playerList ) );
+         throw CancelSendSignal.INSTANCE; // Always throw because of profile rewriting
+     }
+-- 
+2.22.0
+

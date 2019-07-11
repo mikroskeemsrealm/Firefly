@@ -1,0 +1,66 @@
+From aa99b19a2601b13e67d5f6c37c4c65b3466de3c4 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Sat, 13 Apr 2019 23:10:17 +0300
+Subject: [PATCH] Set sane default configuration values
+
+
+diff --git a/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java b/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
+index dfd74f1e..5ed309dc 100644
+--- a/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
++++ b/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
+@@ -16,7 +16,7 @@ public abstract class WaterfallConfiguration extends Configuration { // MikroCor
+      * <p>
+      * Default is true
+      */
+-    private boolean logInitialHandlerConnections = true;
++    private boolean logInitialHandlerConnections = false; // MikroCord - sane configuration defaults
+ 
+     /**
+      * The supported versions displayed to the client
+diff --git a/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java b/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java
+index 51ddb412..a181e62f 100644
+--- a/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java
++++ b/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java
+@@ -57,12 +57,12 @@ public abstract class Configuration implements ProxyConfig
+      * Whether we log proxy commands to the proxy log
+      */
+     private boolean logCommands;
+-    private boolean logPings = true;
++    private boolean logPings; // MikroCord - sane configuration defaults
+     private int playerLimit = -1;
+     private Collection<String> disabledCommands;
+     private int throttle = 4000;
+     private int throttleLimit = 3;
+-    private boolean ipForward;
++    private boolean ipForward = true; // MikroCord - sane configuration defaults
+     private Favicon favicon;
+     private int compressionThreshold = 256;
+     private boolean preventProxyConnections;
+diff --git a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
+index 5cd84940..e6b44d65 100644
+--- a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
++++ b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
+@@ -110,7 +110,11 @@ public class YamlConfig implements ConfigurationAdapter
+         Map<String, Object> groups = get( "groups", null );
+         if ( groups == null )
+         {
++            /* // MikroCord start - sane configuration defaults
+             set( "groups.md_5", Collections.singletonList( "admin" ) );
++            */
++            set("groups", Collections.emptyMap()); // MikroCord - sane configuration defaults
++            // MikroCord end
+         }
+     }
+ 
+@@ -244,7 +248,7 @@ public class YamlConfig implements ConfigurationAdapter
+             new HashMap()
+         } ) );
+         Map<String, String> forcedDef = new HashMap<>();
+-        forcedDef.put( "pvp.md-5.net", "pvp" );
++        //forcedDef.put( "pvp.md-5.net", "pvp" ); MikroCord - sane configuration defaults
+ 
+         Collection<ListenerInfo> ret = new HashSet<>();
+ 
+-- 
+2.22.0
+

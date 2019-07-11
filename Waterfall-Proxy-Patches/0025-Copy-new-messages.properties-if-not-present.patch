@@ -1,0 +1,29 @@
+From 12ce7240fb3e08a82125a0db47a23c37ec008464 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Fri, 19 Apr 2019 17:44:34 +0300
+Subject: [PATCH] Copy new messages.properties if not present
+
+
+diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
+index c984027d..2187c955 100644
+--- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
++++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
+@@ -578,6 +578,15 @@ public class BungeeCord extends ProxyServer
+                 getLogger().log( Level.SEVERE, "Could not load custom messages.properties", ex );
+             }
+         }
++        // MikroCord start - copy new messages.properties if not present
++        else if(localizationBundleWrapper instanceof eu.mikroskeem.mikrocord.misc.ResourceBundleConfigurationWrapper) {
++            try(java.io.InputStream stream = BungeeCord.class.getResourceAsStream("/messages.properties")) {
++                java.nio.file.Files.copy(stream, file.toPath());
++            } catch (IOException e) {
++                getLogger().log(Level.WARNING, "Could not copy default messages.properties", e);
++            }
++        }
++        // MikroCord end
+     }
+ 
+     @Override
+-- 
+2.22.0
+

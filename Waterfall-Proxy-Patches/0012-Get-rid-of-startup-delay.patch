@@ -1,0 +1,29 @@
+From d36dda5dd1aabe99e71026f10665dc299270d6e1 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Wed, 20 Mar 2019 07:48:35 +0200
+Subject: [PATCH] Get rid of startup delay
+
+
+diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java b/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
+index ab6ddcc9..773c67ee 100644
+--- a/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
++++ b/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
+@@ -48,11 +48,15 @@ public class BungeeCordLauncher
+             deadline.add( Calendar.WEEK_OF_YEAR, -4 );
+             if ( buildDate.before( deadline.getTime() ) )
+             {
++                /* MikroCord start - remove this dumb delay
+                 System.err.println( "*** Hey! This build is potentially outdated :( ***" );
+                 System.err.println( "*** Please check for a new build from https://papermc.io/ci/job/Waterfall/ ***" );
+                 System.err.println( "*** Should this build be outdated, you will get NO support for it. ***" );
+                 System.err.println( "*** Server will start in 10 seconds ***" );
+                 Thread.sleep( TimeUnit.SECONDS.toMillis( 10 ) );
++                */
++                System.err.println("This MikroCord build is potentially outdated, please check for updates");
++                // MikroCord end
+             }
+         }
+ 
+-- 
+2.22.0
+

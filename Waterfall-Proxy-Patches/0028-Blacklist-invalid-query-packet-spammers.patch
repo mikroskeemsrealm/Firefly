@@ -1,0 +1,51 @@
+From 6b1e9e9bc430f204a8bbea260f18fdcd4c718488 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Wed, 29 May 2019 13:26:07 +0300
+Subject: [PATCH] Blacklist invalid query packet spammers
+
+
+diff --git a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
+index 7c0fa7da..84e7a48f 100644
+--- a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
++++ b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
+@@ -32,6 +32,7 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket>
+     /*========================================================================*/
+     private final Random random = new Random();
+     private final Cache<InetAddress, QuerySession> sessions = CacheBuilder.newBuilder().expireAfterWrite( 30, TimeUnit.SECONDS ).build();
++    private final Cache<InetAddress, Integer> blacklistedAddresses = CacheBuilder.newBuilder().maximumSize(1024).expireAfterWrite( 120, TimeUnit.SECONDS ).build(); // MikroCord - Blacklist invalid query packet spammers
+ 
+     private void writeShort(ByteBuf buf, int s)
+     {
+@@ -66,11 +67,29 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket>
+ 
+     private void handleMessage(ChannelHandlerContext ctx, DatagramPacket msg)
+     {
++        // MikroCord start - Blacklist invalid query packet spammers
++        Integer invalidQueries = blacklistedAddresses.getIfPresent(msg.sender().getAddress());
++        if (invalidQueries != null && invalidQueries > 5) {
++            if (bungee.getConfig().isLogInvalidQueryPackets())
++                bungee.getLogger().log( Level.WARNING, "Query - Ignoring packet from: {0}", msg.sender() );
++            return;
++        }
++        // MikroCord end
+         ByteBuf in = msg.content();
+         if ( in.readUnsignedByte() != 0xFE || in.readUnsignedByte() != 0xFD )
+         {
+             if (bungee.getConfig().isLogInvalidQueryPackets()) // MikroCord - Add option to exclude logging invalid query packets
+             bungee.getLogger().log( Level.WARNING, "Query - Incorrect magic!: {0}", msg.sender() );
++            // MikroCord start - Blacklist invalid query packet spammers
++            try {
++                if (invalidQueries == null) {
++                    invalidQueries = 0;
++                }
++                blacklistedAddresses.put(msg.sender().getAddress(), ++invalidQueries);
++            } catch (Exception e) {
++                throw new RuntimeException(e);
++            }
++            // MikroCord end
+             return;
+         }
+ 
+-- 
+2.22.0
+

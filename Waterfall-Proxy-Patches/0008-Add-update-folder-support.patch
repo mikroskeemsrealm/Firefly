@@ -1,0 +1,60 @@
+From 81110e50a1707dc384d01dc6cd849fe55f79d9b0 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Tue, 19 Mar 2019 22:42:04 +0200
+Subject: [PATCH] Add update folder support
+
+Who remembers https://github.com/SpigotMC/BungeeCord/pull/2314?
+
+diff --git a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
+index 884f78c8..51559a96 100644
+--- a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
++++ b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
+@@ -9,6 +9,7 @@ import java.io.InputStream;
+ import java.lang.reflect.Method;
+ import java.net.URL;
+ import java.net.URLClassLoader;
++import java.nio.file.StandardCopyOption;
+ import java.util.Arrays;
+ import java.util.Collection;
+ import java.util.Collections;
+@@ -391,6 +392,7 @@ public class PluginManager
+         {
+             if ( file.isFile() && file.getName().endsWith( ".jar" ) )
+             {
++                checkForPluginUpdate( folder, file ); // MikroCord - Plugin update folder
+                 try ( JarFile jar = new JarFile( file ) )
+                 {
+                     JarEntry pdf = jar.getJarEntry( "bungee.yml" );
+@@ -497,4 +499,29 @@ public class PluginManager
+     {
+         return Collections.unmodifiableCollection( commandMap.entrySet() );
+     }
++
++    // MikroCord start - Plugin update folder
++    // Checks for plugin updates from plugin folder and performs update
++    private void checkForPluginUpdate(File pluginsFolder, File pluginFile)
++    {
++        File updateFolder = new File( pluginsFolder, "update" );
++        if ( !updateFolder.isDirectory() )
++        {
++            return;
++        }
++        File pluginUpdateFile = new File( updateFolder, pluginFile.getName() );
++        if ( pluginUpdateFile.isFile() )
++        {
++            try
++            {
++                java.nio.file.Files.copy( pluginUpdateFile.toPath(), pluginFile.toPath(), StandardCopyOption.REPLACE_EXISTING );
++            }
++            catch ( java.io.IOException ex )
++            {
++                ProxyServer.getInstance().getLogger().log( Level.WARNING, "Failed to update plugin " + pluginFile, ex );
++            }
++            pluginUpdateFile.delete();
++        }
++    }
++    // MikroCord end
+ }
+-- 
+2.22.0
+

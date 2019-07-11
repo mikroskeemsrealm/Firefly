@@ -1,0 +1,215 @@
+From ce0da4d623546971230bc9c93c5182fa1e1b1958 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Wed, 29 May 2019 14:34:43 +0300
+Subject: [PATCH] Implement Velocity modern forwarding support
+
+
+diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
+index 2a6e8730..d1b206a6 100644
+--- a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
++++ b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
+@@ -263,4 +263,8 @@ public interface ProxyConfig
+      */
+     boolean isLogInvalidQueryPackets();
+     // MikroCord end
++    // MikroCord start - Implement Velocity modern forwarding support
++    boolean isVelocityForwardingSupport();
++    byte[] getVelocityForwardingSecret();
++    // MikroCord end
+ }
+diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
+index a8d6c8e3..5b0b1c5e 100644
+--- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
++++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
+@@ -1,11 +1,13 @@
+ package eu.mikroskeem.mikrocord.conf;
+ 
+ import com.google.common.collect.ImmutableList;
++import eu.mikroskeem.mikrocord.misc.VelocitySupport;
+ import io.github.waterfallmc.waterfall.conf.WaterfallConfiguration;
+ import lombok.Getter;
+ import net.md_5.bungee.api.ProxyServer;
+ import net.md_5.bungee.api.config.ConfigurationAdapter;
+ 
++import java.nio.charset.StandardCharsets;
+ import java.util.HashSet;
+ import java.util.Set;
+ 
+@@ -25,6 +27,12 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+     @Getter
+     private boolean logInvalidQueryPackets = false;
+ 
++    @Getter
++    private boolean velocityForwardingSupport = false;
++
++    @Getter
++    private byte[] velocityForwardingSecret;
++
+     @Override
+     public void load() {
+         super.load();
+@@ -34,5 +42,8 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+         restartMessage = config.getString("restart.message", restartMessage);
+         restartScriptPath = config.getString("restart.script_path", restartScriptPath);
+         ignoredLogCommands = new HashSet<>(config.getList("log.ignored_commands", () -> ImmutableList.of("login", "register", "changepassword")));
++        logInvalidQueryPackets = config.getBoolean("log.invalid_query_packets", logInvalidQueryPackets);
++        velocityForwardingSupport = config.getBoolean("velocity_modern_forwarding.enabled", velocityForwardingSupport);
++        velocityForwardingSecret = config.getString("velocity_modern_forwarding.secret", () -> VelocitySupport.generateRandomString(12)).getBytes(StandardCharsets.UTF_8);
+     }
+ }
+diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/VelocitySupport.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/VelocitySupport.java
+new file mode 100644
+index 00000000..a5389c98
+--- /dev/null
++++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/VelocitySupport.java
+@@ -0,0 +1,85 @@
++package eu.mikroskeem.mikrocord.misc;
++
++import io.netty.buffer.ByteBuf;
++import io.netty.buffer.Unpooled;
++import net.md_5.bungee.UserConnection;
++import net.md_5.bungee.connection.LoginResult;
++import net.md_5.bungee.protocol.DefinedPacket;
++
++import javax.crypto.Mac;
++import javax.crypto.SecretKey;
++import javax.crypto.spec.SecretKeySpec;
++import java.security.InvalidKeyException;
++import java.security.NoSuchAlgorithmException;
++import java.security.SecureRandom;
++
++/**
++ * @author Mark Vainomaa
++ */
++public final class VelocitySupport {
++    private final static String chars = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890";
++    private final static SecureRandom secureRandom = new SecureRandom();
++    private final static Mac mac;
++
++    private VelocitySupport() {}
++
++    public final static String MODERN_FORWARDING_CHANNEL_NAME = "velocity:player_info";
++    public final static int MODERN_FORWARDING_VERSION = 1;
++
++    // Borrowed from com.velocitypowered.proxy.connection.backend.LoginSessionHandler
++    public static ByteBuf createForwardingData(byte[] hmacSecret, UserConnection user) {
++        ByteBuf dataToForward = Unpooled.buffer();
++        ByteBuf finalData = Unpooled.buffer();
++        try {
++            DefinedPacket.writeVarInt(MODERN_FORWARDING_VERSION, dataToForward);
++            DefinedPacket.writeString(user.getAddress().getHostString(), dataToForward);
++            LoginResult profile = user.getPendingConnection().getLoginProfile();
++            DefinedPacket.writeUUID(user.getPendingConnection().getUniqueId(), dataToForward);
++            DefinedPacket.writeString(user.getPendingConnection().getName(), dataToForward);
++            int propertiesCount = (profile != null && profile.getProperties() != null) ? profile.getProperties().length : 0;
++            DefinedPacket.writeVarInt(propertiesCount, dataToForward);
++            if (propertiesCount > 0) {
++                for (LoginResult.Property property : profile.getProperties()) {
++                    DefinedPacket.writeString(property.getName(), dataToForward);
++                    DefinedPacket.writeString(property.getValue(), dataToForward);
++                    String signature = property.getSignature();
++                    if (signature != null) {
++                        dataToForward.writeBoolean(true);
++                        DefinedPacket.writeString(signature, dataToForward);
++                    } else {
++                        dataToForward.writeBoolean(false);
++                    }
++                }
++            }
++
++            SecretKey key = new SecretKeySpec(hmacSecret, "HmacSHA256");
++            mac.init(key);
++            mac.update(dataToForward.array(), dataToForward.arrayOffset(), dataToForward.readableBytes());
++            byte[] sig = mac.doFinal();
++            finalData.writeBytes(sig);
++            finalData.writeBytes(dataToForward);
++            return finalData;
++        } catch (InvalidKeyException e) {
++            finalData.release();
++            throw new RuntimeException("Unable to authenticate data", e);
++        } finally {
++            dataToForward.release();
++        }
++    }
++
++    public static String generateRandomString(int length) {
++        StringBuilder builder = new StringBuilder();
++        for (int i = 0; i < length; i++) {
++            builder.append(chars.charAt(secureRandom.nextInt(chars.length())));
++        }
++        return builder.toString();
++    }
++
++    static {
++        try {
++            mac = Mac.getInstance("HmacSHA256");
++        } catch (Exception e) {
++            throw new AssertionError(e);
++        }
++    }
++}
+diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
+index 661a98f7..0a4a7a4b 100644
+--- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
++++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
+@@ -65,6 +65,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
+     @Getter
+     private ForgeServerHandler handshakeHandler;
+     private boolean obsolete;
++    private boolean modernInformationForwarded = false; // MikroCord - Implement Velocity modern forwarding support
+ 
+     private enum State
+     {
+@@ -167,6 +168,11 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
+         Preconditions.checkState( thisState == State.LOGIN_SUCCESS, "Not expecting LOGIN_SUCCESS" );
+         ch.setProtocol( Protocol.GAME );
+         thisState = State.LOGIN;
++        // MikroCord start - Implement Velocity modern forwarding support
++        if (bungee.getConfig().isVelocityForwardingSupport() && !modernInformationForwarded) {
++            throw new QuietException("Your server did not send a forwarding request to the proxy. Is it set up correctly?");
++        }
++        // MikroCord end
+ 
+         // Only reset the Forge client when:
+         // 1) The user is switching servers (so has a current server)
+@@ -445,4 +451,35 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
+         return ch.getHandle();
+     }
+     // MikroCord end
+-}
++    // MikroCord start - Implement Velocity modern forwarding support
++    @Override
++    public void handle(net.md_5.bungee.protocol.packet.LoginPayloadRequest request) {
++        net.md_5.bungee.protocol.packet.LoginPayloadResponse response = new net.md_5.bungee.protocol.packet.LoginPayloadResponse();
++        response.setId(request.getId());
++        if (bungee.getConfig().isVelocityForwardingSupport() && request.getChannel().equals(eu.mikroskeem.mikrocord.misc.VelocitySupport.MODERN_FORWARDING_CHANNEL_NAME)) {
++            ByteBuf forwardingData = null;
++            byte[] data;
++            try {
++                forwardingData = eu.mikroskeem.mikrocord.misc.VelocitySupport.createForwardingData(
++                        bungee.getConfig().getVelocityForwardingSecret(),
++                        user
++                );
++                data = new byte[forwardingData.readableBytes()];
++
++                // Turn bytebuf into byte array
++                forwardingData.readBytes(data);
++            } finally {
++                if (forwardingData != null)
++                    forwardingData.release();
++            }
++
++            response.setData(data);
++            modernInformationForwarded = true;
++        } else {
++            response.setData(null);
++        }
++
++        ch.write(response);
++    }
++    // MikroCord end
++}
+\ No newline at end of file
+-- 
+2.22.0
+
