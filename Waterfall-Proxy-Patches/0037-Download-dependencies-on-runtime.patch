@@ -1,4 +1,4 @@
-From 9d1cd77a904755fd3d3dc7957f650024a1344d97 Mon Sep 17 00:00:00 2001
+From a6336f7ca1d3aca515751ccc4976ae5ea2060864 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 9 Jun 2019 01:40:14 +0300
 Subject: [PATCH] Download dependencies on runtime
@@ -18,9 +18,18 @@ index 141de9e6..1cc02426 100644
      }
  
 diff --git a/proxy/pom.xml b/proxy/pom.xml
-index 77705224..c6e75fbe 100644
+index 77705224..c4ec4145 100644
 --- a/proxy/pom.xml
 +++ b/proxy/pom.xml
+@@ -152,7 +152,7 @@
+                 <configuration>
+                     <archive>
+                         <manifestEntries>
+-                            <Main-Class>net.md_5.bungee.BungeeCordLauncher</Main-Class>
++                            <Main-Class>eu.mikroskeem.mikrocord.Bootstrap</Main-Class> <!-- MikroCord - download dependencies on runtime -->
+                             <Implementation-Version>${describe}</Implementation-Version>
+                             <Specification-Version>${maven.build.timestamp}</Specification-Version>
+ 
 @@ -175,6 +175,26 @@
                      </execution>
                  </executions>
@@ -50,33 +59,36 @@ index 77705224..c6e75fbe 100644
                              <artifact>*:*</artifact>
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/Bootstrap.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/Bootstrap.java
 new file mode 100644
-index 00000000..69e35f09
+index 00000000..9cbaf91a
 --- /dev/null
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/Bootstrap.java
-@@ -0,0 +1,25 @@
+@@ -0,0 +1,28 @@
 +package eu.mikroskeem.mikrocord;
 +
-+import io.github.waterfallmc.waterfall.console.WaterfallConsole;
-+import lombok.SneakyThrows;
-+import net.md_5.bungee.BungeeCord;
-+import net.md_5.bungee.api.ProxyServer;
++import eu.mikroskeem.mikrocord.dependencies.DependencyClassLoader;
++
++import java.io.IOException;
++import java.nio.file.Paths;
 +
 +/**
 + * @author Mark Vainomaa
 + */
 +public final class Bootstrap {
-+    /*
-+     * Note: keep up to date with BungeeCordLauncher
-+     */
-+    @SneakyThrows
-+    public static void launch(boolean startConsole) {
-+        BungeeCord bungee = new BungeeCord();
-+        ProxyServer.setInstance( bungee );
-+        bungee.getLogger().info( "Enabled MikroCord version " + bungee.getVersion() );
-+        bungee.start();
++    private static DependencyClassLoader classLoader;
 +
-+        if (startConsole)
-+            new WaterfallConsole().start();
++    public static void main(String... args) throws Exception {
++        try {
++            classLoader = DependencyClassLoader.initialize(Bootstrap.class.getClassLoader(), Paths.get("lib"));
++            classLoader.setupDependencies();
++        } catch (IOException e) {
++            System.err.println("Failed to download dependencies!");
++            e.printStackTrace(System.err);
++            System.exit(1);
++            return;
++        }
++
++        Class<?> bootstrap = classLoader.loadClass("net.md_5.bungee.BungeeCordLauncher");
++        bootstrap.getMethod("main", String[].class).invoke(null, (Object) args);
 +    }
 +}
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
@@ -305,49 +317,6 @@ index 00000000..1ca62370
 +        }
 +    }
 +}
-diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java b/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
-index 773c67ee..85c0b02f 100644
---- a/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
-+++ b/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
-@@ -20,6 +20,18 @@ public class BungeeCordLauncher
-     {
-         Security.setProperty( "networkaddress.cache.ttl", "30" );
-         Security.setProperty( "networkaddress.cache.negative.ttl", "10" );
-+        // MikroCord start - download dependencies on runtime
-+        eu.mikroskeem.mikrocord.dependencies.DependencyClassLoader cl;
-+        try {
-+            cl = eu.mikroskeem.mikrocord.dependencies.DependencyClassLoader.initialize(BungeeCordLauncher.class.getClassLoader(), java.nio.file.Paths.get("lib"));
-+            cl.setupDependencies();
-+        } catch (java.io.IOException e) {
-+            System.err.println("Failed to download dependencies!");
-+            e.printStackTrace(System.err);
-+            System.exit(1);
-+            return;
-+        }
-+        // MikroCord end
- 
-         OptionParser parser = new OptionParser();
-         parser.allowsUnrecognizedOptions();
-@@ -60,6 +72,7 @@ public class BungeeCordLauncher
-             }
-         }
- 
-+        /* // MikroCord start - download dependencies on runtime
-         BungeeCord bungee = new BungeeCord();
-         ProxyServer.setInstance( bungee );
-         bungee.getLogger().info( "Enabled MikroCord version " + bungee.getVersion() );
-@@ -80,6 +93,11 @@ public class BungeeCordLauncher
-             }
-             */
-             // Waterfall end
-+        /*
-         }
-+        */
-+        Class<?> bootstrap = cl.loadClass("eu.mikroskeem.mikrocord.Bootstrap");
-+        bootstrap.getMethod("launch", boolean.class).invoke(null, !options.has("noconsole"));
-+        // MikroCord end
-     }
- }
 -- 
 2.22.0
 
