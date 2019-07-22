@@ -1,0 +1,42 @@
+From 896547c2d70b3cc9d5ba8bab64c6f18e13aef341 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Mon, 22 Jul 2019 10:20:51 +0300
+Subject: [PATCH] Add getFrom to ServerSwitchEvent
+
+
+diff --git a/api/src/main/java/net/md_5/bungee/api/event/ServerSwitchEvent.java b/api/src/main/java/net/md_5/bungee/api/event/ServerSwitchEvent.java
+index 4722517a..48b65b9f 100644
+--- a/api/src/main/java/net/md_5/bungee/api/event/ServerSwitchEvent.java
++++ b/api/src/main/java/net/md_5/bungee/api/event/ServerSwitchEvent.java
+@@ -19,4 +19,11 @@ public class ServerSwitchEvent extends Event
+      * Player whom the server is for.
+      */
+     private final ProxiedPlayer player;
++    // MikroCord start - SpigotMC/BungeeCord#2379
++    /**
++     * Server the player is switch from. May be null if is initial proxy
++     * connect.
++     */
++    private final net.md_5.bungee.api.config.ServerInfo from;
++    // MikroCord end
+ }
+diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
+index 0a4a7a4b..a10f7bb9 100644
+--- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
++++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
+@@ -346,10 +346,11 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
+         user.setServerJoinQueue( null );
+         user.setDimensionChange( false );
+ 
++        net.md_5.bungee.api.config.ServerInfo from = (user.getServer() != null ? user.getServer().getInfo() : null); // MikroCord - SpigotMC/BungeeCord#2379
+         user.setServer( server );
+         ch.getHandle().pipeline().get( HandlerBoss.class ).setHandler( new DownstreamBridge( bungee, user, server ) );
+ 
+-        bungee.getPluginManager().callEvent( new ServerSwitchEvent( user ) );
++        bungee.getPluginManager().callEvent( new ServerSwitchEvent( user, from ) ); // MikroCord - SpigotMC/BungeeCord#2379
+ 
+         thisState = State.FINISHED;
+ 
+-- 
+2.22.0
+
