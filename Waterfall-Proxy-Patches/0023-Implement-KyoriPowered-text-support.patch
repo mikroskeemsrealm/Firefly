@@ -1,4 +1,4 @@
-From 91927709f7baf6cc5fa5dd453d0cd5d308e67d71 Mon Sep 17 00:00:00 2001
+From 087238b25aa352875659280bb4578dc2b5dd2229 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 14 Apr 2019 21:48:01 +0300
 Subject: [PATCH] Implement KyoriPowered/text support
@@ -38,6 +38,31 @@ index d5888311..46056f0b 100644
      /**
       * Get all groups this user is part of. This returns an unmodifiable
       * collection.
+diff --git a/api/src/main/java/net/md_5/bungee/api/connection/Connection.java b/api/src/main/java/net/md_5/bungee/api/connection/Connection.java
+index 7aaa4826..a754af5a 100644
+--- a/api/src/main/java/net/md_5/bungee/api/connection/Connection.java
++++ b/api/src/main/java/net/md_5/bungee/api/connection/Connection.java
+@@ -50,6 +50,20 @@ public interface Connection extends eu.mikroskeem.mikrocord.api.network.ChannelH
+      */
+     void disconnect(BaseComponent reason);
+ 
++    // MikroCord start - add KyoriPowered/text support
++    /**
++     * Disconnects this end of the connection for the specified reason. If this
++     * is an {@link ProxiedPlayer} the respective server connection will be
++     * closed too.
++     *
++     * @param reason the reason shown to the player / sent to the server on
++     * disconnect
++     */
++    default void disconnect(net.kyori.text.Component reason) {
++        disconnect(new eu.mikroskeem.mikrocord.api.chat.AdapterComponent(reason));
++    }
++    // MikroCord end
++
+     /**
+      * Gets whether this connection is currently open, ie: not disconnected, and
+      * able to send / receive data.
 diff --git a/chat/pom.xml b/chat/pom.xml
 index 72c4cc36..de9fefd8 100644
 --- a/chat/pom.xml
