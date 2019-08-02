@@ -1,4 +1,8 @@
+<<<<<<< HEAD:Waterfall-Proxy-Patches/0046-Use-zlib-ng.patch
 From ae26a0f45f0b1b148e3f8f8bb4ab70c89e8bd2ba Mon Sep 17 00:00:00 2001
+=======
+From 5a7b156514eb0b08475889b302ee22ea4490c0e8 Mon Sep 17 00:00:00 2001
+>>>>>>> 96c28bd... Updated Upstream (Waterfall):Waterfall-Proxy-Patches/0045-Use-zlib-ng.patch
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Fri, 2 Aug 2019 05:51:17 +0300
 Subject: [PATCH] Use zlib-ng
