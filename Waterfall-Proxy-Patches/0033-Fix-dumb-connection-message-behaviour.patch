@@ -1,4 +1,4 @@
-From 104fc902a629c44027643bc6dbcd2cc97ef52741 Mon Sep 17 00:00:00 2001
+From df4c673bfdd960f08c28b9402e4473f8a6f90940 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Thu, 30 May 2019 02:53:08 +0300
 Subject: [PATCH] Fix dumb connection message behaviour
@@ -25,5 +25,5 @@ index adeef5a3..74182dfa 100644
              return;
          }
 -- 
-2.22.0
+2.22.1
 

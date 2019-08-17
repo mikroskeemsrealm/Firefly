@@ -1,4 +1,4 @@
-From 74db8fea51a5ba0a6975796381ee88434f36622d Mon Sep 17 00:00:00 2001
+From 3a19c6fd6b027cd55ca8bda4ce45363446960336 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Wed, 29 May 2019 20:16:16 +0300
 Subject: [PATCH] Improve event loop group implementation picking
@@ -82,5 +82,5 @@ index bd2401fc..be665b12 100644
  
      public static EventLoopGroup newEventLoopGroup(int threads, ThreadFactory factory)
 -- 
-2.22.0
+2.22.1
 

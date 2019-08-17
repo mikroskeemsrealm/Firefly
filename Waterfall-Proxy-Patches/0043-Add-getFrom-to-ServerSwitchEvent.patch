@@ -1,4 +1,4 @@
-From 896547c2d70b3cc9d5ba8bab64c6f18e13aef341 Mon Sep 17 00:00:00 2001
+From a2a74d2840d48fd1ac8071789128e4aa7e854b0f Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Mon, 22 Jul 2019 10:20:51 +0300
 Subject: [PATCH] Add getFrom to ServerSwitchEvent
@@ -21,7 +21,7 @@ index 4722517a..48b65b9f 100644
 +    // MikroCord end
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-index 0a4a7a4b..a10f7bb9 100644
+index 6355dbe0..300f2333 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 @@ -346,10 +346,11 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
@@ -38,5 +38,5 @@ index 0a4a7a4b..a10f7bb9 100644
          thisState = State.FINISHED;
  
 -- 
-2.22.0
+2.22.1
 

@@ -1,4 +1,4 @@
-From 8356812b6707d0c5ac26adc92c8c21a9036546ad Mon Sep 17 00:00:00 2001
+From f744443147f28c1a798e7efcd0ed4dfb0322aad3 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sat, 13 Apr 2019 22:08:57 +0300
 Subject: [PATCH] Use ASM to invoke event handlers
@@ -319,5 +319,5 @@ index ad19c020..3d98102d 100644
      }
  }
 -- 
-2.22.0
+2.22.1
 

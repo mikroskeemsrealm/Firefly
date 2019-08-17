@@ -1,4 +1,4 @@
-From feeb42fcb22772981a954dfe22c97dda2c048999 Mon Sep 17 00:00:00 2001
+From 28cc20612f1130f273e42bb07adda5123bd715de Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Fri, 31 May 2019 13:10:44 +0300
 Subject: [PATCH] Don't rewrite tablist on online mode and profile forwarding
@@ -53,5 +53,5 @@ index c83d39a8..6dba4b8d 100644
          throw CancelSendSignal.INSTANCE; // Always throw because of profile rewriting
      }
 -- 
-2.22.0
+2.22.1
 

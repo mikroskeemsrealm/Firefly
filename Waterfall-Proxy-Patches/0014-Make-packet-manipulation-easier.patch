@@ -1,4 +1,4 @@
-From e9f854485dcad0f36e47a36903d2cb5436bee464 Mon Sep 17 00:00:00 2001
+From 25e9c62eeeca6290f419d68079924216cd4ccc7f Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sat, 13 Apr 2019 20:13:53 +0300
 Subject: [PATCH] Make packet manipulation easier
@@ -34,10 +34,10 @@ index bfafaa86..7aaa4826 100644
  
      /**
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/Protocol.java b/protocol/src/main/java/net/md_5/bungee/protocol/Protocol.java
-index 87093807..1fef08e0 100644
+index c2b0e12c..16f41ec1 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/Protocol.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/Protocol.java
-@@ -372,7 +372,7 @@ public enum Protocol
+@@ -409,7 +409,7 @@ public enum Protocol
      }
  
      @Data
@@ -46,7 +46,7 @@ index 87093807..1fef08e0 100644
      {
  
          private final int protocolVersion;
-@@ -380,16 +380,17 @@ public enum Protocol
+@@ -417,16 +417,17 @@ public enum Protocol
      }
  
      // Helper method
@@ -66,7 +66,7 @@ index 87093807..1fef08e0 100644
          private final Protocol protocolPhase;
          @Getter
          private final ProtocolConstants.Direction direction;
-@@ -405,7 +406,7 @@ public enum Protocol
+@@ -442,7 +443,7 @@ public enum Protocol
              }
          }
  
@@ -75,18 +75,27 @@ index 87093807..1fef08e0 100644
          {
              ProtocolData protocol = protocols.get( version );
              if ( protocol == null && ( protocolPhase != Protocol.GAME ) )
-@@ -446,7 +447,7 @@ public enum Protocol
+@@ -483,7 +484,7 @@ public enum Protocol
              }
          }
  
--        private void registerPacket(Class<? extends DefinedPacket> packetClass, ProtocolMapping... mappings)
-+        public void registerPacket(Class<? extends DefinedPacket> packetClass, ProtocolMapping... mappings) // MikroCord - make packet manipulation easier
+-        private <P extends DefinedPacket> void registerPacket(Class<P> packetClass, java.util.function.Supplier<P> constructor, ProtocolMapping... mappings) // Waterfall - speed up packet construction
++        public <P extends DefinedPacket> void registerPacket(Class<P> packetClass, java.util.function.Supplier<P> constructor, ProtocolMapping... mappings) // Waterfall - speed up packet construction // MikroCord - make packet manipulation easier
          {
-             try
-             {
-@@ -485,7 +486,7 @@ public enum Protocol
-             }
+             // Waterfall start - speed up packet construction
+             /*
+@@ -528,7 +529,7 @@ public enum Protocol
+              */ // Waterfall end
          }
+         // Waterfall start - speed up packet construction (backwards compat)
+-        private <P extends DefinedPacket> void registerPacket(Class<P> packetClass, ProtocolMapping... mappings) {
++        public <P extends DefinedPacket> void registerPacket(Class<P> packetClass, ProtocolMapping... mappings) { // MikroCord - make packet manipulation easier
+             java.util.function.Supplier<P> packetSupplier;
+             try {
+                 Constructor<? extends DefinedPacket> constructor = packetClass.getDeclaredConstructor();
+@@ -546,7 +547,7 @@ public enum Protocol
+         }
+         // Waterfall end
  
 -        final int getId(Class<? extends DefinedPacket> packet, int version)
 +        public final int getId(Class<? extends DefinedPacket> packet, int version) // MikroCord - make packet manipulation easier
@@ -181,5 +190,5 @@ index 3a9dab68..ca7d5fd5 100644
 +    // MikroCord end
  }
 -- 
-2.22.0
+2.22.1
 

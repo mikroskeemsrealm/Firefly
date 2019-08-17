@@ -1,15 +1,15 @@
-From d36dda5dd1aabe99e71026f10665dc299270d6e1 Mon Sep 17 00:00:00 2001
+From 045d0dfc586d06757881eb7899ab247ac1fa33c1 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Wed, 20 Mar 2019 07:48:35 +0200
 Subject: [PATCH] Get rid of startup delay
 
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java b/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
-index ab6ddcc9..773c67ee 100644
+index e8130458..0453d5c3 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
 @@ -48,11 +48,15 @@ public class BungeeCordLauncher
-             deadline.add( Calendar.WEEK_OF_YEAR, -4 );
+             deadline.add( Calendar.WEEK_OF_YEAR, -8 );
              if ( buildDate.before( deadline.getTime() ) )
              {
 +                /* MikroCord start - remove this dumb delay
@@ -25,5 +25,5 @@ index ab6ddcc9..773c67ee 100644
          }
  
 -- 
-2.22.0
+2.22.1
 

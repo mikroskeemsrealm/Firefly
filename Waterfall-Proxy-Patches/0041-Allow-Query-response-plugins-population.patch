@@ -1,4 +1,4 @@
-From 02e02d3da969d373fdee0e79c26366e334aa5e70 Mon Sep 17 00:00:00 2001
+From 9eb33ceadbb5cf01749c71df1213352ae367e9d9 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sat, 20 Jul 2019 16:49:01 +0300
 Subject: [PATCH] Allow Query response plugins population
@@ -126,5 +126,5 @@ index 25734757..115bad21 100644
                  data.put( "map", result.getWorldName() );
                  data.put( "numplayers", Integer.toString( result.getOnlinePlayers() ) );
 -- 
-2.22.0
+2.22.1
 

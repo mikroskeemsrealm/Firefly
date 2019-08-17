@@ -1,4 +1,4 @@
-From 9de822b9d02217213733f19a3c6581d5c3ebbf66 Mon Sep 17 00:00:00 2001
+From dd8584fba85db6fb62eab5f272a6c8719ea8111c Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Mon, 17 Jun 2019 14:45:40 +0300
 Subject: [PATCH] Save memory on scoreboard teams
@@ -149,5 +149,5 @@ index 483c9d69..8b37cc45 100644
  
      private int setupTfo(int value) {
 -- 
-2.22.0
+2.22.1
 

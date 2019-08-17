@@ -1,4 +1,4 @@
-From aa99b19a2601b13e67d5f6c37c4c65b3466de3c4 Mon Sep 17 00:00:00 2001
+From 144e2c3eba315443d6de67fec33a1d6c6d5a7b10 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sat, 13 Apr 2019 23:10:17 +0300
 Subject: [PATCH] Set sane default configuration values
@@ -62,5 +62,5 @@ index 5cd84940..e6b44d65 100644
          Collection<ListenerInfo> ret = new HashSet<>();
  
 -- 
-2.22.0
+2.22.1
 

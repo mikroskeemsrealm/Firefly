@@ -1,4 +1,4 @@
-From e735deb28a9ac10577efbef0d5dc6ea688df33f8 Mon Sep 17 00:00:00 2001
+From 26fc31103c99a47a420fe5e919ca6b20804602c1 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 14 Apr 2019 20:47:31 +0300
 Subject: [PATCH] Wrap localization into configuration API
@@ -152,5 +152,5 @@ index 4c96c5dd..9937f8ae 100644
          String translation = "<translation '" + name + "' missing>";
          try
 -- 
-2.22.0
+2.22.1
 

@@ -1,4 +1,4 @@
-From c0b5912641eae5a126142bff3d0ea79341629a1e Mon Sep 17 00:00:00 2001
+From 20187326b75fd6710c64ec19638a481ce9e0b6df Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Thu, 15 Aug 2019 17:26:50 +0300
 Subject: [PATCH] Add option to disable noisy packet decode exception
@@ -111,5 +111,5 @@ index e6a7d92b..30237777 100644
 +    private static MikroCordConfiguration instance;
  }
 -- 
-2.22.0
+2.22.1
 

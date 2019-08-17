@@ -1,4 +1,4 @@
-From 0af38400de2d64815f7e693878e6941fc52c9b8c Mon Sep 17 00:00:00 2001
+From 4ddb631e24371a8bd2b8a37e51b8d84123429595 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 14 Apr 2019 19:15:00 +0300
 Subject: [PATCH] Add callEvent() shortcut to Event
@@ -26,5 +26,5 @@ index e2e01ecb..8e8915db 100644
 +    // MikroCord end
  }
 -- 
-2.22.0
+2.22.1
 

@@ -1,4 +1,4 @@
-From 12ce7240fb3e08a82125a0db47a23c37ec008464 Mon Sep 17 00:00:00 2001
+From 3c0448f978da61edc864f7007f4bffe469cf3e79 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Fri, 19 Apr 2019 17:44:34 +0300
 Subject: [PATCH] Copy new messages.properties if not present
@@ -25,5 +25,5 @@ index c984027d..2187c955 100644
  
      @Override
 -- 
-2.22.0
+2.22.1
 

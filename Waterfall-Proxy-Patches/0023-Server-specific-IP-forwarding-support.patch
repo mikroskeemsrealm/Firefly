@@ -1,4 +1,4 @@
-From 949e70cee466a539b94ed4a8e85ba0d6dd05582c Mon Sep 17 00:00:00 2001
+From 0a4064b0db145d7bcd60119ff8994cab56f5c836 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 14 Apr 2019 23:25:25 +0300
 Subject: [PATCH] Server specific IP forwarding support
@@ -531,5 +531,5 @@ index cb81d1dd..5fe5dca1 100644
  // Waterfall end
 \ No newline at end of file
 -- 
-2.22.0
+2.22.1
 

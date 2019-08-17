@@ -1,4 +1,4 @@
-From 95ada19a891818e856fd4adb3ef75de9e1fa2366 Mon Sep 17 00:00:00 2001
+From 8ff6d61ed6ea8017a718d279c50df65a23439c36 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Wed, 29 May 2019 14:34:43 +0300
 Subject: [PATCH] Implement Velocity modern forwarding support
@@ -204,5 +204,5 @@ index 661a98f7..6355dbe0 100644
 +}
 \ No newline at end of file
 -- 
-2.22.0
+2.22.1
 

@@ -1,4 +1,4 @@
-From a80ca9727485d2223109efc17e6e4000410beee8 Mon Sep 17 00:00:00 2001
+From a3afc2d3b4e85240b5df578e3d93014f2270cd53 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Wed, 29 May 2019 20:02:24 +0300
 Subject: [PATCH] TCP fast open
@@ -119,5 +119,5 @@ index 051430ce..bd2401fc 100644
              ch.pipeline().addAfter( FRAME_DECODER, PACKET_DECODER, new MinecraftDecoder( Protocol.HANDSHAKE, true, ProxyServer.getInstance().getProtocolVersion() ) );
              ch.pipeline().addAfter( FRAME_PREPENDER, PACKET_ENCODER, new MinecraftEncoder( Protocol.HANDSHAKE, true, ProxyServer.getInstance().getProtocolVersion() ) );
 -- 
-2.22.0
+2.22.1
 

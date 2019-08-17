@@ -1,4 +1,4 @@
-From 3a6de6bdbec496010109ab2cc0f9067f693b7d1d Mon Sep 17 00:00:00 2001
+From 82c84ec54184b03b8616004ff6e1758052bc657f Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Fri, 7 Jun 2019 21:34:45 +0300
 Subject: [PATCH] Check for '*' permission to grant all permissions
@@ -18,5 +18,5 @@ index 74182dfa..341dea6d 100644
  
      @Override
 -- 
-2.22.0
+2.22.1
 

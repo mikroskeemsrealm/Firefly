@@ -1,4 +1,4 @@
-From aae2ac37dee333e019b617d88348f8adad41730c Mon Sep 17 00:00:00 2001
+From e7bfc650f1e7e4bfe0fd097e5d8adde8e81b0228 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sat, 13 Apr 2019 21:01:27 +0300
 Subject: [PATCH] Get rid of dumb Guava Subscribe annotation warning
@@ -23,5 +23,5 @@ index 51559a96..9105530a 100644
          listenersByPlugin.put( plugin, listener );
      }
 -- 
-2.22.0
+2.22.1
 

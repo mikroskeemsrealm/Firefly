@@ -1,4 +1,4 @@
-From a6336f7ca1d3aca515751ccc4976ae5ea2060864 Mon Sep 17 00:00:00 2001
+From f5a3065f67779b9012d3cdf3b89a33de593a4b52 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 9 Jun 2019 01:40:14 +0300
 Subject: [PATCH] Download dependencies on runtime
@@ -18,7 +18,7 @@ index 141de9e6..1cc02426 100644
      }
  
 diff --git a/proxy/pom.xml b/proxy/pom.xml
-index 77705224..c4ec4145 100644
+index 18fd7a2e..40b3fa6a 100644
 --- a/proxy/pom.xml
 +++ b/proxy/pom.xml
 @@ -152,7 +152,7 @@
@@ -318,5 +318,5 @@ index 00000000..1ca62370
 +    }
 +}
 -- 
-2.22.0
+2.22.1
 

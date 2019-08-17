@@ -1,4 +1,4 @@
-From d6feb61f64eeba60549b80230028286a86cf7eb6 Mon Sep 17 00:00:00 2001
+From b59442dc05e7f44dd239d410e283a54343ef3faf Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Mon, 10 Jun 2019 01:18:46 +0300
 Subject: [PATCH] Add gplugins command
@@ -63,5 +63,5 @@ index e64074c8..2dafa208 100644
  
          if ( !Boolean.getBoolean( "net.md_5.bungee.native.disable" ) )
 -- 
-2.22.0
+2.22.1
 
