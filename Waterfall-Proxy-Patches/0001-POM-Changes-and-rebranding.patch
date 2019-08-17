@@ -1,4 +1,4 @@
-From 4f047845fc8aa9dd184e4e9c497e1819916a7247 Mon Sep 17 00:00:00 2001
+From cac623f5a31bb7f983ce8129bb80472cbf51bac9 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 10 Mar 2019 17:29:41 +0200
 Subject: [PATCH] POM Changes and rebranding
@@ -243,7 +243,7 @@ index fd999b51..b8d1ca24 100644
              <scope>compile</scope>
          </dependency>
 diff --git a/log4j/pom.xml b/log4j/pom.xml
-index e03fe0d7..fcee10bb 100644
+index 75dab185..467bc76e 100644
 --- a/log4j/pom.xml
 +++ b/log4j/pom.xml
 @@ -3,19 +3,19 @@
@@ -271,7 +271,7 @@ index e03fe0d7..fcee10bb 100644
 +    <description>Simplistic and performant Log4j2 based logger and console API designed for use with MikroCord and Minecraft related applications.</description>
  
      <properties>
-         <log4j2.version>2.11.1</log4j2.version>
+         <log4j2.version>2.12.0</log4j2.version>
 @@ -50,5 +50,24 @@
              <version>3.4.2</version>
              <scope>runtime</scope>
@@ -647,7 +647,7 @@ index 2493fc17..53e2b45e 100644
              <scope>compile</scope>
          </dependency>
 diff --git a/proxy/pom.xml b/proxy/pom.xml
-index f15927ec..57116b81 100644
+index 440e128f..af4c05ff 100644
 --- a/proxy/pom.xml
 +++ b/proxy/pom.xml
 @@ -4,18 +4,18 @@
@@ -810,5 +810,5 @@ index ac99d02c..b6b20f36 100644
                      listener.getHost().getHostString(), "MINECRAFT",  players, bungee.getGameVersion()));
              QueryResult result = bungee.getPluginManager().callEvent(event).getResult();
 -- 
-2.22.0
+2.22.1
 
