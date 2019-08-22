@@ -1,4 +1,4 @@
-From b8f2e9a77516b01a59d05f7024e63cd35f7cb518 Mon Sep 17 00:00:00 2001
+From f6b96defc93e8dd3118bd8ad62d2ae1bcdd5434c Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sat, 13 Apr 2019 19:51:09 +0300
 Subject: [PATCH] Add missing permissions nodes
@@ -18,10 +18,10 @@ index b26035cf..bc6b015f 100644
  
      @Override
 diff --git a/proxy/src/main/java/net/md_5/bungee/command/CommandPerms.java b/proxy/src/main/java/net/md_5/bungee/command/CommandPerms.java
-index 610825ca..946ba621 100644
+index 18422669..e5943a31 100644
 --- a/proxy/src/main/java/net/md_5/bungee/command/CommandPerms.java
 +++ b/proxy/src/main/java/net/md_5/bungee/command/CommandPerms.java
-@@ -13,7 +13,7 @@ public class CommandPerms extends Command
+@@ -12,7 +12,7 @@ public class CommandPerms extends Command
  
      public CommandPerms()
      {
@@ -31,5 +31,5 @@ index 610825ca..946ba621 100644
  
      @Override
 -- 
-2.22.0
+2.23.0
 
