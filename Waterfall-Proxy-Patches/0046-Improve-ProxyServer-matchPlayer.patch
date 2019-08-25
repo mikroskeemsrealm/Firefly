@@ -1,0 +1,41 @@
+From 9347d294c48d7665e2b3a76e183ff8aa62fa3a98 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Sun, 25 Aug 2019 04:54:53 +0300
+Subject: [PATCH] Improve ProxyServer#matchPlayer
+
+
+diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
+index 2dafa208..d02454ac 100644
+--- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
++++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
+@@ -825,6 +825,7 @@ public class BungeeCord extends ProxyServer
+             return Collections.singleton( exactMatch );
+         }
+ 
++        /* MikroCord start - improve matchPlayer
+         return Sets.newHashSet( Iterables.filter( getPlayers(), new Predicate<ProxiedPlayer>()
+         {
+ 
+@@ -834,6 +835,19 @@ public class BungeeCord extends ProxyServer
+                 return ( input == null ) ? false : input.getName().toLowerCase( Locale.ROOT ).startsWith( partialName.toLowerCase( Locale.ROOT ) );
+             }
+         } ) );
++        */
++        String lowerPartialMatch = partialName.toLowerCase(Locale.ROOT);
++        var foundPlayers = new java.util.LinkedList<ProxiedPlayer>();
++        for (var player : getPlayers()) {
++            if (player == null) { // Should not happen though?
++                continue;
++            }
++            if (player.getName().toLowerCase(Locale.ROOT).startsWith(lowerPartialMatch)) {
++                foundPlayers.add(player);
++            }
++        }
++        return java.util.Set.copyOf(foundPlayers);
++        // MikroCord end
+     }
+ 
+     @Override
+-- 
+2.23.0
+
