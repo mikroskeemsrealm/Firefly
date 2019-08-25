@@ -1,0 +1,323 @@
+From 4072241492bbc6ac91f9ff8bf3f4ac1f076d37aa Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Sun, 25 Aug 2019 05:00:39 +0300
+Subject: [PATCH] Add Prometheus support
+
+
+diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
+index aa6e7a72..93986c5b 100644
+--- a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
++++ b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
+@@ -283,4 +283,8 @@ public interface ProxyConfig
+     // MikroCord start - add option to disable noisy packet decode exception
+     boolean isLogNoisyPacketDecodeException();
+     // MikroCord end
++    // MikroCord start - add Prometheus metrics support
++    String getPrometheusListenHost();
++    int getPrometheusListenPort();
++    // MikroCord end
+ }
+diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
+index af8833a7..50169797 100644
+--- a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
++++ b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
+@@ -25,6 +25,11 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
+     @Setter private static java.util.function.BooleanSupplier noisyPacketDecodeExceptionSupplier;
+     private final boolean noisyPacketDecodeException;
+     // MikroCord end
++    // MikroCord start - add Prometheus metrics support
++    @Setter private static Runnable decodedMetric;
++    @Setter private static Runnable emptyPacketMetric;
++    @Setter private static Runnable invalidPacketMetric;
++    // MikroCord end
+ 
+     public MinecraftDecoder(Protocol protocol, boolean server, int protocolVersion) {
+         // Waterfall start
+@@ -50,6 +55,7 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
+         {
+             // Waterfall start
+             if (in.readableBytes() == 0) {
++                emptyPacketMetric.run(); // MikroCord - add Prometheus metrics support
+                 if (!allowEmptyPackets) throw new BadPacketException("Empty minecraft packet!");
+                 return;
+             }
+@@ -68,6 +74,7 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
+                 {
+                     throw new BadPacketException( "Did not read all bytes from packet " + packet.getClass() + " " + packetId + " Protocol " + protocol + " Direction " + prot.getDirection() );
+                 }
++                decodedMetric.run(); // MikroCord - add Prometheus metrics support
+             } else
+             {
+                 in.skipBytes( in.readableBytes() );
+@@ -76,6 +83,7 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
+             out.add( new PacketWrapper( packet, slice ) );
+             slice = null;
+         } catch (BadPacketException | IndexOutOfBoundsException e) {
++            invalidPacketMetric.run(); // MikroCord - add Prometheus metrics support
+             final String packetTypeStr;
+             if (packetTypeInfo instanceof Integer) {
+                 packetTypeStr = "id " + Integer.toHexString((Integer) packetTypeInfo);
+diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftEncoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftEncoder.java
+index d4b03843..073004e4 100644
+--- a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftEncoder.java
++++ b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftEncoder.java
+@@ -15,6 +15,9 @@ public class MinecraftEncoder extends MessageToByteEncoder<DefinedPacket>
+     private boolean server;
+     @Setter
+     private int protocolVersion;
++    // MikroCord start - add Prometheus metrics support
++    @Setter private static Runnable encodedMetric;
++    // MikroCord end
+ 
+     @Override
+     protected void encode(ChannelHandlerContext ctx, DefinedPacket msg, ByteBuf out) throws Exception
+@@ -22,5 +25,6 @@ public class MinecraftEncoder extends MessageToByteEncoder<DefinedPacket>
+         Protocol.DirectionData prot = ( server ) ? protocol.TO_CLIENT : protocol.TO_SERVER;
+         DefinedPacket.writeVarInt( prot.getId( msg.getClass(), protocolVersion ), out );
+         msg.write( out, prot.getDirection(), protocolVersion );
++        encodedMetric.run(); // MikroCord - add Prometheus metrics support
+     }
+ }
+diff --git a/proxy/pom.xml b/proxy/pom.xml
+index 1ad9edac..b1497954 100644
+--- a/proxy/pom.xml
++++ b/proxy/pom.xml
+@@ -21,6 +21,7 @@
+     <properties>
+         <maven.deploy.skip>true</maven.deploy.skip>
+         <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format> <!-- MikroCord -->
++        <prometheus.client.version>0.6.0</prometheus.client.version> <!-- MikroCord - add Prometheus metrics support -->
+     </properties>
+ 
+     <dependencies>
+@@ -119,6 +120,23 @@
+             <scope>runtime</scope>
+         </dependency>
+         <!-- Waterfall end -->
++        <!-- MikroCord start - add Prometheus metrics support -->
++        <dependency>
++            <groupId>io.prometheus</groupId>
++            <artifactId>simpleclient</artifactId>
++            <version>${prometheus.client.version}</version>
++        </dependency>
++        <dependency>
++            <groupId>io.prometheus</groupId>
++            <artifactId>simpleclient_hotspot</artifactId>
++            <version>${prometheus.client.version}</version>
++        </dependency>
++        <dependency>
++            <groupId>io.prometheus</groupId>
++            <artifactId>simpleclient_httpserver</artifactId>
++            <version>${prometheus.client.version}</version>
++        </dependency>
++        <!-- MikroCord end -->
+     </dependencies>
+ 
+     <build>
+@@ -200,6 +218,7 @@
+                             <exclude>net.kyori:*</exclude>
+                             <exclude>org.checkerframework:checker-qual</exclude>
+                             <exclude>org.ow2.asm:asm</exclude>
++                            <exclude>io.prometheus:*</exclude>
+                         </excludes>
+                     </artifactSet>
+                     <!-- MikroCord end -->
+diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
+index 4e851f95..6bd2194b 100644
+--- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
++++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
+@@ -62,6 +62,12 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+     @Getter
+     private boolean logNoisyPacketDecodeException = false;
+ 
++    @Getter
++    private String prometheusListenHost = "127.0.0.1";
++
++    @Getter
++    private int prometheusListenPort = 8888;
++
+     @Override
+     public void load() {
+         super.load();
+@@ -80,6 +86,8 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+         internScoreboardTeamStrings = config.getBoolean("performance.intern_scoreboard_team_strings", internScoreboardTeamStrings);
+         populateGS4QueryPlugins = config.getBoolean("query.populate_plugins", populateGS4QueryPlugins);
+         logNoisyPacketDecodeException = config.getBoolean("log.noisy_packet_decode_exception", logNoisyPacketDecodeException);
++        prometheusListenHost = config.getString("prometheus.listen_host", prometheusListenHost);
++        prometheusListenPort = config.getInt("prometheus.listen_port", prometheusListenPort);
+     }
+ 
+     private int setupTfo(int value) {
+diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
+index 26fb4900..e19a2d6e 100644
+--- a/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
++++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
+@@ -41,6 +41,7 @@ public final class DependencyClassLoader extends URLClassLoader {
+     );
+ 
+     private static final String NETTY_VERSION = "4.1.36.Final";
++    private static final String PROMETHEUS_VERSION = "0.6.0";
+ 
+     private static final List<Dependency> DEPENDENCIES = Arrays.asList(
+             new Dependency("com.google.guava", "guava", "28.0-jre", "54fed371b4b8a8cce1e94a9abd9620982d3aa54b"),
+@@ -71,7 +72,11 @@ public final class DependencyClassLoader extends URLClassLoader {
+             new Dependency("net.kyori", "text-api", "3.0.2", "608cdb44a74bbd68745941760df730ed55e4b47c"),
+             new Dependency("net.kyori", "text-serializer-gson", "3.0.2", "9ac22f04f3504c52ff1618c5a8d9a6145d8d9c9e"),
+             new Dependency("net.kyori", "text-serializer-legacy", "3.0.2", "8acbfb36356259273a8e3a15782e4f2980375bc5"),
+-            new Dependency("org.ow2.asm", "asm", "7.1", "fa29aa438674ff19d5e1386d2c3527a0267f291e")
++            new Dependency("org.ow2.asm", "asm", "7.1", "fa29aa438674ff19d5e1386d2c3527a0267f291e"),
++            new Dependency("io.prometheus", "simpleclient", PROMETHEUS_VERSION, "26073e94cbfa6780e10ef524e542cf2a64dabe67"),
++            new Dependency("io.prometheus", "simpleclient_common", PROMETHEUS_VERSION, "08b4f119cfdff67a02a066e6e519bb2bab0a2a1b"),
++            new Dependency("io.prometheus", "simpleclient_hotspot", PROMETHEUS_VERSION, "2703b02c4b2abb078de8365f4ef3b7d5e451382d"),
++            new Dependency("io.prometheus", "simpleclient_httpserver", PROMETHEUS_VERSION, "d46c7273a4dd10e611e3cd617f46eb8b2dae8fdc")
+     );
+ 
+     private final ClassLoader actualParent;
+diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/PrometheusMetrics.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/PrometheusMetrics.java
+new file mode 100644
+index 00000000..e7161a86
+--- /dev/null
++++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/PrometheusMetrics.java
+@@ -0,0 +1,99 @@
++package eu.mikroskeem.mikrocord.misc;
++
++import io.prometheus.client.Collector;
++import io.prometheus.client.Counter;
++import io.prometheus.client.GaugeMetricFamily;
++import io.prometheus.client.exporter.HTTPServer;
++import io.prometheus.client.hotspot.DefaultExports;
++import net.md_5.bungee.api.ProxyServer;
++import net.md_5.bungee.protocol.MinecraftDecoder;
++import net.md_5.bungee.protocol.MinecraftEncoder;
++import org.slf4j.Logger;
++import org.slf4j.LoggerFactory;
++
++import java.io.IOException;
++import java.util.Collections;
++import java.util.List;
++import java.util.function.DoubleSupplier;
++
++/**
++ * @author Mark Vainomaa
++ */
++public final class PrometheusMetrics {
++    private static final Logger logger = LoggerFactory.getLogger(PrometheusMetrics.class);
++    private static boolean metricsInitialized = false;
++
++    private static String prevHost = null;
++    private static Integer prevPort = null;
++    private static HTTPServer server = null;
++
++    public static final Collector CLIENTS_ONLINE = createGauge("clients_online", "Total clients online",
++            () -> ProxyServer.getInstance().getOnlineCount());
++    public static final Collector INSTALLED_PLUGINS = createGauge("plugins_installed", "Total plugins installed",
++            () -> ProxyServer.getInstance().getPluginManager().getPlugins().size());
++    public static final Counter RUNTIME_CONNECTED_CLIENTS = Counter
++            .build("clients_connected", "Total clients connected in proxy lifetime")
++            .register();
++
++    public static final Counter RUNTIME_PACKETS_DECODED = Counter
++            .build("packets_decoded", "Total packets successfully decoded in proxy lifetime")
++            .register();
++
++    public static final Counter RUNTIME_PACKETS_ENCODED = Counter
++            .build("packets_encoded", "Total packets successfully encoded in proxy lifetime")
++            .register();
++
++    public static final Counter RUNTIME_EMPTY_PACKETS_ENCOUNTERED = Counter
++            .build("empty_packets", "Total empty packets encountered in proxy lifetime")
++            .register();
++    public static final Counter RUNTIME_INVALID_PACKETS_ENCOUNTERED = Counter
++            .build("invalid_packets", "Total invalid packets encountered in proxy lifetime")
++            .register();
++
++    public static void initialize() {
++        if (!metricsInitialized) {
++            // JVM metrics
++            DefaultExports.initialize();
++
++            // Protocol decoder metrics
++            MinecraftDecoder.setDecodedMetric(RUNTIME_PACKETS_DECODED::inc);
++            MinecraftDecoder.setEmptyPacketMetric(RUNTIME_EMPTY_PACKETS_ENCOUNTERED::inc);
++            MinecraftDecoder.setInvalidPacketMetric(RUNTIME_INVALID_PACKETS_ENCOUNTERED::inc);
++
++            // Protocol encoder metrics
++            MinecraftEncoder.setEncodedMetric(RUNTIME_PACKETS_ENCODED::inc);
++
++            metricsInitialized = true;
++        }
++
++        // Set up exporter server
++        var host = ProxyServer.getInstance().getConfig().getPrometheusListenHost();
++        var port = ProxyServer.getInstance().getConfig().getPrometheusListenPort();
++        if ((prevHost == null || prevPort == null) || (!prevHost.equals(host) || port != prevPort)) {
++            deinitialize();
++            try {
++                server = new HTTPServer(host, port);
++                logger.info("Prometheus HTTP server listening at http://{}:{}", host, port);
++            } catch (IOException e) {
++                logger.warn("Failed to start Prometheus HTTP server at http://{}:{}", host, port, e);
++            }
++        }
++    }
++
++    public static void deinitialize() {
++        if (server != null) {
++            server.stop();
++            logger.info("Prometheus HTTP server stopped");
++        }
++    }
++
++    private static Collector createGauge(String name, String help, DoubleSupplier valueSupplier) {
++        var gauge = new Collector() {
++            @Override
++            public List<MetricFamilySamples> collect() {
++                return Collections.singletonList(new GaugeMetricFamily(name, help, valueSupplier.getAsDouble()));
++            }
++        };
++        return gauge.register();
++    }
++}
+diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
+index d02454ac..f2da5a85 100644
+--- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
++++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
+@@ -345,6 +345,7 @@ public class BungeeCord extends ProxyServer
+         {
+             connectionThrottle = new ConnectionThrottle( config.getThrottle(), config.getThrottleLimit() );
+         }
++        eu.mikroskeem.mikrocord.misc.PrometheusMetrics.initialize(); // MikroCord - add Prometheus metrics support
+         startListeners();
+ 
+         saveThread.scheduleAtFixedRate( new TimerTask()
+@@ -461,6 +462,7 @@ public class BungeeCord extends ProxyServer
+             public void run()
+             {
+                 stopListeners();
++                eu.mikroskeem.mikrocord.misc.PrometheusMetrics.deinitialize(); // MikroCord - add Prometheus metrics support
+                 getLogger().info( "Closing pending connections" );
+ 
+                 connectionLock.readLock().lock();
+@@ -784,6 +786,7 @@ public class BungeeCord extends ProxyServer
+             connections.put( con.getName(), con );
+             connectionsByUUID.put( con.getUniqueId(), con );
+             connectionsByOfflineUUID.put( con.getPendingConnection().getOfflineId(), con );
++            eu.mikroskeem.mikrocord.misc.PrometheusMetrics.RUNTIME_CONNECTED_CLIENTS.inc(); // MikroCord - add Prometheus metrics support
+         } finally
+         {
+             connectionLock.writeLock().unlock();
+diff --git a/proxy/src/main/java/net/md_5/bungee/command/CommandReload.java b/proxy/src/main/java/net/md_5/bungee/command/CommandReload.java
+index 0ad37d4e..e91f68fe 100644
+--- a/proxy/src/main/java/net/md_5/bungee/command/CommandReload.java
++++ b/proxy/src/main/java/net/md_5/bungee/command/CommandReload.java
+@@ -22,6 +22,7 @@ public class CommandReload extends Command
+         BungeeCord.getInstance().stopListeners();
+         BungeeCord.getInstance().startListeners();
+         BungeeCord.getInstance().getPluginManager().callEvent( new ProxyReloadEvent( sender ) );
++        eu.mikroskeem.mikrocord.misc.PrometheusMetrics.initialize(); // MikroCord - add Prometheus metrics support
+ 
+         sender.sendMessage(ChatColor.GREEN + "MikroCord has been reloaded"); if(true) return; // MikroCord
+         sender.sendMessage( ChatColor.BOLD.toString() + ChatColor.RED.toString() + "Waterfall has been reloaded."
+-- 
+2.23.0
+
