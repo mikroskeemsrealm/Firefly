@@ -1,4 +1,4 @@
-From 20187326b75fd6710c64ec19638a481ce9e0b6df Mon Sep 17 00:00:00 2001
+From 5f4f8bf480a5dec8a42d03042c48633e4c71594c Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Thu, 15 Aug 2019 17:26:50 +0300
 Subject: [PATCH] Add option to disable noisy packet decode exception
@@ -17,42 +17,29 @@ index 35b72a4b..aa6e7a72 100644
 +    // MikroCord end
  }
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
-index a46bbc78..2bafd106 100644
+index a46bbc78..af8833a7 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
-@@ -21,6 +21,9 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
+@@ -21,6 +21,10 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
      @Setter
      private boolean supportsForge = false;
      private final boolean allowEmptyPackets; // Waterfall
 +    // MikroCord start - add option to disable noisy packet decode exception
++    @Setter private static java.util.function.BooleanSupplier noisyPacketDecodeExceptionSupplier;
 +    private final boolean noisyPacketDecodeException;
 +    // MikroCord end
  
      public MinecraftDecoder(Protocol protocol, boolean server, int protocolVersion) {
          // Waterfall start
-@@ -32,6 +35,21 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
+@@ -32,6 +36,7 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
          this.server = server;
          this.protocolVersion = protocolVersion;
          this.allowEmptyPackets = allowEmptyPackets; // Waterfall
-+        // MikroCord start - add option to disable noisy packet decode exception
-+        boolean noisyPacketDecodeException;
-+        try {
-+            Class<?> configClass = Class.forName("eu.mikroskeem.mikrocord.conf.MikroCordConfiguration");
-+            java.lang.reflect.Method instanceGetter = configClass.getMethod("getInstance");
-+            Object configInstance = instanceGetter.invoke(null);
-+
-+            // Get config values
-+            java.lang.reflect.Method isLogNoisyPacketDecodeException = configClass.getMethod("isLogNoisyPacketDecodeException");
-+            noisyPacketDecodeException = (Boolean) isLogNoisyPacketDecodeException.invoke(configInstance);
-+        } catch (Exception e) {
-+            noisyPacketDecodeException = false;
-+        }
-+        this.noisyPacketDecodeException = noisyPacketDecodeException;
-+        // MikroCord end
++        this.noisyPacketDecodeException = noisyPacketDecodeExceptionSupplier.getAsBoolean(); // MikroCord - add option to disable noisy packet decode exception
      }
  
      @Override
-@@ -79,7 +97,16 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
+@@ -79,7 +84,16 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
              } else {
                  packetTypeStr = "unknown";
              }
@@ -70,21 +57,30 @@ index a46bbc78..2bafd106 100644
          {
              if ( slice != null )
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index e6a7d92b..30237777 100644
+index e6a7d92b..4e851f95 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-@@ -20,6 +20,10 @@ import java.util.logging.Level;
+@@ -10,6 +10,7 @@ import net.md_5.bungee.BungeeCord;
+ import net.md_5.bungee.api.ProxyServer;
+ import net.md_5.bungee.api.config.ConfigurationAdapter;
+ import net.md_5.bungee.netty.PipelineUtils;
++import net.md_5.bungee.protocol.MinecraftDecoder;
+ 
+ import java.nio.charset.StandardCharsets;
+ import java.util.HashSet;
+@@ -20,6 +21,11 @@ import java.util.logging.Level;
   * @author Mark Vainomaa
   */
  public class MikroCordConfiguration extends WaterfallConfiguration {
 +    public MikroCordConfiguration() {
-+        instance = this;
++        // Set up accessors
++        MinecraftDecoder.setNoisyPacketDecodeExceptionSupplier(this::isLogNoisyPacketDecodeException);
 +    }
 +
      @Getter
      private String restartMessage = "Proxy is restarting";
  
-@@ -53,6 +57,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -53,6 +59,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
      @Getter
      private boolean populateGS4QueryPlugins = false;
  
@@ -94,7 +90,7 @@ index e6a7d92b..30237777 100644
      @Override
      public void load() {
          super.load();
-@@ -70,6 +77,7 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -70,6 +79,7 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
          allowTablistRewrite = config.getBoolean("performance.allow_tablist_rewrite", allowTablistRewrite);
          internScoreboardTeamStrings = config.getBoolean("performance.intern_scoreboard_team_strings", internScoreboardTeamStrings);
          populateGS4QueryPlugins = config.getBoolean("query.populate_plugins", populateGS4QueryPlugins);
@@ -102,14 +98,6 @@ index e6a7d92b..30237777 100644
      }
  
      private int setupTfo(int value) {
-@@ -79,4 +87,7 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
-         }
-         return actual.value;
-     }
-+
-+    @Getter
-+    private static MikroCordConfiguration instance;
- }
 -- 
-2.22.1
+2.23.0
 
