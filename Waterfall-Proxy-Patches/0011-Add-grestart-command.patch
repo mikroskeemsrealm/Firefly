@@ -1,14 +1,14 @@
-From e59c6279f5a95a809b5f1a8e7c9ad073912c908d Mon Sep 17 00:00:00 2001
+From 263b0e0e48012e91f60295325604ee4d05d04fe5 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Tue, 19 Mar 2019 23:17:23 +0200
 Subject: [PATCH] Add /grestart command
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-index cbcf8a24..cd2f66a2 100644
+index fd422f36..8b26a275 100644
 --- a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
 +++ b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-@@ -239,4 +239,16 @@ public interface ProxyConfig
+@@ -232,4 +232,16 @@ public interface ProxyConfig
       * @return Should we disable entity metadata rewriting?
       */
      boolean isDisableEntityMetadataRewrite();
@@ -142,5 +142,5 @@ index e62951d7..5cd84940 100644
          }
  
 -- 
-2.22.0
+2.23.0
 

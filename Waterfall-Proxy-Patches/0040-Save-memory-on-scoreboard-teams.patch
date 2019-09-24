@@ -1,14 +1,14 @@
-From dd8584fba85db6fb62eab5f272a6c8719ea8111c Mon Sep 17 00:00:00 2001
+From 7eea537855901613576ff318d1a27688978cf923 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Mon, 17 Jun 2019 14:45:40 +0300
 Subject: [PATCH] Save memory on scoreboard teams
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-index 30f94753..fb2e1b50 100644
+index 07460917..0b3c9603 100644
 --- a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
 +++ b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-@@ -274,4 +274,7 @@ public interface ProxyConfig
+@@ -267,4 +267,7 @@ public interface ProxyConfig
      // MikroCord start - don't rewrite tablist on online mode connections
      boolean isAllowTablistRewrite();
      // MikroCord end
@@ -149,5 +149,5 @@ index 483c9d69..8b37cc45 100644
  
      private int setupTfo(int value) {
 -- 
-2.22.1
+2.23.0
 
