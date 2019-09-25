@@ -1,0 +1,70 @@
+From c990b183873a59168147c4c00923067201b85e91 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Wed, 25 Sep 2019 11:29:45 +0300
+Subject: [PATCH] Better empty packet handling
+
+
+diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
+index 743d65e4..81c3626a 100644
+--- a/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
++++ b/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
+@@ -7,8 +7,10 @@ import io.netty.handler.codec.ByteToMessageDecoder;
+ import io.netty.handler.codec.CorruptedFrameException;
+ import java.util.List;
+ 
++@lombok.RequiredArgsConstructor // MikroCord - Better empty packet handling
+ public class Varint21FrameDecoder extends ByteToMessageDecoder
+ {
++    private final boolean server; // MikroCord - Better empty packet handling
+ 
+     private static boolean DIRECT_WARNING;
+ 
+@@ -32,6 +34,12 @@ public class Varint21FrameDecoder extends ByteToMessageDecoder
+                 in.resetReaderIndex();
+                 int length = DefinedPacket.readVarInt( in );
+                 // Waterfall end
++                // MikroCord start - Better empty packet handling
++                if (length == 0 && !server) {
++                    ctx.channel().close();
++                    return;
++                }
++                // MikroCord end
+                 if ( false && length == 0) // Waterfall - ignore
+                 {
+                     throw new CorruptedFrameException( "Empty Packet!" );
+diff --git a/proxy/src/main/java/net/md_5/bungee/UserConnection.java b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
+index c5eaac9a..5ecce9da 100644
+--- a/proxy/src/main/java/net/md_5/bungee/UserConnection.java
++++ b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
+@@ -353,6 +353,7 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.mikroc
+             protected void initChannel(Channel ch) throws Exception
+             {
+                 PipelineUtils.BASE.initChannel( ch );
++                ch.pipeline().addAfter(PipelineUtils.TIMEOUT_HANDLER, PipelineUtils.FRAME_DECODER, new net.md_5.bungee.protocol.Varint21FrameDecoder(false)); // MikroCord - Better empty packet handling
+                 ch.pipeline().addAfter( PipelineUtils.FRAME_DECODER, PipelineUtils.PACKET_DECODER, new MinecraftDecoder( Protocol.HANDSHAKE, false, getPendingConnection().getVersion() ) );
+                 ch.pipeline().addAfter( PipelineUtils.FRAME_PREPENDER, PipelineUtils.PACKET_ENCODER, new MinecraftEncoder( Protocol.HANDSHAKE, false, getPendingConnection().getVersion() ) );
+                 ch.pipeline().get( HandlerBoss.class ).setHandler( new ServerConnector( bungee, UserConnection.this, target ) );
+diff --git a/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java b/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
+index 65bca819..1f9fff77 100644
+--- a/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
++++ b/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
+@@ -65,6 +65,7 @@ public class PipelineUtils
+                 ch.config().setOption(io.netty.channel.epoll.EpollChannelOption.TCP_FASTOPEN, BungeeCord.getInstance().getConfig().getTcpFastOpenMode());
+             }
+             // MikroCord end
++            ch.pipeline().addAfter(TIMEOUT_HANDLER, FRAME_DECODER, new Varint21FrameDecoder(true)); // MikroCord - Better empty packet handling
+             ch.pipeline().addBefore( FRAME_DECODER, LEGACY_DECODER, new LegacyDecoder() );
+             ch.pipeline().addAfter( FRAME_DECODER, PACKET_DECODER, new MinecraftDecoder( Protocol.HANDSHAKE, true, ProxyServer.getInstance().getProtocolVersion() ) );
+             ch.pipeline().addAfter( FRAME_PREPENDER, PACKET_ENCODER, new MinecraftEncoder( Protocol.HANDSHAKE, true, ProxyServer.getInstance().getProtocolVersion() ) );
+@@ -156,7 +157,7 @@ public class PipelineUtils
+             ch.config().setWriteBufferWaterMark( MARK );
+ 
+             ch.pipeline().addLast( TIMEOUT_HANDLER, new ReadTimeoutHandler( BungeeCord.getInstance().config.getTimeout(), TimeUnit.MILLISECONDS ) );
+-            ch.pipeline().addLast( FRAME_DECODER, new Varint21FrameDecoder() );
++            //ch.pipeline().addLast( FRAME_DECODER, new Varint21FrameDecoder() ); // MikroCord - Better empty packet handling
+             ch.pipeline().addLast( FRAME_PREPENDER, framePrepender );
+ 
+             ch.pipeline().addLast( BOSS_HANDLER, new HandlerBoss() );
+-- 
+2.23.0
+
