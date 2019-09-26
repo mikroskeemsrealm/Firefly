@@ -33,26 +33,26 @@ index 743d65e43549f4db3b1f6785a69ab69e19004285..81c3626af3679671f633c561698b5519
                  {
                      throw new CorruptedFrameException( "Empty Packet!" );
 diff --git a/proxy/src/main/java/net/md_5/bungee/UserConnection.java b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-index c5eaac9a6bbce34cd09524fafabf13a06676ce4e..5ecce9dad55bad646234cfbd418f5220b10e0024 100644
+index c5eaac9a6bbce34cd09524fafabf13a06676ce4e..725fbcb20e322dd1d443f13a395f4fee66a19bed 100644
 --- a/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 +++ b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 @@ -353,6 +353,7 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.mikroc
              protected void initChannel(Channel ch) throws Exception
              {
                  PipelineUtils.BASE.initChannel( ch );
-+                ch.pipeline().addAfter(PipelineUtils.TIMEOUT_HANDLER, PipelineUtils.FRAME_DECODER, new net.md_5.bungee.protocol.Varint21FrameDecoder(false)); // MikroCord - Better empty packet handling
++                ch.pipeline().addAfter(PipelineUtils.TIMEOUT_HANDLER, PipelineUtils.FRAME_DECODER, new net.md_5.bungee.protocol.Varint21FrameDecoder(true)); // MikroCord - Better empty packet handling
                  ch.pipeline().addAfter( PipelineUtils.FRAME_DECODER, PipelineUtils.PACKET_DECODER, new MinecraftDecoder( Protocol.HANDSHAKE, false, getPendingConnection().getVersion() ) );
                  ch.pipeline().addAfter( PipelineUtils.FRAME_PREPENDER, PipelineUtils.PACKET_ENCODER, new MinecraftEncoder( Protocol.HANDSHAKE, false, getPendingConnection().getVersion() ) );
                  ch.pipeline().get( HandlerBoss.class ).setHandler( new ServerConnector( bungee, UserConnection.this, target ) );
 diff --git a/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java b/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
-index 65bca81925e2f7652d6af4519c90207d22184878..1f9fff77eb355bc3c29c26bf878ef2824bc948c0 100644
+index 65bca81925e2f7652d6af4519c90207d22184878..bc6ad2439c2951fdfc60a56517f4771413ceb30f 100644
 --- a/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
 +++ b/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
 @@ -65,6 +65,7 @@ public class PipelineUtils
                  ch.config().setOption(io.netty.channel.epoll.EpollChannelOption.TCP_FASTOPEN, BungeeCord.getInstance().getConfig().getTcpFastOpenMode());
              }
              // MikroCord end
-+            ch.pipeline().addAfter(TIMEOUT_HANDLER, FRAME_DECODER, new Varint21FrameDecoder(true)); // MikroCord - Better empty packet handling
++            ch.pipeline().addAfter(TIMEOUT_HANDLER, FRAME_DECODER, new Varint21FrameDecoder(false)); // MikroCord - Better empty packet handling
              ch.pipeline().addBefore( FRAME_DECODER, LEGACY_DECODER, new LegacyDecoder() );
              ch.pipeline().addAfter( FRAME_DECODER, PACKET_DECODER, new MinecraftDecoder( Protocol.HANDSHAKE, true, ProxyServer.getInstance().getProtocolVersion() ) );
              ch.pipeline().addAfter( FRAME_PREPENDER, PACKET_ENCODER, new MinecraftEncoder( Protocol.HANDSHAKE, true, ProxyServer.getInstance().getProtocolVersion() ) );
