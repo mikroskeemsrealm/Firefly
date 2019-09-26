@@ -50,7 +50,7 @@ function savePatches {
 
     cd "$basedir/$target"
 
-    git format-patch --no-stat -N -o "$basedir/${what_name}-Patches/" upstream/upstream >/dev/null
+    git format-patch --no-stat --zero-commit --full-index --no-signature -N -o "$basedir/${what_name}-Patches/" upstream/upstream >/dev/null
     cd "$basedir"
     git add -A "$basedir/${what_name}-Patches"
     cleanupPatches "$basedir/${what_name}-Patches"
