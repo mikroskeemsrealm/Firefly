@@ -5,10 +5,41 @@ Subject: [PATCH] Speed up shutdown
 
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index f7807ba76c1bd5f5d701944ed445a861caf679a6..e64074c876a609f48a96f97d590dcff4c677bc15 100644
+index f7807ba76c1bd5f5d701944ed445a861caf679a6..d3041070718433919a82537cfe330cb427142972 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -511,8 +511,8 @@ public class BungeeCord extends ProxyServer
+@@ -475,12 +475,30 @@ public class BungeeCord extends ProxyServer
+                     connectionLock.readLock().unlock();
+                 }
+ 
++                /* MikroCord start - wait for all players to disconnect instead of using hardcoded delay
+                 try
+                 {
+                     Thread.sleep( 500 );
+                 } catch ( InterruptedException ex )
+                 {
+                 }
++                */
++                java.util.function.BooleanSupplier isEmptyCheck = () -> {
++                    try {
++                        connectionLock.readLock().lock();
++                        return connections.isEmpty();
++                    } finally {
++                        connectionLock.readLock().unlock();
++                    }
++                };
++                while (!isEmptyCheck.getAsBoolean()) {
++                    try {
++                        Thread.sleep(50);
++                    } catch (InterruptedException e) {
++                        Thread.currentThread().interrupt();
++                    }
++                }
++                // MikroCord end
+ 
+                 if ( reconnectHandler != null )
+                 {
+@@ -511,8 +529,8 @@ public class BungeeCord extends ProxyServer
                  }
  
                  getLogger().info( "Closing IO threads" );

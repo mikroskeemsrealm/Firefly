@@ -291,7 +291,7 @@ index 0000000000000000000000000000000000000000..b1bf8aa5603a14d5ded2378a6c9de866
 +    }
 +}
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index d02454acfc8ee311111120a863321c35f6367a1b..f2da5a854d8114a837a0ed6d93cedd6782956a05 100644
+index 710e346462182906f26e8b3db49d57d4eebc4fcc..f88ca6d4a132ce08d98b34faf879c25480bd4415 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -345,6 +345,7 @@ public class BungeeCord extends ProxyServer
@@ -310,7 +310,7 @@ index d02454acfc8ee311111120a863321c35f6367a1b..f2da5a854d8114a837a0ed6d93cedd67
                  getLogger().info( "Closing pending connections" );
  
                  connectionLock.readLock().lock();
-@@ -784,6 +786,7 @@ public class BungeeCord extends ProxyServer
+@@ -802,6 +804,7 @@ public class BungeeCord extends ProxyServer
              connections.put( con.getName(), con );
              connectionsByUUID.put( con.getUniqueId(), con );
              connectionsByOfflineUUID.put( con.getPendingConnection().getOfflineId(), con );

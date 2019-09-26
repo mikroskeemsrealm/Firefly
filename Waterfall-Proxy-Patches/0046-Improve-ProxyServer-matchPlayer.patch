@@ -5,10 +5,10 @@ Subject: [PATCH] Improve ProxyServer#matchPlayer
 
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 2dafa2080525c90573b74d421e3c8fcca986750f..d02454acfc8ee311111120a863321c35f6367a1b 100644
+index a65b6d40c0e1e93aad499d2fcef2ee9ef7a7b7b6..710e346462182906f26e8b3db49d57d4eebc4fcc 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -825,6 +825,7 @@ public class BungeeCord extends ProxyServer
+@@ -843,6 +843,7 @@ public class BungeeCord extends ProxyServer
              return Collections.singleton( exactMatch );
          }
  
@@ -16,7 +16,7 @@ index 2dafa2080525c90573b74d421e3c8fcca986750f..d02454acfc8ee311111120a863321c35
          return Sets.newHashSet( Iterables.filter( getPlayers(), new Predicate<ProxiedPlayer>()
          {
  
-@@ -834,6 +835,19 @@ public class BungeeCord extends ProxyServer
+@@ -852,6 +853,19 @@ public class BungeeCord extends ProxyServer
                  return ( input == null ) ? false : input.getName().toLowerCase( Locale.ROOT ).startsWith( partialName.toLowerCase( Locale.ROOT ) );
              }
          } ) );
