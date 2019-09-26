@@ -1,0 +1,37 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Thu, 26 Sep 2019 18:17:40 +0300
+Subject: [PATCH] Don't initialize reconnect save thread when it's not set
+
+
+diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
+index bf1256a7e713538716632be04752b82fcead95b5..03327b8c762b2cd86078b2805f89eb2b7aa9d623 100644
+--- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
++++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
+@@ -116,7 +116,7 @@ public class BungeeCord extends ProxyServer
+     /**
+      * locations.yml save thread.
+      */
+-    private final Timer saveThread = new Timer( "Reconnect Saver" );
++    private /*final*/ Timer saveThread /*= new Timer( "Reconnect Saver" )*/; // MikroCord - don't initialize reconnect save thread when it's not set
+     // private final Timer metricsThread = new Timer( "Metrics Thread" ); // Waterfall: Disable Metrics
+     /**
+      * Server socket listener.
+@@ -350,6 +350,9 @@ public class BungeeCord extends ProxyServer
+         eu.mikroskeem.mikrocord.misc.PrometheusMetrics.initialize(); // MikroCord - add Prometheus metrics support
+         startListeners();
+ 
++        // MikroCord start - don't initialize reconnect save thread when it's not set
++        if (getReconnectHandler() != null && (saveThread = new Timer( "Reconnect Saver" )) != null) // Last "check" is intended and does basically a lazy init
++        // MikroCord end
+         saveThread.scheduleAtFixedRate( new TimerTask()
+         {
+             @Override
+@@ -493,6 +496,7 @@ public class BungeeCord extends ProxyServer
+                     reconnectHandler.save();
+                     reconnectHandler.close();
+                 }
++                if (saveThread != null) // MikroCord - don't initialize reconnect save thread when it's not set
+                 saveThread.cancel();
+                 // metricsThread.cancel(); // Waterfall: Disable Metrics
+ 
