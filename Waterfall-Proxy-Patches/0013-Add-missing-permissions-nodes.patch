@@ -1,11 +1,11 @@
-From f6b96defc93e8dd3118bd8ad62d2ae1bcdd5434c Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sat, 13 Apr 2019 19:51:09 +0300
 Subject: [PATCH] Add missing permissions nodes
 
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/command/CommandBungee.java b/proxy/src/main/java/net/md_5/bungee/command/CommandBungee.java
-index b26035cf..bc6b015f 100644
+index b26035cf971c9a12af75582d9294cae090c8cdce..bc6b015fd5c06d6f4af7646e5e7fb83f3189285e 100644
 --- a/proxy/src/main/java/net/md_5/bungee/command/CommandBungee.java
 +++ b/proxy/src/main/java/net/md_5/bungee/command/CommandBungee.java
 @@ -10,7 +10,7 @@ public class CommandBungee extends Command
@@ -18,7 +18,7 @@ index b26035cf..bc6b015f 100644
  
      @Override
 diff --git a/proxy/src/main/java/net/md_5/bungee/command/CommandPerms.java b/proxy/src/main/java/net/md_5/bungee/command/CommandPerms.java
-index 18422669..e5943a31 100644
+index 18422669106553a2e6555c47ef06a8eaf891a989..e5943a319549c508a993524bc2f77164eae523c4 100644
 --- a/proxy/src/main/java/net/md_5/bungee/command/CommandPerms.java
 +++ b/proxy/src/main/java/net/md_5/bungee/command/CommandPerms.java
 @@ -12,7 +12,7 @@ public class CommandPerms extends Command
@@ -30,6 +30,3 @@ index 18422669..e5943a31 100644
      }
  
      @Override
--- 
-2.23.0
-

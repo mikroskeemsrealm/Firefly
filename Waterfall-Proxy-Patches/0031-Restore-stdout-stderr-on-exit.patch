@@ -1,11 +1,11 @@
-From 102b203710a4ae3c659a9ef180b02f24adc3404b Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Wed, 29 May 2019 20:32:08 +0300
 Subject: [PATCH] Restore stdout/stderr on exit
 
 
 diff --git a/log4j/src/main/java/io/github/waterfallmc/waterfall/log4j/WaterfallLogger.java b/log4j/src/main/java/io/github/waterfallmc/waterfall/log4j/WaterfallLogger.java
-index e046897a..75e45c12 100644
+index e046897a13fe9ab64ecd3589f73f3f7403b06d91..75e45c12d9e028b87b9277ea79ae60e15e5ce8d5 100644
 --- a/log4j/src/main/java/io/github/waterfallmc/waterfall/log4j/WaterfallLogger.java
 +++ b/log4j/src/main/java/io/github/waterfallmc/waterfall/log4j/WaterfallLogger.java
 @@ -7,12 +7,24 @@ import java.util.logging.Handler;
@@ -34,7 +34,7 @@ index e046897a..75e45c12 100644
          System.setErr(IoBuilder.forLogger(redirect).setLevel(Level.ERROR).buildPrintStream());
  
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 2187c955..f7807ba7 100644
+index 2187c955e78ea8d88156a6203a4f6675b691812c..f7807ba76c1bd5f5d701944ed445a861caf679a6 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -527,6 +527,7 @@ public class BungeeCord extends ProxyServer
@@ -45,6 +45,3 @@ index 2187c955..f7807ba7 100644
                  System.exit( 0 );
              }
          }.start();
--- 
-2.22.1
-

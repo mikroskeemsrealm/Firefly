@@ -1,11 +1,11 @@
-From 6b0a1faa9018da07c692c6f18fe438a416a08b40 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Wed, 29 May 2019 13:26:07 +0300
 Subject: [PATCH] Blacklist invalid query packet spammers
 
 
 diff --git a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
-index 7b6cdcea..25734757 100644
+index 7b6cdcea8c8296cb5c7f99cef365900a6eb61c17..257347578f4828d36a02f126222fbc0d1924b74d 100644
 --- a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
 +++ b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
 @@ -32,6 +32,7 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket>
@@ -46,6 +46,3 @@ index 7b6cdcea..25734757 100644
              return;
          }
  
--- 
-2.22.1
-

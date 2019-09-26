@@ -1,11 +1,11 @@
-From b779cd278795b2618f74a59a3e0ec9fbf9d8ff12 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 14 Apr 2019 21:48:01 +0300
 Subject: [PATCH] Implement KyoriPowered/text support
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/CommandSender.java b/api/src/main/java/net/md_5/bungee/api/CommandSender.java
-index d5888311..46056f0b 100644
+index d58883110e3990bc017ec74582bc48a9f7b35db7..46056f0b12afd11d1bc261a5f899d30ca730c5c3 100644
 --- a/api/src/main/java/net/md_5/bungee/api/CommandSender.java
 +++ b/api/src/main/java/net/md_5/bungee/api/CommandSender.java
 @@ -44,6 +44,29 @@ public interface CommandSender
@@ -39,7 +39,7 @@ index d5888311..46056f0b 100644
       * Get all groups this user is part of. This returns an unmodifiable
       * collection.
 diff --git a/api/src/main/java/net/md_5/bungee/api/connection/Connection.java b/api/src/main/java/net/md_5/bungee/api/connection/Connection.java
-index 7aaa4826..a754af5a 100644
+index 7aaa48261bac7123c2bb66bc135ecf21215ce435..a754af5a4260fa8705ff39b1f7bb5885fbd17183 100644
 --- a/api/src/main/java/net/md_5/bungee/api/connection/Connection.java
 +++ b/api/src/main/java/net/md_5/bungee/api/connection/Connection.java
 @@ -50,6 +50,20 @@ public interface Connection extends eu.mikroskeem.mikrocord.api.network.ChannelH
@@ -64,7 +64,7 @@ index 7aaa4826..a754af5a 100644
       * Gets whether this connection is currently open, ie: not disconnected, and
       * able to send / receive data.
 diff --git a/chat/pom.xml b/chat/pom.xml
-index 72c4cc36..de9fefd8 100644
+index 72c4cc36ea28fb8bb164e6bd426e055d9f7267ea..de9fefd8c54e5412c4ef2ead62a2ac4b5a536eb8 100644
 --- a/chat/pom.xml
 +++ b/chat/pom.xml
 @@ -25,5 +25,22 @@
@@ -92,7 +92,7 @@ index 72c4cc36..de9fefd8 100644
  </project>
 diff --git a/chat/src/main/java/eu/mikroskeem/mikrocord/api/chat/AdapterComponent.java b/chat/src/main/java/eu/mikroskeem/mikrocord/api/chat/AdapterComponent.java
 new file mode 100644
-index 00000000..020f9143
+index 0000000000000000000000000000000000000000..020f91431e37118379d31eeed8c84ae339a09395
 --- /dev/null
 +++ b/chat/src/main/java/eu/mikroskeem/mikrocord/api/chat/AdapterComponent.java
 @@ -0,0 +1,50 @@
@@ -147,7 +147,7 @@ index 00000000..020f9143
 +    }
 +}
 diff --git a/chat/src/main/java/net/md_5/bungee/chat/ComponentSerializer.java b/chat/src/main/java/net/md_5/bungee/chat/ComponentSerializer.java
-index 2a780694..a9950b4a 100644
+index 2a780694068d013775db0bed015b62f2b2285ca6..a9950b4ae1d860a3177d2fe3f80e7244037edcdb 100644
 --- a/chat/src/main/java/net/md_5/bungee/chat/ComponentSerializer.java
 +++ b/chat/src/main/java/net/md_5/bungee/chat/ComponentSerializer.java
 @@ -20,8 +20,8 @@ import net.md_5.bungee.api.chat.TranslatableComponent;
@@ -162,7 +162,7 @@ index 2a780694..a9950b4a 100644
              registerTypeAdapter( TextComponent.class, new TextComponentSerializer() ).
              registerTypeAdapter( TranslatableComponent.class, new TranslatableComponentSerializer() ).
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 9937f8ae..42b2f207 100644
+index 9937f8ae89aff7f960395170f30ef594d4d724bd..42b2f207a8b7cfc8122e00430936b6728bc20eeb 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -154,7 +154,7 @@ public class BungeeCord extends ProxyServer
@@ -174,6 +174,3 @@ index 9937f8ae..42b2f207 100644
              .registerTypeAdapter( BaseComponent.class, new ComponentSerializer() )
              .registerTypeAdapter( TextComponent.class, new TextComponentSerializer() )
              .registerTypeAdapter( TranslatableComponent.class, new TranslatableComponentSerializer() )
--- 
-2.22.1
-

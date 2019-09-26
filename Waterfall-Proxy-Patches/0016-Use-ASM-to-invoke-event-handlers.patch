@@ -1,11 +1,11 @@
-From f744443147f28c1a798e7efcd0ed4dfb0322aad3 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sat, 13 Apr 2019 22:08:57 +0300
 Subject: [PATCH] Use ASM to invoke event handlers
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/plugin/PluginClassloader.java b/api/src/main/java/net/md_5/bungee/api/plugin/PluginClassloader.java
-index 85203fb8..141de9e6 100644
+index 85203fb8ad0e95a179fbdf1a65440b456c56d1e1..141de9e68abc7b5d60a25c3819c4a4cf4985f623 100644
 --- a/api/src/main/java/net/md_5/bungee/api/plugin/PluginClassloader.java
 +++ b/api/src/main/java/net/md_5/bungee/api/plugin/PluginClassloader.java
 @@ -5,7 +5,7 @@ import java.net.URLClassLoader;
@@ -30,7 +30,7 @@ index 85203fb8..141de9e6 100644
 +    // MikroCord end
  }
 diff --git a/event/pom.xml b/event/pom.xml
-index 7af258a5..95b13732 100644
+index 7af258a5db166d328c9dbbcd75aaab1ea7518fb9..95b13732c546d3377c3daa7c3c520dd59c883481 100644
 --- a/event/pom.xml
 +++ b/event/pom.xml
 @@ -17,4 +17,13 @@
@@ -49,7 +49,7 @@ index 7af258a5..95b13732 100644
  </project>
 diff --git a/event/src/main/java/eu/mikroskeem/mikrocord/event/ASMEventExecutor.java b/event/src/main/java/eu/mikroskeem/mikrocord/event/ASMEventExecutor.java
 new file mode 100644
-index 00000000..1d566124
+index 0000000000000000000000000000000000000000..1d5661247ebd5f20e927a4340767312260428164
 --- /dev/null
 +++ b/event/src/main/java/eu/mikroskeem/mikrocord/event/ASMEventExecutor.java
 @@ -0,0 +1,109 @@
@@ -165,7 +165,7 @@ index 00000000..1d566124
 \ No newline at end of file
 diff --git a/event/src/main/java/eu/mikroskeem/mikrocord/event/DynamicClassLoader.java b/event/src/main/java/eu/mikroskeem/mikrocord/event/DynamicClassLoader.java
 new file mode 100644
-index 00000000..727ef5f7
+index 0000000000000000000000000000000000000000..727ef5f7388e78ddadd02719c3ef91ec5b4b0bda
 --- /dev/null
 +++ b/event/src/main/java/eu/mikroskeem/mikrocord/event/DynamicClassLoader.java
 @@ -0,0 +1,11 @@
@@ -182,7 +182,7 @@ index 00000000..727ef5f7
 +}
 diff --git a/event/src/main/java/eu/mikroskeem/mikrocord/event/EventExecutor.java b/event/src/main/java/eu/mikroskeem/mikrocord/event/EventExecutor.java
 new file mode 100644
-index 00000000..ad7bcbf6
+index 0000000000000000000000000000000000000000..ad7bcbf698f24c45d3f3eec10a2289c80b9585c6
 --- /dev/null
 +++ b/event/src/main/java/eu/mikroskeem/mikrocord/event/EventExecutor.java
 @@ -0,0 +1,20 @@
@@ -208,7 +208,7 @@ index 00000000..ad7bcbf6
 +}
 diff --git a/event/src/main/java/eu/mikroskeem/mikrocord/event/MethodHandleEventExecutor.java b/event/src/main/java/eu/mikroskeem/mikrocord/event/MethodHandleEventExecutor.java
 new file mode 100644
-index 00000000..72d8fd43
+index 0000000000000000000000000000000000000000..72d8fd43bd879d00b158cbd8efb3c3ca34f4f9fd
 --- /dev/null
 +++ b/event/src/main/java/eu/mikroskeem/mikrocord/event/MethodHandleEventExecutor.java
 @@ -0,0 +1,44 @@
@@ -257,7 +257,7 @@ index 00000000..72d8fd43
 +    }
 +}
 diff --git a/event/src/main/java/net/md_5/bungee/event/EventBus.java b/event/src/main/java/net/md_5/bungee/event/EventBus.java
-index 5b5d4201..e8db3b1e 100644
+index 5b5d42010b6daa999714eaa9dff54eb0838c7b15..e8db3b1e03e1d9e0644b5109f23e7994ade45a97 100644
 --- a/event/src/main/java/net/md_5/bungee/event/EventBus.java
 +++ b/event/src/main/java/net/md_5/bungee/event/EventBus.java
 @@ -50,9 +50,9 @@ public class EventBus
@@ -303,7 +303,7 @@ index 5b5d4201..e8db3b1e 100644
          {
              byEventBaked.remove( eventClass );
 diff --git a/event/src/main/java/net/md_5/bungee/event/EventHandlerMethod.java b/event/src/main/java/net/md_5/bungee/event/EventHandlerMethod.java
-index ad19c020..3d98102d 100644
+index ad19c020c77a45c3b3a8a18aaf2f59c2de15ec7c..3d98102d236c09a79d86e1b67767befcec0ae165 100644
 --- a/event/src/main/java/net/md_5/bungee/event/EventHandlerMethod.java
 +++ b/event/src/main/java/net/md_5/bungee/event/EventHandlerMethod.java
 @@ -13,9 +13,10 @@ public class EventHandlerMethod
@@ -318,6 +318,3 @@ index ad19c020..3d98102d 100644
 +        executor.execute( listener, event ); // MikroCord - Use ASM to invoke event handlers
      }
  }
--- 
-2.22.1
-

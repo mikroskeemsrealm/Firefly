@@ -1,11 +1,11 @@
-From ffbc5087f6d56d8f4b7b0c0636b22682c3c6784b Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sat, 13 Apr 2019 22:52:38 +0300
 Subject: [PATCH] Drop modules support
 
 
 diff --git a/pom.xml b/pom.xml
-index e2ecfdad..50296862 100644
+index 997119e620e3e916e5f25b7afff8e7b687f66af4..b58f38a87a10cc60d7905d6b913ad06e46598479 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -63,7 +63,9 @@
@@ -19,7 +19,7 @@ index e2ecfdad..50296862 100644
          <module>proxy</module>
          <module>query</module>
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 7301bf54..4e5c921f 100644
+index 7301bf546d4ef217bed640018824ddc4aed0ec7c..4e5c921f5846d0c8f15be5cab3bbff12b53dad54 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -164,7 +164,7 @@ public class BungeeCord extends ProxyServer
@@ -43,6 +43,3 @@ index 7301bf54..4e5c921f 100644
  
          pluginsFolder.mkdir();
          pluginManager.detectPlugins( pluginsFolder );
--- 
-2.22.0
-

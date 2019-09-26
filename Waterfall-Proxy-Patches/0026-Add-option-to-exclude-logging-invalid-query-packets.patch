@@ -1,11 +1,11 @@
-From 0b331bdd477f9cadaf609720791598525ab0a3fb Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Wed, 29 May 2019 13:15:28 +0300
 Subject: [PATCH] Add option to exclude logging invalid query packets
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-index f61108ed..6a353fdf 100644
+index f61108edf083eb44429f5411bdfb5a1a55997ed4..6a353fdfbf2439a67d12d629a870c4564764a29d 100644
 --- a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
 +++ b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
 @@ -250,4 +250,10 @@ public interface ProxyConfig
@@ -20,7 +20,7 @@ index f61108ed..6a353fdf 100644
 +    // MikroCord end
  }
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index 000a9861..a8d6c8e3 100644
+index 000a9861436fa8777c8d18c0654454235d9cb093..a8d6c8e3b223341bab21201f48adff613d8e0e3d 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 @@ -22,6 +22,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
@@ -34,7 +34,7 @@ index 000a9861..a8d6c8e3 100644
      public void load() {
          super.load();
 diff --git a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
-index b6b20f36..7b6cdcea 100644
+index b6b20f369a88b19258f08640f3c12c1ba3458495..7b6cdcea8c8296cb5c7f99cef365900a6eb61c17 100644
 --- a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
 +++ b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
 @@ -69,6 +69,7 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket>
@@ -53,6 +53,3 @@ index b6b20f36..7b6cdcea 100644
                  throw new IllegalStateException( "No session!" );
              }
  
--- 
-2.23.0
-

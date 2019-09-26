@@ -1,11 +1,11 @@
-From 8579a875b8805015e071bfe7963c5dc14811fc29 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Fri, 19 Apr 2019 18:31:13 +0300
 Subject: [PATCH] Add option to ignore certain commands from logging
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-index 8b26a275..f61108ed 100644
+index 8b26a275d81e639aee249bb42bbc87235b577061..f61108edf083eb44429f5411bdfb5a1a55997ed4 100644
 --- a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
 +++ b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
 @@ -244,4 +244,10 @@ public interface ProxyConfig
@@ -20,7 +20,7 @@ index 8b26a275..f61108ed 100644
 +    // MikroCord end
  }
 diff --git a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
-index 66ba24f3..9fc2a9e2 100644
+index 66ba24f38fff7c03baea18ec08aa8097c8e84f22..9fc2a9e2899bdc4898cdb5aaca007da018407b8e 100644
 --- a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
 +++ b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
 @@ -200,6 +200,7 @@ public class PluginManager
@@ -32,7 +32,7 @@ index 66ba24f3..9fc2a9e2 100644
                      {
                          sender.getName(), commandLine
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index 633e3093..000a9861 100644
+index 633e3093fad60741db3e72901086644a374af8a4..000a9861436fa8777c8d18c0654454235d9cb093 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 @@ -1,10 +1,14 @@
@@ -67,6 +67,3 @@ index 633e3093..000a9861 100644
 +        ignoredLogCommands = new HashSet<>(config.getList("log.ignored_commands", () -> ImmutableList.of("login", "register", "changepassword")));
      }
  }
--- 
-2.23.0
-

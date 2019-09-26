@@ -1,11 +1,11 @@
-From 8747cc9c2b51193208bfd86d73c1668b9740b703 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Tue, 16 Apr 2019 21:20:13 +0300
 Subject: [PATCH] Disable useless bootstrap module
 
 
 diff --git a/pom.xml b/pom.xml
-index dbccb459..f745b666 100644
+index e1e97bc9adcc35514d9f712683031f7caeeb6db0..73fc3efcf2ca2f27774092c8e5e13aac8af4488f 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -53,7 +53,9 @@
@@ -19,7 +19,7 @@ index dbccb459..f745b666 100644
          <module>config</module>
          <module>event</module>
 diff --git a/proxy/pom.xml b/proxy/pom.xml
-index 57116b81..77705224 100644
+index af4c05ff5f3bec42541b40de23a0d94956c2ed6c..18fd7a2e5633cb87f1942a31c088b7f1c933e16c 100644
 --- a/proxy/pom.xml
 +++ b/proxy/pom.xml
 @@ -20,6 +20,7 @@
@@ -93,6 +93,3 @@ index 57116b81..77705224 100644
 +        <!-- MikroCord end -->
      </build>
  </project>
--- 
-2.22.0
-

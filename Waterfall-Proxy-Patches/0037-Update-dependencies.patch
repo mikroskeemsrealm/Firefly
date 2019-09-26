@@ -1,11 +1,11 @@
-From 11d6121190040eb13feff4aee1d9ccc84665ad45 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sun, 9 Jun 2019 01:47:21 +0300
 Subject: [PATCH] Update dependencies
 
 
 diff --git a/chat/pom.xml b/chat/pom.xml
-index de9fefd8..b0e0c841 100644
+index de9fefd8c54e5412c4ef2ead62a2ac4b5a536eb8..b0e0c84145923434e7af8cfbb0863942a307b28c 100644
 --- a/chat/pom.xml
 +++ b/chat/pom.xml
 @@ -22,7 +22,7 @@
@@ -18,7 +18,7 @@ index de9fefd8..b0e0c841 100644
          </dependency>
          <!-- MikroCord start - add KyoriPowered/text support -->
 diff --git a/pom.xml b/pom.xml
-index b58f38a8..2a855792 100644
+index b58f38a87a10cc60d7905d6b913ad06e46598479..2a8557925fad907735247b52d541830bee21b254 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -100,7 +100,7 @@
@@ -40,7 +40,7 @@ index b58f38a8..2a855792 100644
          </dependency>
          <dependency>
 diff --git a/proxy/pom.xml b/proxy/pom.xml
-index 40b3fa6a..1ad9edac 100644
+index 40b3fa6ae75751f1f1578f902f1eb5d8d6ca4b2c..1ad9edacc3d9c7d9e738c31256bcb28dee4c8193 100644
 --- a/proxy/pom.xml
 +++ b/proxy/pom.xml
 @@ -102,7 +102,7 @@
@@ -70,7 +70,7 @@ index 40b3fa6a..1ad9edac 100644
                              <exclude>com.google.code.gson:gson</exclude>
                              <exclude>io.netty:*</exclude>
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
-index 1ca62370..26fb4900 100644
+index 1ca623706a5044b90ef11b007ccb7aadb44d46d9..26fb49001c005bda4621e43cd8059b70dc090387 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
 @@ -40,34 +40,37 @@ public final class DependencyClassLoader extends URLClassLoader {
@@ -130,6 +130,3 @@ index 1ca62370..26fb4900 100644
              new Dependency("org.ow2.asm", "asm", "7.1", "fa29aa438674ff19d5e1386d2c3527a0267f291e")
      );
  
--- 
-2.22.1
-

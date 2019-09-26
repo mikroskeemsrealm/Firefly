@@ -1,11 +1,11 @@
-From 144e2c3eba315443d6de67fec33a1d6c6d5a7b10 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sat, 13 Apr 2019 23:10:17 +0300
 Subject: [PATCH] Set sane default configuration values
 
 
 diff --git a/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java b/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
-index dfd74f1e..5ed309dc 100644
+index 79f15263bb97329fa5cf10242417b40aa1118553..26a71e76fa996ac3b472f441b0b34be179a9b28c 100644
 --- a/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
 +++ b/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
 @@ -16,7 +16,7 @@ public abstract class WaterfallConfiguration extends Configuration { // MikroCor
@@ -18,7 +18,7 @@ index dfd74f1e..5ed309dc 100644
      /**
       * The supported versions displayed to the client
 diff --git a/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java b/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java
-index 51ddb412..a181e62f 100644
+index 51ddb4121454aa8589b8cfddfcc73073882b7d4f..a181e62f2d3e0f17c3ae99aaf9eb74f4857a23e6 100644
 --- a/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java
 +++ b/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java
 @@ -57,12 +57,12 @@ public abstract class Configuration implements ProxyConfig
@@ -37,7 +37,7 @@ index 51ddb412..a181e62f 100644
      private int compressionThreshold = 256;
      private boolean preventProxyConnections;
 diff --git a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
-index 5cd84940..e6b44d65 100644
+index 5cd8494017a6d302f2b900504352feef27a1f56d..e6b44d652d53ade95612b7e4d0f2dc71514e89a9 100644
 --- a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
 +++ b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
 @@ -110,7 +110,11 @@ public class YamlConfig implements ConfigurationAdapter
@@ -61,6 +61,3 @@ index 5cd84940..e6b44d65 100644
  
          Collection<ListenerInfo> ret = new HashSet<>();
  
--- 
-2.22.1
-

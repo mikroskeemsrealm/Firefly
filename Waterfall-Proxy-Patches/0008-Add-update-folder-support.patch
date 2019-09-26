@@ -1,4 +1,4 @@
-From 81110e50a1707dc384d01dc6cd849fe55f79d9b0 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Tue, 19 Mar 2019 22:42:04 +0200
 Subject: [PATCH] Add update folder support
@@ -6,7 +6,7 @@ Subject: [PATCH] Add update folder support
 Who remembers https://github.com/SpigotMC/BungeeCord/pull/2314?
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
-index 884f78c8..51559a96 100644
+index 884f78c8037200122a0202dc336cfff6d68ca7fe..51559a9682e295313d7e9f3f14c6c3c7433020dc 100644
 --- a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
 +++ b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
 @@ -9,6 +9,7 @@ import java.io.InputStream;
@@ -55,6 +55,3 @@ index 884f78c8..51559a96 100644
 +    }
 +    // MikroCord end
  }
--- 
-2.22.0
-

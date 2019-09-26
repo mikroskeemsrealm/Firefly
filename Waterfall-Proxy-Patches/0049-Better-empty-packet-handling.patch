@@ -1,11 +1,11 @@
-From c990b183873a59168147c4c00923067201b85e91 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Wed, 25 Sep 2019 11:29:45 +0300
 Subject: [PATCH] Better empty packet handling
 
 
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
-index 743d65e4..81c3626a 100644
+index 743d65e43549f4db3b1f6785a69ab69e19004285..81c3626af3679671f633c561698b5519290003af 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
 @@ -7,8 +7,10 @@ import io.netty.handler.codec.ByteToMessageDecoder;
@@ -33,7 +33,7 @@ index 743d65e4..81c3626a 100644
                  {
                      throw new CorruptedFrameException( "Empty Packet!" );
 diff --git a/proxy/src/main/java/net/md_5/bungee/UserConnection.java b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-index c5eaac9a..5ecce9da 100644
+index c5eaac9a6bbce34cd09524fafabf13a06676ce4e..5ecce9dad55bad646234cfbd418f5220b10e0024 100644
 --- a/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 +++ b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 @@ -353,6 +353,7 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.mikroc
@@ -45,7 +45,7 @@ index c5eaac9a..5ecce9da 100644
                  ch.pipeline().addAfter( PipelineUtils.FRAME_PREPENDER, PipelineUtils.PACKET_ENCODER, new MinecraftEncoder( Protocol.HANDSHAKE, false, getPendingConnection().getVersion() ) );
                  ch.pipeline().get( HandlerBoss.class ).setHandler( new ServerConnector( bungee, UserConnection.this, target ) );
 diff --git a/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java b/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
-index 65bca819..1f9fff77 100644
+index 65bca81925e2f7652d6af4519c90207d22184878..1f9fff77eb355bc3c29c26bf878ef2824bc948c0 100644
 --- a/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
 +++ b/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
 @@ -65,6 +65,7 @@ public class PipelineUtils
@@ -65,6 +65,3 @@ index 65bca819..1f9fff77 100644
              ch.pipeline().addLast( FRAME_PREPENDER, framePrepender );
  
              ch.pipeline().addLast( BOSS_HANDLER, new HandlerBoss() );
--- 
-2.23.0
-

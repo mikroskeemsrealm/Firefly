@@ -1,11 +1,11 @@
-From 045d0dfc586d06757881eb7899ab247ac1fa33c1 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Wed, 20 Mar 2019 07:48:35 +0200
 Subject: [PATCH] Get rid of startup delay
 
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java b/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
-index e8130458..0453d5c3 100644
+index e81304583d18d34f0921ad40232224715c3b8063..0453d5c32c70721e6fc3f3d0e92830968ea31fc0 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
 @@ -48,11 +48,15 @@ public class BungeeCordLauncher
@@ -24,6 +24,3 @@ index e8130458..0453d5c3 100644
              }
          }
  
--- 
-2.22.1
-

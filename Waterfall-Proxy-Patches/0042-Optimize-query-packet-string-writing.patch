@@ -1,11 +1,11 @@
-From 0d0d354bed791c171ce72ff7e30c3e88d7f0c84b Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Sat, 20 Jul 2019 16:59:51 +0300
 Subject: [PATCH] Optimize query packet string writing
 
 
 diff --git a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
-index 115bad21..f79ce8c6 100644
+index 115bad2171580594b83bd390dbdbf098f74deb90..f79ce8c6a3b4561b4487a94430b8d15ac144d230 100644
 --- a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
 +++ b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
 @@ -47,10 +47,14 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket>
@@ -23,6 +23,3 @@ index 115bad21..f79ce8c6 100644
          buf.writeByte( 0x00 );
      }
  
--- 
-2.22.1
-

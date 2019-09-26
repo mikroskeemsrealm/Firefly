@@ -1,4 +1,4 @@
-From 01e589897694311ee09588b5b1176355c6cb7ecf Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Wed, 25 Sep 2019 10:52:00 +0300
 Subject: [PATCH] Don't use Class#getSimpleName()
@@ -6,7 +6,7 @@ Subject: [PATCH] Don't use Class#getSimpleName()
 
 diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/misc/ClassUtil.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/misc/ClassUtil.java
 new file mode 100644
-index 00000000..68a6e89a
+index 0000000000000000000000000000000000000000..68a6e89a6da206f45e7101386b16009d2315dc36
 --- /dev/null
 +++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/misc/ClassUtil.java
 @@ -0,0 +1,31 @@
@@ -42,7 +42,7 @@ index 00000000..68a6e89a
 +    }
 +}
 diff --git a/api/src/main/java/net/md_5/bungee/Util.java b/api/src/main/java/net/md_5/bungee/Util.java
-index 684abf4c..9ba9790b 100644
+index 684abf4c2ca49c024bf22410631af091e0982676..9ba9790b22922bfaa13a04f20cbf076107fd2bbb 100644
 --- a/api/src/main/java/net/md_5/bungee/Util.java
 +++ b/api/src/main/java/net/md_5/bungee/Util.java
 @@ -65,7 +65,7 @@ public class Util
@@ -55,7 +55,7 @@ index 684abf4c..9ba9790b 100644
      }
  
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
-index b0d63201..8276f0c0 100644
+index b0d63201f39c5656afd17daabf07fc61b9a66157..8276f0c00f566deb8803f67d6e337ef7327f1acb 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 @@ -29,6 +29,7 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
@@ -76,7 +76,7 @@ index b0d63201..8276f0c0 100644
                  packetTypeStr = "unknown";
              }
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index f2da5a85..f76ad5f4 100644
+index f2da5a854d8114a837a0ed6d93cedd6782956a05..f76ad5f4a1fc43069706869e40d47e29b993c7a7 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -345,6 +345,7 @@ public class BungeeCord extends ProxyServer
@@ -88,7 +88,7 @@ index f2da5a85..f76ad5f4 100644
          startListeners();
  
 diff --git a/proxy/src/main/java/net/md_5/bungee/netty/HandlerBoss.java b/proxy/src/main/java/net/md_5/bungee/netty/HandlerBoss.java
-index a66099fc..282ece15 100644
+index a66099fc682b02b1d4d55447b77433f31f4adbce..282ece156c66ada7ab045d9f2f6876bc26cf3b95 100644
 --- a/proxy/src/main/java/net/md_5/bungee/netty/HandlerBoss.java
 +++ b/proxy/src/main/java/net/md_5/bungee/netty/HandlerBoss.java
 @@ -146,7 +146,7 @@ public class HandlerBoss extends ChannelInboundHandlerAdapter
@@ -100,6 +100,3 @@ index a66099fc..282ece15 100644
                      } );
                  } else if ( cause instanceof QuietException )
                  {
--- 
-2.23.0
-

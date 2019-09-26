@@ -1,11 +1,11 @@
-From a2a74d2840d48fd1ac8071789128e4aa7e854b0f Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Mon, 22 Jul 2019 10:20:51 +0300
 Subject: [PATCH] Add getFrom to ServerSwitchEvent
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/event/ServerSwitchEvent.java b/api/src/main/java/net/md_5/bungee/api/event/ServerSwitchEvent.java
-index 4722517a..48b65b9f 100644
+index 4722517aed4f34a214516ebbd3350e1adc1dc4b1..48b65b9f7382f1ee52ab0155a0df5da8359e967b 100644
 --- a/api/src/main/java/net/md_5/bungee/api/event/ServerSwitchEvent.java
 +++ b/api/src/main/java/net/md_5/bungee/api/event/ServerSwitchEvent.java
 @@ -19,4 +19,11 @@ public class ServerSwitchEvent extends Event
@@ -21,7 +21,7 @@ index 4722517a..48b65b9f 100644
 +    // MikroCord end
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-index 6355dbe0..300f2333 100644
+index 6355dbe0b9594c80dfdecb451bb73a86f1d48026..300f2333d40070c9cb8a628e0dd5a69d3cd7dbaa 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 @@ -346,10 +346,11 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
@@ -37,6 +37,3 @@ index 6355dbe0..300f2333 100644
  
          thisState = State.FINISHED;
  
--- 
-2.22.1
-

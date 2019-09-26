@@ -1,11 +1,11 @@
-From be565c4ff2549141c04611c57dc79c8244a6c2df Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Wed, 29 May 2019 16:23:51 +0300
 Subject: [PATCH] Add get* with Supplier defaults
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/config/ConfigurationAdapter.java b/api/src/main/java/net/md_5/bungee/api/config/ConfigurationAdapter.java
-index 8ee8d33f..31b6ea53 100644
+index 8ee8d33fe1b69227ad39615382f0bdccbb40df4d..31b6ea53d40fc995087a8afb367c23c4f4f1dce7 100644
 --- a/api/src/main/java/net/md_5/bungee/api/config/ConfigurationAdapter.java
 +++ b/api/src/main/java/net/md_5/bungee/api/config/ConfigurationAdapter.java
 @@ -24,6 +24,7 @@ public interface ConfigurationAdapter
@@ -41,7 +41,7 @@ index 8ee8d33f..31b6ea53 100644
      /**
       * Get the configuration all servers which may be accessible via the proxy.
 diff --git a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
-index 44011a96..e62951d7 100644
+index 44011a9655331056c0e29ee98612f446700a52c8..e62951d74c2fdda98b17986ff58fc8d392ff7c2c 100644
 --- a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
 +++ b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
 @@ -326,4 +326,46 @@ public class YamlConfig implements ConfigurationAdapter
@@ -91,6 +91,3 @@ index 44011a96..e62951d7 100644
 +    public <T, C extends Collection<T>> C getList(String path, java.util.function.Supplier<C> def) { return getWithSupplier(path, def, config); }
 +    // MikroCord end
  }
--- 
-2.22.0
-

@@ -1,11 +1,11 @@
-From df4c673bfdd960f08c28b9402e4473f8a6f90940 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Thu, 30 May 2019 02:53:08 +0300
 Subject: [PATCH] Fix dumb connection message behaviour
 
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/UserConnection.java b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-index adeef5a3..74182dfa 100644
+index 42c025025d9de95186faaaa881899fd774b0b439..bf808488dd64e16596cfa861ff7f92772f6299e5 100644
 --- a/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 +++ b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 @@ -329,6 +329,7 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.mikroc
@@ -24,6 +24,3 @@ index adeef5a3..74182dfa 100644
              sendMessage( bungee.getTranslation( "already_connecting" ) );
              return;
          }
--- 
-2.22.1
-

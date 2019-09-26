@@ -1,11 +1,11 @@
-From 3a19c6fd6b027cd55ca8bda4ce45363446960336 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Wed, 29 May 2019 20:16:16 +0300
 Subject: [PATCH] Improve event loop group implementation picking
 
 
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index ef8604d8..3194c5d0 100644
+index ef8604d8321e75a928ceb1f35607f5b8e1d26f8d..3194c5d08fb015606f8e70aa9db0b7c3494122f0 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 @@ -1,6 +1,7 @@
@@ -37,7 +37,7 @@ index ef8604d8..3194c5d0 100644
  }
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/EventLoopGroupType.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/EventLoopGroupType.java
 new file mode 100644
-index 00000000..5afba538
+index 0000000000000000000000000000000000000000..5afba538d8f61f8f526d15295322d12c1224cc68
 --- /dev/null
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/EventLoopGroupType.java
 @@ -0,0 +1,9 @@
@@ -51,7 +51,7 @@ index 00000000..5afba538
 +    NIO
 +}
 diff --git a/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java b/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
-index bd2401fc..be665b12 100644
+index 44226e67f822722fb6aed7e2b1a2525054e2af9e..65bca81925e2f7652d6af4519c90207d22184878 100644
 --- a/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
 +++ b/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
 @@ -92,12 +92,16 @@ public class PipelineUtils
@@ -81,6 +81,3 @@ index bd2401fc..be665b12 100644
      }
  
      public static EventLoopGroup newEventLoopGroup(int threads, ThreadFactory factory)
--- 
-2.22.1
-

@@ -1,11 +1,11 @@
-From 928f631b52ccdd74cb1360f6abb03739ee362def Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Wed, 29 May 2019 20:40:02 +0300
 Subject: [PATCH] Speed up shutdown
 
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index f7807ba7..e64074c8 100644
+index f7807ba76c1bd5f5d701944ed445a861caf679a6..e64074c876a609f48a96f97d590dcff4c677bc15 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -511,8 +511,8 @@ public class BungeeCord extends ProxyServer
@@ -19,6 +19,3 @@ index f7807ba7..e64074c8 100644
                  while (true) {
                      try {
                          bossEventLoopGroup.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
--- 
-2.22.1
-
