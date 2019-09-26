@@ -5,14 +5,15 @@ Subject: [PATCH] Add Prometheus support
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-index 7f6016944cf05b3793ecb42793d8730b1ee84f1a..f3c3ddaf61d7aa942053321aa4ab1dd9556c879d 100644
+index 7f6016944cf05b3793ecb42793d8730b1ee84f1a..8aa74c33bdcb56ec40d3dc93c931bd42693b8330 100644
 --- a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
 +++ b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-@@ -276,4 +276,8 @@ public interface ProxyConfig
+@@ -276,4 +276,9 @@ public interface ProxyConfig
      // MikroCord start - add option to disable noisy packet decode exception
      boolean isLogNoisyPacketDecodeException();
      // MikroCord end
 +    // MikroCord start - add Prometheus metrics support
++    boolean isPrometheusEnabled();
 +    String getPrometheusListenHost();
 +    int getPrometheusListenPort();
 +    // MikroCord end
@@ -123,13 +124,16 @@ index 1ad9edacc3d9c7d9e738c31256bcb28dee4c8193..b14979543f6c14de4268cf65de439ce2
                      </artifactSet>
                      <!-- MikroCord end -->
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index 4e851f952b9657d4372ea387559a700a0f614023..6bd2194b7563875b74648478b842592067b4a9cb 100644
+index 4e851f952b9657d4372ea387559a700a0f614023..2f2a48ed2daadc5e98dfd04692109f5b23a754cd 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-@@ -62,6 +62,12 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -62,6 +62,15 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
      @Getter
      private boolean logNoisyPacketDecodeException = false;
  
++    @Getter
++    private boolean prometheusEnabled = true;
++
 +    @Getter
 +    private String prometheusListenHost = "127.0.0.1";
 +
@@ -139,10 +143,11 @@ index 4e851f952b9657d4372ea387559a700a0f614023..6bd2194b7563875b74648478b8425920
      @Override
      public void load() {
          super.load();
-@@ -80,6 +86,8 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -80,6 +89,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
          internScoreboardTeamStrings = config.getBoolean("performance.intern_scoreboard_team_strings", internScoreboardTeamStrings);
          populateGS4QueryPlugins = config.getBoolean("query.populate_plugins", populateGS4QueryPlugins);
          logNoisyPacketDecodeException = config.getBoolean("log.noisy_packet_decode_exception", logNoisyPacketDecodeException);
++        prometheusEnabled = config.getBoolean("prometheus.enabled", prometheusEnabled);
 +        prometheusListenHost = config.getString("prometheus.listen_host", prometheusListenHost);
 +        prometheusListenPort = config.getInt("prometheus.listen_port", prometheusListenPort);
      }
@@ -175,10 +180,10 @@ index 26fb49001c005bda4621e43cd8059b70dc090387..e19a2d6e137a9a054c92b0b81e2dc637
      private final ClassLoader actualParent;
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/PrometheusMetrics.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/PrometheusMetrics.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..e7161a86a15c62e7c68800c1421650dbb097dca8
+index 0000000000000000000000000000000000000000..b1bf8aa5603a14d5ded2378a6c9de8664086e84b
 --- /dev/null
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/PrometheusMetrics.java
-@@ -0,0 +1,99 @@
+@@ -0,0 +1,106 @@
 +package eu.mikroskeem.mikrocord.misc;
 +
 +import io.prometheus.client.Collector;
@@ -202,7 +207,6 @@ index 0000000000000000000000000000000000000000..e7161a86a15c62e7c68800c1421650db
 + */
 +public final class PrometheusMetrics {
 +    private static final Logger logger = LoggerFactory.getLogger(PrometheusMetrics.class);
-+    private static boolean metricsInitialized = false;
 +
 +    private static String prevHost = null;
 +    private static Integer prevPort = null;
@@ -231,20 +235,28 @@ index 0000000000000000000000000000000000000000..e7161a86a15c62e7c68800c1421650db
 +            .build("invalid_packets", "Total invalid packets encountered in proxy lifetime")
 +            .register();
 +
-+    public static void initialize() {
-+        if (!metricsInitialized) {
-+            // JVM metrics
++    private static final boolean ENABLED;
++
++    static {
++        final Runnable noopRunnable = (ENABLED = ProxyServer.getInstance().getConfig().isPrometheusEnabled()) ? null : () -> {};
++
++        // JVM metrics
++        if (ENABLED) {
 +            DefaultExports.initialize();
++        }
 +
-+            // Protocol decoder metrics
-+            MinecraftDecoder.setDecodedMetric(RUNTIME_PACKETS_DECODED::inc);
-+            MinecraftDecoder.setEmptyPacketMetric(RUNTIME_EMPTY_PACKETS_ENCOUNTERED::inc);
-+            MinecraftDecoder.setInvalidPacketMetric(RUNTIME_INVALID_PACKETS_ENCOUNTERED::inc);
++        // Protocol decoder metrics
++        MinecraftDecoder.setDecodedMetric(ENABLED ? RUNTIME_PACKETS_DECODED::inc : noopRunnable);
++        MinecraftDecoder.setEmptyPacketMetric(ENABLED ? RUNTIME_EMPTY_PACKETS_ENCOUNTERED::inc : noopRunnable);
++        MinecraftDecoder.setInvalidPacketMetric(ENABLED ? RUNTIME_INVALID_PACKETS_ENCOUNTERED::inc : noopRunnable);
 +
-+            // Protocol encoder metrics
-+            MinecraftEncoder.setEncodedMetric(RUNTIME_PACKETS_ENCODED::inc);
++        // Protocol encoder metrics
++        MinecraftEncoder.setEncodedMetric(ENABLED ? RUNTIME_PACKETS_ENCODED::inc : noopRunnable);
++    }
 +
-+            metricsInitialized = true;
++    public static void initialize() {
++        if (!ENABLED) {
++            return;
 +        }
 +
 +        // Set up exporter server
@@ -262,7 +274,7 @@ index 0000000000000000000000000000000000000000..e7161a86a15c62e7c68800c1421650db
 +    }
 +
 +    public static void deinitialize() {
-+        if (server != null) {
++        if (ENABLED && server != null) {
 +            server.stop();
 +            logger.info("Prometheus HTTP server stopped");
 +        }
