@@ -5,7 +5,7 @@ Subject: [PATCH] Speed up shutdown
 
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index f7807ba76c1bd5f5d701944ed445a861caf679a6..d3041070718433919a82537cfe330cb427142972 100644
+index f7807ba76c1bd5f5d701944ed445a861caf679a6..b936eac5dc860e107944860e3a8617b22e13f75f 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -475,12 +475,30 @@ public class BungeeCord extends ProxyServer
@@ -30,7 +30,7 @@ index f7807ba76c1bd5f5d701944ed445a861caf679a6..d3041070718433919a82537cfe330cb4
 +                };
 +                while (!isEmptyCheck.getAsBoolean()) {
 +                    try {
-+                        Thread.sleep(50);
++                        Thread.sleep(5);
 +                    } catch (InterruptedException e) {
 +                        Thread.currentThread().interrupt();
 +                    }
