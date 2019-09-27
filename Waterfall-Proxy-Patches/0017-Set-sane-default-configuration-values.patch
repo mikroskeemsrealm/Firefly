@@ -18,9 +18,18 @@ index 79f15263bb97329fa5cf10242417b40aa1118553..26a71e76fa996ac3b472f441b0b34be1
      /**
       * The supported versions displayed to the client
 diff --git a/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java b/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java
-index 51ddb4121454aa8589b8cfddfcc73073882b7d4f..a181e62f2d3e0f17c3ae99aaf9eb74f4857a23e6 100644
+index 51ddb4121454aa8589b8cfddfcc73073882b7d4f..5c8901f9c722f61c7b5e47c44b2eebba712ab180 100644
 --- a/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java
 +++ b/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java
+@@ -39,7 +39,7 @@ public abstract class Configuration implements ProxyConfig
+     /**
+      * UUID used for metrics.
+      */
+-    private String uuid = UUID.randomUUID().toString();
++    private String uuid; /*= UUID.randomUUID().toString();*/ // MikroCord - sane configuration defaults
+     /**
+      * Set of all listeners.
+      */
 @@ -57,12 +57,12 @@ public abstract class Configuration implements ProxyConfig
       * Whether we log proxy commands to the proxy log
       */
@@ -36,6 +45,15 @@ index 51ddb4121454aa8589b8cfddfcc73073882b7d4f..a181e62f2d3e0f17c3ae99aaf9eb74f4
      private Favicon favicon;
      private int compressionThreshold = 256;
      private boolean preventProxyConnections;
+@@ -88,7 +88,7 @@ public abstract class Configuration implements ProxyConfig
+ 
+         listeners = adapter.getListeners();
+         timeout = adapter.getInt( "timeout", timeout );
+-        uuid = adapter.getString( "stats", uuid );
++        uuid = adapter.getString( "stats", () -> UUID.randomUUID().toString() ); // MikroCord - sane configuration defaults
+         onlineMode = adapter.getBoolean( "online_mode", onlineMode );
+         logCommands = adapter.getBoolean( "log_commands", logCommands );
+         logPings = adapter.getBoolean( "log_pings", logPings );
 diff --git a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
 index 5cd8494017a6d302f2b900504352feef27a1f56d..e6b44d652d53ade95612b7e4d0f2dc71514e89a9 100644
 --- a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
