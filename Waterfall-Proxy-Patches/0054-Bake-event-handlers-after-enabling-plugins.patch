@@ -1,0 +1,91 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Fri, 27 Sep 2019 11:43:42 +0300
+Subject: [PATCH] Bake event handlers after enabling plugins
+
+
+diff --git a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
+index 7e96c74dd2f38a7d7bb69dcfb6bd76f61f9c218c..5f360003bb10c8473d2d9bafc49898739dc85b11 100644
+--- a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
++++ b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
+@@ -312,6 +312,7 @@ public class PluginManager
+                 ProxyServer.getInstance().getLogger().log( Level.WARNING, "Exception encountered when loading plugin: " + plugin.getDescription().getName(), t );
+             }
+         }
++        this.eventBus.doBakeHandlers(); // MikroCord - bake event handlers after enabling plugins
+     }
+ 
+     private boolean enablePlugin(Map<PluginDescription, Boolean> pluginStatuses, Stack<PluginDescription> dependStack, PluginDescription plugin)
+@@ -484,6 +485,11 @@ public class PluginManager
+                     "Listener %s has registered using deprecated subscribe annotation! Please update to @EventHandler.", listener );
+         }
+         */ // MikroCord end
++        // MikroCord start - bake event handlers after enabling plugins
++        if (eventBus.isInitialBakeDone()) {
++            ProxyServer.getInstance().getLogger().log(Level.WARNING, "Plugin {0} registered listener {1} post-enable, this is discouraged", new Object[]{ plugin, listener.getClass().getName() });
++        }
++        // MikroCord end
+         eventBus.register( listener );
+         listenersByPlugin.put( plugin, listener );
+     }
+diff --git a/event/src/main/java/net/md_5/bungee/event/EventBus.java b/event/src/main/java/net/md_5/bungee/event/EventBus.java
+index e8db3b1e03e1d9e0644b5109f23e7994ade45a97..0805c0bde676746dbe0e2faa9f63b3897a0ae8a8 100644
+--- a/event/src/main/java/net/md_5/bungee/event/EventBus.java
++++ b/event/src/main/java/net/md_5/bungee/event/EventBus.java
+@@ -22,10 +22,12 @@ public class EventBus
+     private final Map<Class<?>, EventHandlerMethod[]> byEventBaked = new ConcurrentHashMap<>();
+     private final Lock lock = new ReentrantLock();
+     private final Logger logger;
++    @lombok.Getter private boolean initialBakeDone = false; // MikroCord - bake event handlers after enabling plugins
+ 
+     public EventBus()
+     {
+         this( null );
++        this.initialBakeDone = true; // MikroCord - bake event handlers after enabling plugins; This is only used in unit tests
+     }
+ 
+     public EventBus(Logger logger)
+@@ -122,6 +124,7 @@ public class EventBus
+                     currentPriorityMap.put( listener, entry.getValue().toArray( new Method[0] ) );
+                     // MikroCord end
+                 }
++                if (initialBakeDone) // MikroCord - bake event handlers after enabling plugins
+                 bakeHandlers( e.getKey() );
+             }
+         } finally
+@@ -158,6 +161,7 @@ public class EventBus
+                         byListenerAndPriority.remove( e.getKey() );
+                     }
+                 }
++                if (initialBakeDone) // MikroCord - bake event handlers after enabling plugins
+                 bakeHandlers( e.getKey() );
+             }
+         } finally
+@@ -166,6 +170,27 @@ public class EventBus
+         }
+     }
+ 
++    // MikroCord start - bake event handlers after enabling plugins
++    public void doBakeHandlers() {
++        if (initialBakeDone) {
++            return;
++        }
++
++        try {
++            lock.lock();
++
++            var eventClasses = byListenerAndPriority.keySet();
++            for (Class<?> eventClass : eventClasses) {
++                bakeHandlers(eventClass);
++            }
++        } finally {
++            lock.unlock();
++        }
++
++        initialBakeDone = true;
++    }
++    // MikroCord end
++
+     /**
+      * Shouldn't be called without first locking the writeLock; intended for use
+      * only inside {@link #register(java.lang.Object) register(Object)} or
