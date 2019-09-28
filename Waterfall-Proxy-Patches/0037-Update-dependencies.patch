@@ -18,7 +18,7 @@ index de9fefd8c54e5412c4ef2ead62a2ac4b5a536eb8..b0e0c84145923434e7af8cfbb0863942
          </dependency>
          <!-- MikroCord start - add KyoriPowered/text support -->
 diff --git a/pom.xml b/pom.xml
-index b58f38a87a10cc60d7905d6b913ad06e46598479..2a8557925fad907735247b52d541830bee21b254 100644
+index b58f38a87a10cc60d7905d6b913ad06e46598479..b4a2a67f776b67b6443808114bcaa98cc46db4b5 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -100,7 +100,7 @@
@@ -26,7 +26,7 @@ index b58f38a87a10cc60d7905d6b913ad06e46598479..2a8557925fad907735247b52d541830b
          <maven.deploy.skip>true</maven.deploy.skip> <!-- Waterfall -->
          <build.number>unknown</build.number>
 -        <netty.version>4.1.34.Final</netty.version>
-+        <netty.version>4.1.36.Final</netty.version> <!-- MikroCord - update dependencies -->
++        <netty.version>4.1.42.Final</netty.version> <!-- MikroCord - update dependencies -->
          <!-- Require Java 8 -->
          <maven.compiler.source>11</maven.compiler.source> <!-- MikroCord - Require Java 11 -->
          <maven.compiler.target>11</maven.compiler.target> <!-- MikroCord - Require Java 11 -->
@@ -35,12 +35,12 @@ index b58f38a87a10cc60d7905d6b913ad06e46598479..2a8557925fad907735247b52d541830b
              <groupId>com.google.guava</groupId>
              <artifactId>guava</artifactId>
 -            <version>20.0</version>
-+            <version>28.0-jre</version> <!-- MikroCord - update dependencies -->
++            <version>28.1-jre</version> <!-- MikroCord - update dependencies -->
              <scope>compile</scope>
          </dependency>
          <dependency>
 diff --git a/proxy/pom.xml b/proxy/pom.xml
-index 40b3fa6ae75751f1f1578f902f1eb5d8d6ca4b2c..1ad9edacc3d9c7d9e738c31256bcb28dee4c8193 100644
+index 40b3fa6ae75751f1f1578f902f1eb5d8d6ca4b2c..658766786ec884460927348937e2b94d06169d55 100644
 --- a/proxy/pom.xml
 +++ b/proxy/pom.xml
 @@ -102,7 +102,7 @@
@@ -48,7 +48,7 @@ index 40b3fa6ae75751f1f1578f902f1eb5d8d6ca4b2c..1ad9edacc3d9c7d9e738c31256bcb28d
              <groupId>mysql</groupId>
              <artifactId>mysql-connector-java</artifactId>
 -            <version>5.1.47</version>
-+            <version>8.0.16</version> <!-- MikroCord - update dependencies -->
++            <version>8.0.17</version> <!-- MikroCord - update dependencies -->
              <scope>runtime</scope>
          </dependency>
  
@@ -70,7 +70,7 @@ index 40b3fa6ae75751f1f1578f902f1eb5d8d6ca4b2c..1ad9edacc3d9c7d9e738c31256bcb28d
                              <exclude>com.google.code.gson:gson</exclude>
                              <exclude>io.netty:*</exclude>
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
-index 1ca623706a5044b90ef11b007ccb7aadb44d46d9..26fb49001c005bda4621e43cd8059b70dc090387 100644
+index 1ca623706a5044b90ef11b007ccb7aadb44d46d9..125f8c2cb90574daabd95d95f2ca9f168a80a399 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
 @@ -40,34 +40,37 @@ public final class DependencyClassLoader extends URLClassLoader {
@@ -78,12 +78,12 @@ index 1ca623706a5044b90ef11b007ccb7aadb44d46d9..26fb49001c005bda4621e43cd8059b70
      );
  
 -    private static final String NETTY_VERSION = "4.1.34.Final";
-+    private static final String NETTY_VERSION = "4.1.36.Final";
++    private static final String NETTY_VERSION = "4.1.42.Final";
  
      private static final List<Dependency> DEPENDENCIES = Arrays.asList(
 -            new Dependency("com.google.guava", "guava", "20.0", "89507701249388e1ed5ddcf8c41f4ce1be7831ef"),
 -            new Dependency("mysql", "mysql-connector-java", "5.1.47", "9de4159aaf2d08817a276610b8114a825fca6cfd"),
-+            new Dependency("com.google.guava", "guava", "28.0-jre", "54fed371b4b8a8cce1e94a9abd9620982d3aa54b"),
++            new Dependency("com.google.guava", "guava", "28.1-jre", "b0e91dcb6a44ffb6221b5027e12a5cb34b841145"),
 +            new Dependency("com.google.guava", "failureaccess", "1.0.1", "1dcf1de382a0bf95a3d8b0849546c88bac1292c9"),
 +            new Dependency("mysql", "mysql-connector-java", "8.0.17", "53da6afdc5f7b45caaa5bc3627028b2041a36cee"),
 +            new Dependency("com.google.protobuf", "protobuf-java", "3.6.1", "0d06d46ecfd92ec6d0f3b423b4cd81cb38d8b924"),
@@ -105,18 +105,18 @@ index 1ca623706a5044b90ef11b007ccb7aadb44d46d9..26fb49001c005bda4621e43cd8059b70
 -            new Dependency("io.netty", "netty-transport-native-epoll", NETTY_VERSION, "linux-x86_64", "4ee3e61c2429f280a63729d39b3973562318600b"),
 -            new Dependency("io.netty", "netty-transport-native-unix-common", NETTY_VERSION, "7e63ead8935a85d601646d44263a40fabe225771"),
 -            new Dependency("io.netty", "netty-transport", NETTY_VERSION, "f57be6509efa6766d90e537a775930101f26b35c"),
-+            new Dependency("io.netty", "netty-buffer", NETTY_VERSION, "7f2db0921dd57df4db076229830ab09bba713aeb"),
-+            new Dependency("io.netty", "netty-codec", NETTY_VERSION, "8462116d327bb3d1ec24258071f2e7345a73dbfc"),
-+            new Dependency("io.netty", "netty-codec-dns", NETTY_VERSION, "8775964a38d6e5d2847c98fc91a91486665b1dcc"),
-+            new Dependency("io.netty", "netty-codec-haproxy", NETTY_VERSION, "20f23c1e5a374cd04d76bb480ab3418f5775f7b2"),
-+            new Dependency("io.netty", "netty-codec-http", NETTY_VERSION, "62b73d439dbddf3c0dde092b048580139695ab46"),
-+            new Dependency("io.netty", "netty-common", NETTY_VERSION, "f6f38fde652a70ea579897edc80e52353e487ae6"),
-+            new Dependency("io.netty", "netty-handler", NETTY_VERSION, "1c38a5920a10c01b1cce4cdc964447ec76abf1b5"),
-+            new Dependency("io.netty", "netty-resolver", NETTY_VERSION, "e4d243fbf4e6837fa294f892bf97149e18129100"),
-+            new Dependency("io.netty", "netty-resolver-dns", NETTY_VERSION, "071f0d061465651d90c7f1d40a66580f69821582"),
-+            new Dependency("io.netty", "netty-transport-native-epoll", NETTY_VERSION, "linux-x86_64", "8ec8e248ef34b86cc7fae023fb40b9ffa8f5614f"),
-+            new Dependency("io.netty", "netty-transport-native-unix-common", NETTY_VERSION, "d95d7033f400f9472db9da7834c443b96cd4bab0"),
-+            new Dependency("io.netty", "netty-transport", NETTY_VERSION, "8546e6be47be587acab86bbd106ca023678f07d9"),
++            new Dependency("io.netty", "netty-buffer", NETTY_VERSION, "6e6fc9178d1f1401aa0d6b843341efb91720f2cd"),
++            new Dependency("io.netty", "netty-codec", NETTY_VERSION, "b1d5ed85a558fbbadc2783f869fbd0adcd32b07b"),
++            new Dependency("io.netty", "netty-codec-dns", NETTY_VERSION, "67528de727bae6c4a2ff4dce0afa2a4c3c8f60bd"),
++            new Dependency("io.netty", "netty-codec-haproxy", NETTY_VERSION, "418e22e277e138122c93778955191b2cb0591fec"),
++            new Dependency("io.netty", "netty-codec-http", NETTY_VERSION, "5f71267aa784d0e6c5ec09fb988339d244b205a0"),
++            new Dependency("io.netty", "netty-common", NETTY_VERSION, "e02700b574d3a0e2100308f971f0753ac8700e7c"),
++            new Dependency("io.netty", "netty-handler", NETTY_VERSION, "fc6546be5df552d9729f008d8d41a6dee28127aa"),
++            new Dependency("io.netty", "netty-resolver", NETTY_VERSION, "ccaacf418a9e486b65e82c47bed66439119c5fdb"),
++            new Dependency("io.netty", "netty-resolver-dns", NETTY_VERSION, "385e8b85dce81f8ac61d8b161c5b39020b5d789f"),
++            new Dependency("io.netty", "netty-transport-native-epoll", NETTY_VERSION, "linux-x86_64", "0d8dbcd33944fe1918b536952abbcf33f9ebf2f4"),
++            new Dependency("io.netty", "netty-transport-native-unix-common", NETTY_VERSION, "344ff6fc05315233f0db5d86f94e8a3b5799b995"),
++            new Dependency("io.netty", "netty-transport", NETTY_VERSION, "857502e863c02c829fdafea61c3fda6bda01d0af"),
              new Dependency("org.apache.logging.log4j", "log4j-iostreams", "2.11.1", "54219892aca8fe8b91d5c0e4e74d78b5ea613b1d"),
              new Dependency("org.apache.logging.log4j", "log4j-jul", "2.11.1", "f94ff1933609c93844d48815eecbe9e7e4d26473"),
              new Dependency("org.apache.logging.log4j", "log4j-slf4j-impl", "2.11.1", "4b41b53a3a2d299ce381a69d165381ca19f62912"),
