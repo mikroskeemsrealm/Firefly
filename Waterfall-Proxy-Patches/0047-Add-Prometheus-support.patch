@@ -5,10 +5,10 @@ Subject: [PATCH] Add Prometheus support
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-index 7f6016944cf05b3793ecb42793d8730b1ee84f1a..8aa74c33bdcb56ec40d3dc93c931bd42693b8330 100644
+index 0567132ea34c665b0a56605f49504188b0735947..2553bd738f2dd218f46448821041816568669fd7 100644
 --- a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
 +++ b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-@@ -276,4 +276,9 @@ public interface ProxyConfig
+@@ -279,4 +279,9 @@ public interface ProxyConfig
      // MikroCord start - add option to disable noisy packet decode exception
      boolean isLogNoisyPacketDecodeException();
      // MikroCord end
@@ -124,10 +124,10 @@ index 1ad9edacc3d9c7d9e738c31256bcb28dee4c8193..b14979543f6c14de4268cf65de439ce2
                      </artifactSet>
                      <!-- MikroCord end -->
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index 4e851f952b9657d4372ea387559a700a0f614023..2f2a48ed2daadc5e98dfd04692109f5b23a754cd 100644
+index 20b4d23535f4f29d75de23a0bf519c3c29db460e..c34fcee34089ea5a914d5ac44030ae5dee95b441 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-@@ -62,6 +62,15 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -65,6 +65,15 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
      @Getter
      private boolean logNoisyPacketDecodeException = false;
  
@@ -143,7 +143,7 @@ index 4e851f952b9657d4372ea387559a700a0f614023..2f2a48ed2daadc5e98dfd04692109f5b
      @Override
      public void load() {
          super.load();
-@@ -80,6 +89,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -84,6 +93,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
          internScoreboardTeamStrings = config.getBoolean("performance.intern_scoreboard_team_strings", internScoreboardTeamStrings);
          populateGS4QueryPlugins = config.getBoolean("query.populate_plugins", populateGS4QueryPlugins);
          logNoisyPacketDecodeException = config.getBoolean("log.noisy_packet_decode_exception", logNoisyPacketDecodeException);
@@ -291,7 +291,7 @@ index 0000000000000000000000000000000000000000..b1bf8aa5603a14d5ded2378a6c9de866
 +    }
 +}
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 710e346462182906f26e8b3db49d57d4eebc4fcc..f88ca6d4a132ce08d98b34faf879c25480bd4415 100644
+index bc7033b1fa473058d0eebedda11d01a3737ac68e..bc42ee54c1b6628e8c531894edab22972f6d3b4d 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -345,6 +345,7 @@ public class BungeeCord extends ProxyServer
@@ -310,7 +310,7 @@ index 710e346462182906f26e8b3db49d57d4eebc4fcc..f88ca6d4a132ce08d98b34faf879c254
                  getLogger().info( "Closing pending connections" );
  
                  connectionLock.readLock().lock();
-@@ -802,6 +804,7 @@ public class BungeeCord extends ProxyServer
+@@ -811,6 +813,7 @@ public class BungeeCord extends ProxyServer
              connections.put( con.getName(), con );
              connectionsByUUID.put( con.getUniqueId(), con );
              connectionsByOfflineUUID.put( con.getPendingConnection().getOfflineId(), con );

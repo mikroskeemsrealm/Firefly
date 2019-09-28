@@ -5,10 +5,10 @@ Subject: [PATCH] Save memory on scoreboard teams
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-index 0746091705899ac15219cf5f52c601a9852ca203..0b3c9603ffcfca113de26bc6f15c0da22edfc33b 100644
+index 08df03e7c976e9f23ae6d3dbd2ca723e65315b51..e6fe286ee19305701b8df0005c634b4d76193cef 100644
 --- a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
 +++ b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-@@ -267,4 +267,7 @@ public interface ProxyConfig
+@@ -270,4 +270,7 @@ public interface ProxyConfig
      // MikroCord start - don't rewrite tablist on online mode connections
      boolean isAllowTablistRewrite();
      // MikroCord end
@@ -125,10 +125,10 @@ index 39f81fd1a68fc8f2908aad2c79b832d90ba18fba..7dcb7175caa0660f02df5888fdd7ea15
 +    // MikroCord end
  }
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index 483c9d6955cf02652a6781c6664f6a0fc380bdf5..8b37cc4557bdac2c1dd790505329d8c89b260f58 100644
+index 7735aa9e4c3773bd3c3998b56f53d24b91538cd1..e31cc6757a84e49241592dbfecc2ebfaf028087b 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-@@ -47,6 +47,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -50,6 +50,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
      @Getter
      private boolean allowTablistRewrite = true;
  
@@ -138,10 +138,10 @@ index 483c9d6955cf02652a6781c6664f6a0fc380bdf5..8b37cc4557bdac2c1dd790505329d8c8
      @Override
      public void load() {
          super.load();
-@@ -61,7 +64,8 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
-         velocityForwardingSecret = config.getString("velocity_modern_forwarding.secret", () -> VelocitySupport.generateRandomString(12)).getBytes(StandardCharsets.UTF_8);
+@@ -65,7 +68,8 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
          tcpFastOpenEnabled = config.getBoolean("networking.tcp_fast_open.enabled", tcpFastOpenEnabled);
          tcpFastOpenMode = setupTfo(config.getInt("networking.tcp_fast_open.mode", tcpFastOpenMode));
+         waitForAllPlayersToDisconnectInfinitely = config.getBoolean("shutdown.wait_for_all_players_to_disconnect_infinitely", waitForAllPlayersToDisconnectInfinitely);
 -        allowTablistRewrite = config.getBoolean("allow_tablist_rewrite", allowTablistRewrite);
 +        allowTablistRewrite = config.getBoolean("performance.allow_tablist_rewrite", allowTablistRewrite);
 +        internScoreboardTeamStrings = config.getBoolean("performance.intern_scoreboard_team_strings", internScoreboardTeamStrings);

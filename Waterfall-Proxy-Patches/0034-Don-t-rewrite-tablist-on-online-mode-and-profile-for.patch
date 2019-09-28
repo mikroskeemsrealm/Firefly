@@ -7,24 +7,24 @@ Subject: [PATCH] Don't rewrite tablist on online mode and profile forwarding
 Credit goes to xxDark, https://github.com/PaperMC/Waterfall/pull/386
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-index 729836a5ee854578c89aacbca3cba94c27a20467..0746091705899ac15219cf5f52c601a9852ca203 100644
+index 4a73a0c57f0282831439a2e4642e2f44476a1d32..08df03e7c976e9f23ae6d3dbd2ca723e65315b51 100644
 --- a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
 +++ b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-@@ -264,4 +264,7 @@ public interface ProxyConfig
-     boolean isTcpFastOpenEnabled();
-     int getTcpFastOpenMode();
+@@ -267,4 +267,7 @@ public interface ProxyConfig
+     // MikroCord start - Speed up shutdown
+     boolean isWaitForAllPlayersToDisconnectInfinitely();
      // MikroCord end
 +    // MikroCord start - don't rewrite tablist on online mode connections
 +    boolean isAllowTablistRewrite();
 +    // MikroCord end
  }
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index 3194c5d08fb015606f8e70aa9db0b7c3494122f0..483c9d6955cf02652a6781c6664f6a0fc380bdf5 100644
+index 68886291adda5c272257a07a9e8a4cb596a647a3..7735aa9e4c3773bd3c3998b56f53d24b91538cd1 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-@@ -44,6 +44,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -47,6 +47,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
      @Getter
-     private int tcpFastOpenMode = TCPFastOpenMode.CLIENT_ONLY.value;
+     private boolean waitForAllPlayersToDisconnectInfinitely = true;
  
 +    @Getter
 +    private boolean allowTablistRewrite = true;
@@ -32,10 +32,10 @@ index 3194c5d08fb015606f8e70aa9db0b7c3494122f0..483c9d6955cf02652a6781c6664f6a0f
      @Override
      public void load() {
          super.load();
-@@ -58,6 +61,7 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
-         velocityForwardingSecret = config.getString("velocity_modern_forwarding.secret", () -> VelocitySupport.generateRandomString(12)).getBytes(StandardCharsets.UTF_8);
+@@ -62,6 +65,7 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
          tcpFastOpenEnabled = config.getBoolean("networking.tcp_fast_open.enabled", tcpFastOpenEnabled);
          tcpFastOpenMode = setupTfo(config.getInt("networking.tcp_fast_open.mode", tcpFastOpenMode));
+         waitForAllPlayersToDisconnectInfinitely = config.getBoolean("shutdown.wait_for_all_players_to_disconnect_infinitely", waitForAllPlayersToDisconnectInfinitely);
 +        allowTablistRewrite = config.getBoolean("allow_tablist_rewrite", allowTablistRewrite);
      }
  

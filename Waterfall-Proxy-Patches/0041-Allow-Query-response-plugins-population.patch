@@ -25,10 +25,10 @@ index 9a262c8a11caeade95a084e5e5bc0be398917bbf..eecdcfeb293646f01ab847bec80caf91
 +    // MikroCord end
  }
 diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-index 0b3c9603ffcfca113de26bc6f15c0da22edfc33b..4d0ea5e4358bd5cc2f31e23a9200db9e54e2b8a1 100644
+index e6fe286ee19305701b8df0005c634b4d76193cef..980d87fc33c781825966b01ea942c9d2e2230a38 100644
 --- a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
 +++ b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-@@ -270,4 +270,7 @@ public interface ProxyConfig
+@@ -273,4 +273,7 @@ public interface ProxyConfig
      // MikroCord start - save memory on scoreboard teams
      boolean isInternScoreboardTeamStrings();
      // MikroCord end
@@ -37,10 +37,10 @@ index 0b3c9603ffcfca113de26bc6f15c0da22edfc33b..4d0ea5e4358bd5cc2f31e23a9200db9e
 +    // MikroCord end
  }
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index 8b37cc4557bdac2c1dd790505329d8c89b260f58..e6a7d92b02de9ce1642a1b35d13163a0d4394b29 100644
+index e31cc6757a84e49241592dbfecc2ebfaf028087b..53ada5c826ec039c8e48632fc2a2c834ff941013 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-@@ -50,6 +50,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -53,6 +53,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
      @Getter
      private boolean internScoreboardTeamStrings = false;
  
@@ -50,8 +50,8 @@ index 8b37cc4557bdac2c1dd790505329d8c89b260f58..e6a7d92b02de9ce1642a1b35d13163a0
      @Override
      public void load() {
          super.load();
-@@ -66,6 +69,7 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
-         tcpFastOpenMode = setupTfo(config.getInt("networking.tcp_fast_open.mode", tcpFastOpenMode));
+@@ -70,6 +73,7 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+         waitForAllPlayersToDisconnectInfinitely = config.getBoolean("shutdown.wait_for_all_players_to_disconnect_infinitely", waitForAllPlayersToDisconnectInfinitely);
          allowTablistRewrite = config.getBoolean("performance.allow_tablist_rewrite", allowTablistRewrite);
          internScoreboardTeamStrings = config.getBoolean("performance.intern_scoreboard_team_strings", internScoreboardTeamStrings);
 +        populateGS4QueryPlugins = config.getBoolean("query.populate_plugins", populateGS4QueryPlugins);
