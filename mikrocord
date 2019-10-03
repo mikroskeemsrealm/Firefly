@@ -16,9 +16,6 @@ case "$1" in
     "e" | "edit")
         scripts/edit.sh
     ;;
-    "w" | "wiggle")
-        scripts/wigglePatch.py
-    ;;
     *)
         echo "MikroCord build tool command. This provides a variety of commands to control the MikroCord"
         echo "build. View below for details of the available commands."
@@ -28,8 +25,7 @@ case "$1" in
         echo "  * p, patch         | Applies all the patches to BungeeCord"
         echo "  * m, up, merge     | Utility to aid in merging upstream"
         echo "  * b, build         | Builds the project"
-        echo "                     | The bootstrap artifact can be found in MikroCord-Proxy/bootstrap/target/"
+        echo "                     | The artifact can be found in MikroCord-Proxy/proxy/target/"
         echo "  * e, edit          | Runs git rebase -i for MikroCord, allowing patches to be easily modified"
-        echo "  * w, wiggle        | Helps to apply patches that fail to using default Git."
     ;;
 esac
