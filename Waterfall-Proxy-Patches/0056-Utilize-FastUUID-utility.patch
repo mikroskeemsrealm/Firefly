@@ -207,34 +207,50 @@ index 0000000000000000000000000000000000000000..4999cdd3a406732c87efdaa8c733754e
 +}
 \ No newline at end of file
 diff --git a/api/src/main/java/io/github/waterfallmc/waterfall/utils/UUIDUtils.java b/api/src/main/java/io/github/waterfallmc/waterfall/utils/UUIDUtils.java
-index cc24dd35cb49237f8f133788f4534f7fc2ab8089..bcd1fb9853436da30df49a63601c0942d1ae3aea 100644
+index cc24dd35cb49237f8f133788f4534f7fc2ab8089..0560ac93c37bb499d5619d4974fcdd8646e52768 100644
 --- a/api/src/main/java/io/github/waterfallmc/waterfall/utils/UUIDUtils.java
 +++ b/api/src/main/java/io/github/waterfallmc/waterfall/utils/UUIDUtils.java
-@@ -12,6 +12,7 @@ public class UUIDUtils {
+@@ -12,8 +12,12 @@ public class UUIDUtils {
      }
  
      public static String toMojangString(UUID id) {
-+        if (true) return eu.mikroskeem.mikrocord.api.misc.FastUUID.toString(id); // MikroCord - utilize FastUUID utility
++        // MikroCord start - utilize FastUUID utility
++        return eu.mikroskeem.mikrocord.api.misc.FastUUID.toString(id);
++        /*
          Preconditions.checkNotNull(id, "Null id");
          return Hex.encodeString(toBytes(id));
++        */ // MikroCord end
      }
-@@ -27,6 +28,7 @@ public class UUIDUtils {
+ 
+     public static UUID fromString(String s) {
+@@ -27,11 +31,15 @@ public class UUIDUtils {
      }
  
      public static UUID fromMojangString(String s) {
-+        if (true) return eu.mikroskeem.mikrocord.api.misc.FastUUID.parseUuid(s); // MikroCord - utilize FastUUID utility
++        // MikroCord start - utilize FastUUID utility
++        return eu.mikroskeem.mikrocord.api.misc.FastUUID.parseUuid(s);
++        /*
          Preconditions.checkNotNull(s, "Null string");
          if (s.length() != 32) {
              throw new IllegalArgumentException("UUID not in mojang format: " + s);
+         }
+         return fromMojangString0(s);
++        */ // MikroCord end
+     }
+ 
+     private static UUID fromMojangString0(String s) {
 diff --git a/api/src/main/java/net/md_5/bungee/Util.java b/api/src/main/java/net/md_5/bungee/Util.java
-index 9ba9790b22922bfaa13a04f20cbf076107fd2bbb..c381d20340f6fe35dfac3ea9ec858ff81b465880 100644
+index 9ba9790b22922bfaa13a04f20cbf076107fd2bbb..6869659b6849ad7e0527eb77f3a99c4721cee190 100644
 --- a/api/src/main/java/net/md_5/bungee/Util.java
 +++ b/api/src/main/java/net/md_5/bungee/Util.java
-@@ -87,6 +87,7 @@ public class Util
+@@ -87,6 +87,10 @@ public class Util
       */
      public static UUID getUUID(String uuid)
      {
-+        if (true) return eu.mikroskeem.mikrocord.api.misc.FastUUID.parseUuid(uuid); // MikroCord - utilize FastUUID utility
++        /* // MikroCord start - utilize FastUUID utility
          return new UUID( UnsignedLongs.parseUnsignedLong( uuid.substring( 0, 16 ), 16 ), UnsignedLongs.parseUnsignedLong( uuid.substring( 16 ), 16 ) );
++        */
++        return eu.mikroskeem.mikrocord.api.misc.FastUUID.parseUuid(uuid);
++        // MikroCord end
      }
  }
