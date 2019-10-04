@@ -19,6 +19,13 @@
         <defaultGoal>clean install</defaultGoal>
     </build>
 
+    <repositories>
+        <repository>
+            <id>mikroskeem-repo</id>
+            <url>https://repo.wut.ee/repository/mikroskeem-repo</url>
+        </repository>
+    </repositories>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>

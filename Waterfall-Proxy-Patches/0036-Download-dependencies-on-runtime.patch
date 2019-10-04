@@ -93,10 +93,10 @@ index 0000000000000000000000000000000000000000..9cbaf91a5b415e9a29c150e3e8e8552c
 +}
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..1ca623706a5044b90ef11b007ccb7aadb44d46d9
+index 0000000000000000000000000000000000000000..11976344f8356f50170b1d5e2818d0d6aa277af1
 --- /dev/null
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
-@@ -0,0 +1,220 @@
+@@ -0,0 +1,221 @@
 +package eu.mikroskeem.mikrocord.dependencies;
 +
 +import io.github.waterfallmc.waterfall.utils.Hex;
@@ -236,6 +236,7 @@ index 0000000000000000000000000000000000000000..1ca623706a5044b90ef11b007ccb7aad
 +                // Load
 +                logger.info("Dependency {} downloaded", dependency);
 +                addFile(targetPath);
++                break;
 +            }
 +        }
 +    }

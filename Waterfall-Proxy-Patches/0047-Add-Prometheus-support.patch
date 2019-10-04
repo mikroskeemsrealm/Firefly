@@ -80,7 +80,7 @@ index d4b0384348c17de5c2350c8c5f928fcc0c1868db..073004e479a7707b8a72f7b449747412
      }
  }
 diff --git a/proxy/pom.xml b/proxy/pom.xml
-index 658766786ec884460927348937e2b94d06169d55..3f00a3518afef9a240e5830cdfd5757f5e4a4572 100644
+index 658766786ec884460927348937e2b94d06169d55..19353857fd7816fafbe6a1d48f4e2aece615e0cb 100644
 --- a/proxy/pom.xml
 +++ b/proxy/pom.xml
 @@ -21,6 +21,7 @@
@@ -91,7 +91,7 @@ index 658766786ec884460927348937e2b94d06169d55..3f00a3518afef9a240e5830cdfd5757f
      </properties>
  
      <dependencies>
-@@ -119,6 +120,23 @@
+@@ -119,6 +120,28 @@
              <scope>runtime</scope>
          </dependency>
          <!-- Waterfall end -->
@@ -111,15 +111,21 @@ index 658766786ec884460927348937e2b94d06169d55..3f00a3518afef9a240e5830cdfd5757f
 +            <artifactId>simpleclient_httpserver</artifactId>
 +            <version>${prometheus.client.version}</version>
 +        </dependency>
++        <dependency>
++            <groupId>eu.mikroskeem</groupId>
++            <artifactId>jvm-hiccup</artifactId>
++            <version>1.0.0</version>
++        </dependency>
 +        <!-- MikroCord end -->
      </dependencies>
  
      <build>
-@@ -200,6 +218,7 @@
+@@ -200,6 +223,8 @@
                              <exclude>net.kyori:*</exclude>
                              <exclude>org.checkerframework:checker-qual</exclude>
                              <exclude>org.ow2.asm:asm</exclude>
 +                            <exclude>io.prometheus:*</exclude>
++                            <exclude>eu.mikroskeem:jvm-hiccup</exclude>
                          </excludes>
                      </artifactSet>
                      <!-- MikroCord end -->
@@ -154,10 +160,16 @@ index 20b4d23535f4f29d75de23a0bf519c3c29db460e..c34fcee34089ea5a914d5ac44030ae5d
  
      private int setupTfo(int value) {
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
-index 125f8c2cb90574daabd95d95f2ca9f168a80a399..627d4056047fd9b2d92ab28e2509797baa16d29f 100644
+index 31e85762e07854b23c594c5c9da7d96991724bcd..34450712a351d2252c065f6adeded46f34303ca2 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
-@@ -41,6 +41,7 @@ public final class DependencyClassLoader extends URLClassLoader {
+@@ -37,10 +37,12 @@ public final class DependencyClassLoader extends URLClassLoader {
+     private static final Logger logger = LogManager.getLogger(DependencyClassLoader.class);
+     private static final List<String> DEFAULT_REPOSITORIES = Arrays.asList(
+             // TODO: mirror repositories?
+-            "https://repo.maven.apache.org/maven2"
++            "https://repo.maven.apache.org/maven2",
++            "https://repo.wut.ee/repository/mikroskeem-repo"
      );
  
      private static final String NETTY_VERSION = "4.1.42.Final";
@@ -165,7 +177,7 @@ index 125f8c2cb90574daabd95d95f2ca9f168a80a399..627d4056047fd9b2d92ab28e2509797b
  
      private static final List<Dependency> DEPENDENCIES = Arrays.asList(
              new Dependency("com.google.guava", "guava", "28.1-jre", "b0e91dcb6a44ffb6221b5027e12a5cb34b841145"),
-@@ -71,7 +72,11 @@ public final class DependencyClassLoader extends URLClassLoader {
+@@ -71,7 +73,12 @@ public final class DependencyClassLoader extends URLClassLoader {
              new Dependency("net.kyori", "text-api", "3.0.2", "608cdb44a74bbd68745941760df730ed55e4b47c"),
              new Dependency("net.kyori", "text-serializer-gson", "3.0.2", "9ac22f04f3504c52ff1618c5a8d9a6145d8d9c9e"),
              new Dependency("net.kyori", "text-serializer-legacy", "3.0.2", "8acbfb36356259273a8e3a15782e4f2980375bc5"),
@@ -174,20 +186,23 @@ index 125f8c2cb90574daabd95d95f2ca9f168a80a399..627d4056047fd9b2d92ab28e2509797b
 +            new Dependency("io.prometheus", "simpleclient", PROMETHEUS_VERSION, "26073e94cbfa6780e10ef524e542cf2a64dabe67"),
 +            new Dependency("io.prometheus", "simpleclient_common", PROMETHEUS_VERSION, "08b4f119cfdff67a02a066e6e519bb2bab0a2a1b"),
 +            new Dependency("io.prometheus", "simpleclient_hotspot", PROMETHEUS_VERSION, "2703b02c4b2abb078de8365f4ef3b7d5e451382d"),
-+            new Dependency("io.prometheus", "simpleclient_httpserver", PROMETHEUS_VERSION, "d46c7273a4dd10e611e3cd617f46eb8b2dae8fdc")
++            new Dependency("io.prometheus", "simpleclient_httpserver", PROMETHEUS_VERSION, "d46c7273a4dd10e611e3cd617f46eb8b2dae8fdc"),
++            new Dependency("eu.mikroskeem", "jvm-hiccup", "1.0.0", "906515353ac4c529e9fbbb6ad945dddc1dbe7cc6")
      );
  
      private final ClassLoader actualParent;
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/PrometheusMetrics.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/PrometheusMetrics.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..b1bf8aa5603a14d5ded2378a6c9de8664086e84b
+index 0000000000000000000000000000000000000000..14d3775e1c0674d4cf89f90900ebad540661a5ec
 --- /dev/null
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/PrometheusMetrics.java
-@@ -0,0 +1,106 @@
+@@ -0,0 +1,115 @@
 +package eu.mikroskeem.mikrocord.misc;
 +
++import eu.mikroskeem.jvmhiccup.HiccupMeterThread;
 +import io.prometheus.client.Collector;
 +import io.prometheus.client.Counter;
++import io.prometheus.client.Gauge;
 +import io.prometheus.client.GaugeMetricFamily;
 +import io.prometheus.client.exporter.HTTPServer;
 +import io.prometheus.client.hotspot.DefaultExports;
@@ -207,10 +222,15 @@ index 0000000000000000000000000000000000000000..b1bf8aa5603a14d5ded2378a6c9de866
 + */
 +public final class PrometheusMetrics {
 +    private static final Logger logger = LoggerFactory.getLogger(PrometheusMetrics.class);
++    private static final HiccupMeterThread hiccupMeter;
 +
 +    private static String prevHost = null;
 +    private static Integer prevPort = null;
 +    private static HTTPServer server = null;
++
++    public static final Gauge JVM_GC_HICCUP = Gauge
++            .build("jvm_gc_hiccup", "JVM GC hiccup")
++            .register();
 +
 +    public static final Collector CLIENTS_ONLINE = createGauge("clients_online", "Total clients online",
 +            () -> ProxyServer.getInstance().getOnlineCount());
@@ -239,10 +259,12 @@ index 0000000000000000000000000000000000000000..b1bf8aa5603a14d5ded2378a6c9de866
 +
 +    static {
 +        final Runnable noopRunnable = (ENABLED = ProxyServer.getInstance().getConfig().isPrometheusEnabled()) ? null : () -> {};
++        hiccupMeter = new HiccupMeterThread(JVM_GC_HICCUP::set);
 +
 +        // JVM metrics
 +        if (ENABLED) {
 +            DefaultExports.initialize();
++            hiccupMeter.start();
 +        }
 +
 +        // Protocol decoder metrics
