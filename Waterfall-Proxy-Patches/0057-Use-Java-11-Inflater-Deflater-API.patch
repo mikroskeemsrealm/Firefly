@@ -1,0 +1,139 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Sat, 5 Oct 2019 13:46:48 +0300
+Subject: [PATCH] Use Java 11 Inflater/Deflater API
+
+Also do some other improvements, such as enforcing output size while
+decompressing and preallocating at most 2mb sized buffer for
+decompressor output.
+
+While I don't benefit from this in production as I aim for native
+solution, I still include this for fun.
+
+Credit for the idea (and now implementation) goes to @astei
+https://github.com/VelocityPowered/Velocity/commit/7747679ee1b3bb661c2bf849e221559ea5f661ce
+
+diff --git a/native/src/main/java/net/md_5/bungee/jni/zlib/BungeeZlib.java b/native/src/main/java/net/md_5/bungee/jni/zlib/BungeeZlib.java
+index 0c98ad4073898cd6dfe5df951568b29d8eefcbee..dd00beb4b5980f286099a920bb37d2fb9ce988a1 100644
+--- a/native/src/main/java/net/md_5/bungee/jni/zlib/BungeeZlib.java
++++ b/native/src/main/java/net/md_5/bungee/jni/zlib/BungeeZlib.java
+@@ -11,4 +11,5 @@ public interface BungeeZlib
+     void free();
+ 
+     void process(ByteBuf in, ByteBuf out) throws DataFormatException;
++    default void process(ByteBuf in, ByteBuf out, int maxOutSize) throws DataFormatException { process(in, out); } // MikroCord - Java 11 inflater/deflater
+ }
+diff --git a/native/src/main/java/net/md_5/bungee/jni/zlib/JavaZlib.java b/native/src/main/java/net/md_5/bungee/jni/zlib/JavaZlib.java
+index 10da5d95c351e03d2c7700c070ce2bceb65719cb..0e035077a7de6aa6ff0b20179268f0e267787eb2 100644
+--- a/native/src/main/java/net/md_5/bungee/jni/zlib/JavaZlib.java
++++ b/native/src/main/java/net/md_5/bungee/jni/zlib/JavaZlib.java
+@@ -8,7 +8,11 @@ import java.util.zip.Inflater;
+ public class JavaZlib implements BungeeZlib
+ {
+ 
++    /* // MikroCord start - Java 11 inflater/deflater
+     private final byte[] buffer = new byte[ 8192 ];
++    */
++    private static final int ZLIB_BUF_SIZE = 8192;
++    // MikroCord end
+     //
+     private boolean compress;
+     private Deflater deflater;
+@@ -44,30 +48,74 @@ public class JavaZlib implements BungeeZlib
+ 
+     @Override
+     public void process(ByteBuf in, ByteBuf out) throws DataFormatException
++    // MikroCord start - Java 11 inflater/deflater
+     {
++        process(in, out, Integer.MAX_VALUE);
++    }
++    @Override
++    public void process(ByteBuf in, ByteBuf out, int maxOutSize) throws DataFormatException
++    {
++        /*
+         byte[] inData = new byte[ in.readableBytes() ];
+         in.readBytes( inData );
++        */
++        if (in.nioBufferCount() != 1) throw new IllegalStateException("in has multiple NIO buffers");
++        if (out.nioBufferCount() != 1) throw new IllegalStateException("out has multiple NIO buffers");
++        int origIdx = in.readerIndex();
++        // MikroCord end
+ 
+         if ( compress )
+         {
++            /* // MikroCord start - Java 11 inflater/deflater
+             deflater.setInput( inData );
++            */
++            deflater.setInput(in.nioBuffer());
++            // MikroCord end
+             deflater.finish();
+ 
+             while ( !deflater.finished() )
+             {
++                /* // MikroCord start - Java 11 inflater/deflater
+                 int count = deflater.deflate( buffer );
+                 out.writeBytes( buffer, 0, count );
++                */
++                if (!out.isWritable()) {
++                    out.ensureWritable(ZLIB_BUF_SIZE);
++                }
++                var outNioBuf = out.nioBuffer(out.writerIndex(), out.writableBytes());
++                int count = deflater.deflate(outNioBuf);
++                in.readerIndex(origIdx + deflater.getTotalIn());
++                out.writerIndex(out.writerIndex() + count);
++                // MikroCord end
+             }
+ 
+             deflater.reset();
+         } else
+         {
++            /* // MikroCord start - Java 11 inflater/deflater
+             inflater.setInput( inData );
++            */
++            inflater.setInput(in.nioBuffer());
++            // MikroCord end
+ 
+-            while ( !inflater.finished() && inflater.getTotalIn() < inData.length )
++            while ( !inflater.finished() && /*inflater.getTotalIn() < inData.length*/inflater.getBytesRead() < in.readableBytes() ) // MikroCord - Java 11 inflater/deflater
+             {
++                /* // MikroCord start - Java 11 inflater/deflater
+                 int count = inflater.inflate( buffer );
+                 out.writeBytes( buffer, 0, count );
++                */
++                if (!out.isWritable()) {
++                    int outWritten = out.readableBytes();
++                    if (outWritten > maxOutSize) {
++                        throw new DataFormatException("Inflated too much data (" + outWritten + " > " + maxOutSize + ")");
++                    }
++                    out.ensureWritable(ZLIB_BUF_SIZE);
++                }
++                var outNioBuf = out.nioBuffer(out.writerIndex(), out.writableBytes());
++                int count = inflater.inflate(outNioBuf);
++                in.readerIndex(origIdx + inflater.getTotalIn());
++                out.writerIndex(out.writerIndex() + count);
++                // MikroCord end
+             }
+ 
+             inflater.reset();
+diff --git a/proxy/src/main/java/net/md_5/bungee/compress/PacketDecompressor.java b/proxy/src/main/java/net/md_5/bungee/compress/PacketDecompressor.java
+index 37fe6ac73504cee4ba7fc336d6623b5c833c6d1d..df260317766c3702dca255023e1c69989993a38f 100644
+--- a/proxy/src/main/java/net/md_5/bungee/compress/PacketDecompressor.java
++++ b/proxy/src/main/java/net/md_5/bungee/compress/PacketDecompressor.java
+@@ -40,12 +40,16 @@ public class PacketDecompressor extends MessageToMessageDecoder<ByteBuf>
+         } else
+         {
+             Preconditions.checkArgument( size >= compressionThreshold, "Decompressed size %s less than compression threshold %s", size, compressionThreshold);
+-            ByteBuf decompressed = ctx.alloc().directBuffer();
++            ByteBuf decompressed = ctx.alloc().directBuffer(Math.min(size, 2 * 1024 * 1024)); // MikroCord - Java 11 inflater/deflater; preallocate at most 2mb buffer for decompressed packet
+ 
+             try
+             {
++                /* // MikroCord start - Java 11 inflater/deflater
+                 zlib.process( in, decompressed );
+                 Preconditions.checkArgument( decompressed.readableBytes() == size, "Decompressed size %s is not equal to actual decompressed bytes", size, decompressed.readableBytes());
++                */
++                zlib.process(in, decompressed, size); // Enforce size check in decompressor, should be safer than checking readable bytes later.
++                // MikroCord end
+ 
+                 out.add( decompressed );
+                 decompressed = null;
