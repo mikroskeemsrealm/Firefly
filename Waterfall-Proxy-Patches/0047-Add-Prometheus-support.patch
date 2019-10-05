@@ -130,10 +130,10 @@ index 658766786ec884460927348937e2b94d06169d55..19353857fd7816fafbe6a1d48f4e2aec
                      </artifactSet>
                      <!-- MikroCord end -->
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index 20b4d23535f4f29d75de23a0bf519c3c29db460e..c34fcee34089ea5a914d5ac44030ae5dee95b441 100644
+index 28e02ff622215bd022eaf8bb59cc73953d70567d..da2596c3f4fa2bf44b3b5b75957628ce2468c2ba 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-@@ -65,6 +65,15 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -64,6 +64,15 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
      @Getter
      private boolean logNoisyPacketDecodeException = false;
  
@@ -149,7 +149,7 @@ index 20b4d23535f4f29d75de23a0bf519c3c29db460e..c34fcee34089ea5a914d5ac44030ae5d
      @Override
      public void load() {
          super.load();
-@@ -84,6 +93,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -83,6 +92,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
          internScoreboardTeamStrings = config.getBoolean("performance.intern_scoreboard_team_strings", internScoreboardTeamStrings);
          populateGS4QueryPlugins = config.getBoolean("query.populate_plugins", populateGS4QueryPlugins);
          logNoisyPacketDecodeException = config.getBoolean("log.noisy_packet_decode_exception", logNoisyPacketDecodeException);

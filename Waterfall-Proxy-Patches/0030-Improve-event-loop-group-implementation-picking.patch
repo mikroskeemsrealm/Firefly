@@ -5,10 +5,10 @@ Subject: [PATCH] Improve event loop group implementation picking
 
 
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index ef8604d8321e75a928ceb1f35607f5b8e1d26f8d..3194c5d08fb015606f8e70aa9db0b7c3494122f0 100644
+index 49cc56f32f1c12d98338847165debc3565d122f7..3c08a652fe46613b7cff056ce54f71c54583b3d6 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-@@ -1,6 +1,7 @@
+@@ -1,12 +1,14 @@
  package eu.mikroskeem.mikrocord.conf;
  
  import com.google.common.collect.ImmutableList;
@@ -16,21 +16,20 @@ index ef8604d8321e75a928ceb1f35607f5b8e1d26f8d..3194c5d08fb015606f8e70aa9db0b7c3
  import eu.mikroskeem.mikrocord.misc.TCPFastOpenMode;
  import eu.mikroskeem.mikrocord.misc.VelocitySupport;
  import io.github.waterfallmc.waterfall.conf.WaterfallConfiguration;
-@@ -8,6 +9,7 @@ import lombok.Getter;
- import net.md_5.bungee.BungeeCord;
+ import lombok.Getter;
  import net.md_5.bungee.api.ProxyServer;
  import net.md_5.bungee.api.config.ConfigurationAdapter;
 +import net.md_5.bungee.netty.PipelineUtils;
  
  import java.nio.charset.StandardCharsets;
  import java.util.HashSet;
-@@ -60,7 +62,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -59,7 +61,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
  
      private int setupTfo(int value) {
          TCPFastOpenMode actual = TCPFastOpenMode.fromValue(value);
--        BungeeCord.getInstance().getLogger().log(Level.INFO, "TCP fast open mode is set to {0}", actual.name());
-+        if(PipelineUtils.getEventLoopGroupType() == EventLoopGroupType.EPOLL) {
-+            BungeeCord.getInstance().getLogger().log(Level.INFO, "TCP fast open mode is set to {0}", actual.name());
+-        ProxyServer.getInstance().getLogger().log(Level.INFO, "TCP fast open mode is set to {0}", actual.name());
++        if (PipelineUtils.getEventLoopGroupType() == EventLoopGroupType.EPOLL) {
++            ProxyServer.getInstance().getLogger().log(Level.INFO, "TCP fast open mode is set to {0}", actual.name());
 +        }
          return actual.value;
      }

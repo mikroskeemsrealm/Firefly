@@ -125,10 +125,10 @@ index 39f81fd1a68fc8f2908aad2c79b832d90ba18fba..7dcb7175caa0660f02df5888fdd7ea15
 +    // MikroCord end
  }
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index 7735aa9e4c3773bd3c3998b56f53d24b91538cd1..e31cc6757a84e49241592dbfecc2ebfaf028087b 100644
+index 979f981a960527b33082ed5449d7362d5fb27db2..d1c5a166bf3455fe07ff82ece88888b308a870b5 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-@@ -50,6 +50,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -49,6 +49,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
      @Getter
      private boolean allowTablistRewrite = true;
  
@@ -138,7 +138,7 @@ index 7735aa9e4c3773bd3c3998b56f53d24b91538cd1..e31cc6757a84e49241592dbfecc2ebfa
      @Override
      public void load() {
          super.load();
-@@ -65,7 +68,8 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -64,7 +67,8 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
          tcpFastOpenEnabled = config.getBoolean("networking.tcp_fast_open.enabled", tcpFastOpenEnabled);
          tcpFastOpenMode = setupTfo(config.getInt("networking.tcp_fast_open.mode", tcpFastOpenMode));
          waitForAllPlayersToDisconnectInfinitely = config.getBoolean("shutdown.wait_for_all_players_to_disconnect_infinitely", waitForAllPlayersToDisconnectInfinitely);

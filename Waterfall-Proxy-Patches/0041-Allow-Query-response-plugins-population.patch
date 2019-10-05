@@ -37,10 +37,10 @@ index e6fe286ee19305701b8df0005c634b4d76193cef..980d87fc33c781825966b01ea942c9d2
 +    // MikroCord end
  }
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index e31cc6757a84e49241592dbfecc2ebfaf028087b..53ada5c826ec039c8e48632fc2a2c834ff941013 100644
+index d1c5a166bf3455fe07ff82ece88888b308a870b5..ca99066c5c687dd0c459a2661c0e315ed4f795f6 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-@@ -53,6 +53,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -52,6 +52,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
      @Getter
      private boolean internScoreboardTeamStrings = false;
  
@@ -50,7 +50,7 @@ index e31cc6757a84e49241592dbfecc2ebfaf028087b..53ada5c826ec039c8e48632fc2a2c834
      @Override
      public void load() {
          super.load();
-@@ -70,6 +73,7 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -69,6 +72,7 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
          waitForAllPlayersToDisconnectInfinitely = config.getBoolean("shutdown.wait_for_all_players_to_disconnect_infinitely", waitForAllPlayersToDisconnectInfinitely);
          allowTablistRewrite = config.getBoolean("performance.allow_tablist_rewrite", allowTablistRewrite);
          internScoreboardTeamStrings = config.getBoolean("performance.intern_scoreboard_team_strings", internScoreboardTeamStrings);

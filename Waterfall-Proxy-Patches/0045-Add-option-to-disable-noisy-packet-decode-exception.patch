@@ -55,10 +55,10 @@ index 71ddf022ae310beff40ef4d0e64bcc5d71a613e6..393a23789286ac3c22c1f7790de3ab8f
          {
              if ( slice != null )
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index 53ada5c826ec039c8e48632fc2a2c834ff941013..20b4d23535f4f29d75de23a0bf519c3c29db460e 100644
+index ca99066c5c687dd0c459a2661c0e315ed4f795f6..28e02ff622215bd022eaf8bb59cc73953d70567d 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-@@ -10,6 +10,7 @@ import net.md_5.bungee.BungeeCord;
+@@ -9,6 +9,7 @@ import lombok.Getter;
  import net.md_5.bungee.api.ProxyServer;
  import net.md_5.bungee.api.config.ConfigurationAdapter;
  import net.md_5.bungee.netty.PipelineUtils;
@@ -66,7 +66,7 @@ index 53ada5c826ec039c8e48632fc2a2c834ff941013..20b4d23535f4f29d75de23a0bf519c3c
  
  import java.nio.charset.StandardCharsets;
  import java.util.HashSet;
-@@ -20,6 +21,11 @@ import java.util.logging.Level;
+@@ -19,6 +20,11 @@ import java.util.logging.Level;
   * @author Mark Vainomaa
   */
  public class MikroCordConfiguration extends WaterfallConfiguration {
@@ -78,7 +78,7 @@ index 53ada5c826ec039c8e48632fc2a2c834ff941013..20b4d23535f4f29d75de23a0bf519c3c
      @Getter
      private String restartMessage = "Proxy is restarting";
  
-@@ -56,6 +62,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -55,6 +61,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
      @Getter
      private boolean populateGS4QueryPlugins = false;
  
@@ -88,7 +88,7 @@ index 53ada5c826ec039c8e48632fc2a2c834ff941013..20b4d23535f4f29d75de23a0bf519c3c
      @Override
      public void load() {
          super.load();
-@@ -74,6 +83,7 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -73,6 +82,7 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
          allowTablistRewrite = config.getBoolean("performance.allow_tablist_rewrite", allowTablistRewrite);
          internScoreboardTeamStrings = config.getBoolean("performance.intern_scoreboard_team_strings", internScoreboardTeamStrings);
          populateGS4QueryPlugins = config.getBoolean("query.populate_plugins", populateGS4QueryPlugins);

@@ -18,10 +18,10 @@ index 995010f633e5d634d18eca625eee8ba736239e22..729836a5ee854578c89aacbca3cba94c
 +    // MikroCord end
  }
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index 5b0b1c5e730bb857616cb39598f96ee0904582aa..ef8604d8321e75a928ceb1f35607f5b8e1d26f8d 100644
+index 5b0b1c5e730bb857616cb39598f96ee0904582aa..49cc56f32f1c12d98338847165debc3565d122f7 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-@@ -1,15 +1,18 @@
+@@ -1,6 +1,7 @@
  package eu.mikroskeem.mikrocord.conf;
  
  import com.google.common.collect.ImmutableList;
@@ -29,10 +29,7 @@ index 5b0b1c5e730bb857616cb39598f96ee0904582aa..ef8604d8321e75a928ceb1f35607f5b8
  import eu.mikroskeem.mikrocord.misc.VelocitySupport;
  import io.github.waterfallmc.waterfall.conf.WaterfallConfiguration;
  import lombok.Getter;
-+import net.md_5.bungee.BungeeCord;
- import net.md_5.bungee.api.ProxyServer;
- import net.md_5.bungee.api.config.ConfigurationAdapter;
- 
+@@ -10,6 +11,7 @@ import net.md_5.bungee.api.config.ConfigurationAdapter;
  import java.nio.charset.StandardCharsets;
  import java.util.HashSet;
  import java.util.Set;
@@ -40,7 +37,7 @@ index 5b0b1c5e730bb857616cb39598f96ee0904582aa..ef8604d8321e75a928ceb1f35607f5b8
  
  /**
   * @author Mark Vainomaa
-@@ -33,6 +36,12 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -33,6 +35,12 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
      @Getter
      private byte[] velocityForwardingSecret;
  
@@ -53,7 +50,7 @@ index 5b0b1c5e730bb857616cb39598f96ee0904582aa..ef8604d8321e75a928ceb1f35607f5b8
      @Override
      public void load() {
          super.load();
-@@ -45,5 +54,13 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -45,5 +53,13 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
          logInvalidQueryPackets = config.getBoolean("log.invalid_query_packets", logInvalidQueryPackets);
          velocityForwardingSupport = config.getBoolean("velocity_modern_forwarding.enabled", velocityForwardingSupport);
          velocityForwardingSecret = config.getString("velocity_modern_forwarding.secret", () -> VelocitySupport.generateRandomString(12)).getBytes(StandardCharsets.UTF_8);
@@ -63,7 +60,7 @@ index 5b0b1c5e730bb857616cb39598f96ee0904582aa..ef8604d8321e75a928ceb1f35607f5b8
 +
 +    private int setupTfo(int value) {
 +        TCPFastOpenMode actual = TCPFastOpenMode.fromValue(value);
-+        BungeeCord.getInstance().getLogger().log(Level.INFO, "TCP fast open mode is set to {0}", actual.name());
++        ProxyServer.getInstance().getLogger().log(Level.INFO, "TCP fast open mode is set to {0}", actual.name());
 +        return actual.value;
      }
  }

@@ -17,10 +17,10 @@ index 729836a5ee854578c89aacbca3cba94c27a20467..4a73a0c57f0282831439a2e4642e2f44
 +    // MikroCord end
  }
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index 3194c5d08fb015606f8e70aa9db0b7c3494122f0..68886291adda5c272257a07a9e8a4cb596a647a3 100644
+index 3c08a652fe46613b7cff056ce54f71c54583b3d6..e1fb1f92553fcf53ff56a2624cb9d7af8b367489 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-@@ -44,6 +44,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -43,6 +43,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
      @Getter
      private int tcpFastOpenMode = TCPFastOpenMode.CLIENT_ONLY.value;
  
@@ -30,7 +30,7 @@ index 3194c5d08fb015606f8e70aa9db0b7c3494122f0..68886291adda5c272257a07a9e8a4cb5
      @Override
      public void load() {
          super.load();
-@@ -58,6 +61,7 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -57,6 +60,7 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
          velocityForwardingSecret = config.getString("velocity_modern_forwarding.secret", () -> VelocitySupport.generateRandomString(12)).getBytes(StandardCharsets.UTF_8);
          tcpFastOpenEnabled = config.getBoolean("networking.tcp_fast_open.enabled", tcpFastOpenEnabled);
          tcpFastOpenMode = setupTfo(config.getInt("networking.tcp_fast_open.mode", tcpFastOpenMode));
