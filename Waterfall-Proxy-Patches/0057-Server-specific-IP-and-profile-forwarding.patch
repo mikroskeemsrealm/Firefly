@@ -198,29 +198,19 @@ index 4c0637b9a945755a4a88cc51ad20f8418d25f06d..63228ea3f9bc5a1d5aa669fa883c7398
      @Synchronized("players")
      public void addPlayer(ProxiedPlayer player)
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-index d7adf467db0791dcb251be52525932565f8f2658..07cf17864056399458cffea20f6e0ef59b301dc5 100644
+index d7adf467db0791dcb251be52525932565f8f2658..d9d0d2fe9b8e46cc42e2a5afc18f94cb4ce5fc96 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-@@ -100,8 +100,9 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
+@@ -100,7 +100,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
          Handshake originalHandshake = user.getPendingConnection().getHandshake();
          Handshake copiedHandshake = new Handshake( originalHandshake.getProtocolVersion(), originalHandshake.getHost(), originalHandshake.getPort(), 2 );
  
 -        if ( BungeeCord.getInstance().config.isIpForward() )
 +        if ( target.getIpForwardType().isBungeeCord() ) // MikroCord - server specific IP forwarding
          {
-+            if (target.getIpForwardType().isBungeeCord()) { // MikroCord - server specific IP forwarding
              String newHost = copiedHandshake.getHost() + "\00" + user.getAddress().getHostString() + "\00" + user.getUUID();
  
-             LoginResult profile = user.getPendingConnection().getLoginProfile();
-@@ -135,6 +136,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
-             }
- 
-             copiedHandshake.setHost( newHost );
-+            } // MikroCord - server specific IP forwarding
-         } else if ( !user.getExtraDataInHandshake().isEmpty() )
-         {
-             // Restore the extra data
-@@ -169,7 +171,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
+@@ -169,7 +169,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
          ch.setProtocol( Protocol.GAME );
          thisState = State.LOGIN;
          // MikroCord start - Implement Velocity modern forwarding support
@@ -229,19 +219,7 @@ index d7adf467db0791dcb251be52525932565f8f2658..07cf17864056399458cffea20f6e0ef5
              throw new QuietException("Your server did not send a forwarding request to the proxy. Is it set up correctly?");
          }
          // MikroCord end
-@@ -206,6 +208,11 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
-     public void handle(Login login) throws Exception
-     {
-         Preconditions.checkState( thisState == State.LOGIN, "Not expecting LOGIN" );
-+        // MikroCord start - server specific IP forwarding
-+        if (target.getIpForwardType().isVelocity() && user.getPendingConnection().getVersion() < ProtocolConstants.MINECRAFT_1_13) {
-+            throw new IllegalStateException("Server requires Velocity forwarding but client version is not 1.13 or above");
-+        }
-+        // MikroCord end
- 
-         ServerConnection server = new ServerConnection( ch, target );
-         ServerConnectedEvent event = new ServerConnectedEvent( user, server );
-@@ -455,7 +462,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
+@@ -455,7 +455,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
      // MikroCord start - Implement Velocity modern forwarding support
      @Override
      public void handle(net.md_5.bungee.protocol.packet.LoginPayloadRequest request) {
