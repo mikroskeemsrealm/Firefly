@@ -1,11 +1,92 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
-Date: Sun, 14 Apr 2019 23:25:25 +0300
-Subject: [PATCH] Server specific IP forwarding support
+Date: Sat, 5 Oct 2019 16:07:06 +0300
+Subject: [PATCH] Server specific IP and profile forwarding
 
+Improved patch of previous version with support for per-server modern
+and legacy forwarding types
 
+diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/connection/ForwardingType.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/connection/ForwardingType.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..f45a874f82a3433272cdb0cb62f308017872df06
+--- /dev/null
++++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/connection/ForwardingType.java
+@@ -0,0 +1,51 @@
++package eu.mikroskeem.mikrocord.api.connection;
++
++import java.util.Locale;
++
++/**
++ * @author Mark Vainomaa
++ */
++public enum ForwardingType {
++    /**
++     * IP and profile forwarding is off (vanilla)
++     */
++    OFF,
++
++    /**
++     * IP and profile forwarding is done in BungeeCord way by modifying handshake packet
++     */
++    BUNGEECORD,
++
++    /**
++     * IP and profile forwarding is done in Velocity way by utilizing Login Plugin Request/Response packets,
++     * which are available in 1.13+
++     */
++    VELOCITY
++    ;
++
++    public boolean isOff() {
++        return this == OFF;
++    }
++
++    public boolean isVelocity() {
++        return this == VELOCITY;
++    }
++
++    public boolean isBungeeCord() {
++        return this == BUNGEECORD;
++    }
++
++    public static ForwardingType fromString(String rawValue) {
++        if (rawValue.equalsIgnoreCase("true") || rawValue.equalsIgnoreCase("false")) {
++            // Legacy
++            return rawValue.equalsIgnoreCase("true") ? BUNGEECORD : OFF;
++        }
++
++        rawValue = rawValue.toUpperCase(Locale.ROOT);
++        try {
++            return valueOf(rawValue);
++        } catch (IllegalArgumentException e) {
++            throw new IllegalArgumentException("Invalid forwarding type: " + rawValue);
++        }
++    }
++}
+diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
+index 2553bd738f2dd218f46448821041816568669fd7..1eea2d2b5c9b8e9250baafbb067b65581e25f0af 100644
+--- a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
++++ b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
+@@ -168,6 +168,9 @@ public interface ProxyConfig
+      */
+     @Deprecated
+     boolean isIpForward();
++    // MikroCord start - server specific IP forwarding
++    eu.mikroskeem.mikrocord.api.connection.ForwardingType getIpForwardType();
++    // MikroCord end
+ 
+     /**
+      * The encoded favicon.
+@@ -257,7 +260,6 @@ public interface ProxyConfig
+     boolean isLogInvalidQueryPackets();
+     // MikroCord end
+     // MikroCord start - Implement Velocity modern forwarding support
+-    boolean isVelocityForwardingSupport();
+     byte[] getVelocityForwardingSecret();
+     // MikroCord end
+     // MikroCord start - TCP fast open
 diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java b/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
-index 1fd988efda027ecd8908bb386d5aecb41000b00f..c1ff99527649789500730c8ad6f0684d6241f1ea 100644
+index 1fd988efda027ecd8908bb386d5aecb41000b00f..4f2172fd0f0c49440d1dde699e54a08aec76daaf 100644
 --- a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
 +++ b/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
 @@ -242,7 +242,27 @@ public abstract class ProxyServer
@@ -15,7 +96,7 @@ index 1fd988efda027ecd8908bb386d5aecb41000b00f..c1ff99527649789500730c8ad6f0684d
 -    public abstract ServerInfo constructServerInfo(String name, InetSocketAddress address, String motd, boolean restricted);
 +    // MikroCord start - server specific IP forwarding
 +    public ServerInfo constructServerInfo(String name, InetSocketAddress address, String motd, boolean restricted) {
-+        return constructServerInfo(name, address, motd, restricted, getConfig().isIpForward());
++        return constructServerInfo(name, address, motd, restricted, getConfig().getIpForwardType());
 +    }
 +    // MikroCord end
 +
@@ -28,17 +109,17 @@ index 1fd988efda027ecd8908bb386d5aecb41000b00f..c1ff99527649789500730c8ad6f0684d
 +     * @param address connectable Minecraft address + port of the server
 +     * @param motd the motd when used as a forced server
 +     * @param restricted whether the server info restricted property will be set
-+     * @param isIpForward whether IP forwarding should be done for this server or not
++     * @param ipForwardType IP forwarding method used by this server
 +     * @return the constructed instance
 +     */
-+    public abstract ServerInfo constructServerInfo(String name, InetSocketAddress address, String motd, boolean restricted, boolean isIpForward);
++    public abstract ServerInfo constructServerInfo(String name, InetSocketAddress address, String motd, boolean restricted, eu.mikroskeem.mikrocord.api.connection.ForwardingType ipForwardType);
 +    // MikroCord end
 +
  
      /**
       * Returns the console overlord for this proxy. Being the console, this
 diff --git a/api/src/main/java/net/md_5/bungee/api/config/ServerInfo.java b/api/src/main/java/net/md_5/bungee/api/config/ServerInfo.java
-index 197738433006035eff85f250a94b692157e4a7b9..46fe6e6485b642a4053d6b23ce9e050d1242ac9d 100644
+index 197738433006035eff85f250a94b692157e4a7b9..c6128787b763621de3196a616c0565840b1808a1 100644
 --- a/api/src/main/java/net/md_5/bungee/api/config/ServerInfo.java
 +++ b/api/src/main/java/net/md_5/bungee/api/config/ServerInfo.java
 @@ -104,4 +104,12 @@ public interface ServerInfo
@@ -47,38 +128,61 @@ index 197738433006035eff85f250a94b692157e4a7b9..46fe6e6485b642a4053d6b23ce9e050d
      void ping(Callback<ServerPing> callback);
 +    // MikroCord start - server specific IP forwarding
 +    /**
-+     * Returns whether this server requires IP forwarding or not
++     * Returns IP and profile forwarding method used by this server
 +     *
-+     * @return Whether this server requires IP forwarding or not
++     * @return IP and profile forwarding method used by this server
 +     */
-+    default boolean isIpForward() { return net.md_5.bungee.api.ProxyServer.getInstance().getConfig().isIpForward(); }
++    default eu.mikroskeem.mikrocord.api.connection.ForwardingType getIpForwardType() { return net.md_5.bungee.api.ProxyServer.getInstance().getConfig().getIpForwardType(); }
 +    // MikroCord end
  }
+diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
+index da2596c3f4fa2bf44b3b5b75957628ce2468c2ba..6f2f4a669d7a74eaa306eb2a65f8e60b4731ed23 100644
+--- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
++++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
+@@ -37,9 +37,6 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+     @Getter
+     private boolean logInvalidQueryPackets = false;
+ 
+-    @Getter
+-    private boolean velocityForwardingSupport = false;
+-
+     @Getter
+     private byte[] velocityForwardingSecret;
+ 
+@@ -83,7 +80,6 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+         restartScriptPath = config.getString("restart.script_path", restartScriptPath);
+         ignoredLogCommands = new HashSet<>(config.getList("log.ignored_commands", () -> ImmutableList.of("login", "register", "changepassword")));
+         logInvalidQueryPackets = config.getBoolean("log.invalid_query_packets", logInvalidQueryPackets);
+-        velocityForwardingSupport = config.getBoolean("velocity_modern_forwarding.enabled", velocityForwardingSupport);
+         velocityForwardingSecret = config.getString("velocity_modern_forwarding.secret", () -> VelocitySupport.generateRandomString(12)).getBytes(StandardCharsets.UTF_8);
+         tcpFastOpenEnabled = config.getBoolean("networking.tcp_fast_open.enabled", tcpFastOpenEnabled);
+         tcpFastOpenMode = setupTfo(config.getInt("networking.tcp_fast_open.mode", tcpFastOpenMode));
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 42b2f207a8b7cfc8122e00430936b6728bc20eeb..c984027d422fab22182886996c2b39462f3dae16 100644
+index 5fb2a2a79860171860d3bd6f853f76bb45affd81..fc11f7e57a523b7299e3b536a2b1c06f7a819927 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -734,9 +734,9 @@ public class BungeeCord extends ProxyServer
+@@ -780,9 +780,10 @@ public class BungeeCord extends ProxyServer
      }
  
      @Override
 -    public ServerInfo constructServerInfo(String name, InetSocketAddress address, String motd, boolean restricted)
-+    public ServerInfo constructServerInfo(String name, InetSocketAddress address, String motd, boolean restricted, boolean isIpForward) // MikroCord - server specific IP forwarding
++    public ServerInfo constructServerInfo(String name, InetSocketAddress address, String motd, boolean restricted, eu.mikroskeem.mikrocord.api.connection.ForwardingType ipForwardType) // MikroCord - server specific IP forwarding
      {
 -        return new BungeeServerInfo( name, address, motd, restricted );
-+        return new BungeeServerInfo( name, address, motd, restricted, isIpForward ); // MikroCord - server specific IP forwarding
++        Preconditions.checkNotNull( ipForwardType, "ipForwardType" ); // MikroCord - server specific IP forwarding
++        return new BungeeServerInfo( name, address, motd, restricted, ipForwardType ); // MikroCord - server specific IP forwarding
      }
  
      @Override
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeServerInfo.java b/proxy/src/main/java/net/md_5/bungee/BungeeServerInfo.java
-index 4c0637b9a945755a4a88cc51ad20f8418d25f06d..68b2b7bca5b95552c0fab696f2e2aea543f2906d 100644
+index 4c0637b9a945755a4a88cc51ad20f8418d25f06d..63228ea3f9bc5a1d5aa669fa883c7398c2be38d2 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeServerInfo.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeServerInfo.java
 @@ -34,6 +34,7 @@ import net.md_5.bungee.protocol.packet.PluginMessage;
  @ToString(of =
  {
      "name", "address", "restricted"
-+        , "ipForward" // MikroCord - server specific IP forwarding
++        , "ipForwardType" // MikroCord - server specific IP forwarding
  })
  public class BungeeServerInfo implements ServerInfo
  {
@@ -88,41 +192,120 @@ index 4c0637b9a945755a4a88cc51ad20f8418d25f06d..68b2b7bca5b95552c0fab696f2e2aea5
      private final Queue<DefinedPacket> packetQueue = new LinkedList<>();
 +    // MikroCord start - server specific IP forwarding
 +    @Getter
-+    private final boolean ipForward;
++    private final eu.mikroskeem.mikrocord.api.connection.ForwardingType ipForwardType;
 +    // MikroCord end
  
      @Synchronized("players")
      public void addPlayer(ProxiedPlayer player)
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-index c37bc1d1e6fe76e102967aa3b43ebacb5bc2b80b..661a98f76b8010676ba784f74a77f85336a5fd48 100644
+index d7adf467db0791dcb251be52525932565f8f2658..07cf17864056399458cffea20f6e0ef59b301dc5 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-@@ -99,7 +99,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
+@@ -100,8 +100,9 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
          Handshake originalHandshake = user.getPendingConnection().getHandshake();
          Handshake copiedHandshake = new Handshake( originalHandshake.getProtocolVersion(), originalHandshake.getHost(), originalHandshake.getPort(), 2 );
  
 -        if ( BungeeCord.getInstance().config.isIpForward() )
-+        if ( target.isIpForward() ) // MikroCord - server specific IP forwarding
++        if ( target.getIpForwardType().isBungeeCord() ) // MikroCord - server specific IP forwarding
          {
++            if (target.getIpForwardType().isBungeeCord()) { // MikroCord - server specific IP forwarding
              String newHost = copiedHandshake.getHost() + "\00" + user.getAddress().getHostString() + "\00" + user.getUUID();
  
+             LoginResult profile = user.getPendingConnection().getLoginProfile();
+@@ -135,6 +136,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
+             }
+ 
+             copiedHandshake.setHost( newHost );
++            } // MikroCord - server specific IP forwarding
+         } else if ( !user.getExtraDataInHandshake().isEmpty() )
+         {
+             // Restore the extra data
+@@ -169,7 +171,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
+         ch.setProtocol( Protocol.GAME );
+         thisState = State.LOGIN;
+         // MikroCord start - Implement Velocity modern forwarding support
+-        if (bungee.getConfig().isVelocityForwardingSupport() && !modernInformationForwarded) {
++        if (target.getIpForwardType().isVelocity() && !modernInformationForwarded) {
+             throw new QuietException("Your server did not send a forwarding request to the proxy. Is it set up correctly?");
+         }
+         // MikroCord end
+@@ -206,6 +208,11 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
+     public void handle(Login login) throws Exception
+     {
+         Preconditions.checkState( thisState == State.LOGIN, "Not expecting LOGIN" );
++        // MikroCord start - server specific IP forwarding
++        if (target.getIpForwardType().isVelocity() && user.getPendingConnection().getVersion() < ProtocolConstants.MINECRAFT_1_13) {
++            throw new IllegalStateException("Server requires Velocity forwarding but client version is not 1.13 or above");
++        }
++        // MikroCord end
+ 
+         ServerConnection server = new ServerConnection( ch, target );
+         ServerConnectedEvent event = new ServerConnectedEvent( user, server );
+@@ -455,7 +462,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
+     // MikroCord start - Implement Velocity modern forwarding support
+     @Override
+     public void handle(net.md_5.bungee.protocol.packet.LoginPayloadRequest request) {
+-        if (bungee.getConfig().isVelocityForwardingSupport() && request.getChannel().equals(eu.mikroskeem.mikrocord.misc.VelocitySupport.MODERN_FORWARDING_CHANNEL_NAME)) {
++        if (target.getIpForwardType().isVelocity() && request.getChannel().equals(eu.mikroskeem.mikrocord.misc.VelocitySupport.MODERN_FORWARDING_CHANNEL_NAME)) {
+             ByteBuf forwardingData = null;
+             try {
+                 // Create forwarding data
+diff --git a/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java b/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java
+index 5c8901f9c722f61c7b5e47c44b2eebba712ab180..5bad1bcfaabfdf29a565b53c35242521f3f0a189 100644
+--- a/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java
++++ b/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java
+@@ -63,6 +63,7 @@ public abstract class Configuration implements ProxyConfig
+     private int throttle = 4000;
+     private int throttleLimit = 3;
+     private boolean ipForward = true; // MikroCord - sane configuration defaults
++    private eu.mikroskeem.mikrocord.api.connection.ForwardingType ipForwardType = eu.mikroskeem.mikrocord.api.connection.ForwardingType.BUNGEECORD;
+     private Favicon favicon;
+     private int compressionThreshold = 256;
+     private boolean preventProxyConnections;
+@@ -95,7 +96,18 @@ public abstract class Configuration implements ProxyConfig
+         playerLimit = adapter.getInt( "player_limit", playerLimit );
+         throttle = adapter.getInt( "connection_throttle", throttle );
+         throttleLimit = adapter.getInt( "connection_throttle_limit", throttleLimit );
++        /* // MikroCord start - server specific IP forwarding
+         ipForward = adapter.getBoolean( "ip_forward", ipForward );
++        */
++        Object ipForwardValue;
++        try {
++            ipForwardValue = adapter.getString("ip_forward", ipForwardType.name().toLowerCase(java.util.Locale.ROOT));
++        } catch (ClassCastException e) {
++            ipForwardValue = adapter.getBoolean("ip_forward", !ipForwardType.isOff());
++        }
++        ipForwardType = eu.mikroskeem.mikrocord.api.connection.ForwardingType.fromString(ipForwardValue.toString());
++        ipForward = !ipForwardType.isOff(); // Legacy
++        // MikroCord end
+         compressionThreshold = adapter.getInt( "network_compression_threshold", compressionThreshold );
+         preventProxyConnections = adapter.getBoolean( "prevent_proxy_connections", preventProxyConnections );
+         forgeSupport = adapter.getBoolean( "forge_support", forgeSupport );
 diff --git a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
-index e6b44d652d53ade95612b7e4d0f2dc71514e89a9..e8659df0972132b88047c347b71266387c438555 100644
+index e6b44d652d53ade95612b7e4d0f2dc71514e89a9..558562cc323bc390ced08dfdbf5b388781a23955 100644
 --- a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
 +++ b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
-@@ -230,8 +230,9 @@ public class YamlConfig implements ConfigurationAdapter
+@@ -230,8 +230,17 @@ public class YamlConfig implements ConfigurationAdapter
              String addr = get( "address", "localhost:25565", val );
              String motd = ChatColor.translateAlternateColorCodes( '&', get( "motd", "&1Just another Waterfall - Forced Host", val ) );
              boolean restricted = get( "restricted", false, val );
-+            boolean ipForward = get("ip_forward", ProxyServer.getInstance().getConfig().isIpForward(), val); // MikroCord - server specific IP forwarding
++            // MikroCord start - server specific IP forwarding
++            eu.mikroskeem.mikrocord.api.connection.ForwardingType ipForwardingType;
++            var ipForwardingTypeRaw = get("ip_forward", (Object) ProxyServer.getInstance().getConfig().getIpForwardType().name().toLowerCase(Locale.ROOT), val).toString();
++            try {
++                ipForwardingType = eu.mikroskeem.mikrocord.api.connection.ForwardingType.fromString(ipForwardingTypeRaw);
++            } catch (IllegalArgumentException e) {
++                throw new IllegalArgumentException("Invalid forwarding type: " + ipForwardingTypeRaw);
++            }
++            // MikroCord end
              InetSocketAddress address = Util.getAddr( addr );
 -            ServerInfo info = ProxyServer.getInstance().constructServerInfo( name, address, motd, restricted );
-+            ServerInfo info = ProxyServer.getInstance().constructServerInfo( name, address, motd, restricted, ipForward ); // MikroCord - server specific IP forwarding
++            ServerInfo info = ProxyServer.getInstance().constructServerInfo( name, address, motd, restricted, ipForwardingType ); // MikroCord - server specific IP forwarding
              ret.put( name, info );
          }
  
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-index 1f8a243953aa4cbade07781024634dbcfd894ac0..c83d39a8a925da574c032d8baffe51ed98152bb8 100644
+index dde20137bf8bdb971d2ed67aa7f317e7fb47c15d..91d19d989d7c9266b8fa45f888f4863cb0008a38 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
 @@ -136,7 +136,7 @@ public class DownstreamBridge extends PacketHandler
@@ -134,11 +317,20 @@ index 1f8a243953aa4cbade07781024634dbcfd894ac0..c83d39a8a925da574c032d8baffe51ed
          con.sendPacket( packet );
      }
  
+@@ -150,7 +150,7 @@ public class DownstreamBridge extends PacketHandler
+     @Override
+     public void handle(PlayerListItem playerList) throws Exception
+     {
+-        if (!this.bungee.getConfig().isAllowTablistRewrite() && con.getPendingConnection().isOnlineMode() && (this.bungee.getConfig().isVelocityForwardingSupport() || this.server.getInfo().isIpForward())) { con.getTabListHandler().onUpdate(playerList); return; } // MikroCord - don't rewrite tablist on online mode connections
++        if (!this.bungee.getConfig().isAllowTablistRewrite() && con.getPendingConnection().isOnlineMode() && !this.server.getInfo().getIpForwardType().isOff()) { con.getTabListHandler().onUpdate(playerList); return; } // MikroCord - don't rewrite tablist on online mode connections
+         con.getTabListHandler().onUpdate( TabList.rewrite( playerList ) );
+         throw CancelSendSignal.INSTANCE; // Always throw because of profile rewriting
+     }
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java
-index 51d0c6cfe58e9f59c1c897ecf13a27ca60830fb8..24fce4deaa50257bca6cb03b26a3222f5592075b 100644
+index cb52bd781b09cb5c471fdcadb93e70785e934716..d223a904f1d4406757614ae1f6d18497e0ffd46c 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java
-@@ -116,7 +116,7 @@ public class UpstreamBridge extends PacketHandler
+@@ -117,7 +117,7 @@ public class UpstreamBridge extends PacketHandler
      {
          if ( con.getServer() != null )
          {
@@ -187,7 +379,7 @@ index 38a4761edba93d04c3f11f190164d1c1a02cf691..bc626490481decd1e53829855046da86
  
      protected static void rewriteInt(ByteBuf packet, int oldId, int newId, int offset)
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_10.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_10.java
-index 39efaf99063d3a9e8416f36b7c3fae7c5b3ec9f6..56c5b530ea5b7856f54767b47e5461a711eb44bc 100644
+index 39efaf99063d3a9e8416f36b7c3fae7c5b3ec9f6..ce046151ceaaf0c8c653ee9accf6363e40ec6178 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_10.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_10.java
 @@ -48,9 +48,9 @@ class EntityMap_1_10 extends EntityMap
@@ -217,12 +409,12 @@ index 39efaf99063d3a9e8416f36b7c3fae7c5b3ec9f6..56c5b530ea5b7856f54767b47e5461a7
          int packetIdLength = packet.readerIndex() - readerIndex;
  
 -        if ( packetId == 0x1B /* Spectate : PacketPlayInSpectate */ && !BungeeCord.getInstance().getConfig().isIpForward() )
-+        if ( packetId == 0x1B /* Spectate : PacketPlayInSpectate */ && !server.getInfo().isIpForward() ) // MikroCord - server specific IP forwarding
++        if ( packetId == 0x1B /* Spectate : PacketPlayInSpectate */ && server.getInfo().getIpForwardType().isOff() ) // MikroCord - server specific IP forwarding
          {
              UUID uuid = DefinedPacket.readUUID( packet );
              ProxiedPlayer player;
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_11.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_11.java
-index 6047fcb5f700533eb8d5ab101869e430c7c8ca47..9eedfe1cd7bf53dadce34299f5bdd731da14af13 100644
+index 6047fcb5f700533eb8d5ab101869e430c7c8ca47..6527216bd0d833fb08842b9550cd4c71168f51cf 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_11.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_11.java
 @@ -48,9 +48,9 @@ class EntityMap_1_11 extends EntityMap
@@ -252,12 +444,12 @@ index 6047fcb5f700533eb8d5ab101869e430c7c8ca47..9eedfe1cd7bf53dadce34299f5bdd731
          int packetIdLength = packet.readerIndex() - readerIndex;
  
 -        if ( packetId == 0x1B /* Spectate : PacketPlayInSpectate */ && !BungeeCord.getInstance().getConfig().isIpForward() )
-+        if ( packetId == 0x1B /* Spectate : PacketPlayInSpectate */ && !server.getInfo().isIpForward() ) // MikroCord - server specific IP forwarding
++        if ( packetId == 0x1B /* Spectate : PacketPlayInSpectate */ && server.getInfo().getIpForwardType().isOff() ) // MikroCord - server specific IP forwarding
          {
              UUID uuid = DefinedPacket.readUUID( packet );
              ProxiedPlayer player;
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_12.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_12.java
-index 54221465920672ed09761131f5324c451a0bb1de..763f6e118e87175d81c59235c78134d697b3b0e7 100644
+index 54221465920672ed09761131f5324c451a0bb1de..80d600c0e015a94460f749c9174edfb308804749 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_12.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_12.java
 @@ -48,9 +48,9 @@ class EntityMap_1_12 extends EntityMap
@@ -287,12 +479,12 @@ index 54221465920672ed09761131f5324c451a0bb1de..763f6e118e87175d81c59235c78134d6
          int packetIdLength = packet.readerIndex() - readerIndex;
  
 -        if ( packetId == 0x1E /* Spectate : PacketPlayInSpectate */ && !BungeeCord.getInstance().getConfig().isIpForward() )
-+        if ( packetId == 0x1E /* Spectate : PacketPlayInSpectate */ && !server.getInfo().isIpForward() ) // MikroCord - server specific IP forwarding
++        if ( packetId == 0x1E /* Spectate : PacketPlayInSpectate */ && server.getInfo().getIpForwardType().isOff() ) // MikroCord - server specific IP forwarding
          {
              UUID uuid = DefinedPacket.readUUID( packet );
              ProxiedPlayer player;
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_12_1.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_12_1.java
-index 75d651c579ea2f4503f55a7116bb723cadfe2385..18db5a9613c6d21263e3cd0bad9a7a7ed045e02f 100644
+index 75d651c579ea2f4503f55a7116bb723cadfe2385..db0ff8a250ce24efe530b177aaeb832d7f8cb94a 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_12_1.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_12_1.java
 @@ -48,9 +48,9 @@ class EntityMap_1_12_1 extends EntityMap
@@ -322,12 +514,12 @@ index 75d651c579ea2f4503f55a7116bb723cadfe2385..18db5a9613c6d21263e3cd0bad9a7a7e
          int packetIdLength = packet.readerIndex() - readerIndex;
  
 -        if ( packetId == 0x1E /* Spectate : PacketPlayInSpectate */ && !BungeeCord.getInstance().getConfig().isIpForward() )
-+        if ( packetId == 0x1E /* Spectate : PacketPlayInSpectate */ && !server.getInfo().isIpForward() ) // MikroCord - server specific IP forwarding
++        if ( packetId == 0x1E /* Spectate : PacketPlayInSpectate */ && server.getInfo().getIpForwardType().isOff() ) // MikroCord - server specific IP forwarding
          {
              UUID uuid = DefinedPacket.readUUID( packet );
              ProxiedPlayer player;
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_13.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_13.java
-index d737fe2517692d3e68976595d1bc4da4cd883a19..7cccab0102b3b71f1f71cf9a3f1a466b78b3ed3f 100644
+index d737fe2517692d3e68976595d1bc4da4cd883a19..3056a12d406026903615de1490f01315f08c22cc 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_13.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_13.java
 @@ -48,9 +48,9 @@ class EntityMap_1_13 extends EntityMap
@@ -357,12 +549,12 @@ index d737fe2517692d3e68976595d1bc4da4cd883a19..7cccab0102b3b71f1f71cf9a3f1a466b
          int packetIdLength = packet.readerIndex() - readerIndex;
  
 -        if ( packetId == 0x28 /* Spectate : PacketPlayInSpectate */ && !BungeeCord.getInstance().getConfig().isIpForward() )
-+        if ( packetId == 0x28 /* Spectate : PacketPlayInSpectate */ && !server.getInfo().isIpForward() ) // MikroCord - server specific IP forwarding
++        if ( packetId == 0x28 /* Spectate : PacketPlayInSpectate */ && server.getInfo().getIpForwardType().isOff() ) // MikroCord - server specific IP forwarding
          {
              UUID uuid = DefinedPacket.readUUID( packet );
              ProxiedPlayer player;
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_14.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_14.java
-index e9702b16f63eb4765954d620b8b3f19942e38594..8afd3f5e8cb34ef22377ce009371276ea897f113 100644
+index e9702b16f63eb4765954d620b8b3f19942e38594..d442ab9140fd8623552e6d1c07d4386db6a8c3b9 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_14.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_14.java
 @@ -47,9 +47,9 @@ class EntityMap_1_14 extends EntityMap
@@ -392,12 +584,12 @@ index e9702b16f63eb4765954d620b8b3f19942e38594..8afd3f5e8cb34ef22377ce009371276e
          int packetIdLength = packet.readerIndex() - readerIndex;
  
 -        if ( packetId == 0x2B /* Spectate : PacketPlayInSpectate */ && !BungeeCord.getInstance().getConfig().isIpForward() )
-+        if ( packetId == 0x2B /* Spectate : PacketPlayInSpectate */ && !server.getInfo().isIpForward() ) // MikroCord - server specific IP forwarding
++        if ( packetId == 0x2B /* Spectate : PacketPlayInSpectate */ && server.getInfo().getIpForwardType().isOff() ) // MikroCord - server specific IP forwarding
          {
              UUID uuid = DefinedPacket.readUUID( packet );
              ProxiedPlayer player;
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_8.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_8.java
-index 8e2dbe69929a67af592eb6aebb8049e8cb8e6171..0670883035ae6e7ddeac0ad1973b2c766737817b 100644
+index 8e2dbe69929a67af592eb6aebb8049e8cb8e6171..f87213e25464f7e13204f38cb31b92ea57d93590 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_8.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_8.java
 @@ -49,9 +49,9 @@ class EntityMap_1_8 extends EntityMap
@@ -427,12 +619,12 @@ index 8e2dbe69929a67af592eb6aebb8049e8cb8e6171..0670883035ae6e7ddeac0ad1973b2c76
          int packetIdLength = packet.readerIndex() - readerIndex;
  
 -        if ( packetId == 0x18 /* Spectate */ && !BungeeCord.getInstance().getConfig().isIpForward() )
-+        if ( packetId == 0x18 /* Spectate */ && !server.getInfo().isIpForward() ) // MikroCord - server specific IP forwarding
++        if ( packetId == 0x18 /* Spectate */ && server.getInfo().getIpForwardType().isOff() ) // MikroCord - server specific IP forwarding
          {
              UUID uuid = DefinedPacket.readUUID( packet );
              ProxiedPlayer player;
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_9.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_9.java
-index a4d0ea3f92dcb6a4a4a216d32eb60bc0a8a325cc..56cb687cd8a2564aed0ab518bf2417718717d31f 100644
+index a4d0ea3f92dcb6a4a4a216d32eb60bc0a8a325cc..7eac3a12c657390ef2c79a8f8d19661cf138ee7d 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_9.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_9.java
 @@ -48,9 +48,9 @@ class EntityMap_1_9 extends EntityMap
@@ -462,12 +654,12 @@ index a4d0ea3f92dcb6a4a4a216d32eb60bc0a8a325cc..56cb687cd8a2564aed0ab518bf241771
          int packetIdLength = packet.readerIndex() - readerIndex;
  
 -        if ( packetId == 0x1B /* Spectate : PacketPlayInSpectate */ && !BungeeCord.getInstance().getConfig().isIpForward() )
-+        if ( packetId == 0x1B /* Spectate : PacketPlayInSpectate */ && !server.getInfo().isIpForward() ) // MikroCord - server specific IP forwarding
++        if ( packetId == 0x1B /* Spectate : PacketPlayInSpectate */ && server.getInfo().getIpForwardType().isOff() ) // MikroCord - server specific IP forwarding
          {
              UUID uuid = DefinedPacket.readUUID( packet );
              ProxiedPlayer player;
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_9_4.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_9_4.java
-index ae7ff10e5cde31c0b01fc581d46c9eee5a2c433b..f3dc4ed0f57cb80d5f478b9f21bf142d50d66ff9 100644
+index ae7ff10e5cde31c0b01fc581d46c9eee5a2c433b..1ff37813c395a888067d1238d5d03a4779933a64 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_9_4.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_9_4.java
 @@ -48,9 +48,9 @@ class EntityMap_1_9_4 extends EntityMap
@@ -497,7 +689,7 @@ index ae7ff10e5cde31c0b01fc581d46c9eee5a2c433b..f3dc4ed0f57cb80d5f478b9f21bf142d
          int packetIdLength = packet.readerIndex() - readerIndex;
  
 -        if ( packetId == 0x1B /* Spectate : PacketPlayInSpectate */ && !BungeeCord.getInstance().getConfig().isIpForward() )
-+        if ( packetId == 0x1B /* Spectate : PacketPlayInSpectate */ && !server.getInfo().isIpForward() ) // MikroCord - server specific IP forwarding
++        if ( packetId == 0x1B /* Spectate : PacketPlayInSpectate */ && server.getInfo().getIpForwardType().isOff() ) // MikroCord - server specific IP forwarding
          {
              UUID uuid = DefinedPacket.readUUID( packet );
              ProxiedPlayer player;

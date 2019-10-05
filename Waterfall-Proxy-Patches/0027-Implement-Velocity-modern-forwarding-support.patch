@@ -143,7 +143,7 @@ index 0000000000000000000000000000000000000000..cbb30b08341071e72cca325d11585370
 +    }
 +}
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-index 661a98f76b8010676ba784f74a77f85336a5fd48..6355dbe0b9594c80dfdecb451bb73a86f1d48026 100644
+index c37bc1d1e6fe76e102967aa3b43ebacb5bc2b80b..0e74da5dc3b7ca9eda2d1a00c04de5647be5cdeb 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 @@ -65,6 +65,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr

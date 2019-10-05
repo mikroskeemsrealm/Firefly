@@ -5,7 +5,7 @@ Subject: [PATCH] Copy new messages.properties if not present
 
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index c984027d422fab22182886996c2b39462f3dae16..2187c955e78ea8d88156a6203a4f6675b691812c 100644
+index 42b2f207a8b7cfc8122e00430936b6728bc20eeb..a7e462bf5170ae9c37f7caddd8359ca3e6518a9d 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -578,6 +578,15 @@ public class BungeeCord extends ProxyServer

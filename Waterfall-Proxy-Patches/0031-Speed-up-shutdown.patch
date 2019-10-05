@@ -39,7 +39,7 @@ index 3c08a652fe46613b7cff056ce54f71c54583b3d6..e1fb1f92553fcf53ff56a2624cb9d7af
  
      private int setupTfo(int value) {
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index f7807ba76c1bd5f5d701944ed445a861caf679a6..e94de1cdc55cb7a2088953e4f9bfb8f1a53406f7 100644
+index 689952fdc2561fcf524334d2fcf073f8f65b5ac3..1448937ece5e71ee909d16ea3ae0b951d5b97715 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -475,12 +475,39 @@ public class BungeeCord extends ProxyServer
@@ -106,7 +106,7 @@ index 42c025025d9de95186faaaa881899fd774b0b439..b657ebdce63b3004f3b150d056390fbf
      public void init()
      {
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java
-index 24fce4deaa50257bca6cb03b26a3222f5592075b..d223a904f1d4406757614ae1f6d18497e0ffd46c 100644
+index 51d0c6cfe58e9f59c1c897ecf13a27ca60830fb8..cb52bd781b09cb5c471fdcadb93e70785e934716 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java
 @@ -87,6 +87,7 @@ public class UpstreamBridge extends PacketHandler

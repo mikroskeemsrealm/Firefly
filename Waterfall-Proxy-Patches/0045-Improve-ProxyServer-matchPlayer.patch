@@ -5,7 +5,7 @@ Subject: [PATCH] Improve ProxyServer#matchPlayer
 
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 0f802e52fb990a15c06c998112cfb8654d7e78f3..bc7033b1fa473058d0eebedda11d01a3737ac68e 100644
+index 6014391f363d134ec620b20281d3a09458453734..b89bb632787b1b2aa1993f368f2f370a3ef5f6c2 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -852,6 +852,7 @@ public class BungeeCord extends ProxyServer

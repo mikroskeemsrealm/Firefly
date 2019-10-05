@@ -70,7 +70,7 @@ index 40b3fa6ae75751f1f1578f902f1eb5d8d6ca4b2c..658766786ec884460927348937e2b94d
                              <exclude>com.google.code.gson:gson</exclude>
                              <exclude>io.netty:*</exclude>
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
-index 1ca623706a5044b90ef11b007ccb7aadb44d46d9..125f8c2cb90574daabd95d95f2ca9f168a80a399 100644
+index 11976344f8356f50170b1d5e2818d0d6aa277af1..31e85762e07854b23c594c5c9da7d96991724bcd 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
 @@ -40,34 +40,37 @@ public final class DependencyClassLoader extends URLClassLoader {

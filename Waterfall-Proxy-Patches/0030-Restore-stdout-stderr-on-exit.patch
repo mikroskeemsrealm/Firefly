@@ -34,7 +34,7 @@ index e046897a13fe9ab64ecd3589f73f3f7403b06d91..75e45c12d9e028b87b9277ea79ae60e1
          System.setErr(IoBuilder.forLogger(redirect).setLevel(Level.ERROR).buildPrintStream());
  
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 2187c955e78ea8d88156a6203a4f6675b691812c..f7807ba76c1bd5f5d701944ed445a861caf679a6 100644
+index a7e462bf5170ae9c37f7caddd8359ca3e6518a9d..689952fdc2561fcf524334d2fcf073f8f65b5ac3 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -527,6 +527,7 @@ public class BungeeCord extends ProxyServer

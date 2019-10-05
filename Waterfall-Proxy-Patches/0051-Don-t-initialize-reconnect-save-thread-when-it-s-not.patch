@@ -5,7 +5,7 @@ Subject: [PATCH] Don't initialize reconnect save thread when it's not set
 
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index bf1256a7e713538716632be04752b82fcead95b5..03327b8c762b2cd86078b2805f89eb2b7aa9d623 100644
+index ee48cd5f48607e48bf4bcb096e534c9bc2908b03..5fb2a2a79860171860d3bd6f853f76bb45affd81 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -116,7 +116,7 @@ public class BungeeCord extends ProxyServer
@@ -27,7 +27,7 @@ index bf1256a7e713538716632be04752b82fcead95b5..03327b8c762b2cd86078b2805f89eb2b
          saveThread.scheduleAtFixedRate( new TimerTask()
          {
              @Override
-@@ -493,6 +496,7 @@ public class BungeeCord extends ProxyServer
+@@ -520,6 +523,7 @@ public class BungeeCord extends ProxyServer
                      reconnectHandler.save();
                      reconnectHandler.close();
                  }
