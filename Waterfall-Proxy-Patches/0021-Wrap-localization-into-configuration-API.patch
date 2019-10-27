@@ -88,7 +88,7 @@ index 0000000000000000000000000000000000000000..8e228ae9cd6df330b69a6fe4c8e32394
 +    }
 +}
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 4c96c5dda76ac92ce9b04f7b9c0cea1fe9275780..9937f8ae89aff7f960395170f30ef594d4d724bd 100644
+index 31a56f605ac0629b105b4a39267cbd5d500ba945..c10a75aeb810de94ab7b8342f6edc7d858d2b78a 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -111,6 +111,7 @@ public class BungeeCord extends ProxyServer
@@ -125,7 +125,7 @@ index 4c96c5dda76ac92ce9b04f7b9c0cea1fe9275780..9937f8ae89aff7f960395170f30ef594
 +        localizationBundleWrapper = new eu.mikroskeem.mikrocord.misc.ResourceBundleConfigurationWrapper(this); // MikroCord - Wrap localization into configuration API
          reloadMessages();
  
-         // Waterfall start - Use TerminalConsoleAppender and Log4J
+         // This is a workaround for quite possibly the weirdest bug I have ever encountered in my life!
 @@ -559,6 +566,7 @@ public class BungeeCord extends ProxyServer
  
      public void reloadMessages()
