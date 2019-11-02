@@ -4,18 +4,24 @@ Date: Wed, 29 May 2019 14:34:43 +0300
 Subject: [PATCH] Implement Velocity modern forwarding support
 
 
-diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-index 6a353fdfbf2439a67d12d629a870c4564764a29d..995010f633e5d634d18eca625eee8ba736239e22 100644
---- a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-+++ b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-@@ -256,4 +256,8 @@ public interface ProxyConfig
+diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
+index 93c4dd3d0d0298973c6b0c70e60ff7db24ba06f9..04a0bf7d9ec95502d751ee796ef297423212d0cf 100644
+--- a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
++++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
+@@ -30,4 +30,14 @@ public interface MikroCordProxyConfig {
+      * @return Whether invalid query packets should be logged or not
       */
      boolean isLogInvalidQueryPackets();
-     // MikroCord end
-+    // MikroCord start - Implement Velocity modern forwarding support
++
++    /**
++     * @return Whether Velocity modern forwarding support is enabled or not
++     */
 +    boolean isVelocityForwardingSupport();
-+    byte[] getVelocityForwardingSecret();
-+    // MikroCord end
++
++    /**
++     * @return Velocity modern forwarding secret
++     */
++    byte @NonNull [] getVelocityForwardingSecret();
  }
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 index a8d6c8e3b223341bab21201f48adff613d8e0e3d..5b0b1c5e730bb857616cb39598f96ee0904582aa 100644

@@ -4,6 +4,32 @@ Date: Tue, 19 Mar 2019 23:05:17 +0200
 Subject: [PATCH] Add support for MikroCord-specific configuration
 
 
+diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..be3bbe9adf29253ec1d62ac7e563629e0ea7f9a5
+--- /dev/null
++++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
+@@ -0,0 +1,7 @@
++package eu.mikroskeem.mikrocord.api.config;
++
++/**
++ * @author Mark Vainomaa
++ */
++public interface MikroCordProxyConfig {
++}
+diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
+index fd422f36a5b3a0268c1cee29063873f780b6eb97..e3591ca7feb5d4fe3dc36df11d690957416cb210 100644
+--- a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
++++ b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
+@@ -11,7 +11,7 @@ import net.md_5.bungee.api.config.ServerInfo;
+  * @deprecated This class is subject to rapid change between releases
+  */
+ @Deprecated
+-public interface ProxyConfig
++public interface ProxyConfig extends eu.mikroskeem.mikrocord.api.config.MikroCordProxyConfig
+ {
+ 
+     /**
 diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java b/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
 index 484f424da16e1f77ca85d10a456fef95f3ad34c9..85f038c1ff35a89bdba3c7b4b6946ae68a838f70 100644
 --- a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
@@ -57,7 +83,7 @@ index d99b5f4b22f11b9e15b4ab89afb6c6bec090b0f2..79f15263bb97329fa5cf10242417b40a
      /**
       * Whether we log InitialHandler connections
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 54917b3f5a02c375789291a86c539bba0ed3e3a7..7a98c8e33744b4aa9f4607b858c6a2184bbdb974 100644
+index 0a78f0697fff8518cecc359d81746be76c07bbe3..0b8f463c3523e30324cd5b88f092ff0e38f540c4 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -105,7 +105,7 @@ public class BungeeCord extends ProxyServer

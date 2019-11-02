@@ -4,17 +4,19 @@ Date: Wed, 29 May 2019 20:40:02 +0300
 Subject: [PATCH] Speed up shutdown
 
 
-diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-index 729836a5ee854578c89aacbca3cba94c27a20467..4a73a0c57f0282831439a2e4642e2f44476a1d32 100644
---- a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-+++ b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-@@ -264,4 +264,7 @@ public interface ProxyConfig
-     boolean isTcpFastOpenEnabled();
+diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
+index ae01835f93427f5da2e97828ec4df64fb44a3fb6..18ae1661fc45b12310b31496bac38e84f57e50d0 100644
+--- a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
++++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
+@@ -50,4 +50,9 @@ public interface MikroCordProxyConfig {
+      * @return TCP Fast Open mode
+      */
      int getTcpFastOpenMode();
-     // MikroCord end
-+    // MikroCord start - Speed up shutdown
++
++    /**
++     * @return Whether proxy should wait for all players to disconnect infinitely or not
++     */
 +    boolean isWaitForAllPlayersToDisconnectInfinitely();
-+    // MikroCord end
  }
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 index 3c08a652fe46613b7cff056ce54f71c54583b3d6..e1fb1f92553fcf53ff56a2624cb9d7af8b367489 100644
@@ -39,7 +41,7 @@ index 3c08a652fe46613b7cff056ce54f71c54583b3d6..e1fb1f92553fcf53ff56a2624cb9d7af
  
      private int setupTfo(int value) {
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 689952fdc2561fcf524334d2fcf073f8f65b5ac3..1448937ece5e71ee909d16ea3ae0b951d5b97715 100644
+index 8360483b65cf685279cddbb28fb159d29c94e876..4d1d95383d8bb39b713904b0daf2031676dee639 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -475,12 +475,39 @@ public class BungeeCord extends ProxyServer

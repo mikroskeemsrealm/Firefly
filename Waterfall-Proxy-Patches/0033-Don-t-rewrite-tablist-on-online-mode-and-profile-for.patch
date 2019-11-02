@@ -6,17 +6,19 @@ Subject: [PATCH] Don't rewrite tablist on online mode and profile forwarding
 
 Credit goes to xxDark, https://github.com/PaperMC/Waterfall/pull/386
 
-diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-index 4a73a0c57f0282831439a2e4642e2f44476a1d32..08df03e7c976e9f23ae6d3dbd2ca723e65315b51 100644
---- a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-+++ b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-@@ -267,4 +267,7 @@ public interface ProxyConfig
-     // MikroCord start - Speed up shutdown
+diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
+index 18ae1661fc45b12310b31496bac38e84f57e50d0..6036a09eac072e756a025e60a04ceff6ebb8a7d6 100644
+--- a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
++++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
+@@ -55,4 +55,9 @@ public interface MikroCordProxyConfig {
+      * @return Whether proxy should wait for all players to disconnect infinitely or not
+      */
      boolean isWaitForAllPlayersToDisconnectInfinitely();
-     // MikroCord end
-+    // MikroCord start - don't rewrite tablist on online mode connections
++
++    /**
++     * @return Whether tablist should be rewritten on online mode connections or not
++     */
 +    boolean isAllowTablistRewrite();
-+    // MikroCord end
  }
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 index e1fb1f92553fcf53ff56a2624cb9d7af8b367489..979f981a960527b33082ed5449d7362d5fb27db2 100644

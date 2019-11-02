@@ -6,6 +6,22 @@ Subject: [PATCH] Server specific IP and profile forwarding
 Improved patch of previous version with support for per-server modern
 and legacy forwarding types
 
+diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
+index e8b05b7ad694cd5fe3d6bbeb5cdb72da6a1dd0d4..95d57d4cdc9adf6fe3c4e17be5cd3ba6a50affb9 100644
+--- a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
++++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
+@@ -31,11 +31,6 @@ public interface MikroCordProxyConfig {
+      */
+     boolean isLogInvalidQueryPackets();
+ 
+-    /**
+-     * @return Whether Velocity modern forwarding support is enabled or not
+-     */
+-    boolean isVelocityForwardingSupport();
+-
+     /**
+      * @return Velocity modern forwarding secret
+      */
 diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/connection/ForwardingType.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/connection/ForwardingType.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..f45a874f82a3433272cdb0cb62f308017872df06
@@ -64,10 +80,10 @@ index 0000000000000000000000000000000000000000..f45a874f82a3433272cdb0cb62f30801
 +    }
 +}
 diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-index 2553bd738f2dd218f46448821041816568669fd7..1eea2d2b5c9b8e9250baafbb067b65581e25f0af 100644
+index e3591ca7feb5d4fe3dc36df11d690957416cb210..996a50cfcd8b4c50aa4d9decf26f01e0a887865e 100644
 --- a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
 +++ b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-@@ -168,6 +168,9 @@ public interface ProxyConfig
+@@ -168,6 +168,9 @@ public interface ProxyConfig extends eu.mikroskeem.mikrocord.api.config.MikroCor
       */
      @Deprecated
      boolean isIpForward();
@@ -77,14 +93,6 @@ index 2553bd738f2dd218f46448821041816568669fd7..1eea2d2b5c9b8e9250baafbb067b6558
  
      /**
       * The encoded favicon.
-@@ -257,7 +260,6 @@ public interface ProxyConfig
-     boolean isLogInvalidQueryPackets();
-     // MikroCord end
-     // MikroCord start - Implement Velocity modern forwarding support
--    boolean isVelocityForwardingSupport();
-     byte[] getVelocityForwardingSecret();
-     // MikroCord end
-     // MikroCord start - TCP fast open
 diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java b/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
 index 1fd988efda027ecd8908bb386d5aecb41000b00f..4f2172fd0f0c49440d1dde699e54a08aec76daaf 100644
 --- a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
@@ -158,7 +166,7 @@ index da2596c3f4fa2bf44b3b5b75957628ce2468c2ba..6f2f4a669d7a74eaa306eb2a65f8e60b
          tcpFastOpenEnabled = config.getBoolean("networking.tcp_fast_open.enabled", tcpFastOpenEnabled);
          tcpFastOpenMode = setupTfo(config.getInt("networking.tcp_fast_open.mode", tcpFastOpenMode));
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 5fb2a2a79860171860d3bd6f853f76bb45affd81..fc11f7e57a523b7299e3b536a2b1c06f7a819927 100644
+index c435fa05ca87f2b20b822ab4bf4a63588dc96b13..142b8bc48013120f9581ad57829f1b94afa7ad7c 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -780,9 +780,10 @@ public class BungeeCord extends ProxyServer
