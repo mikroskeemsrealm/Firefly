@@ -4,16 +4,31 @@ Date: Wed, 29 May 2019 20:16:16 +0300
 Subject: [PATCH] Improve event loop group implementation picking
 
 
+diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/network/EventLoopGroupType.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/network/EventLoopGroupType.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..5ba35f16b22aabe70a9df611ffbe8310d1445a12
+--- /dev/null
++++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/network/EventLoopGroupType.java
+@@ -0,0 +1,9 @@
++package eu.mikroskeem.mikrocord.api.network;
++
++/**
++ * @author Mark Vainomaa
++ */
++public enum EventLoopGroupType {
++    EPOLL,
++    NIO
++}
+\ No newline at end of file
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index 49cc56f32f1c12d98338847165debc3565d122f7..3c08a652fe46613b7cff056ce54f71c54583b3d6 100644
+index 1df8934ab767a27f1e8a4e49816d79200024ece7..3380011f0137b6f0974a4675c156e944cfc8bd15 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-@@ -1,12 +1,14 @@
- package eu.mikroskeem.mikrocord.conf;
+@@ -2,11 +2,13 @@ package eu.mikroskeem.mikrocord.conf;
  
  import com.google.common.collect.ImmutableList;
-+import eu.mikroskeem.mikrocord.misc.EventLoopGroupType;
- import eu.mikroskeem.mikrocord.misc.TCPFastOpenMode;
+ import eu.mikroskeem.mikrocord.api.network.TCPFastOpenMode;
++import eu.mikroskeem.mikrocord.api.network.EventLoopGroupType;
  import eu.mikroskeem.mikrocord.misc.VelocitySupport;
  import io.github.waterfallmc.waterfall.conf.WaterfallConfiguration;
  import lombok.Getter;
@@ -23,43 +38,26 @@ index 49cc56f32f1c12d98338847165debc3565d122f7..3c08a652fe46613b7cff056ce54f71c5
  
  import java.nio.charset.StandardCharsets;
  import java.util.HashSet;
-@@ -59,7 +61,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
- 
-     private int setupTfo(int value) {
-         TCPFastOpenMode actual = TCPFastOpenMode.fromValue(value);
--        ProxyServer.getInstance().getLogger().log(Level.INFO, "TCP fast open mode is set to {0}", actual.name());
-+        if (PipelineUtils.getEventLoopGroupType() == EventLoopGroupType.EPOLL) {
-+            ProxyServer.getInstance().getLogger().log(Level.INFO, "TCP fast open mode is set to {0}", actual.name());
-+        }
-         return actual.value;
+@@ -58,6 +60,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
      }
- }
-diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/EventLoopGroupType.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/EventLoopGroupType.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..5afba538d8f61f8f526d15295322d12c1224cc68
---- /dev/null
-+++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/EventLoopGroupType.java
-@@ -0,0 +1,9 @@
-+package eu.mikroskeem.mikrocord.misc;
-+
-+/**
-+ * @author Mark Vainomaa
-+ */
-+public enum EventLoopGroupType {
-+    EPOLL,
-+    NIO
-+}
+ 
+     private TCPFastOpenMode setupTfo(int value) {
++        if (PipelineUtils.getEventLoopGroupType() != EventLoopGroupType.EPOLL) {
++            return TCPFastOpenMode.DISABLED;
++        }
+         var actual = TCPFastOpenMode.fromValue(value);
+         ProxyServer.getInstance().getLogger().log(Level.INFO, "TCP fast open mode is set to {0}", actual.name());
+         return actual;
 diff --git a/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java b/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
-index 44226e67f822722fb6aed7e2b1a2525054e2af9e..65bca81925e2f7652d6af4519c90207d22184878 100644
+index 426ba4e8ee4bdeda7c15ec107ec3dbd4c1629e6b..0f444e4acdc90fe5351f50df44dfdc12d1620ac2 100644
 --- a/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
 +++ b/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
-@@ -92,12 +92,16 @@ public class PipelineUtils
+@@ -92,12 +92,15 @@ public class PipelineUtils
      public static final String LEGACY_KICKER = "legacy-kick";
  
      private static boolean epoll;
 +    // MikroCord start - Improve event loop group implementation picking
-+    private static eu.mikroskeem.mikrocord.misc.EventLoopGroupType eventLoopGroupType;
-+    public static eu.mikroskeem.mikrocord.misc.EventLoopGroupType getEventLoopGroupType() { return eventLoopGroupType; }
++    @lombok.Getter private static eu.mikroskeem.mikrocord.api.network.EventLoopGroupType eventLoopGroupType;
 +    // MikroCord end
  
      static
@@ -72,11 +70,11 @@ index 44226e67f822722fb6aed7e2b1a2525054e2af9e..65bca81925e2f7652d6af4519c90207d
  
              if ( epoll = Epoll.isAvailable() )
              {
-@@ -107,6 +111,7 @@ public class PipelineUtils
+@@ -107,6 +110,7 @@ public class PipelineUtils
                  ProxyServer.getInstance().getLogger().log( Level.WARNING, "Epoll is not working, falling back to NIO: {0}", Util.exception( Epoll.unavailabilityCause() ) );
              }
          }
-+        eventLoopGroupType = epoll ? eu.mikroskeem.mikrocord.misc.EventLoopGroupType.EPOLL : eu.mikroskeem.mikrocord.misc.EventLoopGroupType.NIO;
++        eventLoopGroupType = epoll ? eu.mikroskeem.mikrocord.api.network.EventLoopGroupType.EPOLL : eu.mikroskeem.mikrocord.api.network.EventLoopGroupType.NIO;
      }
  
      public static EventLoopGroup newEventLoopGroup(int threads, ThreadFactory factory)

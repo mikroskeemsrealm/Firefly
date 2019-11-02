@@ -7,10 +7,10 @@ Subject: [PATCH] Don't rewrite tablist on online mode and profile forwarding
 Credit goes to xxDark, https://github.com/PaperMC/Waterfall/pull/386
 
 diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-index 18ae1661fc45b12310b31496bac38e84f57e50d0..6036a09eac072e756a025e60a04ceff6ebb8a7d6 100644
+index f7ad5f76e771c50174c182f228487d247daab877..1c38c8e1c09d0c37e74b42f7952964ab83cf5724 100644
 --- a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
 +++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-@@ -55,4 +55,9 @@ public interface MikroCordProxyConfig {
+@@ -57,4 +57,9 @@ public interface MikroCordProxyConfig {
       * @return Whether proxy should wait for all players to disconnect infinitely or not
       */
      boolean isWaitForAllPlayersToDisconnectInfinitely();
@@ -21,7 +21,7 @@ index 18ae1661fc45b12310b31496bac38e84f57e50d0..6036a09eac072e756a025e60a04ceff6
 +    boolean isAllowTablistRewrite();
  }
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index e1fb1f92553fcf53ff56a2624cb9d7af8b367489..979f981a960527b33082ed5449d7362d5fb27db2 100644
+index 31c6bd3627fc360f3816f2787e0a0373d0b98124..c76c61a5c49e76600fe14f979b0663bcca63c2bc 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 @@ -46,6 +46,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
@@ -36,12 +36,12 @@ index e1fb1f92553fcf53ff56a2624cb9d7af8b367489..979f981a960527b33082ed5449d7362d
          super.load();
 @@ -61,6 +64,7 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
          tcpFastOpenEnabled = config.getBoolean("networking.tcp_fast_open.enabled", tcpFastOpenEnabled);
-         tcpFastOpenMode = setupTfo(config.getInt("networking.tcp_fast_open.mode", tcpFastOpenMode));
+         tcpFastOpenMode = setupTfo(config.getInt("networking.tcp_fast_open.mode", tcpFastOpenMode.value));
          waitForAllPlayersToDisconnectInfinitely = config.getBoolean("shutdown.wait_for_all_players_to_disconnect_infinitely", waitForAllPlayersToDisconnectInfinitely);
 +        allowTablistRewrite = config.getBoolean("allow_tablist_rewrite", allowTablistRewrite);
      }
  
-     private int setupTfo(int value) {
+     private TCPFastOpenMode setupTfo(int value) {
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
 index 1f8a243953aa4cbade07781024634dbcfd894ac0..dde20137bf8bdb971d2ed67aa7f317e7fb47c15d 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java

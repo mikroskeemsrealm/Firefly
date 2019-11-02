@@ -5,10 +5,10 @@ Subject: [PATCH] Add Prometheus support
 
 
 diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-index 2c44ddc9af7ea58afbb4934f8dc673f8023a189a..e8b05b7ad694cd5fe3d6bbeb5cdb72da6a1dd0d4 100644
+index 52e085e7bdd7ff5845d3c6aab19baf0dc064ad47..a67f3667c40aacba2d7cfe27cc6bd39950f0792a 100644
 --- a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
 +++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-@@ -77,4 +77,20 @@ public interface MikroCordProxyConfig {
+@@ -79,4 +79,20 @@ public interface MikroCordProxyConfig {
       * @return Whether packet decode exceptions should be noisy or not
       */
      boolean isLogNoisyPacketDecodeException();
@@ -141,7 +141,7 @@ index 658766786ec884460927348937e2b94d06169d55..19353857fd7816fafbe6a1d48f4e2aec
                      </artifactSet>
                      <!-- MikroCord end -->
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index 28e02ff622215bd022eaf8bb59cc73953d70567d..da2596c3f4fa2bf44b3b5b75957628ce2468c2ba 100644
+index 1c796697ff54fefb2b3c86862a19ecc7bd1c63f9..f243777118b19e199411b66b89759a7b85919f45 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 @@ -64,6 +64,15 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
@@ -169,7 +169,7 @@ index 28e02ff622215bd022eaf8bb59cc73953d70567d..da2596c3f4fa2bf44b3b5b75957628ce
 +        prometheusListenPort = config.getInt("prometheus.listen_port", prometheusListenPort);
      }
  
-     private int setupTfo(int value) {
+     private TCPFastOpenMode setupTfo(int value) {
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
 index 31e85762e07854b23c594c5c9da7d96991724bcd..34450712a351d2252c065f6adeded46f34303ca2 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java

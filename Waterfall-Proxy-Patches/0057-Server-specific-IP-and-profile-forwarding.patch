@@ -7,10 +7,10 @@ Improved patch of previous version with support for per-server modern
 and legacy forwarding types
 
 diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-index e8b05b7ad694cd5fe3d6bbeb5cdb72da6a1dd0d4..95d57d4cdc9adf6fe3c4e17be5cd3ba6a50affb9 100644
+index a67f3667c40aacba2d7cfe27cc6bd39950f0792a..ea7bc8574316253975813176519cfd3214b6c753 100644
 --- a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
 +++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-@@ -31,11 +31,6 @@ public interface MikroCordProxyConfig {
+@@ -32,11 +32,6 @@ public interface MikroCordProxyConfig {
       */
      boolean isLogInvalidQueryPackets();
  
@@ -144,7 +144,7 @@ index 197738433006035eff85f250a94b692157e4a7b9..c6128787b763621de3196a616c056584
 +    // MikroCord end
  }
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index da2596c3f4fa2bf44b3b5b75957628ce2468c2ba..6f2f4a669d7a74eaa306eb2a65f8e60b4731ed23 100644
+index f243777118b19e199411b66b89759a7b85919f45..c70c1212d2ba4a6777b5ab6f4e5d6662153d83b2 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 @@ -37,9 +37,6 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
@@ -164,7 +164,7 @@ index da2596c3f4fa2bf44b3b5b75957628ce2468c2ba..6f2f4a669d7a74eaa306eb2a65f8e60b
 -        velocityForwardingSupport = config.getBoolean("velocity_modern_forwarding.enabled", velocityForwardingSupport);
          velocityForwardingSecret = config.getString("velocity_modern_forwarding.secret", () -> VelocitySupport.generateRandomString(12)).getBytes(StandardCharsets.UTF_8);
          tcpFastOpenEnabled = config.getBoolean("networking.tcp_fast_open.enabled", tcpFastOpenEnabled);
-         tcpFastOpenMode = setupTfo(config.getInt("networking.tcp_fast_open.mode", tcpFastOpenMode));
+         tcpFastOpenMode = setupTfo(config.getInt("networking.tcp_fast_open.mode", tcpFastOpenMode.value));
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 index c435fa05ca87f2b20b822ab4bf4a63588dc96b13..142b8bc48013120f9581ad57829f1b94afa7ad7c 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java

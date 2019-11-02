@@ -5,10 +5,10 @@ Subject: [PATCH] Allow Query response plugins population
 
 
 diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-index 4985414b2ea5702c4856ec1f30c44e05873a90c1..25fb10d9a15b24cc831cd3856ecc248649afe233 100644
+index 555431dba5926c7aeb287b589a21ba4d74c547d6..25e30d199e0c42949be43ef026099512bba85724 100644
 --- a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
 +++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-@@ -67,4 +67,9 @@ public interface MikroCordProxyConfig {
+@@ -69,4 +69,9 @@ public interface MikroCordProxyConfig {
       * @return Whether scoreboard team strings should be interned or not
       */
      boolean isInternScoreboardTeamStrings();
@@ -39,7 +39,7 @@ index 9a262c8a11caeade95a084e5e5bc0be398917bbf..eecdcfeb293646f01ab847bec80caf91
 +    // MikroCord end
  }
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index d1c5a166bf3455fe07ff82ece88888b308a870b5..ca99066c5c687dd0c459a2661c0e315ed4f795f6 100644
+index daae1811572243f17402b526ade9a04dd9c69e18..4bed1988e841dee904989ddfa24a18164fabc62d 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 @@ -52,6 +52,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
@@ -59,7 +59,7 @@ index d1c5a166bf3455fe07ff82ece88888b308a870b5..ca99066c5c687dd0c459a2661c0e315e
 +        populateGS4QueryPlugins = config.getBoolean("query.populate_plugins", populateGS4QueryPlugins);
      }
  
-     private int setupTfo(int value) {
+     private TCPFastOpenMode setupTfo(int value) {
 diff --git a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
 index 257347578f4828d36a02f126222fbc0d1924b74d..115bad2171580594b83bd390dbdbf098f74deb90 100644
 --- a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java

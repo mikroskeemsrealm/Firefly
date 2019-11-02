@@ -5,10 +5,10 @@ Subject: [PATCH] Save memory on scoreboard teams
 
 
 diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-index 6036a09eac072e756a025e60a04ceff6ebb8a7d6..4985414b2ea5702c4856ec1f30c44e05873a90c1 100644
+index 1c38c8e1c09d0c37e74b42f7952964ab83cf5724..555431dba5926c7aeb287b589a21ba4d74c547d6 100644
 --- a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
 +++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-@@ -60,4 +60,11 @@ public interface MikroCordProxyConfig {
+@@ -62,4 +62,11 @@ public interface MikroCordProxyConfig {
       * @return Whether tablist should be rewritten on online mode connections or not
       */
      boolean isAllowTablistRewrite();
@@ -129,7 +129,7 @@ index 39f81fd1a68fc8f2908aad2c79b832d90ba18fba..7dcb7175caa0660f02df5888fdd7ea15
 +    // MikroCord end
  }
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index 979f981a960527b33082ed5449d7362d5fb27db2..d1c5a166bf3455fe07ff82ece88888b308a870b5 100644
+index c76c61a5c49e76600fe14f979b0663bcca63c2bc..daae1811572243f17402b526ade9a04dd9c69e18 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 @@ -49,6 +49,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
@@ -144,11 +144,11 @@ index 979f981a960527b33082ed5449d7362d5fb27db2..d1c5a166bf3455fe07ff82ece88888b3
          super.load();
 @@ -64,7 +67,8 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
          tcpFastOpenEnabled = config.getBoolean("networking.tcp_fast_open.enabled", tcpFastOpenEnabled);
-         tcpFastOpenMode = setupTfo(config.getInt("networking.tcp_fast_open.mode", tcpFastOpenMode));
+         tcpFastOpenMode = setupTfo(config.getInt("networking.tcp_fast_open.mode", tcpFastOpenMode.value));
          waitForAllPlayersToDisconnectInfinitely = config.getBoolean("shutdown.wait_for_all_players_to_disconnect_infinitely", waitForAllPlayersToDisconnectInfinitely);
 -        allowTablistRewrite = config.getBoolean("allow_tablist_rewrite", allowTablistRewrite);
 +        allowTablistRewrite = config.getBoolean("performance.allow_tablist_rewrite", allowTablistRewrite);
 +        internScoreboardTeamStrings = config.getBoolean("performance.intern_scoreboard_team_strings", internScoreboardTeamStrings);
      }
  
-     private int setupTfo(int value) {
+     private TCPFastOpenMode setupTfo(int value) {

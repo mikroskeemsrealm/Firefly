@@ -45,18 +45,18 @@ index adb65f0205a3e7a3750adbdde2d059b9eb0fe8ed..2972a97c2f87c8dd775517c8cfc7f8ea
                  ch.pipeline().addAfter( PipelineUtils.FRAME_PREPENDER, PipelineUtils.PACKET_ENCODER, new MinecraftEncoder( Protocol.HANDSHAKE, false, getPendingConnection().getVersion() ) );
                  ch.pipeline().get( HandlerBoss.class ).setHandler( new ServerConnector( bungee, UserConnection.this, target ) );
 diff --git a/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java b/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
-index 65bca81925e2f7652d6af4519c90207d22184878..bc6ad2439c2951fdfc60a56517f4771413ceb30f 100644
+index 0f444e4acdc90fe5351f50df44dfdc12d1620ac2..0a07d9def124876abe77a0d0c02516ef8a86a168 100644
 --- a/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
 +++ b/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
 @@ -65,6 +65,7 @@ public class PipelineUtils
-                 ch.config().setOption(io.netty.channel.epoll.EpollChannelOption.TCP_FASTOPEN, BungeeCord.getInstance().getConfig().getTcpFastOpenMode());
+                 ch.config().setOption(io.netty.channel.epoll.EpollChannelOption.TCP_FASTOPEN, BungeeCord.getInstance().getConfig().getTcpFastOpenMode().value);
              }
              // MikroCord end
 +            ch.pipeline().addAfter(TIMEOUT_HANDLER, FRAME_DECODER, new Varint21FrameDecoder(false)); // MikroCord - Better empty packet handling
              ch.pipeline().addBefore( FRAME_DECODER, LEGACY_DECODER, new LegacyDecoder() );
              ch.pipeline().addAfter( FRAME_DECODER, PACKET_DECODER, new MinecraftDecoder( Protocol.HANDSHAKE, true, ProxyServer.getInstance().getProtocolVersion() ) );
              ch.pipeline().addAfter( FRAME_PREPENDER, PACKET_ENCODER, new MinecraftEncoder( Protocol.HANDSHAKE, true, ProxyServer.getInstance().getProtocolVersion() ) );
-@@ -156,7 +157,7 @@ public class PipelineUtils
+@@ -155,7 +156,7 @@ public class PipelineUtils
              ch.config().setWriteBufferWaterMark( MARK );
  
              ch.pipeline().addLast( TIMEOUT_HANDLER, new ReadTimeoutHandler( BungeeCord.getInstance().config.getTimeout(), TimeUnit.MILLISECONDS ) );

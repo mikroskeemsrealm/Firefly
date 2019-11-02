@@ -5,10 +5,10 @@ Subject: [PATCH] Add option to disable noisy packet decode exception
 
 
 diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-index 25fb10d9a15b24cc831cd3856ecc248649afe233..2c44ddc9af7ea58afbb4934f8dc673f8023a189a 100644
+index 25e30d199e0c42949be43ef026099512bba85724..52e085e7bdd7ff5845d3c6aab19baf0dc064ad47 100644
 --- a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
 +++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-@@ -72,4 +72,9 @@ public interface MikroCordProxyConfig {
+@@ -74,4 +74,9 @@ public interface MikroCordProxyConfig {
       * @return Whether plugins list should be populated in GS4 query response or not
       */
      boolean isPopulateGS4QueryPlugins();
@@ -57,7 +57,7 @@ index 71ddf022ae310beff40ef4d0e64bcc5d71a613e6..393a23789286ac3c22c1f7790de3ab8f
          {
              if ( slice != null )
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index ca99066c5c687dd0c459a2661c0e315ed4f795f6..28e02ff622215bd022eaf8bb59cc73953d70567d 100644
+index 4bed1988e841dee904989ddfa24a18164fabc62d..1c796697ff54fefb2b3c86862a19ecc7bd1c63f9 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 @@ -9,6 +9,7 @@ import lombok.Getter;
@@ -97,4 +97,4 @@ index ca99066c5c687dd0c459a2661c0e315ed4f795f6..28e02ff622215bd022eaf8bb59cc7395
 +        logNoisyPacketDecodeException = config.getBoolean("log.noisy_packet_decode_exception", logNoisyPacketDecodeException);
      }
  
-     private int setupTfo(int value) {
+     private TCPFastOpenMode setupTfo(int value) {

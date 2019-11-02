@@ -5,13 +5,13 @@ Subject: [PATCH] Speed up shutdown
 
 
 diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-index ae01835f93427f5da2e97828ec4df64fb44a3fb6..18ae1661fc45b12310b31496bac38e84f57e50d0 100644
+index ccba966265138d86cacf60ef989db71f17efe893..f7ad5f76e771c50174c182f228487d247daab877 100644
 --- a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
 +++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-@@ -50,4 +50,9 @@ public interface MikroCordProxyConfig {
-      * @return TCP Fast Open mode
+@@ -52,4 +52,9 @@ public interface MikroCordProxyConfig {
       */
-     int getTcpFastOpenMode();
+     @NonNull
+     TCPFastOpenMode getTcpFastOpenMode();
 +
 +    /**
 +     * @return Whether proxy should wait for all players to disconnect infinitely or not
@@ -19,12 +19,22 @@ index ae01835f93427f5da2e97828ec4df64fb44a3fb6..18ae1661fc45b12310b31496bac38e84
 +    boolean isWaitForAllPlayersToDisconnectInfinitely();
  }
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index 3c08a652fe46613b7cff056ce54f71c54583b3d6..e1fb1f92553fcf53ff56a2624cb9d7af8b367489 100644
+index 3380011f0137b6f0974a4675c156e944cfc8bd15..31c6bd3627fc360f3816f2787e0a0373d0b98124 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
+@@ -1,8 +1,8 @@
+ package eu.mikroskeem.mikrocord.conf;
+ 
+ import com.google.common.collect.ImmutableList;
+-import eu.mikroskeem.mikrocord.api.network.TCPFastOpenMode;
+ import eu.mikroskeem.mikrocord.api.network.EventLoopGroupType;
++import eu.mikroskeem.mikrocord.api.network.TCPFastOpenMode;
+ import eu.mikroskeem.mikrocord.misc.VelocitySupport;
+ import io.github.waterfallmc.waterfall.conf.WaterfallConfiguration;
+ import lombok.Getter;
 @@ -43,6 +43,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
      @Getter
-     private int tcpFastOpenMode = TCPFastOpenMode.CLIENT_ONLY.value;
+     private TCPFastOpenMode tcpFastOpenMode = TCPFastOpenMode.CLIENT_ONLY;
  
 +    @Getter
 +    private boolean waitForAllPlayersToDisconnectInfinitely = true;
@@ -35,11 +45,11 @@ index 3c08a652fe46613b7cff056ce54f71c54583b3d6..e1fb1f92553fcf53ff56a2624cb9d7af
 @@ -57,6 +60,7 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
          velocityForwardingSecret = config.getString("velocity_modern_forwarding.secret", () -> VelocitySupport.generateRandomString(12)).getBytes(StandardCharsets.UTF_8);
          tcpFastOpenEnabled = config.getBoolean("networking.tcp_fast_open.enabled", tcpFastOpenEnabled);
-         tcpFastOpenMode = setupTfo(config.getInt("networking.tcp_fast_open.mode", tcpFastOpenMode));
+         tcpFastOpenMode = setupTfo(config.getInt("networking.tcp_fast_open.mode", tcpFastOpenMode.value));
 +        waitForAllPlayersToDisconnectInfinitely = config.getBoolean("shutdown.wait_for_all_players_to_disconnect_infinitely", waitForAllPlayersToDisconnectInfinitely);
      }
  
-     private int setupTfo(int value) {
+     private TCPFastOpenMode setupTfo(int value) {
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 index 8360483b65cf685279cddbb28fb159d29c94e876..4d1d95383d8bb39b713904b0daf2031676dee639 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
