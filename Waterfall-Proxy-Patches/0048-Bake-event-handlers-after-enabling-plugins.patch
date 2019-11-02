@@ -5,10 +5,10 @@ Subject: [PATCH] Bake event handlers after enabling plugins
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
-index 7e96c74dd2f38a7d7bb69dcfb6bd76f61f9c218c..5f360003bb10c8473d2d9bafc49898739dc85b11 100644
+index 61678965d3225e87b3d0333f38b73bf5d44af935..765846d247f31d498904a9a33b2c8e96a364831d 100644
 --- a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
 +++ b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
-@@ -312,6 +312,7 @@ public class PluginManager
+@@ -322,6 +322,7 @@ public class PluginManager
                  ProxyServer.getInstance().getLogger().log( Level.WARNING, "Exception encountered when loading plugin: " + plugin.getDescription().getName(), t );
              }
          }
@@ -16,7 +16,7 @@ index 7e96c74dd2f38a7d7bb69dcfb6bd76f61f9c218c..5f360003bb10c8473d2d9bafc4989873
      }
  
      private boolean enablePlugin(Map<PluginDescription, Boolean> pluginStatuses, Stack<PluginDescription> dependStack, PluginDescription plugin)
-@@ -484,6 +485,11 @@ public class PluginManager
+@@ -494,6 +495,11 @@ public class PluginManager
                      "Listener %s has registered using deprecated subscribe annotation! Please update to @EventHandler.", listener );
          }
          */ // MikroCord end
