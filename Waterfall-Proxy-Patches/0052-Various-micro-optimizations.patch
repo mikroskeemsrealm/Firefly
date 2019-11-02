@@ -1,0 +1,226 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Sat, 20 Jul 2019 16:59:51 +0300
+Subject: [PATCH] Various micro-optimizations
+
+* Optimize query packet string writing
+* Improve ProxyServer#matchPlayer
+* Don't use Class#getSimpleName()
+* Don't initialize reconnect save thread when it's not set
+* Add ServerPing serializer
+
+diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/misc/ClassUtil.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/misc/ClassUtil.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..68a6e89a6da206f45e7101386b16009d2315dc36
+--- /dev/null
++++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/misc/ClassUtil.java
+@@ -0,0 +1,31 @@
++package eu.mikroskeem.mikrocord.api.misc;
++
++import net.md_5.bungee.protocol.MinecraftDecoder;
++
++/**
++ * @author Mark Vainomaa
++ */
++public final class ClassUtil {
++    private ClassUtil() {}
++
++    public static String getClassName(Class<?> clazz) {
++        return getClassNameFromString(clazz.getName());
++    }
++
++    public static String getClassName(Object instance) {
++        return getClassNameFromString(instance.getClass().getName());
++    }
++
++    public static String getClassNameFromString(String className) {
++        int i = className.lastIndexOf('.');
++        return i > 0 ? className.substring(i + 1) : className;
++    }
++
++    static {
++        try {
++            MinecraftDecoder.setGetClassNameFunction(ClassUtil::getClassName);
++        } catch (Throwable ignored) {
++            // Implementation might not be present at runtime (:
++        }
++    }
++}
+diff --git a/api/src/main/java/net/md_5/bungee/Util.java b/api/src/main/java/net/md_5/bungee/Util.java
+index aede5995fce0d46b441e38c2a0cadfa0c9c320b7..6869659b6849ad7e0527eb77f3a99c4721cee190 100644
+--- a/api/src/main/java/net/md_5/bungee/Util.java
++++ b/api/src/main/java/net/md_5/bungee/Util.java
+@@ -65,7 +65,7 @@ public class Util
+     {
+         // TODO: We should use clear manually written exceptions
+         StackTraceElement[] trace = t.getStackTrace();
+-        return t.getClass().getSimpleName() + " : " + t.getMessage()
++        return eu.mikroskeem.mikrocord.api.misc.ClassUtil.getClassName(t.getClass()) + " : " + t.getMessage() // MikroCord - don't use Class#getSimpleName()
+                 + ( ( trace.length > 0 ) ? " @ " + t.getStackTrace()[0].getClassName() + ":" + t.getStackTrace()[0].getLineNumber() : "" );
+     }
+ 
+diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
+index b0d63201f39c5656afd17daabf07fc61b9a66157..8276f0c00f566deb8803f67d6e337ef7327f1acb 100644
+--- a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
++++ b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
+@@ -29,6 +29,7 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
+     @Setter private static Runnable emptyPacketMetric;
+     @Setter private static Runnable invalidPacketMetric;
+     // MikroCord end
++    @Setter private static java.util.function.Function<Class<?>, String> getClassNameFunction; // MikroCord - don't use Class#getSimpleName()
+ 
+     public MinecraftDecoder(Protocol protocol, boolean server, int protocolVersion) {
+         this.protocol = protocol;
+@@ -80,7 +81,7 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
+             if (packetTypeInfo instanceof Integer) {
+                 packetTypeStr = "id " + Integer.toHexString((Integer) packetTypeInfo);
+             } else if (packetTypeInfo instanceof Class) {
+-                packetTypeStr = "class " + ((Class) packetTypeInfo).getSimpleName();
++                packetTypeStr = "class " + getClassNameFunction.apply((Class) packetTypeInfo); // MikroCord - don't use Class#getSimpleName()
+             } else {
+                 packetTypeStr = "unknown";
+             }
+diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/gson/ServerPingSerializer.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/gson/ServerPingSerializer.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..54e54a1115bc1bd62797ba07f171c8d30c87b255
+--- /dev/null
++++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/gson/ServerPingSerializer.java
+@@ -0,0 +1,35 @@
++package eu.mikroskeem.mikrocord.gson;
++
++import com.google.gson.JsonElement;
++import com.google.gson.JsonObject;
++import com.google.gson.JsonSerializationContext;
++import com.google.gson.JsonSerializer;
++import net.md_5.bungee.api.ServerPing;
++
++import java.lang.reflect.Type;
++
++/**
++ * @author Mark Vainomaa
++ */
++public final class ServerPingSerializer implements JsonSerializer<ServerPing> {
++    @Override
++    public JsonElement serialize(ServerPing src, Type typeOfSrc, JsonSerializationContext context) {
++        JsonObject root = new JsonObject();
++        root.add("description", context.serialize(src.getDescriptionComponent()));
++        root.add("favicon", context.serialize(src.getFaviconObject()));
++        root.add("modinfo", context.serialize(src.getModinfo()));
++
++        JsonObject version = new JsonObject();
++        version.addProperty("name", src.getVersion().getName());
++        version.addProperty("protocol", src.getVersion().getProtocol());
++        root.add("version", version);
++
++        JsonObject players = new JsonObject();
++        players.addProperty("max", src.getPlayers().getMax());
++        players.addProperty("online", src.getPlayers().getOnline());
++        players.add("sample", context.serialize(src.getPlayers().getSample()));
++        root.add("players", players);
++
++        return root;
++    }
++}
+diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
+index 602b58dedb3068fe89611eeb934f8428b75d691d..c435fa05ca87f2b20b822ab4bf4a63588dc96b13 100644
+--- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
++++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
+@@ -116,7 +116,7 @@ public class BungeeCord extends ProxyServer
+     /**
+      * locations.yml save thread.
+      */
+-    private final Timer saveThread = new Timer( "Reconnect Saver" );
++    private /*final*/ Timer saveThread /*= new Timer( "Reconnect Saver" )*/; // MikroCord - don't initialize reconnect save thread when it's not set
+     // private final Timer metricsThread = new Timer( "Metrics Thread" ); // Waterfall: Disable Metrics
+     /**
+      * Server socket listener.
+@@ -161,6 +161,7 @@ public class BungeeCord extends ProxyServer
+             .registerTypeAdapter( KeybindComponent.class, new KeybindComponentSerializer() )
+             .registerTypeAdapter( ScoreComponent.class, new ScoreComponentSerializer() )
+             .registerTypeAdapter( SelectorComponent.class, new SelectorComponentSerializer() )
++            .registerTypeAdapter(ServerPing.class, new eu.mikroskeem.mikrocord.gson.ServerPingSerializer()) // MikroCord - add ServerPing serializer
+             .registerTypeAdapter( ServerPing.PlayerInfo.class, new PlayerInfoSerializer() )
+             .registerTypeAdapter( Favicon.class, Favicon.getFaviconTypeAdapter() ).create();
+     @Getter
+@@ -345,9 +346,13 @@ public class BungeeCord extends ProxyServer
+         {
+             connectionThrottle = new ConnectionThrottle( config.getThrottle(), config.getThrottleLimit() );
+         }
++        eu.mikroskeem.mikrocord.api.misc.ClassUtil.class.getName(); // MikroCord - don't use Class#getSimpleName()
+         eu.mikroskeem.mikrocord.misc.PrometheusMetrics.initialize(); // MikroCord - add Prometheus metrics support
+         startListeners();
+ 
++        // MikroCord start - don't initialize reconnect save thread when it's not set
++        if (getReconnectHandler() != null && (saveThread = new Timer( "Reconnect Saver" )) != null) // Last "check" is intended and does basically a lazy init
++        // MikroCord end
+         saveThread.scheduleAtFixedRate( new TimerTask()
+         {
+             @Override
+@@ -518,6 +523,7 @@ public class BungeeCord extends ProxyServer
+                     reconnectHandler.save();
+                     reconnectHandler.close();
+                 }
++                if (saveThread != null) // MikroCord - don't initialize reconnect save thread when it's not set
+                 saveThread.cancel();
+                 // metricsThread.cancel(); // Waterfall: Disable Metrics
+ 
+@@ -855,6 +861,7 @@ public class BungeeCord extends ProxyServer
+             return Collections.singleton( exactMatch );
+         }
+ 
++        /* MikroCord start - improve matchPlayer
+         return Sets.newHashSet( Iterables.filter( getPlayers(), new Predicate<ProxiedPlayer>()
+         {
+ 
+@@ -864,6 +871,19 @@ public class BungeeCord extends ProxyServer
+                 return ( input == null ) ? false : input.getName().toLowerCase( Locale.ROOT ).startsWith( partialName.toLowerCase( Locale.ROOT ) );
+             }
+         } ) );
++        */
++        String lowerPartialMatch = partialName.toLowerCase(Locale.ROOT);
++        var foundPlayers = new java.util.LinkedList<ProxiedPlayer>();
++        for (var player : getPlayers()) {
++            if (player == null) { // Should not happen though?
++                continue;
++            }
++            if (player.getName().toLowerCase(Locale.ROOT).startsWith(lowerPartialMatch)) {
++                foundPlayers.add(player);
++            }
++        }
++        return java.util.Set.copyOf(foundPlayers);
++        // MikroCord end
+     }
+ 
+     @Override
+diff --git a/proxy/src/main/java/net/md_5/bungee/netty/HandlerBoss.java b/proxy/src/main/java/net/md_5/bungee/netty/HandlerBoss.java
+index a66099fc682b02b1d4d55447b77433f31f4adbce..282ece156c66ada7ab045d9f2f6876bc26cf3b95 100644
+--- a/proxy/src/main/java/net/md_5/bungee/netty/HandlerBoss.java
++++ b/proxy/src/main/java/net/md_5/bungee/netty/HandlerBoss.java
+@@ -146,7 +146,7 @@ public class HandlerBoss extends ChannelInboundHandlerAdapter
+                 {
+                     ProxyServer.getInstance().getLogger().log( Level.WARNING, "{0} - {1}: {2}", new Object[]
+                     {
+-                        handler, cause.getClass().getSimpleName(), cause.getMessage()
++                        handler, eu.mikroskeem.mikrocord.api.misc.ClassUtil.getClassName(cause), cause.getMessage() // MikroCord - don't use Class#getSimpleName()
+                     } );
+                 } else if ( cause instanceof QuietException )
+                 {
+diff --git a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
+index 115bad2171580594b83bd390dbdbf098f74deb90..f79ce8c6a3b4561b4487a94430b8d15ac144d230 100644
+--- a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
++++ b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
+@@ -47,10 +47,14 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket>
+ 
+     private void writeString(ByteBuf buf, String s)
+     {
++        /* // MikroCord start - optimize query packet string writing
+         for ( char c : s.toCharArray() )
+         {
+             buf.writeByte( c );
+         }
++        */
++        buf.writeCharSequence(s, java.nio.charset.StandardCharsets.ISO_8859_1);
++        // MikroCord end
+         buf.writeByte( 0x00 );
+     }
+ 

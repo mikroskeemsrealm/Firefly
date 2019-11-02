@@ -240,7 +240,7 @@ index cc24dd35cb49237f8f133788f4534f7fc2ab8089..0560ac93c37bb499d5619d4974fcdd86
  
      private static UUID fromMojangString0(String s) {
 diff --git a/api/src/main/java/net/md_5/bungee/Util.java b/api/src/main/java/net/md_5/bungee/Util.java
-index 9ba9790b22922bfaa13a04f20cbf076107fd2bbb..6869659b6849ad7e0527eb77f3a99c4721cee190 100644
+index 684abf4c2ca49c024bf22410631af091e0982676..aede5995fce0d46b441e38c2a0cadfa0c9c320b7 100644
 --- a/api/src/main/java/net/md_5/bungee/Util.java
 +++ b/api/src/main/java/net/md_5/bungee/Util.java
 @@ -87,6 +87,10 @@ public class Util
