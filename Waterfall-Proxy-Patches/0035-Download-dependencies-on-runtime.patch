@@ -59,10 +59,10 @@ index 18fd7a2e5633cb87f1942a31c088b7f1c933e16c..40b3fa6ae75751f1f1578f902f1eb5d8
                              <artifact>*:*</artifact>
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/Bootstrap.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/Bootstrap.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..9cbaf91a5b415e9a29c150e3e8e8552cd24e0849
+index 0000000000000000000000000000000000000000..3a06c5c9213e6fd61dcd5a5d9ed04302fdc63d1f
 --- /dev/null
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/Bootstrap.java
-@@ -0,0 +1,28 @@
+@@ -0,0 +1,26 @@
 +package eu.mikroskeem.mikrocord;
 +
 +import eu.mikroskeem.mikrocord.dependencies.DependencyClassLoader;
@@ -74,12 +74,10 @@ index 0000000000000000000000000000000000000000..9cbaf91a5b415e9a29c150e3e8e8552c
 + * @author Mark Vainomaa
 + */
 +public final class Bootstrap {
-+    private static DependencyClassLoader classLoader;
-+
 +    public static void main(String... args) throws Exception {
 +        try {
-+            classLoader = DependencyClassLoader.initialize(Bootstrap.class.getClassLoader(), Paths.get("lib"));
-+            classLoader.setupDependencies();
++            DependencyClassLoader.initialize(Bootstrap.class.getClassLoader(), Paths.get("lib"));
++            DependencyClassLoader.setupDependencies();
 +        } catch (IOException e) {
 +            System.err.println("Failed to download dependencies!");
 +            e.printStackTrace(System.err);
@@ -87,16 +85,16 @@ index 0000000000000000000000000000000000000000..9cbaf91a5b415e9a29c150e3e8e8552c
 +            return;
 +        }
 +
-+        Class<?> bootstrap = classLoader.loadClass("net.md_5.bungee.BungeeCordLauncher");
++        Class<?> bootstrap = DependencyClassLoader.getInstance().loadClass("net.md_5.bungee.BungeeCordLauncher");
 +        bootstrap.getMethod("main", String[].class).invoke(null, (Object) args);
 +    }
 +}
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..11976344f8356f50170b1d5e2818d0d6aa277af1
+index 0000000000000000000000000000000000000000..b5cfc1c10df619d9b51e20f870d405c7128f7cec
 --- /dev/null
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
-@@ -0,0 +1,221 @@
+@@ -0,0 +1,239 @@
 +package eu.mikroskeem.mikrocord.dependencies;
 +
 +import io.github.waterfallmc.waterfall.utils.Hex;
@@ -170,6 +168,8 @@ index 0000000000000000000000000000000000000000..11976344f8356f50170b1d5e2818d0d6
 +            new Dependency("org.ow2.asm", "asm", "7.1", "fa29aa438674ff19d5e1386d2c3527a0267f291e")
 +    );
 +
++    private static DependencyClassLoader instance;
++
 +    private final ClassLoader actualParent;
 +    private final Path libraryPath;
 +
@@ -179,9 +179,16 @@ index 0000000000000000000000000000000000000000..11976344f8356f50170b1d5e2818d0d6
 +        this.libraryPath = libraryPath;
 +    }
 +
-+    public void setupDependencies() throws IOException {
++    public static DependencyClassLoader getInstance() {
++        return instance;
++    }
++
++    public static void setupDependencies() throws IOException {
++        if (instance == null) {
++            throw new IllegalStateException("initialize not called");
++        }
 +        for (Dependency dependency : DEPENDENCIES) {
-+            Path targetPath = libraryPath.resolve(dependency.formatPath());
++            Path targetPath = instance.libraryPath.resolve(dependency.formatPath());
 +            if (Files.exists(targetPath)) {
 +                // Verify checksum to disallow tampering
 +                byte[] bytes = Files.readAllBytes(targetPath);
@@ -189,7 +196,7 @@ index 0000000000000000000000000000000000000000..11976344f8356f50170b1d5e2818d0d6
 +
 +                // Do not download if checksum is correct
 +                if (sha1Sum.equals(dependency.getChecksum())) {
-+                    addFile(targetPath);
++                    instance.addFile(targetPath);
 +                    continue;
 +                }
 +
@@ -235,7 +242,7 @@ index 0000000000000000000000000000000000000000..11976344f8356f50170b1d5e2818d0d6
 +
 +                // Load
 +                logger.info("Dependency {} downloaded", dependency);
-+                addFile(targetPath);
++                instance.addFile(targetPath);
 +                break;
 +            }
 +        }
@@ -246,26 +253,32 @@ index 0000000000000000000000000000000000000000..11976344f8356f50170b1d5e2818d0d6
 +        addURL(path.toUri().toURL());
 +    }
 +
-+    public static DependencyClassLoader initialize(ClassLoader parent, Path libraryPath) {
-+        URL[] urls;
-+        if (parent instanceof URLClassLoader) {
-+            urls = ((URLClassLoader) parent).getURLs();
-+        } else {
-+            // Try to get MikroCord jar URL from CodeSource
-+            urls = new URL[] { DependencyClassLoader.class.getProtectionDomain().getCodeSource().getLocation() };
++    public static void initialize(ClassLoader parent, Path libraryPath) {
++        if (instance == null) {
++            URL[] urls;
++            if (parent instanceof URLClassLoader) {
++                urls = ((URLClassLoader) parent).getURLs();
++            } else {
++                // Try to get MikroCord jar URL from CodeSource
++                urls = new URL[]{DependencyClassLoader.class.getProtectionDomain().getCodeSource().getLocation()};
++            }
++            instance = new DependencyClassLoader(urls, ClassLoader.getSystemClassLoader().getParent(), parent, libraryPath);
++            Thread.currentThread().setContextClassLoader(instance);
 +        }
-+        DependencyClassLoader cl = new DependencyClassLoader(urls, ClassLoader.getSystemClassLoader().getParent(), parent, libraryPath);
-+        Thread.currentThread().setContextClassLoader(cl);
-+        return cl;
 +    }
 +
-+    private final static class Dependency {
++    public static List<Dependency> getDependencies() {
++        return DEPENDENCIES;
++    }
++
++    public final static class Dependency {
 +        private final String groupId;
 +        private final String artifactId;
 +        private final String version;
 +        private final String classifier;
 +        private final String checksum;
 +        private final List<String> repositories;
++        private String path;
 +
 +        Dependency(String groupId, String artifactId, String version, String classifier, String checksum, List<String> repositories) {
 +            this.groupId = groupId;
@@ -297,15 +310,18 @@ index 0000000000000000000000000000000000000000..11976344f8356f50170b1d5e2818d0d6
 +            return new URL(String.format("%s/%s", mirrorUrl, formatPath()));
 +        }
 +
-+        String formatPath() {
-+            return String.format(
-+                    (this.classifier != null ? "%s/%s/%s/%s-%s-" + this.classifier + ".jar" : "%s/%s/%s/%s-%s.jar"),
-+                    this.groupId.replace('.', '/'),
-+                    this.artifactId.replace('.', '/'),
-+                    this.version,
-+                    this.artifactId,
-+                    this.version
-+            );
++        public String formatPath() {
++            if (this.path == null) {
++                this.path = String.format(
++                        (this.classifier != null ? "%s/%s/%s/%s-%s-" + this.classifier + ".jar" : "%s/%s/%s/%s-%s.jar"),
++                        this.groupId.replace('.', '/'),
++                        this.artifactId.replace('.', '/'),
++                        this.version,
++                        this.artifactId,
++                        this.version
++                );
++            }
++            return this.path;
 +        }
 +
 +        @Override
@@ -318,3 +334,30 @@ index 0000000000000000000000000000000000000000..11976344f8356f50170b1d5e2818d0d6
 +        }
 +    }
 +}
+diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java b/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
+index 0453d5c32c70721e6fc3f3d0e92830968ea31fc0..d91aa8834f6ffcc2809d31cd0c8feb03b64fad7e 100644
+--- a/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
++++ b/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
+@@ -26,6 +26,7 @@ public class BungeeCordLauncher
+         parser.acceptsAll( Arrays.asList( "help" ), "Show the help" );
+         parser.acceptsAll( Arrays.asList( "v", "version" ), "Print version and exit" );
+         parser.acceptsAll( Arrays.asList( "noconsole" ), "Disable console input" );
++        parser.acceptsAll(Arrays.asList("dumpdependencies"), "Dumps the list of runtime downloadable dependencies"); // MikroCord
+ 
+         OptionSet options = parser.parse( args );
+ 
+@@ -39,6 +40,14 @@ public class BungeeCordLauncher
+             System.out.println( BungeeCord.class.getPackage().getImplementationVersion() );
+             return;
+         }
++        // MikroCord start
++        if (options.has("dumpdependencies")) {
++            for (var dependency : eu.mikroskeem.mikrocord.dependencies.DependencyClassLoader.getDependencies()) {
++                System.out.println(dependency.formatPath());
++            }
++            return;
++        }
++        // MikroCord end
+ 
+         if ( BungeeCord.class.getPackage().getSpecificationVersion() != null && System.getProperty( "IReallyKnowWhatIAmDoingISwear" ) == null )
+         {
