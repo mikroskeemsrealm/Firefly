@@ -5,18 +5,18 @@ Subject: [PATCH] Blacklist invalid query packet spammers
 
 
 diff --git a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
-index 7b6cdcea8c8296cb5c7f99cef365900a6eb61c17..257347578f4828d36a02f126222fbc0d1924b74d 100644
+index 532e2c677a4691d2970d2915197d2d184f6cbe9b..6f4e99d68f69320f21a4bbb48c37d39392013f3c 100644
 --- a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
 +++ b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
-@@ -32,6 +32,7 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket>
-     /*========================================================================*/
+@@ -33,6 +33,7 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket>
      private final Random random = new Random();
      private final Cache<InetAddress, QuerySession> sessions = CacheBuilder.newBuilder().expireAfterWrite( 30, TimeUnit.SECONDS ).build();
+     private static io.github.waterfallmc.waterfall.utils.FastException cachedNoSessionException = new io.github.waterfallmc.waterfall.utils.FastException("No Session!");
 +    private final Cache<InetAddress, Integer> blacklistedAddresses = CacheBuilder.newBuilder().maximumSize(1024).expireAfterWrite( 120, TimeUnit.SECONDS ).build(); // MikroCord - Blacklist invalid query packet spammers
  
      private void writeShort(ByteBuf buf, int s)
      {
-@@ -66,11 +67,29 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket>
+@@ -67,11 +68,29 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket>
  
      private void handleMessage(ChannelHandlerContext ctx, DatagramPacket msg)
      {

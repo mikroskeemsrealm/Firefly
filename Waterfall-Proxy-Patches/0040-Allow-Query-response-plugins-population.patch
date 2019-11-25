@@ -61,19 +61,19 @@ index daae1811572243f17402b526ade9a04dd9c69e18..4bed1988e841dee904989ddfa24a1816
  
      private TCPFastOpenMode setupTfo(int value) {
 diff --git a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
-index 257347578f4828d36a02f126222fbc0d1924b74d..115bad2171580594b83bd390dbdbf098f74deb90 100644
+index 6f4e99d68f69320f21a4bbb48c37d39392013f3c..d886639f75dad3ad3ab36b852cc7ae6cb359ee78 100644
 --- a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
 +++ b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
-@@ -33,6 +33,7 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket>
-     private final Random random = new Random();
+@@ -34,6 +34,7 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket>
      private final Cache<InetAddress, QuerySession> sessions = CacheBuilder.newBuilder().expireAfterWrite( 30, TimeUnit.SECONDS ).build();
+     private static io.github.waterfallmc.waterfall.utils.FastException cachedNoSessionException = new io.github.waterfallmc.waterfall.utils.FastException("No Session!");
      private final Cache<InetAddress, Integer> blacklistedAddresses = CacheBuilder.newBuilder().maximumSize(1024).expireAfterWrite( 120, TimeUnit.SECONDS ).build(); // MikroCord - Blacklist invalid query packet spammers
 +    private volatile List<QueryResult.PluginInfo> cachedPluginInfoList = null; // MikroCord - allow Query response plugins population
  
      private void writeShort(ByteBuf buf, int s)
      {
-@@ -120,12 +121,28 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket>
-                 throw new IllegalStateException( "No session!" );
+@@ -121,12 +122,28 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket>
+                 throw cachedNoSessionException; // Waterfall
              }
  
 +            // MikroCord start - allow Query response plugins population
@@ -101,7 +101,7 @@ index 257347578f4828d36a02f126222fbc0d1924b74d..115bad2171580594b83bd390dbdbf098
              QueryResult result = bungee.getPluginManager().callEvent(event).getResult();
              // Waterfall end
  
-@@ -159,7 +176,25 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket>
+@@ -160,7 +177,25 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket>
                  // Start Extra Info
                  data.put( "game_id", result.getGameId() );
                  data.put( "version", result.getVersion() );

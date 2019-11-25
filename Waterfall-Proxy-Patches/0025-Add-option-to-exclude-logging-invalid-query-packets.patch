@@ -33,10 +33,10 @@ index 000a9861436fa8777c8d18c0654454235d9cb093..a8d6c8e3b223341bab21201f48adff61
      public void load() {
          super.load();
 diff --git a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
-index b6b20f369a88b19258f08640f3c12c1ba3458495..7b6cdcea8c8296cb5c7f99cef365900a6eb61c17 100644
+index 0300b897cdea41e512fb13abe319a936d5787b7e..532e2c677a4691d2970d2915197d2d184f6cbe9b 100644
 --- a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
 +++ b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
-@@ -69,6 +69,7 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket>
+@@ -70,6 +70,7 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket>
          ByteBuf in = msg.content();
          if ( in.readUnsignedByte() != 0xFE || in.readUnsignedByte() != 0xFD )
          {
@@ -44,11 +44,11 @@ index b6b20f369a88b19258f08640f3c12c1ba3458495..7b6cdcea8c8296cb5c7f99cef365900a
              bungee.getLogger().log( Level.WARNING, "Query - Incorrect magic!: {0}", msg.sender() );
              return;
          }
-@@ -96,6 +97,7 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket>
+@@ -97,6 +98,7 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket>
              QuerySession session = sessions.getIfPresent( msg.sender().getAddress() );
              if ( session == null || session.getToken() != challengeToken )
              {
 +                if (!bungee.getConfig().isLogInvalidQueryPackets()) return; // MikroCord - Add option to exclude logging invalid query packets
-                 throw new IllegalStateException( "No session!" );
+                 throw cachedNoSessionException; // Waterfall
              }
  

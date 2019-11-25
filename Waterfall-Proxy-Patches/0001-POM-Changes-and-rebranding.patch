@@ -718,7 +718,7 @@ index 440e128fbdb3d2f9052f54d8c9e1c19505f7f3e8..af4c05ff5f3bec42541b40de23a0d949
              <scope>compile</scope>
          </dependency>
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 8acdc22de46cdeef80393670d159b3294d684482..7301bf546d4ef217bed640018824ddc4aed0ec7c 100644
+index 6ae18f2cd0ce1d5204af7398d51c59b56e3a7566..3a318fd3d6f3e608f33deb0000c50645fcecbc2f 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -495,7 +495,7 @@ public class BungeeCord extends ProxyServer
@@ -797,10 +797,10 @@ index 1fd54029c586c3dfc28d73c9405fd261cfda1007..61bd8a375cb5d1f47e28fa4bc523a25f
              <scope>compile</scope>
          </dependency>
 diff --git a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
-index ac99d02cb7da0a79e57b982b7dc81f625c0e44c9..b6b20f369a88b19258f08640f3c12c1ba3458495 100644
+index 0c1ecfb8e6016659fc308c2e16ec1ab1d257fe49..0300b897cdea41e512fb13abe319a936d5787b7e 100644
 --- a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
 +++ b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
-@@ -102,7 +102,7 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket>
+@@ -103,7 +103,7 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket>
              // Waterfall start
              List<String> players = bungee.getPlayers().stream().map(ProxiedPlayer::getName).collect(Collectors.toList());
  
