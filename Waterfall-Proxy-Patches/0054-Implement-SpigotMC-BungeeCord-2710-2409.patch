@@ -1,0 +1,97 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Mon, 25 Nov 2019 15:06:53 +0200
+Subject: [PATCH] Implement SpigotMC/BungeeCord #2710 & #2409
+
+Credits go to @Janmm14 & @Polo1K for the code. Minor adjustments are
+applied by me
+
+diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnection.java b/proxy/src/main/java/net/md_5/bungee/ServerConnection.java
+index 789a8ec127b1058277831ad794c5cafa75ab8c61..5386cb7cf7f6da1281aa39a25f4567d64dc009ed 100644
+--- a/proxy/src/main/java/net/md_5/bungee/ServerConnection.java
++++ b/proxy/src/main/java/net/md_5/bungee/ServerConnection.java
+@@ -24,9 +24,17 @@ public class ServerConnection implements Server, eu.mikroskeem.mikrocord.api.net
+     private boolean isObsolete;
+     @Getter
+     private final boolean forgeServer = false;
++    /* // MikroCord start - SpigotMC/BungeeCord#2710 & #2409
+     @Getter
+     @Setter
+     private long sentPingId = -1;
++    */
++    @Getter private final java.util.Queue<KeepAliveData> keepAliveHistory = com.google.common.collect.EvictingQueue.create(1024);
++    @lombok.Data public static class KeepAliveData {
++        private final long id;
++        private final long time;
++    }
++    // MikroCord end
+ 
+     private final Unsafe unsafe = new Unsafe()
+     {
+diff --git a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
+index 91d19d989d7c9266b8fa45f888f4863cb0008a38..db5fe77c0f2915b1ddaa79ed0df72e745042dd24 100644
+--- a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
++++ b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
+@@ -84,7 +84,7 @@ public class DownstreamBridge extends PacketHandler
+         // Waterfall start
+         ServerInfo def = con.updateAndGetNextServer( server.getInfo() );
+         ServerKickEvent event = bungee.getPluginManager().callEvent( new ServerKickEvent( con, server.getInfo(), TextComponent.fromLegacyText( bungee.getTranslation( "server_went_down" ) ), def, ServerKickEvent.State.CONNECTED, ServerKickEvent.Cause.EXCEPTION ) );
+-        if ( event.isCancelled() && event.getCancelServer() != null )
++        if ( event.isCancelled() && event.getCancelServer() != null && !(t instanceof KeepAliveTimeoutException) ) // MikroCord - SpigotMC/BungeeCord#2710 & #2409
+         {
+             server.setObsolete( true );
+             con.connectNow( event.getCancelServer(), ServerConnectEvent.Reason.SERVER_DOWN_REDIRECT );
+@@ -143,8 +143,17 @@ public class DownstreamBridge extends PacketHandler
+     @Override
+     public void handle(KeepAlive alive) throws Exception
+     {
++        /* // MikroCord start - SpigotMC/BungeeCord#2710 & #2409
+         server.setSentPingId( alive.getRandomId() );
+         con.setSentPingTime( System.currentTimeMillis() );
++        */
++        var millis = System.currentTimeMillis();
++        var lastKeepalive = server.getKeepAliveHistory().peek();
++        if (lastKeepalive != null && (lastKeepalive.getTime() + bungee.getConfig().getTimeout()) < millis) {
++            throw new KeepAliveTimeoutException("Did not recieve keepalive in time from " + con);
++        }
++        server.getKeepAliveHistory().add(new ServerConnection.KeepAliveData(alive.getRandomId(), millis));
++        // MikroCord end
+     }
+ 
+     @Override
+@@ -669,4 +678,12 @@ public class DownstreamBridge extends PacketHandler
+     {
+         return "[" + con.getAddress() + "|" + con.getName() + "] <-> DownstreamBridge <-> [" + server.getInfo().getName() + "]";
+     }
++
++    // MikroCord start - SpigotMC/BungeeCord#2710 & #2409
++    public static class KeepAliveTimeoutException extends Exception {
++        public KeepAliveTimeoutException(String reason) {
++            super(reason);
++        }
++    }
++    // MikroCord end
+ }
+diff --git a/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java
+index d223a904f1d4406757614ae1f6d18497e0ffd46c..ac9e3c925c1dc0d3b8b984d9948af7fc62828d98 100644
+--- a/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java
++++ b/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java
+@@ -125,9 +125,18 @@ public class UpstreamBridge extends PacketHandler
+     @Override
+     public void handle(KeepAlive alive) throws Exception
+     {
++        // MikroCord start - SpigotMC/BungeeCord#2710 & #2409
++        if (con.getServer().getKeepAliveHistory().isEmpty())
++            throw CancelSendSignal.INSTANCE;
++        /*
+         if ( alive.getRandomId() == con.getServer().getSentPingId() )
+         {
+             int newPing = (int) ( System.currentTimeMillis() - con.getSentPingTime() );
++        */
++        var keepAliveData = con.getServer().getKeepAliveHistory().remove();
++        if (alive.getRandomId() == keepAliveData.getId()) {
++            int newPing = (int) (System.currentTimeMillis() - keepAliveData.getTime());
++            // MikroCord end
+             con.getTabListHandler().onPingChange( newPing );
+             con.setPing( newPing );
+         } else
