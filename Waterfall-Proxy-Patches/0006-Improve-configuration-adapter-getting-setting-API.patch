@@ -65,31 +65,25 @@ index d44ac67ea1ba67867ababf695427eec0d8e8bbc1..484f424da16e1f77ca85d10a456fef95
 +    // MikroCord end
  }
 diff --git a/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java b/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
-index e860214f8d7bedcc98d5f4cc0c2108ea153b80be..d99b5f4b22f11b9e15b4ab89afb6c6bec090b0f2 100644
+index e860214f8d7bedcc98d5f4cc0c2108ea153b80be..b6840f65f336d0c5ed3f8b610fde2b17bbc2512a 100644
 --- a/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
 +++ b/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
-@@ -1,6 +1,8 @@
- package io.github.waterfallmc.waterfall.conf;
- 
- import com.google.common.base.Joiner;
-+import net.md_5.bungee.api.ProxyServer;
-+import net.md_5.bungee.api.config.ConfigurationAdapter;
- import net.md_5.bungee.conf.Configuration;
- import net.md_5.bungee.conf.YamlConfig;
- import net.md_5.bungee.protocol.ProtocolConstants;
-@@ -47,8 +49,8 @@ public class WaterfallConfiguration extends Configuration {
+@@ -47,8 +47,13 @@ public class WaterfallConfiguration extends Configuration {
      @Override
      public void load() {
          super.load();
--        YamlConfig config = new YamlConfig(new File("waterfall.yml"));
--        config.load(false); // Load, but no permissions
-+        ConfigurationAdapter config = ProxyServer.getInstance().getConfigurationAdapter(ProxyServer.ConfigurationType.WATERFALL);
++        /* // MikroCord start - Improve configuration adapter getting/setting API
+         YamlConfig config = new YamlConfig(new File("waterfall.yml"));
+         config.load(false); // Load, but no permissions
++        */
++        var config = net.md_5.bungee.api.ProxyServer.getInstance().getConfigurationAdapter(net.md_5.bungee.api.ProxyServer.ConfigurationType.WATERFALL);
 +        config.load();
++        // MikroCord end
          logInitialHandlerConnections = config.getBoolean( "log_initial_handler_connections", logInitialHandlerConnections );
          gameVersion = config.getString("game_version", "").isEmpty() ? Joiner.on(", ").join(ProtocolConstants.SUPPORTED_VERSIONS) : config.getString("game_version", "");
          useNettyDnsResolver = config.getBoolean("use_netty_dns_resolver", useNettyDnsResolver);
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 4e5c921f5846d0c8f15be5cab3bbff12b53dad54..54917b3f5a02c375789291a86c539bba0ed3e3a7 100644
+index 9e78a0aeb9c0511783c86a41bda4ecb817e2a992..0a78f0697fff8518cecc359d81746be76c07bbe3 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -166,6 +166,37 @@ public class BungeeCord extends ProxyServer
