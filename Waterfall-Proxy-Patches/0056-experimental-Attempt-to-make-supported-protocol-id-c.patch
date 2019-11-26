@@ -1,0 +1,75 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Tue, 26 Nov 2019 19:51:00 +0200
+Subject: [PATCH] [experimental] Attempt to make supported protocol id checking
+ faster
+
+
+diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/ProtocolConstants.java b/protocol/src/main/java/net/md_5/bungee/protocol/ProtocolConstants.java
+index ff1f28aac34f81a7ac9b318947353a247f32596d..233c9c6608a3bc923517c0a8d1431eee2427a3f4 100644
+--- a/protocol/src/main/java/net/md_5/bungee/protocol/ProtocolConstants.java
++++ b/protocol/src/main/java/net/md_5/bungee/protocol/ProtocolConstants.java
+@@ -55,6 +55,28 @@ public class ProtocolConstants
+             ProtocolConstants.MINECRAFT_1_14_3,
+             ProtocolConstants.MINECRAFT_1_14_4
+     );
++    // MikroCord start
++    public static final int LOWEST_SUPPORTED_VERSION_ID;
++    public static final int HIGHEST_SUPPORTED_VERSION_ID;
++    private static final boolean[] SUPPORTED_VERSION_IDS_FAST;
++    static {
++        LOWEST_SUPPORTED_VERSION_ID = SUPPORTED_VERSION_IDS.get(0);
++        HIGHEST_SUPPORTED_VERSION_ID = SUPPORTED_VERSION_IDS.get(SUPPORTED_VERSION_IDS.size() - 1);
++        var arraySize = HIGHEST_SUPPORTED_VERSION_ID - LOWEST_SUPPORTED_VERSION_ID + 1;
++        SUPPORTED_VERSION_IDS_FAST = new boolean[arraySize];
++        for (var supportedVersionId : SUPPORTED_VERSION_IDS) {
++            var index = supportedVersionId - LOWEST_SUPPORTED_VERSION_ID;
++            SUPPORTED_VERSION_IDS_FAST[index] = true;
++        }
++    }
++
++    public static boolean isSupportedProtocol(int protocolId) {
++        var protocolIndex = protocolId - LOWEST_SUPPORTED_VERSION_ID;
++        return protocolIndex >= 0 &&
++                protocolIndex < ProtocolConstants.SUPPORTED_VERSION_IDS_FAST.length &&
++                ProtocolConstants.SUPPORTED_VERSION_IDS_FAST[protocolIndex];
++    }
++    // MikroCord end
+ 
+     public static final boolean isBeforeOrEq(int before, int other)
+     {
+diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
+index 142b8bc48013120f9581ad57829f1b94afa7ad7c..39028bd2f55d6843b43073088a80ed0b45f309ea 100644
+--- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
++++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
+@@ -770,7 +770,7 @@ public class BungeeCord extends ProxyServer
+     @Override
+     public int getProtocolVersion()
+     {
+-        return ProtocolConstants.SUPPORTED_VERSION_IDS.get( ProtocolConstants.SUPPORTED_VERSION_IDS.size() - 1 );
++        return ProtocolConstants.HIGHEST_SUPPORTED_VERSION_ID; //SUPPORTED_VERSION_IDS.get( ProtocolConstants.SUPPORTED_VERSION_IDS.size() - 1 ); // MikroCord
+     }
+ 
+     @Override
+diff --git a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
+index c70bf92054b3388b0f8f31d515f56335c96c1011..23dcd099cee04f89bd6a00221de33f7ac5a98238 100644
+--- a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
++++ b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
+@@ -250,7 +250,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+             ( (BungeeServerInfo) forced ).ping( pingBack, handshake.getProtocolVersion() );
+         } else
+         {
+-            int protocol = ( ProtocolConstants.SUPPORTED_VERSION_IDS.contains( handshake.getProtocolVersion() ) ) ? handshake.getProtocolVersion() : bungee.getProtocolVersion();
++            int protocol = ( ProtocolConstants.isSupportedProtocol(/*SUPPORTED_VERSION_IDS.contains(*/ handshake.getProtocolVersion() ) ) ? handshake.getProtocolVersion() : bungee.getProtocolVersion(); // MikroCord
+             pingBack.done( new ServerPing(
+                     new ServerPing.Protocol( bungee.getName() + " " + bungee.getGameVersion(), protocol ),
+                     new ServerPing.Players( listener.getMaxPlayers(), bungee.getOnlineCount(), null ),
+@@ -321,7 +321,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+                 thisState = State.USERNAME;
+                 ch.setProtocol( Protocol.LOGIN );
+ 
+-                if ( !ProtocolConstants.SUPPORTED_VERSION_IDS.contains( handshake.getProtocolVersion() ) )
++                if ( !ProtocolConstants.isSupportedProtocol(handshake.getProtocolVersion())) //.SUPPORTED_VERSION_IDS.contains( handshake.getProtocolVersion() ) ) // MikroCord
+                 {
+                     if ( handshake.getProtocolVersion() > bungee.getProtocolVersion() )
+                     {
