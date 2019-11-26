@@ -1,0 +1,21 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Tue, 26 Nov 2019 16:06:42 +0200
+Subject: [PATCH] Misc security enhancements
+
+Credits:
+* Fix potential UDP speculative reflection attack - https://github.com/VelocityPowered/Velocity/commit/ae14eb8ccb56f6b12e210a145837f4545607f416
+
+diff --git a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
+index cdf31661b5fc10e5029cda7208596f56a66ab5d1..79953dc5198d05d86a96043f1a2ec2bf4233ced3 100644
+--- a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
++++ b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
+@@ -30,7 +30,7 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket>
+     private final ProxyServer bungee;
+     private final ListenerInfo listener;
+     /*========================================================================*/
+-    private final Random random = new Random();
++    private final Random random = new java.security.SecureRandom(); //Random(); // MikroCord - misc security enhancements
+     private final Cache<InetAddress, QuerySession> sessions = CacheBuilder.newBuilder().expireAfterWrite( 30, TimeUnit.SECONDS ).build();
+     private static io.github.waterfallmc.waterfall.utils.FastException cachedNoSessionException = new io.github.waterfallmc.waterfall.utils.FastException("No Session!");
+     private final Cache<InetAddress, Integer> blacklistedAddresses = CacheBuilder.newBuilder().maximumSize(1024).expireAfterWrite( 120, TimeUnit.SECONDS ).build(); // MikroCord - Blacklist invalid query packet spammers
