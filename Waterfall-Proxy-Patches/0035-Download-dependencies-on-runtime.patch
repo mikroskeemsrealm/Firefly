@@ -335,14 +335,14 @@ index 0000000000000000000000000000000000000000..b5cfc1c10df619d9b51e20f870d405c7
 +    }
 +}
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java b/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
-index 0453d5c32c70721e6fc3f3d0e92830968ea31fc0..d91aa8834f6ffcc2809d31cd0c8feb03b64fad7e 100644
+index 0453d5c32c70721e6fc3f3d0e92830968ea31fc0..d692f3639c43efcc94739911de045cc073d34689 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
 @@ -26,6 +26,7 @@ public class BungeeCordLauncher
          parser.acceptsAll( Arrays.asList( "help" ), "Show the help" );
          parser.acceptsAll( Arrays.asList( "v", "version" ), "Print version and exit" );
          parser.acceptsAll( Arrays.asList( "noconsole" ), "Disable console input" );
-+        parser.acceptsAll(Arrays.asList("dumpdependencies"), "Dumps the list of runtime downloadable dependencies"); // MikroCord
++        parser.acceptsAll(Arrays.asList("dumpdependencies"), "Dumps the list of runtime downloadable dependencies"); // MikroCord - download dependencies on runtime
  
          OptionSet options = parser.parse( args );
  
@@ -350,14 +350,14 @@ index 0453d5c32c70721e6fc3f3d0e92830968ea31fc0..d91aa8834f6ffcc2809d31cd0c8feb03
              System.out.println( BungeeCord.class.getPackage().getImplementationVersion() );
              return;
          }
-+        // MikroCord start
++        // MikroCord start - download dependencies on runtime
 +        if (options.has("dumpdependencies")) {
 +            for (var dependency : eu.mikroskeem.mikrocord.dependencies.DependencyClassLoader.getDependencies()) {
 +                System.out.println(dependency.formatPath());
 +            }
 +            return;
 +        }
-+        // MikroCord end
++        // MikroCord end - download dependencies on runtime
  
          if ( BungeeCord.class.getPackage().getSpecificationVersion() != null && System.getProperty( "IReallyKnowWhatIAmDoingISwear" ) == null )
          {
