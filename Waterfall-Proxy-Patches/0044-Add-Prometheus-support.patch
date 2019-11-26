@@ -171,11 +171,11 @@ index 1c796697ff54fefb2b3c86862a19ecc7bd1c63f9..f243777118b19e199411b66b89759a7b
  
      private TCPFastOpenMode setupTfo(int value) {
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
-index 9d74221aba1ff5c4d126b6db5add22e91cc079d3..824e6616352ac69c9c55ec6961585eb1d3fc5d46 100644
+index 8d0785201539ed87ca38b409bf206bfdb4260829..562b2fd9ebbc4242071e3aa0e899bb5fcd3f604b 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
-@@ -37,10 +37,12 @@ public final class DependencyClassLoader extends URLClassLoader {
-     private static final Logger logger = LogManager.getLogger(DependencyClassLoader.class);
+@@ -35,10 +35,12 @@ public final class DependencyClassLoader extends URLClassLoader {
+     private static final MessageDigest digest;
      private static final List<String> DEFAULT_REPOSITORIES = Arrays.asList(
              // TODO: mirror repositories?
 -            "https://repo.maven.apache.org/maven2"
@@ -188,7 +188,7 @@ index 9d74221aba1ff5c4d126b6db5add22e91cc079d3..824e6616352ac69c9c55ec6961585eb1
  
      private static final List<Dependency> DEPENDENCIES = Arrays.asList(
              new Dependency("com.google.guava", "guava", "28.1-jre", "b0e91dcb6a44ffb6221b5027e12a5cb34b841145"),
-@@ -71,7 +73,12 @@ public final class DependencyClassLoader extends URLClassLoader {
+@@ -69,7 +71,12 @@ public final class DependencyClassLoader extends URLClassLoader {
              new Dependency("net.kyori", "text-api", "3.0.2", "608cdb44a74bbd68745941760df730ed55e4b47c"),
              new Dependency("net.kyori", "text-serializer-gson", "3.0.2", "9ac22f04f3504c52ff1618c5a8d9a6145d8d9c9e"),
              new Dependency("net.kyori", "text-serializer-legacy", "3.0.2", "8acbfb36356259273a8e3a15782e4f2980375bc5"),

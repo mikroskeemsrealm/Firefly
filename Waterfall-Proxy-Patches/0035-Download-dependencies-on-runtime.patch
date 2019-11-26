@@ -91,7 +91,7 @@ index 0000000000000000000000000000000000000000..3a06c5c9213e6fd61dcd5a5d9ed04302
 +}
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..b5cfc1c10df619d9b51e20f870d405c7128f7cec
+index 0000000000000000000000000000000000000000..3f4a6515fe630fa483d69796352d9ab390e20be2
 --- /dev/null
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
 @@ -0,0 +1,239 @@
@@ -99,8 +99,6 @@ index 0000000000000000000000000000000000000000..b5cfc1c10df619d9b51e20f870d405c7
 +
 +import io.github.waterfallmc.waterfall.utils.Hex;
 +import lombok.SneakyThrows;
-+import org.apache.logging.log4j.LogManager;
-+import org.apache.logging.log4j.Logger;
 +
 +import java.io.FileNotFoundException;
 +import java.io.FileOutputStream;
@@ -130,8 +128,8 @@ index 0000000000000000000000000000000000000000..b5cfc1c10df619d9b51e20f870d405c7
 +        }
 +    }
 +
++    private static boolean DEBUG_DOWNLOADS = Boolean.getBoolean("dcl.debug");
 +    private static final MessageDigest digest;
-+    private static final Logger logger = LogManager.getLogger(DependencyClassLoader.class);
 +    private static final List<String> DEFAULT_REPOSITORIES = Arrays.asList(
 +            // TODO: mirror repositories?
 +            "https://repo.maven.apache.org/maven2"
@@ -200,12 +198,12 @@ index 0000000000000000000000000000000000000000..b5cfc1c10df619d9b51e20f870d405c7
 +                    continue;
 +                }
 +
-+                logger.warn("Dependency {} checksum is not valid ({} != {}), redownloading", dependency, dependency.getChecksum(), sha1Sum);
++                System.out.printf("Dependency %s checksum is not valid (%s != %s), redownloading%n", dependency, dependency.getChecksum(), sha1Sum);
 +                Files.delete(targetPath);
 +            }
 +
 +            Files.createDirectories(targetPath.getParent());
-+            logger.info("Downloading dependency {}", dependency);
++            System.out.printf("Downloading dependency %s%n", dependency);
 +
 +            for (String repository: dependency.getRepositories()) {
 +                HttpURLConnection connection = (HttpURLConnection) dependency.formatUrl(repository).openConnection();
@@ -215,11 +213,13 @@ index 0000000000000000000000000000000000000000..b5cfc1c10df619d9b51e20f870d405c7
 +                try (ReadableByteChannel stream = Channels.newChannel(connection.getInputStream()); FileChannel file = new FileOutputStream(targetPath.toFile()).getChannel()) {
 +                    file.transferFrom(stream, 0, Long.MAX_VALUE);
 +                } catch (FileNotFoundException e) {
-+                    logger.debug("Dependency {} was not found in repository {}, trying another repository...", dependency, repository);
++                    if (DEBUG_DOWNLOADS)
++                        System.out.printf("Dependency %s was not found in repository %s, trying another repository...%n", dependency, repository);
 +                    Files.deleteIfExists(targetPath);
 +                    continue;
 +                } catch (IOException e) {
-+                    logger.debug("Could not connect to repository {} to download {}, trying another repository...", repository, dependency);
++                    if (DEBUG_DOWNLOADS)
++                        System.out.printf("Could not connect to repository %s to download %s, trying another repository...%n", repository, dependency);
 +                    continue;
 +                }
 +
@@ -229,19 +229,19 @@ index 0000000000000000000000000000000000000000..b5cfc1c10df619d9b51e20f870d405c7
 +
 +                // Verify
 +                if (!sha1Sum.equals(dependency.getChecksum()) && !dependency.getChecksum().isEmpty()) {
-+                    logger.error("Downloading dependency {} failed because checksums don't match ({} != {});", dependency, dependency.getChecksum(), sha1Sum);
++                    System.out.printf("Downloading dependency %s failed because checksums don't match (%s != %s)%n", dependency, dependency.getChecksum(), sha1Sum);
 +                    throw new RuntimeException("Failed to download dependency " + dependency);
 +                }
 +
 +                if (dependency.getChecksum().isEmpty()) {
-+                    logger.info("new Dependency(\"{}\", \"{}\", \"{}\", \"{}\")", dependency.groupId, dependency.artifactId, dependency.version, sha1Sum);
++                    System.out.printf("new Dependency(\"%s\", \"%s\", \"%s\", \"%s\")%n", dependency.groupId, dependency.artifactId, dependency.version, sha1Sum);
 +                }
 +
 +                if (Files.notExists(targetPath))
 +                    throw new RuntimeException("Failed to download dependency " +  dependency);
 +
 +                // Load
-+                logger.info("Dependency {} downloaded", dependency);
++                System.out.printf("Dependency %s downloaded%n", dependency);
 +                instance.addFile(targetPath);
 +                break;
 +            }
