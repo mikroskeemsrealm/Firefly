@@ -1,0 +1,122 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Tue, 26 Nov 2019 23:41:50 +0200
+Subject: [PATCH] Add MaliciousClientEvent
+
+
+diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
+index ea7bc8574316253975813176519cfd3214b6c753..5364efb8b46eeaf41a26465883f0ad8ec2289a27 100644
+--- a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
++++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
+@@ -90,4 +90,6 @@ public interface MikroCordProxyConfig {
+      * @return Port where Prometheus exporter should listen on
+      */
+     int getPrometheusListenPort();
++
++    boolean isDropConnectionsSendingInvalidPackets();
+ }
+diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/event/MaliciousClientEvent.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/event/MaliciousClientEvent.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..744d95597ff6c0f15fae595ab18e0c725b1c593f
+--- /dev/null
++++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/event/MaliciousClientEvent.java
+@@ -0,0 +1,46 @@
++package eu.mikroskeem.mikrocord.api.event;
++
++import net.md_5.bungee.api.connection.Connection;
++import net.md_5.bungee.api.connection.PendingConnection;
++import net.md_5.bungee.api.plugin.Event;
++import org.checkerframework.checker.nullness.qual.NonNull;
++
++/**
++ * @author Mark Vainomaa
++ */
++public final class MaliciousClientEvent extends Event {
++    private final Connection connection;
++    private final Reason reason;
++
++    public MaliciousClientEvent(@NonNull Connection connection, @NonNull Reason reason) {
++        this.connection = connection;
++        this.reason = reason;
++    }
++
++    @NonNull
++    public Connection getConnection() {
++        return connection;
++    }
++
++    @NonNull
++    public Reason getReason() {
++        return reason;
++    }
++
++    /**
++     * The reason why this event was called
++     */
++    public enum Reason {
++        INVALID_PROTOCOL_REQUESTED,
++        UNEXPECTED_PACKET_DURING_LOGIN,
++        ;
++    }
++
++    public static MaliciousClientEvent invalidProtocolRequested(PendingConnection connection) {
++        return new MaliciousClientEvent(connection, Reason.INVALID_PROTOCOL_REQUESTED);
++    }
++
++    public static MaliciousClientEvent invalidLoginProcess(PendingConnection connection) {
++        return new MaliciousClientEvent(connection, Reason.UNEXPECTED_PACKET_DURING_LOGIN);
++    }
++}
+diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
+index c70c1212d2ba4a6777b5ab6f4e5d6662153d83b2..788e6f6f0b06cb6dde765ab4866154c9263858df 100644
+--- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
++++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
+@@ -70,6 +70,12 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+     @Getter
+     private int prometheusListenPort = 8888;
+ 
++    @Getter
++    private boolean logInvalidLoginPackets = false;
++
++    @Getter
++    private boolean dropConnectionsSendingInvalidPackets = true;
++
+     @Override
+     public void load() {
+         super.load();
+@@ -91,6 +97,8 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+         prometheusEnabled = config.getBoolean("prometheus.enabled", prometheusEnabled);
+         prometheusListenHost = config.getString("prometheus.listen_host", prometheusListenHost);
+         prometheusListenPort = config.getInt("prometheus.listen_port", prometheusListenPort);
++        logInvalidLoginPackets = config.getBoolean("log.invalid_login_process_packets", logInvalidLoginPackets);
++        dropConnectionsSendingInvalidPackets = config.getBoolean("packets.drop_invalid_packet_senders", dropConnectionsSendingInvalidPackets);
+     }
+ 
+     private TCPFastOpenMode setupTfo(int value) {
+diff --git a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
+index 23dcd099cee04f89bd6a00221de33f7ac5a98238..dc5e7f01a97cc3de3ec6867d1d9f3ea1f13c1e6f 100644
+--- a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
++++ b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
+@@ -134,6 +134,14 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+     {
+         if ( packet.packet == null )
+         {
++            // MikroCord start
++            if (bungee.getConfig().isDropConnectionsSendingInvalidPackets()) {
++                eu.mikroskeem.mikrocord.api.event.MaliciousClientEvent.invalidLoginProcess(this).callEvent();
++                bungee.getLogger().log(Level.WARNING, "{0} Received invalid (potentially junk) data, disconnecting", this);
++                ch.close("Unexpected packet received during login process!");
++                return;
++            }
++            // MikroCord end
+             throw new QuietException( "Unexpected packet received during login process! " + BufUtil.dump( packet.buf, 16 ) );
+         }
+     }
+@@ -335,6 +343,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+                 break;
+             default:
+                 // MikroCord start - harden
++                eu.mikroskeem.mikrocord.api.event.MaliciousClientEvent.invalidProtocolRequested(this).callEvent();
+                 bungee.getLogger().log(Level.WARNING, "{0} Invalid protocol {1}, disconnecting", new Object[] { this, handshake.getRequestedProtocol() });
+                 ch.close();
+                 if (false) // MikroCord end
