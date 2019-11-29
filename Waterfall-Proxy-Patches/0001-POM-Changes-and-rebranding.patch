@@ -507,7 +507,7 @@ index b5aeb99eeadb03dd22e54e4550ed98db0fc13721..34d97d1b8e631f10602bb364b64d7b2c
      <dependencies>
          <dependency>
 diff --git a/pom.xml b/pom.xml
-index eff0bf2e15a4256746475154d73e653e6ba3c490..12cce3e573255f4978e9f8ad33833393be97477a 100644
+index eff0bf2e15a4256746475154d73e653e6ba3c490..95557a42a598255077a30c362131c970b2a1152c 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -4,25 +4,27 @@
@@ -575,12 +575,12 @@ index eff0bf2e15a4256746475154d73e653e6ba3c490..12cce3e573255f4978e9f8ad33833393
          <snapshotRepository>
 -            <id>papermc-snapshots</id>
 -            <url>https://papermc.io/repo/repository/maven-snapshots/</url>
-+            <id>cu-maven-public</id>
-+            <url>https://maven.cu-mc.com/repository/maven-public</url>
++            <id>mikroskeem-repo</id>
++            <url>https://repo.wut.ee/repository/mikroskeem-repo</url>
          </snapshotRepository>
 +        <repository>
-+            <id>cu-maven-public</id>
-+            <url>https://maven.cu-mc.com/repository/maven-public</url>
++            <id>mikroskeem-repo</id>
++            <url>https://repo.wut.ee/repository/mikroskeem-repo</url>
 +        </repository>
      </distributionManagement>
  
