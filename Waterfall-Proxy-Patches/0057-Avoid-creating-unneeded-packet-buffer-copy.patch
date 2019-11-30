@@ -1,0 +1,66 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Sat, 30 Nov 2019 13:45:19 +0200
+Subject: [PATCH] Avoid creating unneeded packet buffer copy
+
+
+diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
+index 406dafd976ae8b420c87e173ed99f40b03bb1e61..aa6e0f7542cc8ca4975eebeb9dfa810f3a26774b 100644
+--- a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
++++ b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
+@@ -52,7 +52,11 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
+     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception
+     {
+         Protocol.DirectionData prot = ( server ) ? protocol.TO_SERVER : protocol.TO_CLIENT;
++        /* MikroCord start
+         ByteBuf slice = in.copy(); // Can't slice this one due to EntityMap :(
++        */
++        int readIdx = in.readerIndex();
++        // MikroCord end
+ 
+         Object packetTypeInfo = null;
+         try
+@@ -78,13 +82,20 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
+                     throw new BadPacketException( "Did not read all bytes from packet " + packet.getClass() + " " + packetId + " Protocol " + protocol + " Direction " + prot.getDirection() );
+                 }
+                 decodedMetric.run(); // MikroCord - add Prometheus metrics support
++            /* MikroCord start
+             } else
+             {
+                 in.skipBytes( in.readableBytes() );
++            */ // MikroCord end
+             }
+ 
++            /* MikroCord start
+             out.add( new PacketWrapper( packet, slice ) );
+             slice = null;
++            */
++            in.readerIndex(readIdx);
++            out.add(new PacketWrapper(packet, in.retain()));
++            // MikroCord end
+         } catch (BadPacketException | IndexOutOfBoundsException e) {
+             invalidPacketMetric.run(); // MikroCord - add Prometheus metrics support
+             final String packetTypeStr;
+@@ -102,19 +113,21 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
+             /* // MikroCord start - add option to disable noisy packet decode exception
+             throw new DecoderException("Error decoding packet " + packetTypeStr + " with contents:\n" + ByteBufUtil.prettyHexDump(slice), e);
+             */
+-            DecoderException de = new DecoderException("Error decoding packet " + packetTypeStr + " with contents:\n" + ByteBufUtil.prettyHexDump(slice), e);
++            DecoderException de = new DecoderException("Error decoding packet " + packetTypeStr + " with contents:\n" + ByteBufUtil.prettyHexDump(/*slice*/in), e); // MikroCord
+             if (!this.noisyPacketDecodeException) {
+                 de.setStackTrace(new StackTraceElement[0]);
+                 de.getCause().setStackTrace(new StackTraceElement[0]);
+             }
+             throw de;
+             // MikroCord end
++        /* // MikroCord start
+         } finally
+         {
+             if ( slice != null )
+             {
+                 slice.release();
+             }
++        */ // MikroCord end
+         }
+     }
+ }
