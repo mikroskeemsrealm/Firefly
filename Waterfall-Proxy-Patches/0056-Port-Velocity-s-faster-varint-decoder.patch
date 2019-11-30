@@ -1,0 +1,112 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Sat, 30 Nov 2019 13:45:10 +0200
+Subject: [PATCH] Port Velocity's faster varint decoder
+
+
+diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/DefinedPacket.java b/protocol/src/main/java/net/md_5/bungee/protocol/DefinedPacket.java
+index 9951c1f9e9b8746fb4bf96fe0bbe4e9ab36a6478..ad6933ee3bc35d30a867a9ac5ff7fbd663bbb65e 100644
+--- a/protocol/src/main/java/net/md_5/bungee/protocol/DefinedPacket.java
++++ b/protocol/src/main/java/net/md_5/bungee/protocol/DefinedPacket.java
+@@ -133,10 +133,59 @@ public abstract class DefinedPacket
+         return ret;
+     }
+ 
++    // MikroCord start - port Velocity's faster varint decoder
++    private static class VarintByteDecoder implements io.netty.util.ByteProcessor {
++        private int accumulated;
++        private int read;
++        private boolean successfulDecode;
++
++        @Override
++        public boolean process(byte k) {
++            accumulated |= (k & 0x7F) << read++ * 7;
++            if (read > 5) {
++                return false;
++            }
++            if ((k & 0x80) != 128) {
++                successfulDecode = true;
++                return false;
++            }
++            return true;
++        }
++
++        void reset() {
++            accumulated = 0;
++            read = 0;
++            successfulDecode = false;
++        }
++    }
++    private static final io.netty.util.concurrent.FastThreadLocal<VarintByteDecoder> DECODER = new io.netty.util.concurrent.FastThreadLocal<>() {
++        @Override
++        protected VarintByteDecoder initialValue() throws Exception {
++            return new VarintByteDecoder();
++        }
++    };
++
++    private static final io.netty.handler.codec.CorruptedFrameException brokenVarintException = new io.netty.handler.codec.CorruptedFrameException("Incomplete VarInt or VarInt too big!");
++    public static int readVarInt(ByteBuf buf) {
++        var decoder = DECODER.get();
++        try {
++            int idx = buf.forEachByte(decoder);
++            if (decoder.successfulDecode && idx >= 0) {
++                buf.readerIndex(idx + 1);
++                return decoder.accumulated;
++            } else {
++                throw brokenVarintException;
++            }
++        } finally {
++            decoder.reset();
++        }
++    }
++    /*
+     public static int readVarInt(ByteBuf input)
+     {
+         return readVarInt( input, 5 );
+     }
++    */ // MikroCord end
+ 
+     public static int readVarInt(ByteBuf input, int maxBytes)
+     {
+diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
+index 92124078d869030569d2e49eb8bd906fb98f2b5a..6fffc3ceae10bc028848b24f97b46089773683c9 100644
+--- a/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
++++ b/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
+@@ -21,6 +21,7 @@ public class Varint21FrameDecoder extends ByteToMessageDecoder
+     @Override
+     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception
+     {
++        /* // MikroCord start - port Velocity's faster varint decoder
+         in.markReaderIndex();
+ 
+         for ( int i = 0; i < 3; i++ ) // Waterfall
+@@ -64,5 +65,29 @@ public class Varint21FrameDecoder extends ByteToMessageDecoder
+ 
+         if (this.closeConnectionOnDecodeError) { ctx.channel().close(); return; } // MikroCord
+         throw new CorruptedFrameException( "length wider than 21-bit" );
++        */
++        int readIdx = in.readerIndex();
++        int packetLen;
++        try {
++            packetLen = DefinedPacket.readVarInt(in);
++        } catch (CorruptedFrameException e) {
++            if (this.closeConnectionOnDecodeError) {
++                ctx.channel().close();
++                return;
++            }
++            throw e;
++        }
++
++        if (packetLen == 0 && !server) {
++            ctx.channel().close();
++            return;
++        }
++
++        if (in.readableBytes() >= packetLen) {
++            out.add(in.readRetainedSlice(packetLen));
++        } else {
++            in.readerIndex(readIdx);
++        }
++        // MikroCord end
+     }
+ }
