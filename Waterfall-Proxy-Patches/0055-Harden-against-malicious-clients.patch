@@ -22,7 +22,7 @@ index ea7bc8574316253975813176519cfd3214b6c753..b5d0cb50b65fcebb0f24dac45481ebf3
  }
 diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/event/MaliciousClientEvent.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/event/MaliciousClientEvent.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..fcb1c188e401673987e1a8c286840fe24e1cf42a
+index 0000000000000000000000000000000000000000..cbd719a6bd39f3727bfa4540e58a61b71d47c88c
 --- /dev/null
 +++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/event/MaliciousClientEvent.java
 @@ -0,0 +1,51 @@
@@ -66,7 +66,7 @@ index 0000000000000000000000000000000000000000..fcb1c188e401673987e1a8c286840fe2
 +    }
 +
 +    public static MaliciousClientEvent invalidGameState(PendingConnection connection) {
-+        return new MaliciousClientEvent(connection, Reason.INVALID_PROTOCOL_REQUESTED);
++        return new MaliciousClientEvent(connection, Reason.INVALID_GAME_STATE);
 +    }
 +
 +    public static MaliciousClientEvent invalidProtocolRequested(PendingConnection connection) {
