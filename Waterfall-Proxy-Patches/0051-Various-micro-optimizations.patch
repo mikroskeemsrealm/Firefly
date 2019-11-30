@@ -12,13 +12,11 @@ Subject: [PATCH] Various micro-optimizations
 
 diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/misc/ClassUtil.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/misc/ClassUtil.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..68a6e89a6da206f45e7101386b16009d2315dc36
+index 0000000000000000000000000000000000000000..cea3f8031f5a3e9281855fe4112f81687df0691f
 --- /dev/null
 +++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/misc/ClassUtil.java
-@@ -0,0 +1,31 @@
+@@ -0,0 +1,21 @@
 +package eu.mikroskeem.mikrocord.api.misc;
-+
-+import net.md_5.bungee.protocol.MinecraftDecoder;
 +
 +/**
 + * @author Mark Vainomaa
@@ -37,14 +35,6 @@ index 0000000000000000000000000000000000000000..68a6e89a6da206f45e7101386b16009d
 +    public static String getClassNameFromString(String className) {
 +        int i = className.lastIndexOf('.');
 +        return i > 0 ? className.substring(i + 1) : className;
-+    }
-+
-+    static {
-+        try {
-+            MinecraftDecoder.setGetClassNameFunction(ClassUtil::getClassName);
-+        } catch (Throwable ignored) {
-+            // Implementation might not be present at runtime (:
-+        }
 +    }
 +}
 diff --git a/api/src/main/java/net/md_5/bungee/Util.java b/api/src/main/java/net/md_5/bungee/Util.java
@@ -144,7 +134,7 @@ index 6cec0b5a141a41e9f4e36c25f6f7460aa5dacdc2..0be00b09ea6ff9218d3232f6d507e0ad
      }
  
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 602b58dedb3068fe89611eeb934f8428b75d691d..c435fa05ca87f2b20b822ab4bf4a63588dc96b13 100644
+index 602b58dedb3068fe89611eeb934f8428b75d691d..1921d88d927aa6304ca01da73d8dd01866228eb8 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -116,7 +116,7 @@ public class BungeeCord extends ProxyServer
@@ -168,7 +158,7 @@ index 602b58dedb3068fe89611eeb934f8428b75d691d..c435fa05ca87f2b20b822ab4bf4a6358
          {
              connectionThrottle = new ConnectionThrottle( config.getThrottle(), config.getThrottleLimit() );
          }
-+        eu.mikroskeem.mikrocord.api.misc.ClassUtil.class.getName(); // MikroCord - don't use Class#getSimpleName()
++        net.md_5.bungee.protocol.MinecraftDecoder.setGetClassNameFunction(eu.mikroskeem.mikrocord.api.misc.ClassUtil::getClassName); // MikroCord - don't use Class#getSimpleName()
          eu.mikroskeem.mikrocord.misc.PrometheusMetrics.initialize(); // MikroCord - add Prometheus metrics support
          startListeners();
  
