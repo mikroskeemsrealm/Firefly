@@ -1,8 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
 Date: Tue, 26 Nov 2019 19:51:00 +0200
-Subject: [PATCH] [experimental] Attempt to make supported protocol id checking
- faster
+Subject: [PATCH] Attempt to make supported protocol id checking faster
 
 
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/ProtocolConstants.java b/protocol/src/main/java/net/md_5/bungee/protocol/ProtocolConstants.java
@@ -52,7 +51,7 @@ index 142b8bc48013120f9581ad57829f1b94afa7ad7c..39028bd2f55d6843b43073088a80ed0b
  
      @Override
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-index c70bf92054b3388b0f8f31d515f56335c96c1011..23dcd099cee04f89bd6a00221de33f7ac5a98238 100644
+index ca7d5fd53fb242d3d8dc008f6f1b7b79da1f2fd1..6e623540077289923cb4aea920c9f12fb3bcecf0 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 @@ -250,7 +250,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection

@@ -1,0 +1,301 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Tue, 26 Nov 2019 16:06:42 +0200
+Subject: [PATCH] Harden against malicious clients
+
+Credits:
+* Fix potential UDP speculative reflection attack - https://github.com/VelocityPowered/Velocity/commit/ae14eb8ccb56f6b12e210a145837f4545607f416
+* (will release details when this issue gets fixed on upstreams as well)
+
+diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
+index ea7bc8574316253975813176519cfd3214b6c753..b5d0cb50b65fcebb0f24dac45481ebf3f498b899 100644
+--- a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
++++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
+@@ -90,4 +90,8 @@ public interface MikroCordProxyConfig {
+      * @return Port where Prometheus exporter should listen on
+      */
+     int getPrometheusListenPort();
++
++    boolean isDropConnectionsSendingInvalidPackets();
++
++    boolean isLogPacketDecodeErrors();
+ }
+diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/event/MaliciousClientEvent.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/event/MaliciousClientEvent.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..fcb1c188e401673987e1a8c286840fe24e1cf42a
+--- /dev/null
++++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/event/MaliciousClientEvent.java
+@@ -0,0 +1,51 @@
++package eu.mikroskeem.mikrocord.api.event;
++
++import net.md_5.bungee.api.connection.Connection;
++import net.md_5.bungee.api.connection.PendingConnection;
++import net.md_5.bungee.api.plugin.Event;
++import org.checkerframework.checker.nullness.qual.NonNull;
++
++/**
++ * @author Mark Vainomaa
++ */
++public final class MaliciousClientEvent extends Event {
++    private final Connection connection;
++    private final Reason reason;
++
++    public MaliciousClientEvent(@NonNull Connection connection, @NonNull Reason reason) {
++        this.connection = connection;
++        this.reason = reason;
++    }
++
++    @NonNull
++    public Connection getConnection() {
++        return connection;
++    }
++
++    @NonNull
++    public Reason getReason() {
++        return reason;
++    }
++
++    /**
++     * The reason why this event was called
++     */
++    public enum Reason {
++        INVALID_GAME_STATE,
++        INVALID_PROTOCOL_REQUESTED,
++        UNEXPECTED_PACKET_DURING_LOGIN,
++        ;
++    }
++
++    public static MaliciousClientEvent invalidGameState(PendingConnection connection) {
++        return new MaliciousClientEvent(connection, Reason.INVALID_PROTOCOL_REQUESTED);
++    }
++
++    public static MaliciousClientEvent invalidProtocolRequested(PendingConnection connection) {
++        return new MaliciousClientEvent(connection, Reason.INVALID_PROTOCOL_REQUESTED);
++    }
++
++    public static MaliciousClientEvent invalidLoginProcess(PendingConnection connection) {
++        return new MaliciousClientEvent(connection, Reason.UNEXPECTED_PACKET_DURING_LOGIN);
++    }
++}
+diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
+index 8276f0c00f566deb8803f67d6e337ef7327f1acb..406dafd976ae8b420c87e173ed99f40b03bb1e61 100644
+--- a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
++++ b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
+@@ -30,12 +30,22 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
+     @Setter private static Runnable invalidPacketMetric;
+     // MikroCord end
+     @Setter private static java.util.function.Function<Class<?>, String> getClassNameFunction; // MikroCord - don't use Class#getSimpleName()
++    // MikroCord start - harden
++    @Setter private static java.util.function.BooleanSupplier logPacketDumpOnDecodeErrorSupplier;
++    @Setter private static java.util.function.BooleanSupplier closeConnectionOnDecodeErrorSupplier;
++    private final boolean logPacketDumpOnDecodeError;
++    private final boolean closeConnectionOnDecodeError;
++    // MikroCord end
+ 
+     public MinecraftDecoder(Protocol protocol, boolean server, int protocolVersion) {
+         this.protocol = protocol;
+         this.server = server;
+         this.protocolVersion = protocolVersion;
+         this.noisyPacketDecodeException = noisyPacketDecodeExceptionSupplier.getAsBoolean(); // MikroCord - add option to disable noisy packet decode exception
++        // MikroCord start - harden
++        this.logPacketDumpOnDecodeError = logPacketDumpOnDecodeErrorSupplier.getAsBoolean();
++        this.closeConnectionOnDecodeError = closeConnectionOnDecodeErrorSupplier.getAsBoolean();
++        // MikroCord end
+     }
+ 
+     @Override
+@@ -85,6 +95,10 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
+             } else {
+                 packetTypeStr = "unknown";
+             }
++            // MikroCord start - harden
++            if (this.closeConnectionOnDecodeError) ctx.channel().close();
++            if (!this.logPacketDumpOnDecodeError) return;
++            // MikroCord end
+             /* // MikroCord start - add option to disable noisy packet decode exception
+             throw new DecoderException("Error decoding packet " + packetTypeStr + " with contents:\n" + ByteBufUtil.prettyHexDump(slice), e);
+             */
+diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
+index c70c1212d2ba4a6777b5ab6f4e5d6662153d83b2..7e80e62eab696d23e7d112310a314edf5c24541b 100644
+--- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
++++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
+@@ -23,6 +23,8 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+     public MikroCordConfiguration() {
+         // Set up accessors
+         MinecraftDecoder.setNoisyPacketDecodeExceptionSupplier(this::isLogNoisyPacketDecodeException);
++        MinecraftDecoder.setLogPacketDumpOnDecodeErrorSupplier(this::isLogPacketDecodeErrors);
++        MinecraftDecoder.setCloseConnectionOnDecodeErrorSupplier(this::isDropConnectionsSendingInvalidPackets);
+     }
+ 
+     @Getter
+@@ -70,6 +72,15 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+     @Getter
+     private int prometheusListenPort = 8888;
+ 
++    @Getter
++    private boolean logInvalidLoginPackets = false;
++
++    @Getter
++    private boolean dropConnectionsSendingInvalidPackets = true;
++
++    @Getter
++    private boolean logPacketDecodeErrors = false;
++
+     @Override
+     public void load() {
+         super.load();
+@@ -91,6 +102,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+         prometheusEnabled = config.getBoolean("prometheus.enabled", prometheusEnabled);
+         prometheusListenHost = config.getString("prometheus.listen_host", prometheusListenHost);
+         prometheusListenPort = config.getInt("prometheus.listen_port", prometheusListenPort);
++        logInvalidLoginPackets = config.getBoolean("log.invalid_login_process_packets", logInvalidLoginPackets);
++        dropConnectionsSendingInvalidPackets = config.getBoolean("packets.drop_invalid_packet_senders", dropConnectionsSendingInvalidPackets);
++        logPacketDecodeErrors = config.getBoolean("packets.log_packet_decode_errors", logPacketDecodeErrors);
+     }
+ 
+     private TCPFastOpenMode setupTfo(int value) {
+diff --git a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
+index 6e623540077289923cb4aea920c9f12fb3bcecf0..fa97e4c84e3c4e928b9d6db125c06796b2393829 100644
+--- a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
++++ b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
+@@ -134,6 +134,16 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+     {
+         if ( packet.packet == null )
+         {
++            // MikroCord start
++            if (bungee.getConfig().isDropConnectionsSendingInvalidPackets()) {
++                eu.mikroskeem.mikrocord.api.event.MaliciousClientEvent.invalidLoginProcess(this).callEvent();
++                if (bungee.getConfig().isLogPacketDecodeErrors()) {
++                    bungee.getLogger().log(Level.WARNING, "{0} Received invalid (potentially junk) data, disconnecting", this);
++                }
++                ch.close("Unexpected packet received during login process!");
++                return;
++            }
++            // MikroCord end
+             throw new QuietException( "Unexpected packet received during login process! " + BufUtil.dump( packet.buf, 16 ) );
+         }
+     }
+@@ -210,7 +220,18 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+     @Override
+     public void handle(StatusRequest statusRequest) throws Exception
+     {
++        /* // MikroCord start - harden
+         Preconditions.checkState( thisState == State.STATUS, "Not expecting STATUS" );
++        */
++        if (thisState != State.STATUS) {
++            eu.mikroskeem.mikrocord.api.event.MaliciousClientEvent.invalidGameState(this).callEvent();
++            if (bungee.getConfig().isLogPacketDecodeErrors()) {
++                bungee.getLogger().log(Level.WARNING, "{0} Received invalid game state {1} (expected {2}), disconnecting", new Object[] { this, thisState, State.STATUS});
++            }
++            ch.close();
++            return;
++        }
++        // MikroCord end
+ 
+         ServerInfo forced = AbstractReconnectHandler.getForcedHost( this );
+         final String motd = ( forced != null ) ? forced.getMotd() : listener.getMotd();
+@@ -267,7 +288,18 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+     public void handle(PingPacket ping) throws Exception
+     {
+         if (!ACCEPT_INVALID_PACKETS) {
++            /* // MikroCord start - harden
+             Preconditions.checkState(thisState == State.PING, "Not expecting PING");
++            */
++            if (thisState != State.PING) {
++                eu.mikroskeem.mikrocord.api.event.MaliciousClientEvent.invalidGameState(this).callEvent();
++                if (bungee.getConfig().isLogPacketDecodeErrors()) {
++                    bungee.getLogger().log(Level.WARNING, "{0} Received invalid game state {1} (expected {2}), disconnecting", new Object[] { this, thisState, State.PING});
++                }
++                ch.close();
++                return;
++            }
++            // MikroCord end
+         }
+         unsafe.sendPacket( ping );
+         disconnect( "" );
+@@ -276,7 +308,18 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+     @Override
+     public void handle(Handshake handshake) throws Exception
+     {
++        /* // MikroCord start - harden
+         Preconditions.checkState( thisState == State.HANDSHAKE, "Not expecting HANDSHAKE" );
++        */
++        if (thisState != State.HANDSHAKE) {
++            eu.mikroskeem.mikrocord.api.event.MaliciousClientEvent.invalidGameState(this).callEvent();
++            if (bungee.getConfig().isLogPacketDecodeErrors()) {
++                bungee.getLogger().log(Level.WARNING, "{0} Received invalid game state {1} (expected {2}), disconnecting", new Object[] { this, thisState, State.HANDSHAKE});
++            }
++            ch.close();
++            return;
++        }
++        // MikroCord end
+         this.handshake = handshake;
+         ch.setVersion( handshake.getProtocolVersion() );
+ 
+@@ -334,6 +377,11 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+                 }
+                 break;
+             default:
++                // MikroCord start - harden
++                eu.mikroskeem.mikrocord.api.event.MaliciousClientEvent.invalidProtocolRequested(this).callEvent();
++                bungee.getLogger().log(Level.WARNING, "{0} Invalid protocol {1}, disconnecting", new Object[] { this, handshake.getRequestedProtocol() });
++                ch.close();
++                if (false) // MikroCord end
+                 throw new IllegalArgumentException( "Cannot request protocol " + handshake.getRequestedProtocol() );
+         }
+     }
+@@ -341,10 +389,21 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+     @Override
+     public void handle(LoginRequest loginRequest) throws Exception
+     {
++        /* // MikroCord start - harden
+         Preconditions.checkState( thisState == State.USERNAME, "Not expecting USERNAME" );
++        */
++        if (thisState != State.USERNAME) {
++            eu.mikroskeem.mikrocord.api.event.MaliciousClientEvent.invalidGameState(this).callEvent();
++            if (bungee.getConfig().isLogPacketDecodeErrors()) {
++                bungee.getLogger().log(Level.WARNING, "{0} Received invalid game state {1} (expected {2}), disconnecting", new Object[] { this, thisState, State.USERNAME});
++            }
++            ch.close();
++            return;
++        }
++        // MikroCord end
+         this.loginRequest = loginRequest;
+ 
+-        if ( getName().contains( "." ) )
++        if ( getName().contains( "." ) || getName().contains(" ") || getName().length() < 1 ) // MikroCord - harden
+         {
+             disconnect( bungee.getTranslation( "name_invalid" ) );
+             return;
+@@ -404,7 +463,18 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+     @Override
+     public void handle(final EncryptionResponse encryptResponse) throws Exception
+     {
++        /* // MikroCord start - harden
+         Preconditions.checkState( thisState == State.ENCRYPT, "Not expecting ENCRYPT" );
++        */
++        if (thisState != State.ENCRYPT) {
++            eu.mikroskeem.mikrocord.api.event.MaliciousClientEvent.invalidGameState(this).callEvent();
++            if (bungee.getConfig().isLogPacketDecodeErrors()) {
++                bungee.getLogger().log(Level.WARNING, "{0} Received invalid game state {1} (expected {2}), disconnecting", new Object[] { this, thisState, State.ENCRYPT});
++            }
++            ch.close();
++            return;
++        }
++        // MikroCord end
+ 
+         SecretKey sharedKey = EncryptionUtil.getSecret( encryptResponse, request );
+         BungeeCipher decrypt = EncryptionUtil.getCipher( false, sharedKey );
+diff --git a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
+index cdf31661b5fc10e5029cda7208596f56a66ab5d1..79953dc5198d05d86a96043f1a2ec2bf4233ced3 100644
+--- a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
++++ b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
+@@ -30,7 +30,7 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket>
+     private final ProxyServer bungee;
+     private final ListenerInfo listener;
+     /*========================================================================*/
+-    private final Random random = new Random();
++    private final Random random = new java.security.SecureRandom(); //Random(); // MikroCord - misc security enhancements
+     private final Cache<InetAddress, QuerySession> sessions = CacheBuilder.newBuilder().expireAfterWrite( 30, TimeUnit.SECONDS ).build();
+     private static io.github.waterfallmc.waterfall.utils.FastException cachedNoSessionException = new io.github.waterfallmc.waterfall.utils.FastException("No Session!");
+     private final Cache<InetAddress, Integer> blacklistedAddresses = CacheBuilder.newBuilder().maximumSize(1024).expireAfterWrite( 120, TimeUnit.SECONDS ).build(); // MikroCord - Blacklist invalid query packet spammers
