@@ -29,7 +29,7 @@ index 789a8ec127b1058277831ad794c5cafa75ab8c61..5386cb7cf7f6da1281aa39a25f4567d6
      private final Unsafe unsafe = new Unsafe()
      {
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-index 91d19d989d7c9266b8fa45f888f4863cb0008a38..db5fe77c0f2915b1ddaa79ed0df72e745042dd24 100644
+index 91d19d989d7c9266b8fa45f888f4863cb0008a38..f00ecc12344c742b6be96c45bc3e812179635afa 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
 @@ -84,7 +84,7 @@ public class DownstreamBridge extends PacketHandler
@@ -65,7 +65,7 @@ index 91d19d989d7c9266b8fa45f888f4863cb0008a38..db5fe77c0f2915b1ddaa79ed0df72e74
      }
 +
 +    // MikroCord start - SpigotMC/BungeeCord#2710 & #2409
-+    public static class KeepAliveTimeoutException extends Exception {
++    public static class KeepAliveTimeoutException extends net.md_5.bungee.util.QuietException { // Extend QuietException
 +        public KeepAliveTimeoutException(String reason) {
 +            super(reason);
 +        }
