@@ -69,7 +69,7 @@ index 9951c1f9e9b8746fb4bf96fe0bbe4e9ab36a6478..ad6933ee3bc35d30a867a9ac5ff7fbd6
      public static int readVarInt(ByteBuf input, int maxBytes)
      {
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
-index aa6e0f7542cc8ca4975eebeb9dfa810f3a26774b..ae813b7e00e0632d63aa3a31d0bb595805b34f2b 100644
+index 0f65348b4f30e26962a838258f2e2d474675fa49..0e19a79031cc8cef90b80f84d9c3be95cc90e530 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 @@ -95,6 +95,12 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
@@ -86,44 +86,15 @@ index aa6e0f7542cc8ca4975eebeb9dfa810f3a26774b..ae813b7e00e0632d63aa3a31d0bb5958
          } catch (BadPacketException | IndexOutOfBoundsException e) {
              invalidPacketMetric.run(); // MikroCord - add Prometheus metrics support
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
-index 92124078d869030569d2e49eb8bd906fb98f2b5a..6fffc3ceae10bc028848b24f97b46089773683c9 100644
+index 4f16c8cb0b154bcae55a07f8850ebe1d56d188d7..72f7806544cefc88b1f10517f81fbb1a54ba265a 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
-@@ -21,6 +21,7 @@ public class Varint21FrameDecoder extends ByteToMessageDecoder
-     @Override
-     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception
-     {
-+        /* // MikroCord start - port Velocity's faster varint decoder
-         in.markReaderIndex();
- 
-         for ( int i = 0; i < 3; i++ ) // Waterfall
-@@ -64,5 +65,29 @@ public class Varint21FrameDecoder extends ByteToMessageDecoder
- 
-         if (this.closeConnectionOnDecodeError) { ctx.channel().close(); return; } // MikroCord
-         throw new CorruptedFrameException( "length wider than 21-bit" );
-+        */
-+        int readIdx = in.readerIndex();
-+        int packetLen;
-+        try {
-+            packetLen = DefinedPacket.readVarInt(in);
+@@ -70,7 +70,7 @@ public class Varint21FrameDecoder extends ByteToMessageDecoder
+         int packetLen;
+         try {
+             packetLen = DefinedPacket.readVarInt(in);
+-        } catch (Exception e) {
 +        } catch (CorruptedFrameException e) {
-+            if (this.closeConnectionOnDecodeError) {
-+                ctx.channel().close();
-+                return;
-+            }
-+            throw e;
-+        }
-+
-+        if (packetLen == 0 && !server) {
-+            ctx.channel().close();
-+            return;
-+        }
-+
-+        if (in.readableBytes() >= packetLen) {
-+            out.add(in.readRetainedSlice(packetLen));
-+        } else {
-+            in.readerIndex(readIdx);
-+        }
-+        // MikroCord end
-     }
- }
+             if (this.closeConnectionOnDecodeError) {
+                 ctx.channel().close();
+                 return;

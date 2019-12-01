@@ -1,0 +1,26 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Sun, 1 Dec 2019 21:56:41 +0200
+Subject: [PATCH] Use netty's FastThreadLocalThreads
+
+
+diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
+index 8f42396f5fa5cc6c3031bcfff99db57e79353cd2..bf451e8a82a0ab86b19c173ba47450736bf74ca5 100644
+--- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
++++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
+@@ -316,8 +316,13 @@ public class BungeeCord extends ProxyServer
+             ResourceLeakDetector.setLevel( ResourceLeakDetector.Level.DISABLED ); // Eats performance
+         }
+ 
+-        bossEventLoopGroup = PipelineUtils.newEventLoopGroup( 0, new ThreadFactoryBuilder().setNameFormat( "Netty Boss IO Thread #%1$d" ).build() );
+-        workerEventLoopGroup = PipelineUtils.newEventLoopGroup( 0, new ThreadFactoryBuilder().setNameFormat( "Netty Worker IO Thread #%1$d" ).build() );
++        // MikroCord start - use Netty's FastThreadLocalThreads
++        java.util.function.Supplier<java.util.concurrent.ThreadFactory> threadFactorySupplier = () -> {
++            return runnable -> new io.netty.util.concurrent.FastThreadLocalThread(Thread.currentThread().getThreadGroup(), runnable);
++        };
++        bossEventLoopGroup = PipelineUtils.newEventLoopGroup( 0, new ThreadFactoryBuilder().setNameFormat( "Netty Boss IO Thread #%1$d" ).setThreadFactory(threadFactorySupplier.get()).build() );
++        workerEventLoopGroup = PipelineUtils.newEventLoopGroup( 0, new ThreadFactoryBuilder().setNameFormat( "Netty Worker IO Thread #%1$d" ).setThreadFactory(threadFactorySupplier.get()).build() );
++        // MikroCord end
+ 
+         /* // MikroCord start - drop modules support
+         File moduleDirectory = new File( "modules" );
