@@ -68,6 +68,23 @@ index 9951c1f9e9b8746fb4bf96fe0bbe4e9ab36a6478..ad6933ee3bc35d30a867a9ac5ff7fbd6
  
      public static int readVarInt(ByteBuf input, int maxBytes)
      {
+diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
+index aa6e0f7542cc8ca4975eebeb9dfa810f3a26774b..ae813b7e00e0632d63aa3a31d0bb595805b34f2b 100644
+--- a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
++++ b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
+@@ -95,6 +95,12 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
+             */
+             in.readerIndex(readIdx);
+             out.add(new PacketWrapper(packet, in.retain()));
++        } catch (io.netty.handler.codec.CorruptedFrameException e) {
++            if (this.closeConnectionOnDecodeError) {
++                ctx.channel().close();
++                return;
++            }
++            throw e;
+             // MikroCord end
+         } catch (BadPacketException | IndexOutOfBoundsException e) {
+             invalidPacketMetric.run(); // MikroCord - add Prometheus metrics support
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
 index 92124078d869030569d2e49eb8bd906fb98f2b5a..6fffc3ceae10bc028848b24f97b46089773683c9 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
