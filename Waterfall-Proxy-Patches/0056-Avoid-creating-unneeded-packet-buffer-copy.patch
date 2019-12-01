@@ -5,14 +5,14 @@ Subject: [PATCH] Avoid creating unneeded packet buffer copy
 
 
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
-index 406dafd976ae8b420c87e173ed99f40b03bb1e61..aa6e0f7542cc8ca4975eebeb9dfa810f3a26774b 100644
+index 406dafd976ae8b420c87e173ed99f40b03bb1e61..0f65348b4f30e26962a838258f2e2d474675fa49 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 @@ -52,7 +52,11 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
      protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception
      {
          Protocol.DirectionData prot = ( server ) ? protocol.TO_SERVER : protocol.TO_CLIENT;
-+        /* MikroCord start
++        /* MikroCord start - Avoid creating unneeded packet buffer copy
          ByteBuf slice = in.copy(); // Can't slice this one due to EntityMap :(
 +        */
 +        int readIdx = in.readerIndex();
@@ -24,7 +24,7 @@ index 406dafd976ae8b420c87e173ed99f40b03bb1e61..aa6e0f7542cc8ca4975eebeb9dfa810f
                      throw new BadPacketException( "Did not read all bytes from packet " + packet.getClass() + " " + packetId + " Protocol " + protocol + " Direction " + prot.getDirection() );
                  }
                  decodedMetric.run(); // MikroCord - add Prometheus metrics support
-+            /* MikroCord start
++            /* MikroCord start - Avoid creating unneeded packet buffer copy
              } else
              {
                  in.skipBytes( in.readableBytes() );
@@ -46,14 +46,14 @@ index 406dafd976ae8b420c87e173ed99f40b03bb1e61..aa6e0f7542cc8ca4975eebeb9dfa810f
              throw new DecoderException("Error decoding packet " + packetTypeStr + " with contents:\n" + ByteBufUtil.prettyHexDump(slice), e);
              */
 -            DecoderException de = new DecoderException("Error decoding packet " + packetTypeStr + " with contents:\n" + ByteBufUtil.prettyHexDump(slice), e);
-+            DecoderException de = new DecoderException("Error decoding packet " + packetTypeStr + " with contents:\n" + ByteBufUtil.prettyHexDump(/*slice*/in), e); // MikroCord
++            DecoderException de = new DecoderException("Error decoding packet " + packetTypeStr + " with contents:\n" + ByteBufUtil.prettyHexDump(/*slice*/in), e); // MikroCord - Avoid creating unneeded packet buffer copy
              if (!this.noisyPacketDecodeException) {
                  de.setStackTrace(new StackTraceElement[0]);
                  de.getCause().setStackTrace(new StackTraceElement[0]);
              }
              throw de;
              // MikroCord end
-+        /* // MikroCord start
++        /* // MikroCord start - Avoid creating unneeded packet buffer copy
          } finally
          {
              if ( slice != null )
