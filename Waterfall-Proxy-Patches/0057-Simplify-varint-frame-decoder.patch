@@ -1,0 +1,49 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Sun, 1 Dec 2019 20:25:09 +0200
+Subject: [PATCH] Simplify varint frame decoder
+
+
+diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
+index 92124078d869030569d2e49eb8bd906fb98f2b5a..4f16c8cb0b154bcae55a07f8850ebe1d56d188d7 100644
+--- a/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
++++ b/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
+@@ -21,6 +21,7 @@ public class Varint21FrameDecoder extends ByteToMessageDecoder
+     @Override
+     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception
+     {
++        /* // MikroCord start - simplify varint frame decoder
+         in.markReaderIndex();
+ 
+         for ( int i = 0; i < 3; i++ ) // Waterfall
+@@ -64,5 +65,30 @@ public class Varint21FrameDecoder extends ByteToMessageDecoder
+ 
+         if (this.closeConnectionOnDecodeError) { ctx.channel().close(); return; } // MikroCord
+         throw new CorruptedFrameException( "length wider than 21-bit" );
++        */
++        int readIdx = in.readerIndex();
++        int packetLen;
++        try {
++            packetLen = DefinedPacket.readVarInt(in);
++        } catch (Exception e) {
++            if (this.closeConnectionOnDecodeError) {
++                ctx.channel().close();
++                return;
++            }
++            throw e;
++        }
++
++        // Don't allow client side empty packets
++        if (packetLen == 0 && !server) {
++            ctx.channel().close();
++            return;
++        }
++
++        if (in.readableBytes() >= packetLen) {
++            out.add(in.readRetainedSlice(packetLen));
++        } else {
++            in.readerIndex(readIdx);
++        }
++        // MikroCord end
+     }
+ }
