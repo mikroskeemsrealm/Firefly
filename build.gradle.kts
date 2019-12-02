@@ -59,6 +59,8 @@ subprojects {
             loadDependencies("${project.projectDir}/pom.xml")
         }
 
+        compileOnly("org.checkerframework:checker-qual:3.0.0")
+
         // Special case lombok
         compileOnly("org.projectlombok:lombok:${lombokVersion}")
         annotationProcessor("org.projectlombok:lombok:${lombokVersion}")
