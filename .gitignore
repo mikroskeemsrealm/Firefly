@@ -1,3 +1,5 @@
 MikroCord-Proxy
 .idea
 *.iml
+.gradle
+build/
