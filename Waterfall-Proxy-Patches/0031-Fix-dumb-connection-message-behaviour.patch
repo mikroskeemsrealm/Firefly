@@ -5,10 +5,10 @@ Subject: [PATCH] Fix dumb connection message behaviour
 
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/UserConnection.java b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-index 2a9625a4be2ad513d544eed6a5e7942914232df9..2ed68a19abb4c2a24c7f10efaa2dd3d23f6dc260 100644
+index 27eb311f54bf4b2a559a12b718eae177d17048c2..edf13103ba64e2ce1da81122ac12303050e7f23e 100644
 --- a/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 +++ b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-@@ -323,6 +323,7 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.mikroc
+@@ -322,6 +322,7 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.mikroc
                  callback.done( ServerConnectRequest.Result.ALREADY_CONNECTED, null );
              }
  
@@ -16,7 +16,7 @@ index 2a9625a4be2ad513d544eed6a5e7942914232df9..2ed68a19abb4c2a24c7f10efaa2dd3d2
              sendMessage( bungee.getTranslation( "already_connected" ) );
              return;
          }
-@@ -333,6 +334,7 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.mikroc
+@@ -332,6 +333,7 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.mikroc
                  callback.done( ServerConnectRequest.Result.ALREADY_CONNECTING, null );
              }
  

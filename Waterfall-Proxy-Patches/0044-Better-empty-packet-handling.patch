@@ -33,10 +33,10 @@ index 743d65e43549f4db3b1f6785a69ab69e19004285..81c3626af3679671f633c561698b5519
                  {
                      throw new CorruptedFrameException( "Empty Packet!" );
 diff --git a/proxy/src/main/java/net/md_5/bungee/UserConnection.java b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-index ec9e847c4fc13ead90cf58e30d511bd9ac8e16be..2d82f13f58e5e204ba1c184197687d3062c4d4bc 100644
+index 8c81cd60ec319d826713f692eb0b013285fcd405..0aa67d28a71da579f74563a3f2f7114f9beb030d 100644
 --- a/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 +++ b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-@@ -347,6 +347,7 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.mikroc
+@@ -346,6 +346,7 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.mikroc
              protected void initChannel(Channel ch) throws Exception
              {
                  PipelineUtils.BASE.initChannel( ch );
