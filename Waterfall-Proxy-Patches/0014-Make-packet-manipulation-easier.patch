@@ -172,10 +172,10 @@ index 72f487dc53e5f99685b263a819f17e23442ce237..c37bc1d1e6fe76e102967aa3b43ebacb
 +    // MikroCord end
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/UserConnection.java b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-index 7e9678d90bf036f097e063bb69ed15ff1490afd6..42c025025d9de95186faaaa881899fd774b0b439 100644
+index 922c4411cfc14ab93b54c4130b6450b08eef2603..18700a0d7a4d044d7598f9eafa3d299dfeeac2ba 100644
 --- a/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 +++ b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-@@ -65,7 +65,7 @@ import net.md_5.bungee.util.CaseInsensitiveSet;
+@@ -66,7 +66,7 @@ import net.md_5.bungee.util.CaseInsensitiveSet;
  import net.md_5.bungee.util.ChatComponentTransformer;
  
  @RequiredArgsConstructor
@@ -184,8 +184,8 @@ index 7e9678d90bf036f097e063bb69ed15ff1490afd6..42c025025d9de95186faaaa881899fd7
  {
  
      /*========================================================================*/
-@@ -744,4 +744,10 @@ public final class UserConnection implements ProxiedPlayer
-         return disableEntityMetadaRewrite;
+@@ -737,4 +737,10 @@ public final class UserConnection implements ProxiedPlayer
+         return entityRewrite == EntityMap_Dummy.INSTANCE;
      }
      // Waterfall end
 +    // MikroCord start - make packet manipulation easier
