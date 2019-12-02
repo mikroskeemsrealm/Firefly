@@ -42,6 +42,7 @@ subprojects {
         jcenter()
 
         maven("https://repo.wut.ee/repository/mikroskeem-repo")
+        maven("https://oss.sonatype.org/content/repositories/snapshots")
     }
 
     val lombokVersion = "1.18.4"
