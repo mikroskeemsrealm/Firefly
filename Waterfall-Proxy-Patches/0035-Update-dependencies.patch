@@ -18,7 +18,7 @@ index de9fefd8c54e5412c4ef2ead62a2ac4b5a536eb8..b0e0c84145923434e7af8cfbb0863942
          </dependency>
          <!-- MikroCord start - add KyoriPowered/text support -->
 diff --git a/pom.xml b/pom.xml
-index b58f38a87a10cc60d7905d6b913ad06e46598479..b4a2a67f776b67b6443808114bcaa98cc46db4b5 100644
+index 19dce97c1b93192881b63822bdd57a019e8ca36f..732337b00c7d5503f6f8891e07e6b2055c4d335e 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -100,7 +100,7 @@
@@ -70,10 +70,10 @@ index 40b3fa6ae75751f1f1578f902f1eb5d8d6ca4b2c..658766786ec884460927348937e2b94d
                              <exclude>com.google.code.gson:gson</exclude>
                              <exclude>io.netty:*</exclude>
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
-index 11976344f8356f50170b1d5e2818d0d6aa277af1..31e85762e07854b23c594c5c9da7d96991724bcd 100644
+index 3f4a6515fe630fa483d69796352d9ab390e20be2..8d0785201539ed87ca38b409bf206bfdb4260829 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
-@@ -40,34 +40,37 @@ public final class DependencyClassLoader extends URLClassLoader {
+@@ -38,34 +38,37 @@ public final class DependencyClassLoader extends URLClassLoader {
              "https://repo.maven.apache.org/maven2"
      );
  

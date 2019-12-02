@@ -162,7 +162,7 @@ index 2a780694068d013775db0bed015b62f2b2285ca6..a9950b4ae1d860a3177d2fe3f80e7244
              registerTypeAdapter( TextComponent.class, new TextComponentSerializer() ).
              registerTypeAdapter( TranslatableComponent.class, new TranslatableComponentSerializer() ).
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 9937f8ae89aff7f960395170f30ef594d4d724bd..42b2f207a8b7cfc8122e00430936b6728bc20eeb 100644
+index c10a75aeb810de94ab7b8342f6edc7d858d2b78a..1f2b86872548a572dcefc31722a8b109c3210765 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -154,7 +154,7 @@ public class BungeeCord extends ProxyServer

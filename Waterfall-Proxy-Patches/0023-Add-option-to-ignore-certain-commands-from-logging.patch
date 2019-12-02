@@ -29,7 +29,7 @@ index ef1a82dd100dad66676b10fc9cc654bdc4e539c0..ce8ac985963227c49e05e42ed49c5d2e
 +    Set<@NonNull String> getIgnoredLogCommands();
  }
 diff --git a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
-index 66ba24f38fff7c03baea18ec08aa8097c8e84f22..9fc2a9e2899bdc4898cdb5aaca007da018407b8e 100644
+index b77b69f45699aced9002b1bbdd3620837d9fa34f..6f1efd650f48734cd526dedbaa0e229646fbbb1b 100644
 --- a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
 +++ b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
 @@ -200,6 +200,7 @@ public class PluginManager

@@ -106,7 +106,7 @@ index 8360483b65cf685279cddbb28fb159d29c94e876..4d1d95383d8bb39b713904b0daf20316
                      try {
                          bossEventLoopGroup.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 diff --git a/proxy/src/main/java/net/md_5/bungee/UserConnection.java b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-index 42c025025d9de95186faaaa881899fd774b0b439..b657ebdce63b3004f3b150d056390fbfd4f10ec3 100644
+index 18700a0d7a4d044d7598f9eafa3d299dfeeac2ba..2a9625a4be2ad513d544eed6a5e7942914232df9 100644
 --- a/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 +++ b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 @@ -154,6 +154,7 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.mikroc
