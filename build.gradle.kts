@@ -59,6 +59,7 @@ subprojects {
             loadDependencies("${project.projectDir}/pom.xml")
         }
 
+        compile("com.google.guava:guava:28.1-jre")
         compileOnly("org.checkerframework:checker-qual:3.0.0")
 
         // Special case lombok
