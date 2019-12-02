@@ -5,7 +5,7 @@ Subject: [PATCH] Fix potential race condition
 
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index b55cb83da964681ad1c5957db183a4ef26a32fca..4c96c5dda76ac92ce9b04f7b9c0cea1fe9275780 100644
+index 2e48d20b480dee9e13882717c585912beca9b889..31a56f605ac0629b105b4a39267cbd5d500ba945 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -604,7 +604,14 @@ public class BungeeCord extends ProxyServer

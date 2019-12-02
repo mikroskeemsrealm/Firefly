@@ -29,24 +29,6 @@ index 85203fb8ad0e95a179fbdf1a65440b456c56d1e1..141de9e68abc7b5d60a25c3819c4a4cf
 +    }
 +    // MikroCord end
  }
-diff --git a/event/pom.xml b/event/pom.xml
-index 7af258a5db166d328c9dbbcd75aaab1ea7518fb9..95b13732c546d3377c3daa7c3c520dd59c883481 100644
---- a/event/pom.xml
-+++ b/event/pom.xml
-@@ -17,4 +17,13 @@
- 
-     <name>MikroCord-Event</name>
-     <description>Generic java event dispatching API intended for use with MikroCord.</description>
-+    <!-- MikroCord start - Add ASM -->
-+    <dependencies>
-+        <dependency>
-+            <groupId>org.ow2.asm</groupId>
-+            <artifactId>asm</artifactId>
-+            <version>7.1</version>
-+        </dependency>
-+    </dependencies>
-+    <!-- MikroCord end -->
- </project>
 diff --git a/event/src/main/java/eu/mikroskeem/mikrocord/event/ASMEventExecutor.java b/event/src/main/java/eu/mikroskeem/mikrocord/event/ASMEventExecutor.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..1d5661247ebd5f20e927a4340767312260428164

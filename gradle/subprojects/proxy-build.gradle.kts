@@ -5,6 +5,19 @@ import com.github.jengelman.gradle.plugins.shadow.transformers.Log4j2PluginsCach
 
 apply(plugin = "com.github.johnrengelman.shadow")
 
+val prometheusVersion = "0.6.0"
+
+dependencies {
+    implementation("io.prometheus:simpleclient:${prometheusVersion}")
+    implementation("io.prometheus:simpleclient_hotspot:${prometheusVersion}")
+    implementation("io.prometheus:simpleclient_httpserver:${prometheusVersion}")
+    implementation("eu.mikroskeem:jvm-hiccup:1.0.0")
+
+    // Updated dependencies
+    compile("com.google.guava:guava:28.1-jre")
+    compile("mysql:mysql-connector-java:8.0.17")
+}
+
 val shadowJar by tasks.getting(ShadowJar::class) {
     archiveBaseName.set("MikroCord")
     archiveAppendix.set("")

@@ -63,33 +63,6 @@ index 7aaa48261bac7123c2bb66bc135ecf21215ce435..a754af5a4260fa8705ff39b1f7bb5885
      /**
       * Gets whether this connection is currently open, ie: not disconnected, and
       * able to send / receive data.
-diff --git a/chat/pom.xml b/chat/pom.xml
-index 72c4cc36ea28fb8bb164e6bd426e055d9f7267ea..de9fefd8c54e5412c4ef2ead62a2ac4b5a536eb8 100644
---- a/chat/pom.xml
-+++ b/chat/pom.xml
-@@ -25,5 +25,22 @@
-             <version>2.8.0</version>
-             <scope>compile</scope>
-         </dependency>
-+        <!-- MikroCord start - add KyoriPowered/text support -->
-+        <dependency>
-+            <groupId>net.kyori</groupId>
-+            <artifactId>text-api</artifactId>
-+            <version>3.0.2</version>
-+        </dependency>
-+        <dependency>
-+            <groupId>net.kyori</groupId>
-+            <artifactId>text-serializer-gson</artifactId>
-+            <version>3.0.2</version>
-+        </dependency>
-+        <dependency>
-+            <groupId>net.kyori</groupId>
-+            <artifactId>text-serializer-legacy</artifactId>
-+            <version>3.0.2</version>
-+        </dependency>
-+        <!-- MikroCord end -->
-     </dependencies>
- </project>
 diff --git a/chat/src/main/java/eu/mikroskeem/mikrocord/api/chat/AdapterComponent.java b/chat/src/main/java/eu/mikroskeem/mikrocord/api/chat/AdapterComponent.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..020f91431e37118379d31eeed8c84ae339a09395

@@ -90,56 +90,6 @@ index d4b0384348c17de5c2350c8c5f928fcc0c1868db..073004e479a7707b8a72f7b449747412
 +        encodedMetric.run(); // MikroCord - add Prometheus metrics support
      }
  }
-diff --git a/proxy/pom.xml b/proxy/pom.xml
-index 658766786ec884460927348937e2b94d06169d55..19353857fd7816fafbe6a1d48f4e2aece615e0cb 100644
---- a/proxy/pom.xml
-+++ b/proxy/pom.xml
-@@ -21,6 +21,7 @@
-     <properties>
-         <maven.deploy.skip>true</maven.deploy.skip>
-         <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format> <!-- MikroCord -->
-+        <prometheus.client.version>0.6.0</prometheus.client.version> <!-- MikroCord - add Prometheus metrics support -->
-     </properties>
- 
-     <dependencies>
-@@ -119,6 +120,28 @@
-             <scope>runtime</scope>
-         </dependency>
-         <!-- Waterfall end -->
-+        <!-- MikroCord start - add Prometheus metrics support -->
-+        <dependency>
-+            <groupId>io.prometheus</groupId>
-+            <artifactId>simpleclient</artifactId>
-+            <version>${prometheus.client.version}</version>
-+        </dependency>
-+        <dependency>
-+            <groupId>io.prometheus</groupId>
-+            <artifactId>simpleclient_hotspot</artifactId>
-+            <version>${prometheus.client.version}</version>
-+        </dependency>
-+        <dependency>
-+            <groupId>io.prometheus</groupId>
-+            <artifactId>simpleclient_httpserver</artifactId>
-+            <version>${prometheus.client.version}</version>
-+        </dependency>
-+        <dependency>
-+            <groupId>eu.mikroskeem</groupId>
-+            <artifactId>jvm-hiccup</artifactId>
-+            <version>1.0.0</version>
-+        </dependency>
-+        <!-- MikroCord end -->
-     </dependencies>
- 
-     <build>
-@@ -200,6 +223,8 @@
-                             <exclude>net.kyori:*</exclude>
-                             <exclude>org.checkerframework:checker-qual</exclude>
-                             <exclude>org.ow2.asm:asm</exclude>
-+                            <exclude>io.prometheus:*</exclude>
-+                            <exclude>eu.mikroskeem:jvm-hiccup</exclude>
-                         </excludes>
-                     </artifactSet>
-                     <!-- MikroCord end -->
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 index 1c796697ff54fefb2b3c86862a19ecc7bd1c63f9..f243777118b19e199411b66b89759a7b85919f45 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java

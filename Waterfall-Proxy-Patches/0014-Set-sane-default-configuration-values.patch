@@ -5,10 +5,10 @@ Subject: [PATCH] Set sane default configuration values
 
 
 diff --git a/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java b/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
-index 79f15263bb97329fa5cf10242417b40aa1118553..26a71e76fa996ac3b472f441b0b34be179a9b28c 100644
+index b1adfdd0c547befd93fef12322b29c26d23e2779..93c7f7ef2f6f3a470995692787d5210332ebdec9 100644
 --- a/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
 +++ b/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
-@@ -16,7 +16,7 @@ public abstract class WaterfallConfiguration extends Configuration { // MikroCor
+@@ -14,7 +14,7 @@ public abstract class WaterfallConfiguration extends Configuration { // MikroCor
       * <p>
       * Default is true
       */

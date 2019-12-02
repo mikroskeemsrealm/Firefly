@@ -17,46 +17,6 @@ index 141de9e68abc7b5d60a25c3819c4a4cf4985f623..1cc02426eab0cc230389c3e8e0055565
          allLoaders.add( this );
      }
  
-diff --git a/proxy/pom.xml b/proxy/pom.xml
-index 18fd7a2e5633cb87f1942a31c088b7f1c933e16c..40b3fa6ae75751f1f1578f902f1eb5d8d6ca4b2c 100644
---- a/proxy/pom.xml
-+++ b/proxy/pom.xml
-@@ -152,7 +152,7 @@
-                 <configuration>
-                     <archive>
-                         <manifestEntries>
--                            <Main-Class>net.md_5.bungee.BungeeCordLauncher</Main-Class>
-+                            <Main-Class>eu.mikroskeem.mikrocord.Bootstrap</Main-Class> <!-- MikroCord - download dependencies on runtime -->
-                             <Implementation-Version>${describe}</Implementation-Version>
-                             <Specification-Version>${maven.build.timestamp}</Specification-Version>
- 
-@@ -175,6 +175,26 @@
-                     </execution>
-                 </executions>
-                 <configuration>
-+                    <!-- MikroCord start - download dependencies on runtime -->
-+                    <artifactSet>
-+                        <excludes>
-+                            <exclude>com.google.guava:guava</exclude>
-+                            <exclude>mysql:mysql-connector-java</exclude>
-+                            <exclude>net.sf.trove4j:core</exclude>
-+                            <exclude>org.yaml:snakeyaml</exclude>
-+                            <exclude>com.google.code.gson:gson</exclude>
-+                            <exclude>io.netty:*</exclude>
-+                            <exclude>com.flowpowered:flow-nbt</exclude>
-+                            <exclude>org.slf4j:slf4j-api</exclude>
-+                            <exclude>org.apache.logging.log4j:log4j-iostreams</exclude>
-+                            <exclude>org.apache.logging.log4j:log4j-jul</exclude>
-+                            <exclude>org.apache.logging.log4j:log4j-slf4j-impl</exclude>
-+                            <exclude>net.kyori:*</exclude>
-+                            <exclude>org.checkerframework:checker-qual</exclude>
-+                            <exclude>org.ow2.asm:asm</exclude>
-+                        </excludes>
-+                    </artifactSet>
-+                    <!-- MikroCord end -->
-                     <filters>
-                         <filter>
-                             <artifact>*:*</artifact>
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/Bootstrap.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/Bootstrap.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..3a06c5c9213e6fd61dcd5a5d9ed04302fdc63d1f

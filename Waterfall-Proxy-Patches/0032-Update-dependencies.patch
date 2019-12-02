@@ -4,71 +4,19 @@ Date: Sun, 9 Jun 2019 01:47:21 +0300
 Subject: [PATCH] Update dependencies
 
 
-diff --git a/chat/pom.xml b/chat/pom.xml
-index de9fefd8c54e5412c4ef2ead62a2ac4b5a536eb8..b0e0c84145923434e7af8cfbb0863942a307b28c 100644
---- a/chat/pom.xml
-+++ b/chat/pom.xml
-@@ -22,7 +22,7 @@
-         <dependency>
-             <groupId>com.google.code.gson</groupId>
-             <artifactId>gson</artifactId>
--            <version>2.8.0</version>
-+            <version>2.8.5</version> <!-- MikroCord - update dependencies -->
-             <scope>compile</scope>
-         </dependency>
-         <!-- MikroCord start - add KyoriPowered/text support -->
 diff --git a/pom.xml b/pom.xml
-index 19dce97c1b93192881b63822bdd57a019e8ca36f..732337b00c7d5503f6f8891e07e6b2055c4d335e 100644
+index eff0bf2e15a4256746475154d73e653e6ba3c490..88fbb5af5040033b57c34ad8235ee98d276642c7 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -100,7 +100,7 @@
+@@ -91,7 +91,7 @@
+ 
      <properties>
-         <maven.deploy.skip>true</maven.deploy.skip> <!-- Waterfall -->
          <build.number>unknown</build.number>
 -        <netty.version>4.1.34.Final</netty.version>
 +        <netty.version>4.1.42.Final</netty.version> <!-- MikroCord - update dependencies -->
          <!-- Require Java 8 -->
-         <maven.compiler.source>11</maven.compiler.source> <!-- MikroCord - Require Java 11 -->
-         <maven.compiler.target>11</maven.compiler.target> <!-- MikroCord - Require Java 11 -->
-@@ -117,7 +117,7 @@
-         <dependency>
-             <groupId>com.google.guava</groupId>
-             <artifactId>guava</artifactId>
--            <version>20.0</version>
-+            <version>28.1-jre</version> <!-- MikroCord - update dependencies -->
-             <scope>compile</scope>
-         </dependency>
-         <dependency>
-diff --git a/proxy/pom.xml b/proxy/pom.xml
-index 40b3fa6ae75751f1f1578f902f1eb5d8d6ca4b2c..658766786ec884460927348937e2b94d06169d55 100644
---- a/proxy/pom.xml
-+++ b/proxy/pom.xml
-@@ -102,7 +102,7 @@
-         <dependency>
-             <groupId>mysql</groupId>
-             <artifactId>mysql-connector-java</artifactId>
--            <version>5.1.47</version>
-+            <version>8.0.17</version> <!-- MikroCord - update dependencies -->
-             <scope>runtime</scope>
-         </dependency>
- 
-@@ -179,8 +179,16 @@
-                     <artifactSet>
-                         <excludes>
-                             <exclude>com.google.guava:guava</exclude>
-+                            <exclude>com.google.guava:failureaccess</exclude>
-+                            <exclude>com.google.guava:listenablefuture</exclude>
-+                            <exclude>com.google.code.findbugs:jsr305</exclude>
-+                            <exclude>com.google.errorprone:error_prone_annotations</exclude>
-+                            <exclude>com.google.j2objc:j2objc-annotations</exclude>
-+                            <exclude>org.codehaus.mojo:animal-sniffer-annotations</exclude>
-                             <exclude>mysql:mysql-connector-java</exclude>
-+                            <exclude>com.google.protobuf:protobuf-java</exclude>
-                             <exclude>net.sf.trove4j:core</exclude>
-+                            <exclude>net.sf.jopt-simple:jopt-simple</exclude>
-                             <exclude>org.yaml:snakeyaml</exclude>
-                             <exclude>com.google.code.gson:gson</exclude>
-                             <exclude>io.netty:*</exclude>
+         <maven.compiler.source>1.8</maven.compiler.source>
+         <maven.compiler.target>1.8</maven.compiler.target>
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
 index 3f4a6515fe630fa483d69796352d9ab390e20be2..8d0785201539ed87ca38b409bf206bfdb4260829 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java

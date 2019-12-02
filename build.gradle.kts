@@ -22,6 +22,12 @@ plugins {
 }
 
 extra["gitHash"] = describe()
+extra["overriddenRootProperties"] = mapOf(
+        "netty.version" to "4.1.42.Final"
+)
+
+val originalGroup = "io.github.waterfallmc"
+val originalProjectNamePrefix = "waterfall"
 
 allprojects {
     group = "eu.mikroskeem.mikrocord"
@@ -69,26 +75,38 @@ fun String.applyReplacements(replacements: Map<String, String>): String {
     return newString
 }
 
+fun Map<String, String>.merge(other: Map<String, String>): Map<String, String> {
+    return HashMap<String, String>().apply {
+        putAll(this@merge)
+        putAll(other)
+    }
+}
+
 fun DependencyHandlerScope.loadDependencies(pomFile: String, isRoot: Boolean = false) {
     //println("Loading dependencies from $pomFile")
     val dom = parseXml(File(pomFile))
+
+    // Get root project's properties if present
     val rootProjectProperties = if (isRoot) null else {
         project.extra.get("rootProjectProperties") as? Map<String, String>
     }
-    val projectProperties = dom.search("properties").firstOrNull()?.run {
+
+    // Get current project's properties
+    // Also merge properties in following priority: root < project < overriden
+    val projectProperties = (dom.search("properties").firstOrNull()?.run {
         val builtProperties = childNodes.filterElements().asSequence().map { elem ->
             elem.nodeName to elem.textContent
         }.toMap()
-        if (!isRoot) {
-            HashMap<String, String>().apply {
-                putAll(rootProjectProperties!!)
-                putAll(builtProperties)
-            }
+
+        if (rootProjectProperties != null) {
+            rootProjectProperties.merge(builtProperties)
         } else {
             project.extra["rootProjectProperties"] = builtProperties
             builtProperties
         }
-    } ?: rootProjectProperties ?: emptyMap()
+    } ?: rootProjectProperties ?: emptyMap())
+            .merge(rootProject.extra["overriddenRootProperties"] as Map<String, String>)
+
     val dependenciesBlock = dom.search("dependencies").firstOrNull() ?: return
 
     dependenciesBlock.elements("dependency").forEach { dependencyElem ->
@@ -98,8 +116,8 @@ fun DependencyHandlerScope.loadDependencies(pomFile: String, isRoot: Boolean = f
         val scope = dependencyElem.search("scope").firstOrNull()?.textContent?.applyReplacements(projectProperties)
 
         // Replace subproject references
-        if (groupId == "${rootProject.group}" && artifactId.startsWith("${rootProject.name}-")) {
-            compile(project(":${artifactId.removePrefix("${rootProject.name}-")}"))
+        if (groupId == originalGroup && artifactId.startsWith("$originalProjectNamePrefix-")) {
+            compile(project(":${artifactId.removePrefix("$originalProjectNamePrefix-")}"))
             return@forEach
         }
 
