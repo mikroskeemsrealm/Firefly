@@ -1,0 +1,268 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Tue, 7 Jan 2020 02:09:24 +0200
+Subject: [PATCH] Download dependencies on runtime
+
+
+diff --git a/api/src/main/java/net/md_5/bungee/api/plugin/PluginClassloader.java b/api/src/main/java/net/md_5/bungee/api/plugin/PluginClassloader.java
+index b6adff8d004cd296a5796faf23692c67d93ddb43..b3018f84e382b760b17ba0d5cbf997aaf609eb2f 100644
+--- a/api/src/main/java/net/md_5/bungee/api/plugin/PluginClassloader.java
++++ b/api/src/main/java/net/md_5/bungee/api/plugin/PluginClassloader.java
+@@ -17,7 +17,7 @@ public class PluginClassloader extends URLClassLoader implements eu.mikroskeem.m
+ 
+     public PluginClassloader(URL[] urls)
+     {
+-        super( urls );
++        super( urls, PluginClassloader.class.getClassLoader() ); // MikroCord - download dependencies on runtime
+         allLoaders.add( this );
+     }
+ 
+diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/Bootstrap.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/Bootstrap.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..a5bf451a6e7e9be41108fe787f388fad00e0603c
+--- /dev/null
++++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/Bootstrap.java
+@@ -0,0 +1,181 @@
++package eu.mikroskeem.mikrocord;
++
++import eu.mikroskeem.mikrocord.misc.DependencyClassLoader;
++import io.github.waterfallmc.waterfall.utils.Hex;
++import net.md_5.bungee.BungeeCordLauncher;
++
++import java.io.BufferedReader;
++import java.io.File;
++import java.io.FileNotFoundException;
++import java.io.InputStreamReader;
++import java.net.HttpURLConnection;
++import java.net.URL;
++import java.nio.file.Files;
++import java.nio.file.Paths;
++import java.nio.file.StandardCopyOption;
++import java.security.MessageDigest;
++import java.util.Arrays;
++import java.util.HashSet;
++import java.util.TreeSet;
++
++/**
++ * @author Mark Vainomaa
++ */
++public final class Bootstrap {
++    public static void main(String[] args) throws Exception {
++        // Download dependencies
++        var is = Bootstrap.class.getClassLoader().getResourceAsStream("deps.txt");
++        if (is != null) {
++            var sha1Digest = MessageDigest.getInstance("SHA-1");
++            var librariesPath = Paths.get("lib").toAbsolutePath();
++            var repositories = new HashSet<String>();
++            var dependencies = new HashSet<Dependency>();
++            var downloadedDependencies = new HashSet<Dependency>();
++
++            // Collect repositories and dependencies
++            try (var reader = new BufferedReader(new InputStreamReader(is))) {
++                String line;
++                while ((line = reader.readLine()) != null) {
++                    var split = line.split("\t", 2);
++                    if (split[0].equals("repository")) {
++                        repositories.add(split[1]);
++                        continue;
++                    }
++
++                    var dependency = split[0];
++                    var checksum = split[1];
++
++                    split = dependency.split(":", 4);
++                    var groupId = split[0];
++                    var artifactId = split[1];
++                    var version = split[2];
++                    var classifier = split.length == 4 ? split[3] : null;
++
++                    dependencies.add(new Dependency(groupId, artifactId, version, classifier, checksum));
++                }
++            }
++
++            for (var dependency : dependencies) {
++                var targetPathTmp = new File(dependency.buildPath(librariesPath.toString()) + ".tmp").toPath();
++                var targetPath = new File(dependency.buildPath(librariesPath.toString())).toPath();
++
++                if (Files.exists(targetPath)) {
++                    downloadedDependencies.add(dependency);
++                    continue;
++                }
++
++                Files.createDirectories(targetPath.getParent());
++
++                for (var repository: repositories) {
++                    var url = new URL(dependency.buildPath(repository));
++                    var client = (HttpURLConnection) url.openConnection();
++                    client.addRequestProperty("User-Agent", "MikroCord/" + Bootstrap.class.getPackage().getImplementationVersion());
++
++                    // Download the jar
++                    try (var in = client.getInputStream()) {
++                        Files.copy(in, targetPathTmp, StandardCopyOption.REPLACE_EXISTING);
++                    } catch (FileNotFoundException e) {
++                        Files.deleteIfExists(targetPathTmp);
++                        continue;
++                    }
++
++                    // Verify checksum
++                    byte[] bytes = Files.readAllBytes(targetPathTmp);
++                    String sha1Sum = Hex.encodeString(sha1Digest.digest(bytes));
++                    sha1Digest.reset();
++
++                    if (!sha1Sum.equalsIgnoreCase(dependency.checksum)) {
++                        System.err.printf("Failed to download dependency %s: checksum invalid (%s != %s)%n", dependency, dependency.checksum, sha1Sum);
++                        Files.deleteIfExists(targetPathTmp);
++                        continue;
++                    }
++
++                    Files.move(targetPathTmp, targetPath, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
++                    downloadedDependencies.add(dependency);
++                    System.err.println("Downloaded dependency " + dependency);
++                    break;
++                }
++
++                if (!downloadedDependencies.contains(dependency)) {
++                    System.err.println("Failed to download dependency " + dependency);
++                }
++            }
++
++            if (dependencies.size() != downloadedDependencies.size()) {
++                throw new Exception("Failed to download all dependencies!");
++            }
++
++            for (var dependency : downloadedDependencies) {
++                var dependencyPath = new File(dependency.buildPath(librariesPath.toString())).toURI().toURL();
++                DependencyClassLoader.INSTANCE.addURL(dependencyPath);
++            }
++        }
++
++        // Must be handled here because of classloader fuckery
++        if (Arrays.asList(args).contains("--dumpdependencies")) {
++            var currentDir = new File(".").toPath().toAbsolutePath();
++            var sorted = new TreeSet<String>();
++            for (var dependency : DependencyClassLoader.INSTANCE.getAddedUrls()) {
++                sorted.add(currentDir.relativize(new File(dependency.toURI()).toPath().toAbsolutePath()).toString());
++            }
++            for (var path : sorted) {
++                System.out.println(path);
++            }
++            return;
++        }
++
++        Thread.currentThread().setContextClassLoader(DependencyClassLoader.INSTANCE);
++        var mainClass = DependencyClassLoader.INSTANCE.loadClass("net.md_5.bungee.BungeeCordLauncher");
++        mainClass.getMethod("main", String[].class)
++                .invoke(null, (Object) args);
++    }
++
++    private static class Dependency {
++        private final String groupId;
++        private final String artifactId;
++        private final String version;
++        private final String classifier;
++        private final String checksum;
++
++        Dependency(String groupId, String artifactId, String version, String classifier, String checksum) {
++            this.groupId = groupId;
++            this.artifactId = artifactId;
++            this.version = version;
++            this.classifier = classifier;
++            this.checksum = checksum;
++        }
++
++        String buildPath(String base) {
++            String builtUrl;
++            if (this.classifier != null) {
++                builtUrl = String.format(
++                        "%s/%s/%s/%s/%s-%s-%s.jar",
++                        base,
++                        this.groupId.replace('.', '/'),
++                        this.artifactId.replace('.', '/'),
++                        this.version,
++                        this.artifactId,
++                        this.version,
++                        this.classifier
++                );
++            } else {
++                builtUrl = String.format(
++                        "%s/%s/%s/%s/%s-%s.jar",
++                        base,
++                        this.groupId.replace('.', '/'),
++                        this.artifactId.replace('.', '/'),
++                        this.version,
++                        this.artifactId,
++                        this.version
++                );
++            }
++            return builtUrl;
++        }
++
++        @Override
++        public String toString() {
++            return this.groupId + ':' + this.artifactId + ':' + this.version
++                    + (this.classifier != null ? (':' + this.classifier) : "");
++        }
++    }
++}
+diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/DependencyClassLoader.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/DependencyClassLoader.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..346a877d63cc9ebb508ca0c3e530888e6548029b
+--- /dev/null
++++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/DependencyClassLoader.java
+@@ -0,0 +1,56 @@
++package eu.mikroskeem.mikrocord.misc;
++
++import java.net.URL;
++import java.net.URLClassLoader;
++import java.util.Arrays;
++import java.util.Collections;
++import java.util.HashSet;
++import java.util.Set;
++
++/**
++ * @author Mark Vainomaa
++ */
++public final class DependencyClassLoader extends URLClassLoader {
++    public static final DependencyClassLoader INSTANCE = new DependencyClassLoader();
++
++    private final Set<URL> addedUrls = new HashSet<>();
++
++    private DependencyClassLoader() {
++        super(determineInitialClasspath(), DependencyClassLoader.class.getClassLoader().getParent());
++    }
++
++    @Override
++    public void addURL(URL url) {
++        if (addedUrls.add(url)) {
++            super.addURL(url);
++        }
++    }
++
++    @Override
++    protected Class<?> findClass(String name) throws ClassNotFoundException {
++        try {
++            return getParent().loadClass(name);
++        } catch (ClassNotFoundException ignored) {}
++        return super.findClass(name);
++    }
++
++    public Set<URL> getAddedUrls() {
++        return Collections.unmodifiableSet(addedUrls);
++    }
++
++    private static URL[] determineInitialClasspath() {
++        var parentLoader = DependencyClassLoader.class.getClassLoader();
++        if (parentLoader instanceof URLClassLoader) {
++            var urls = ((URLClassLoader) parentLoader).getURLs();
++            return Arrays.copyOf(urls, urls.length);
++        } else {
++            return new URL[] {
++                    DependencyClassLoader.class.getProtectionDomain().getCodeSource().getLocation()
++            };
++        }
++    }
++
++    static {
++        ClassLoader.registerAsParallelCapable();
++    }
++}
