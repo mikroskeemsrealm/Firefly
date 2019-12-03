@@ -88,7 +88,7 @@ index 0000000000000000000000000000000000000000..8e228ae9cd6df330b69a6fe4c8e32394
 +    }
 +}
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 31a56f605ac0629b105b4a39267cbd5d500ba945..c10a75aeb810de94ab7b8342f6edc7d858d2b78a 100644
+index 10831b38f1e305d7520d85f64e871e9ddaaa3576..435b3fba0e0bd3a7b6d4a17f5349ef0cb10e5766 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -111,6 +111,7 @@ public class BungeeCord extends ProxyServer
@@ -126,7 +126,7 @@ index 31a56f605ac0629b105b4a39267cbd5d500ba945..c10a75aeb810de94ab7b8342f6edc7d8
          reloadMessages();
  
          // This is a workaround for quite possibly the weirdest bug I have ever encountered in my life!
-@@ -559,6 +566,7 @@ public class BungeeCord extends ProxyServer
+@@ -560,6 +567,7 @@ public class BungeeCord extends ProxyServer
  
      public void reloadMessages()
      {
@@ -134,7 +134,7 @@ index 31a56f605ac0629b105b4a39267cbd5d500ba945..c10a75aeb810de94ab7b8342f6edc7d8
          File file = new File( "messages.properties" );
          if ( file.isFile() )
          {
-@@ -574,6 +582,16 @@ public class BungeeCord extends ProxyServer
+@@ -575,6 +583,16 @@ public class BungeeCord extends ProxyServer
  
      @Override
      public String getTranslation(String name, Object... args)

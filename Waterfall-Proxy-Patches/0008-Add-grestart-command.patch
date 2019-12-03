@@ -29,6 +29,35 @@ index be3bbe9adf29253ec1d62ac7e563629e0ea7f9a5..ef1a82dd100dad66676b10fc9cc654bd
 +    @NonNull
 +    String getRestartScriptPath();
  }
+diff --git a/log4j/src/main/java/io/github/waterfallmc/waterfall/log4j/WaterfallLogger.java b/log4j/src/main/java/io/github/waterfallmc/waterfall/log4j/WaterfallLogger.java
+index e046897a13fe9ab64ecd3589f73f3f7403b06d91..75e45c12d9e028b87b9277ea79ae60e15e5ce8d5 100644
+--- a/log4j/src/main/java/io/github/waterfallmc/waterfall/log4j/WaterfallLogger.java
++++ b/log4j/src/main/java/io/github/waterfallmc/waterfall/log4j/WaterfallLogger.java
+@@ -7,12 +7,24 @@ import java.util.logging.Handler;
+ import java.util.logging.Logger;
+ 
+ public final class WaterfallLogger {
++    // MikroCord start - restore old stdout/stderr on exit
++    private static java.io.PrintStream oldOut;
++    private static java.io.PrintStream oldErr;
++    public static void restoreOldOutputStreams() {
++        System.setOut(oldOut);
++        System.setErr(oldErr);
++    }
++    // MikroCord end
+ 
+     private WaterfallLogger() {
+     }
+ 
+     public static Logger create() {
+         org.apache.logging.log4j.Logger redirect = LogManager.getRootLogger();
++        // MikroCord start - restore old stdout/stderr on exit
++        oldOut = System.out;
++        oldErr = System.err;
++        // MikroCord end
+         System.setOut(IoBuilder.forLogger(redirect).setLevel(Level.INFO).buildPrintStream());
+         System.setErr(IoBuilder.forLogger(redirect).setLevel(Level.ERROR).buildPrintStream());
+ 
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/command/CommandRestart.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/command/CommandRestart.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..c95abc80112f49da97e77f7b4ce16935a385f81a
@@ -119,7 +148,7 @@ index 0b613f678092224ee72152a718a96fe7702ab6ef..633e3093fad60741db3e72901086644a
      }
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 0b8f463c3523e30324cd5b88f092ff0e38f540c4..2e48d20b480dee9e13882717c585912beca9b889 100644
+index 0b8f463c3523e30324cd5b88f092ff0e38f540c4..76636d2a48ceb5c14ad51b74d63fd1991cf27e03 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -269,6 +269,9 @@ public class BungeeCord extends ProxyServer
@@ -132,6 +161,14 @@ index 0b8f463c3523e30324cd5b88f092ff0e38f540c4..2e48d20b480dee9e13882717c585912b
  
          if ( !Boolean.getBoolean( "net.md_5.bungee.native.disable" ) )
          {
+@@ -517,6 +520,7 @@ public class BungeeCord extends ProxyServer
+                 {
+                     handler.close();
+                 }
++                io.github.waterfallmc.waterfall.log4j.WaterfallLogger.restoreOldOutputStreams(); // MikroCord - restore old stdout/stderr on exit
+                 System.exit( 0 );
+             }
+         }.start();
 diff --git a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
 index e62951d74c2fdda98b17986ff58fc8d392ff7c2c..5cd8494017a6d302f2b900504352feef27a1f56d 100644
 --- a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
