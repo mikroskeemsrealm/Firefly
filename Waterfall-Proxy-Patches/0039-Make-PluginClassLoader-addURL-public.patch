@@ -5,7 +5,7 @@ Subject: [PATCH] Make PluginClassLoader#addURL public
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/plugin/PluginClassloader.java b/api/src/main/java/net/md_5/bungee/api/plugin/PluginClassloader.java
-index 1cc02426eab0cc230389c3e8e00555651ac13479..b3018f84e382b760b17ba0d5cbf997aaf609eb2f 100644
+index 141de9e68abc7b5d60a25c3819c4a4cf4985f623..b6adff8d004cd296a5796faf23692c67d93ddb43 100644
 --- a/api/src/main/java/net/md_5/bungee/api/plugin/PluginClassloader.java
 +++ b/api/src/main/java/net/md_5/bungee/api/plugin/PluginClassloader.java
 @@ -59,4 +59,5 @@ public class PluginClassloader extends URLClassLoader implements eu.mikroskeem.m

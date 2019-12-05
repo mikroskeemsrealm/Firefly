@@ -14,8 +14,7 @@ dependencies {
     implementation("eu.mikroskeem:jvm-hiccup:1.0.0")
 
     // Updated dependencies
-    compile("com.google.guava:guava:28.1-jre")
-    compile("mysql:mysql-connector-java:8.0.17")
+    compile("mysql:mysql-connector-java:8.0.18")
 }
 
 val shadowJar by tasks.getting(ShadowJar::class) {
@@ -26,7 +25,7 @@ val shadowJar by tasks.getting(ShadowJar::class) {
 
     manifest {
         attributes(
-                "Main-Class" to "eu.mikroskeem.mikrocord.Bootstrap",
+                "Main-Class" to "net.md_5.bungee.BungeeCordLauncher",
                 "Implementation-Version" to "git:MikroCord-Proxy:${project.version}:${rootProject.extra["gitHash"]}:${System.getenv("BUILD_NUMBER") ?: "unknown"}",
                 "Specification-Version" to SimpleDateFormat("yyyyMMdd").format(Date())
         )
@@ -34,7 +33,8 @@ val shadowJar by tasks.getting(ShadowJar::class) {
 
     transform(Log4j2PluginsCacheFileTransformer::class.java)
 
-    val exclusions = listOf(
+    val exclusions = listOf<String>(
+        /*
         "com.google.guava:guava",
         "com.google.guava:failureaccess",
         "com.google.guava:listenablefuture",
@@ -59,6 +59,7 @@ val shadowJar by tasks.getting(ShadowJar::class) {
         "org.ow2.asm:asm",
         "io.prometheus:*",
         "eu.mikroskeem:jvm-hiccup"
+         */
     )
 
     dependencies {

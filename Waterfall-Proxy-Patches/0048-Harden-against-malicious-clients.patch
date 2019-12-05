@@ -187,7 +187,7 @@ index c70c1212d2ba4a6777b5ab6f4e5d6662153d83b2..3b915db9ad6669d67310f91cdab1f1fc
  
      private TCPFastOpenMode setupTfo(int value) {
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-index 6e623540077289923cb4aea920c9f12fb3bcecf0..fa97e4c84e3c4e928b9d6db125c06796b2393829 100644
+index 70e2d0a2cc4de066385c238dfd844cbab78d84c2..d7f91375e9cd6b702fc14b220affa3aa49ec15c7 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 @@ -134,6 +134,16 @@ public class InitialHandler extends PacketHandler implements PendingConnection

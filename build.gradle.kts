@@ -22,8 +22,7 @@ plugins {
 }
 
 extra["gitHash"] = describe()
-extra["overriddenRootProperties"] = mapOf(
-        "netty.version" to "4.1.42.Final"
+extra["overriddenRootProperties"] = mapOf<String, String>(
 )
 
 val originalGroup = "io.github.waterfallmc"

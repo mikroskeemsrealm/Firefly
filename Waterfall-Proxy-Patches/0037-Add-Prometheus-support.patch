@@ -120,38 +120,6 @@ index 1c796697ff54fefb2b3c86862a19ecc7bd1c63f9..f243777118b19e199411b66b89759a7b
      }
  
      private TCPFastOpenMode setupTfo(int value) {
-diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
-index 8d0785201539ed87ca38b409bf206bfdb4260829..562b2fd9ebbc4242071e3aa0e899bb5fcd3f604b 100644
---- a/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
-+++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/dependencies/DependencyClassLoader.java
-@@ -35,10 +35,12 @@ public final class DependencyClassLoader extends URLClassLoader {
-     private static final MessageDigest digest;
-     private static final List<String> DEFAULT_REPOSITORIES = Arrays.asList(
-             // TODO: mirror repositories?
--            "https://repo.maven.apache.org/maven2"
-+            "https://repo.maven.apache.org/maven2",
-+            "https://repo.wut.ee/repository/mikroskeem-repo"
-     );
- 
-     private static final String NETTY_VERSION = "4.1.42.Final";
-+    private static final String PROMETHEUS_VERSION = "0.6.0";
- 
-     private static final List<Dependency> DEPENDENCIES = Arrays.asList(
-             new Dependency("com.google.guava", "guava", "28.1-jre", "b0e91dcb6a44ffb6221b5027e12a5cb34b841145"),
-@@ -69,7 +71,12 @@ public final class DependencyClassLoader extends URLClassLoader {
-             new Dependency("net.kyori", "text-api", "3.0.2", "608cdb44a74bbd68745941760df730ed55e4b47c"),
-             new Dependency("net.kyori", "text-serializer-gson", "3.0.2", "9ac22f04f3504c52ff1618c5a8d9a6145d8d9c9e"),
-             new Dependency("net.kyori", "text-serializer-legacy", "3.0.2", "8acbfb36356259273a8e3a15782e4f2980375bc5"),
--            new Dependency("org.ow2.asm", "asm", "7.1", "fa29aa438674ff19d5e1386d2c3527a0267f291e")
-+            new Dependency("org.ow2.asm", "asm", "7.1", "fa29aa438674ff19d5e1386d2c3527a0267f291e"),
-+            new Dependency("io.prometheus", "simpleclient", PROMETHEUS_VERSION, "26073e94cbfa6780e10ef524e542cf2a64dabe67"),
-+            new Dependency("io.prometheus", "simpleclient_common", PROMETHEUS_VERSION, "08b4f119cfdff67a02a066e6e519bb2bab0a2a1b"),
-+            new Dependency("io.prometheus", "simpleclient_hotspot", PROMETHEUS_VERSION, "2703b02c4b2abb078de8365f4ef3b7d5e451382d"),
-+            new Dependency("io.prometheus", "simpleclient_httpserver", PROMETHEUS_VERSION, "d46c7273a4dd10e611e3cd617f46eb8b2dae8fdc"),
-+            new Dependency("eu.mikroskeem", "jvm-hiccup", "1.0.0", "906515353ac4c529e9fbbb6ad945dddc1dbe7cc6")
-     );
- 
-     private static DependencyClassLoader instance;
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/PrometheusMetrics.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/PrometheusMetrics.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..14d3775e1c0674d4cf89f90900ebad540661a5ec
