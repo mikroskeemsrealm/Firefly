@@ -50,8 +50,6 @@ subprojects {
         maven("https://oss.sonatype.org/content/repositories/snapshots")
     }
 
-    val lombokVersion = "1.18.10"
-
     dependencies {
         if (project !== rootProject) {
             loadDependencies("${rootProject.projectDir}/MikroCord-Proxy/pom.xml", isRoot = true)
@@ -60,12 +58,6 @@ subprojects {
 
         api("com.google.guava:guava:28.1-jre")
         compileOnly("org.checkerframework:checker-qual:3.0.0")
-
-        // Special case lombok
-        compileOnly("org.projectlombok:lombok:${lombokVersion}")
-        annotationProcessor("org.projectlombok:lombok:${lombokVersion}")
-        testCompileOnly("org.projectlombok:lombok:${lombokVersion}")
-        testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
     }
 }
 
@@ -130,6 +122,13 @@ fun DependencyHandlerScope.loadDependencies(pomFile: String, isRoot: Boolean = f
             "provided" -> compileOnly(dependencyString)
             "runtime" -> runtimeOnly(dependencyString)
             "test" -> testImplementation(dependencyString)
+        }
+
+        // Special case lombok
+        if (groupId == "org.projectlombok" && artifactId == "lombok") {
+            annotationProcessor(dependencyString)
+            testImplementation(dependencyString)
+            testAnnotationProcessor(dependencyString)
         }
     }
 }
