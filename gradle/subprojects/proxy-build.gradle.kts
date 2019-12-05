@@ -26,6 +26,7 @@ val shadowJar by tasks.getting(ShadowJar::class) {
     manifest {
         attributes(
                 "Main-Class" to "net.md_5.bungee.BungeeCordLauncher",
+                "Multi-Release" to "true",
                 "Implementation-Version" to "git:MikroCord-Proxy:${project.version}:${rootProject.extra["gitHash"]}:${System.getenv("BUILD_NUMBER") ?: "unknown"}",
                 "Specification-Version" to SimpleDateFormat("yyyyMMdd").format(Date())
         )
