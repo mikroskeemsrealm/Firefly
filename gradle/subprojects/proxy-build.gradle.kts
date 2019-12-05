@@ -14,7 +14,7 @@ dependencies {
     implementation("eu.mikroskeem:jvm-hiccup:1.0.0")
 
     // Updated dependencies
-    compile("mysql:mysql-connector-java:8.0.18")
+    runtimeOnly("mysql:mysql-connector-java:8.0.18")
 }
 
 val shadowJar by tasks.getting(ShadowJar::class) {

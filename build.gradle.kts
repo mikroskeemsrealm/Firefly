@@ -17,7 +17,7 @@ buildscript {
 }
 
 plugins {
-    java
+    `java-library`
     id("com.github.johnrengelman.shadow") version "5.1.0" apply false
 }
 
@@ -34,7 +34,7 @@ allprojects {
 }
 
 subprojects {
-    apply(plugin = "java")
+    apply(plugin = "java-library")
 
     java {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -58,7 +58,7 @@ subprojects {
             loadDependencies("${project.projectDir}/pom.xml")
         }
 
-        compile("com.google.guava:guava:28.1-jre")
+        api("com.google.guava:guava:28.1-jre")
         compileOnly("org.checkerframework:checker-qual:3.0.0")
 
         // Special case lombok
@@ -119,17 +119,17 @@ fun DependencyHandlerScope.loadDependencies(pomFile: String, isRoot: Boolean = f
 
         // Replace subproject references
         if (groupId == originalGroup && artifactId.startsWith("$originalProjectNamePrefix-")) {
-            compile(project(":${artifactId.removePrefix("$originalProjectNamePrefix-")}"))
+            api(project(":${artifactId.removePrefix("$originalProjectNamePrefix-")}"))
             return@forEach
         }
 
         val dependencyString = "${groupId}:${artifactId}:${version}"
         //println("-> $dependencyString")
         when (scope) {
-            "compile", null -> compile(dependencyString)
+            "compile", null -> api(dependencyString)
             "provided" -> compileOnly(dependencyString)
-            "runtime" -> runtime(dependencyString)
-            "test" -> testCompile(dependencyString)
+            "runtime" -> runtimeOnly(dependencyString)
+            "test" -> testImplementation(dependencyString)
         }
     }
 }
