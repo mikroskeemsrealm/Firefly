@@ -50,7 +50,7 @@ subprojects {
         maven("https://oss.sonatype.org/content/repositories/snapshots")
     }
 
-    val lombokVersion = "1.18.4"
+    val lombokVersion = "1.18.10"
 
     dependencies {
         if (project !== rootProject) {
