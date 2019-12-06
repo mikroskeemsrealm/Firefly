@@ -109,6 +109,7 @@ fun DependencyHandlerScope.loadDependencies(pomFile: String, isRoot: Boolean = f
         val artifactId = dependencyElem.search("artifactId").firstOrNull()!!.textContent.applyReplacements(projectProperties)
         val version = dependencyElem.search("version").firstOrNull()!!.textContent.applyReplacements(projectProperties)
         val scope = dependencyElem.search("scope").firstOrNull()?.textContent?.applyReplacements(projectProperties)
+        val classifier = dependencyElem.search("classifier").firstOrNull()?.textContent?.applyReplacements(projectProperties)
 
         // Replace subproject references
         if (groupId == originalGroup && artifactId.startsWith("$originalProjectNamePrefix-")) {
@@ -116,7 +117,7 @@ fun DependencyHandlerScope.loadDependencies(pomFile: String, isRoot: Boolean = f
             return@forEach
         }
 
-        val dependencyString = "${groupId}:${artifactId}:${version}"
+        val dependencyString = "${groupId}:${artifactId}:${version}${classifier?.run {":$this" } ?: ""}"
         //println("-> $dependencyString")
         when (scope) {
             "compile", null -> api(dependencyString)
