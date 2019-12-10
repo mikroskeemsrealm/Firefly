@@ -31,7 +31,7 @@ val originalProjectNamePrefix = "waterfall"
 
 allprojects {
     group = "eu.mikroskeem.mikrocord"
-    version = "1.14-SNAPSHOT"
+    version = "1.15-SNAPSHOT"
 }
 
 subprojects {

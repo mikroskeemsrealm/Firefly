@@ -34,10 +34,10 @@ index bfafaa863b2f4072b4718e6ef641270023821778..7aaa48261bac7123c2bb66bc135ecf21
  
      /**
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/Protocol.java b/protocol/src/main/java/net/md_5/bungee/protocol/Protocol.java
-index c2b0e12c1bc861f8143685e5446d39de75e02df1..8a19dbf0fce2b04a9a523baf0d551152744b2afe 100644
+index 44dc34ff1ec4ec42fe52559ed2a9237ff6114c21..7c21c01f4d11be04869313974be245aeb3d3302e 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/Protocol.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/Protocol.java
-@@ -362,8 +362,8 @@ public enum Protocol
+@@ -383,8 +383,8 @@ public enum Protocol
      /*========================================================================*/
      public static final int MAX_PACKET_ID = 0xFF;
      /*========================================================================*/
@@ -48,7 +48,7 @@ index c2b0e12c1bc861f8143685e5446d39de75e02df1..8a19dbf0fce2b04a9a523baf0d551152
  
      public static void main(String[] args)
      {
-@@ -400,7 +400,7 @@ public enum Protocol
+@@ -421,7 +421,7 @@ public enum Protocol
      }
  
      @Data
@@ -57,7 +57,7 @@ index c2b0e12c1bc861f8143685e5446d39de75e02df1..8a19dbf0fce2b04a9a523baf0d551152
      {
  
          private final int protocolVersion;
-@@ -409,7 +409,7 @@ public enum Protocol
+@@ -430,7 +430,7 @@ public enum Protocol
      }
  
      @Data
@@ -66,7 +66,7 @@ index c2b0e12c1bc861f8143685e5446d39de75e02df1..8a19dbf0fce2b04a9a523baf0d551152
      {
  
          private final int protocolVersion;
-@@ -417,16 +417,18 @@ public enum Protocol
+@@ -438,16 +438,18 @@ public enum Protocol
      }
  
      // Helper method
@@ -87,7 +87,7 @@ index c2b0e12c1bc861f8143685e5446d39de75e02df1..8a19dbf0fce2b04a9a523baf0d551152
          private final Protocol protocolPhase;
          @Getter
          private final ProtocolConstants.Direction direction;
-@@ -442,7 +444,7 @@ public enum Protocol
+@@ -463,7 +465,7 @@ public enum Protocol
              }
          }
  
@@ -96,7 +96,7 @@ index c2b0e12c1bc861f8143685e5446d39de75e02df1..8a19dbf0fce2b04a9a523baf0d551152
          {
              ProtocolData protocol = protocols.get( version );
              if ( protocol == null && ( protocolPhase != Protocol.GAME ) )
-@@ -483,7 +485,7 @@ public enum Protocol
+@@ -504,7 +506,7 @@ public enum Protocol
              }
          }
  
@@ -105,7 +105,7 @@ index c2b0e12c1bc861f8143685e5446d39de75e02df1..8a19dbf0fce2b04a9a523baf0d551152
          {
              // Waterfall start - speed up packet construction
              /*
-@@ -528,7 +530,7 @@ public enum Protocol
+@@ -549,7 +551,7 @@ public enum Protocol
               */ // Waterfall end
          }
          // Waterfall start - speed up packet construction (backwards compat)
@@ -114,7 +114,7 @@ index c2b0e12c1bc861f8143685e5446d39de75e02df1..8a19dbf0fce2b04a9a523baf0d551152
              java.util.function.Supplier<P> packetSupplier;
              try {
                  Constructor<? extends DefinedPacket> constructor = packetClass.getDeclaredConstructor();
-@@ -546,7 +548,7 @@ public enum Protocol
+@@ -567,7 +569,7 @@ public enum Protocol
          }
          // Waterfall end
  
@@ -148,7 +148,7 @@ index d11d601ec6a6afdca731a2b0db1655993e3119ad..789a8ec127b1058277831ad794c5cafa
 +    // MikroCord end
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-index 72f487dc53e5f99685b263a819f17e23442ce237..c37bc1d1e6fe76e102967aa3b43ebacb5bc2b80b 100644
+index 00cd477f0c0fcd1c740c1f5b422c86172a9baf7b..cfcc1b39b33c205ebd86f91ff5bcb569d85151fa 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 @@ -54,7 +54,7 @@ import net.md_5.bungee.util.BufUtil;
@@ -160,7 +160,7 @@ index 72f487dc53e5f99685b263a819f17e23442ce237..c37bc1d1e6fe76e102967aa3b43ebacb
  {
  
      private final ProxyServer bungee;
-@@ -439,4 +439,10 @@ public class ServerConnector extends PacketHandler
+@@ -440,4 +440,10 @@ public class ServerConnector extends PacketHandler
      {
          return "[" + user.getName() + "|" + user.getAddress() + "] <-> ServerConnector [" + target.getName() + "]";
      }
@@ -196,7 +196,7 @@ index eeb7a51e1850676673320d36c19f068315f2165f..c2b7345e8fd6bd7af2da0a79338a59f8
 +    // MikroCord end
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-index 3a9dab682487cceae7d2cb3b415f1e04e79d1ddc..ca7d5fd53fb242d3d8dc008f6f1b7b79da1f2fd1 100644
+index 34f7f997c23ed6695b18403823194904c4cc940f..c18fe9efb96c7b2ea7ebd247a891664015444965 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 @@ -639,4 +639,10 @@ public class InitialHandler extends PacketHandler implements PendingConnection

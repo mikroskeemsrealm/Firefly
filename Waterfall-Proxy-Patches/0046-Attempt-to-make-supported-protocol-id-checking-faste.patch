@@ -5,12 +5,12 @@ Subject: [PATCH] Attempt to make supported protocol id checking faster
 
 
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/ProtocolConstants.java b/protocol/src/main/java/net/md_5/bungee/protocol/ProtocolConstants.java
-index ff1f28aac34f81a7ac9b318947353a247f32596d..233c9c6608a3bc923517c0a8d1431eee2427a3f4 100644
+index c34f6fa299ad04369ee21301e319a2402fb70dd8..72ec312cfb394d5bf785a7e6639be2aa134d6ec6 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/ProtocolConstants.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/ProtocolConstants.java
-@@ -55,6 +55,28 @@ public class ProtocolConstants
-             ProtocolConstants.MINECRAFT_1_14_3,
-             ProtocolConstants.MINECRAFT_1_14_4
+@@ -58,6 +58,28 @@ public class ProtocolConstants
+             ProtocolConstants.MINECRAFT_1_14_4,
+             ProtocolConstants.MINECRAFT_1_15
      );
 +    // MikroCord start
 +    public static final int LOWEST_SUPPORTED_VERSION_ID;

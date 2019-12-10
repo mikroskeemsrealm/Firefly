@@ -206,7 +206,7 @@ index 4c0637b9a945755a4a88cc51ad20f8418d25f06d..63228ea3f9bc5a1d5aa669fa883c7398
      @Synchronized("players")
      public void addPlayer(ProxiedPlayer player)
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-index d7adf467db0791dcb251be52525932565f8f2658..d9d0d2fe9b8e46cc42e2a5afc18f94cb4ce5fc96 100644
+index 5ddfc271f78db9bb905108199ffcfe38cd5706fc..828811646693b033d68f46b6bf8485903b39089f 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 @@ -100,7 +100,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
@@ -227,7 +227,7 @@ index d7adf467db0791dcb251be52525932565f8f2658..d9d0d2fe9b8e46cc42e2a5afc18f94cb
              throw new QuietException("Your server did not send a forwarding request to the proxy. Is it set up correctly?");
          }
          // MikroCord end
-@@ -455,7 +455,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
+@@ -456,7 +456,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
      // MikroCord start - Implement Velocity modern forwarding support
      @Override
      public void handle(net.md_5.bungee.protocol.packet.LoginPayloadRequest request) {
@@ -326,10 +326,10 @@ index cb52bd781b09cb5c471fdcadb93e70785e934716..d223a904f1d4406757614ae1f6d18497
          }
      }
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
-index 324a7741f8d3e0c789b2db926b557a087c73c55c..3ca85010b8e15d7bcd1ab153644fa36e986a7a2d 100644
+index e5d566bdf0486fb3be7d15f03ef0e2b63d5995a5..7c70728cde7c6af3d244ff17c47fe6c6766cdef8 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
-@@ -87,24 +87,28 @@ public abstract class EntityMap
+@@ -89,24 +89,28 @@ public abstract class EntityMap
          }
      }
  
@@ -574,6 +574,34 @@ index e9702b16f63eb4765954d620b8b3f19942e38594..d442ab9140fd8623552e6d1c07d4386d
          {
              UUID uuid = DefinedPacket.readUUID( packet );
              ProxiedPlayer player;
+diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_15.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_15.java
+index e9e19c0dd4b3be115cc122776550e4a19c7fd43b..3102925d8006047bb30bc2d19c886ddc496e3455 100644
+--- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_15.java
++++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_15.java
+@@ -47,9 +47,9 @@ class EntityMap_1_15 extends EntityMap
+ 
+     @Override
+     @SuppressFBWarnings("DLS_DEAD_LOCAL_STORE")
+-    public void rewriteClientbound(ByteBuf packet, int oldId, int newId, int protocolVersion)
++    public void rewriteClientbound(ByteBuf packet, int oldId, int newId, int protocolVersion, net.md_5.bungee.api.connection.Server server) // MikroCord - server specific IP forwarding
+     {
+-        super.rewriteClientbound( packet, oldId, newId );
++        super.rewriteClientbound( packet, oldId, newId, server ); // MikroCord - server specific IP forwarding
+ 
+         // Special cases
+         int readerIndex = packet.readerIndex();
+@@ -160,9 +160,9 @@ class EntityMap_1_15 extends EntityMap
+     }
+ 
+     @Override
+-    public void rewriteServerbound(ByteBuf packet, int oldId, int newId)
++    public void rewriteServerbound(ByteBuf packet, int oldId, int newId, net.md_5.bungee.api.connection.Server server) // MikroCord - server specific IP forwarding
+     {
+-        super.rewriteServerbound( packet, oldId, newId );
++        super.rewriteServerbound( packet, oldId, newId, server ); // MikroCord - server specific IP forwarding
+         // Special cases
+         int readerIndex = packet.readerIndex();
+         int packetId = DefinedPacket.readVarInt( packet );
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_8.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_8.java
 index 8e2dbe69929a67af592eb6aebb8049e8cb8e6171..f87213e25464f7e13204f38cb31b92ea57d93590 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_8.java

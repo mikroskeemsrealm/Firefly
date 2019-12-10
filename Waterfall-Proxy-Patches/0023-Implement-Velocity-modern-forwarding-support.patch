@@ -149,7 +149,7 @@ index 0000000000000000000000000000000000000000..cbb30b08341071e72cca325d11585370
 +    }
 +}
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-index c37bc1d1e6fe76e102967aa3b43ebacb5bc2b80b..0e74da5dc3b7ca9eda2d1a00c04de5647be5cdeb 100644
+index cfcc1b39b33c205ebd86f91ff5bcb569d85151fa..66939bd589300d367ac9dfcbafcd4ade0a69f7b6 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 @@ -65,6 +65,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
@@ -172,7 +172,7 @@ index c37bc1d1e6fe76e102967aa3b43ebacb5bc2b80b..0e74da5dc3b7ca9eda2d1a00c04de564
  
          // Only reset the Forge client when:
          // 1) The user is switching servers (so has a current server)
-@@ -445,4 +451,34 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
+@@ -446,4 +452,34 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
          return ch.getHandle();
      }
      // MikroCord end
