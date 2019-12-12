@@ -18,6 +18,7 @@ buildscript {
 
 plugins {
     `java-library`
+    `maven-publish`
     id("com.github.johnrengelman.shadow") version "5.1.0" apply false
 }
 
@@ -36,6 +37,7 @@ allprojects {
 
 subprojects {
     apply(plugin = "java-library")
+    apply(plugin = "maven-publish")
 
     java {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -59,6 +61,35 @@ subprojects {
 
         api("com.google.guava:guava:28.1-jre")
         compileOnly("org.checkerframework:checker-qual:3.0.0")
+    }
+
+    val sourcesJar by tasks.creating(Jar::class) {
+        archiveClassifier.set("sources")
+        from(sourceSets["main"].allJava)
+    }
+
+    publishing {
+        publications {
+            create<MavenPublication>(project.name) {
+                groupId = "${project.group}"
+                artifactId = "mikrocord-${project.name}"
+
+                from(components["java"])
+                artifact(sourcesJar)
+            }
+
+            repositories {
+                mavenLocal()
+                if (rootProject.hasProperty("wutee.repository.deploy.username") && rootProject.hasProperty("wutee.repository.deploy.password")) {
+                    maven("https://repo.wut.ee/repository/mikroskeem-repo") {
+                        credentials {
+                            username = rootProject.property("wutee.repository.deploy.username") as String
+                            password = rootProject.property("wutee.repository.deploy.password") as String
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
