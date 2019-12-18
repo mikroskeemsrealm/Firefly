@@ -114,13 +114,13 @@ index 5b0b1c5e730bb857616cb39598f96ee0904582aa..1df8934ab767a27f1e8a4e49816d7920
      }
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java b/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
-index 23241d6816a5736da66e3d186130187b8a11b3dd..426ba4e8ee4bdeda7c15ec107ec3dbd4c1629e6b 100644
+index 31de5a6fcdc7bf1e066ddfb8d9190e9fc6d1ef64..fe03bf507f498581052ab04cf0db8f68330d1093 100644
 --- a/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
 +++ b/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
-@@ -60,6 +60,11 @@ public class PipelineUtils
-             ListenerInfo listener = ch.attr( LISTENER ).get();
- 
-             BASE.initChannel( ch );
+@@ -75,6 +75,11 @@ public class PipelineUtils
+                 ch.close();
+                 return;
+             }
 +            // MikroCord start - TCP fast open
 +            if (epoll && BungeeCord.getInstance().getConfig().isTcpFastOpenEnabled()) {
 +                ch.config().setOption(io.netty.channel.epoll.EpollChannelOption.TCP_FASTOPEN, BungeeCord.getInstance().getConfig().getTcpFastOpenMode().value);

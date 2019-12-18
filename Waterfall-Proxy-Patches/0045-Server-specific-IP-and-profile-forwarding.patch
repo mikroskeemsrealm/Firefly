@@ -326,10 +326,10 @@ index cb52bd781b09cb5c471fdcadb93e70785e934716..d223a904f1d4406757614ae1f6d18497
          }
      }
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
-index e5d566bdf0486fb3be7d15f03ef0e2b63d5995a5..7c70728cde7c6af3d244ff17c47fe6c6766cdef8 100644
+index 066135ad6884bd29d186ca7b2b7c890f911edaed..e451a92c8a00338fb534a0f8e485fbfad1e58cbf 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
-@@ -89,24 +89,28 @@ public abstract class EntityMap
+@@ -90,24 +90,28 @@ public abstract class EntityMap
          }
      }
  
@@ -575,7 +575,7 @@ index e9702b16f63eb4765954d620b8b3f19942e38594..d442ab9140fd8623552e6d1c07d4386d
              UUID uuid = DefinedPacket.readUUID( packet );
              ProxiedPlayer player;
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_15.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_15.java
-index e9e19c0dd4b3be115cc122776550e4a19c7fd43b..3102925d8006047bb30bc2d19c886ddc496e3455 100644
+index ea9e5ec9dff144ff853e5aaca997a3b85273c22f..ae65abde5e717a9be4f5c2c6472b30a19f0679a3 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_15.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_15.java
 @@ -47,9 +47,9 @@ class EntityMap_1_15 extends EntityMap
