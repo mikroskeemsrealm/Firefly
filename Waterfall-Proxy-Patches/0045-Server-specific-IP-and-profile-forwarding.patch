@@ -326,10 +326,10 @@ index cb52bd781b09cb5c471fdcadb93e70785e934716..d223a904f1d4406757614ae1f6d18497
          }
      }
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
-index 066135ad6884bd29d186ca7b2b7c890f911edaed..e451a92c8a00338fb534a0f8e485fbfad1e58cbf 100644
+index af27f65c3ba57caccc9c25cae1da5e4e4ac43078..eaacc40930ee31c703427df753563990a434f5e8 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
-@@ -90,24 +90,28 @@ public abstract class EntityMap
+@@ -89,24 +89,28 @@ public abstract class EntityMap
          }
      }
  
