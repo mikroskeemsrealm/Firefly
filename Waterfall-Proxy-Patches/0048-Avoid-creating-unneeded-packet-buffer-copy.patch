@@ -5,7 +5,7 @@ Subject: [PATCH] Avoid creating unneeded packet buffer copy
 
 
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
-index 406dafd976ae8b420c87e173ed99f40b03bb1e61..0f65348b4f30e26962a838258f2e2d474675fa49 100644
+index 4146d8b420027dbb988d888613a405587cbea712..ada1649040749d8d98605a0b935c6fdbcdb29387 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 @@ -52,7 +52,11 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
@@ -43,10 +43,10 @@ index 406dafd976ae8b420c87e173ed99f40b03bb1e61..0f65348b4f30e26962a838258f2e2d47
              final String packetTypeStr;
 @@ -102,19 +113,21 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
              /* // MikroCord start - add option to disable noisy packet decode exception
-             throw new DecoderException("Error decoding packet " + packetTypeStr + " with contents:\n" + ByteBufUtil.prettyHexDump(slice), e);
+             throw new FastDecoderException("Error decoding packet " + packetTypeStr + " with contents:\n" + ByteBufUtil.prettyHexDump(slice), e); // Waterfall
              */
--            DecoderException de = new DecoderException("Error decoding packet " + packetTypeStr + " with contents:\n" + ByteBufUtil.prettyHexDump(slice), e);
-+            DecoderException de = new DecoderException("Error decoding packet " + packetTypeStr + " with contents:\n" + ByteBufUtil.prettyHexDump(/*slice*/in), e); // MikroCord - Avoid creating unneeded packet buffer copy
+-            FastDecoderException de = new FastDecoderException("Error decoding packet " + packetTypeStr + " with contents:\n" + ByteBufUtil.prettyHexDump(slice), e);
++            FastDecoderException de = new FastDecoderException("Error decoding packet " + packetTypeStr + " with contents:\n" + ByteBufUtil.prettyHexDump(/*slice*/in), e); // MikroCord - Avoid creating unneeded packet buffer copy
              if (!this.noisyPacketDecodeException) {
                  de.setStackTrace(new StackTraceElement[0]);
                  de.getCause().setStackTrace(new StackTraceElement[0]);

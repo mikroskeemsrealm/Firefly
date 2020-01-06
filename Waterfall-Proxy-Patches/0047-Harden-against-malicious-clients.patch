@@ -78,7 +78,7 @@ index 0000000000000000000000000000000000000000..cbd719a6bd39f3727bfa4540e58a61b7
 +    }
 +}
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
-index 8276f0c00f566deb8803f67d6e337ef7327f1acb..406dafd976ae8b420c87e173ed99f40b03bb1e61 100644
+index a750232314895a7b072ac42ed92ca615d5a9d03f..4146d8b420027dbb988d888613a405587cbea712 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 @@ -30,12 +30,22 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
@@ -113,7 +113,7 @@ index 8276f0c00f566deb8803f67d6e337ef7327f1acb..406dafd976ae8b420c87e173ed99f40b
 +            if (!this.logPacketDumpOnDecodeError) return;
 +            // MikroCord end
              /* // MikroCord start - add option to disable noisy packet decode exception
-             throw new DecoderException("Error decoding packet " + packetTypeStr + " with contents:\n" + ByteBufUtil.prettyHexDump(slice), e);
+             throw new FastDecoderException("Error decoding packet " + packetTypeStr + " with contents:\n" + ByteBufUtil.prettyHexDump(slice), e); // Waterfall
              */
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
 index 81c3626af3679671f633c561698b5519290003af..92124078d869030569d2e49eb8bd906fb98f2b5a 100644

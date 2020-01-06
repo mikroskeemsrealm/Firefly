@@ -19,7 +19,7 @@ index 25e30d199e0c42949be43ef026099512bba85724..52e085e7bdd7ff5845d3c6aab19baf0d
 +    boolean isLogNoisyPacketDecodeException();
  }
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
-index 71ddf022ae310beff40ef4d0e64bcc5d71a613e6..393a23789286ac3c22c1f7790de3ab8f4b7dac06 100644
+index 6c3c7ab8d872c7acffa0b1897c10ccdd9b1aefd2..eb36d8607fd2d22b11772477a3f3e6d278e4102c 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 @@ -20,11 +20,16 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
@@ -44,9 +44,9 @@ index 71ddf022ae310beff40ef4d0e64bcc5d71a613e6..393a23789286ac3c22c1f7790de3ab8f
                  packetTypeStr = "unknown";
              }
 +            /* // MikroCord start - add option to disable noisy packet decode exception
-             throw new DecoderException("Error decoding packet " + packetTypeStr + " with contents:\n" + ByteBufUtil.prettyHexDump(slice), e);
+             throw new FastDecoderException("Error decoding packet " + packetTypeStr + " with contents:\n" + ByteBufUtil.prettyHexDump(slice), e); // Waterfall
 +            */
-+            DecoderException de = new DecoderException("Error decoding packet " + packetTypeStr + " with contents:\n" + ByteBufUtil.prettyHexDump(slice), e);
++            FastDecoderException de = new FastDecoderException("Error decoding packet " + packetTypeStr + " with contents:\n" + ByteBufUtil.prettyHexDump(slice), e);
 +            if (!this.noisyPacketDecodeException) {
 +                de.setStackTrace(new StackTraceElement[0]);
 +                de.getCause().setStackTrace(new StackTraceElement[0]);
