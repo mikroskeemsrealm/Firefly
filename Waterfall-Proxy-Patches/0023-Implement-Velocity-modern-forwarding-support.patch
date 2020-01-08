@@ -65,15 +65,16 @@ index a8d6c8e3b223341bab21201f48adff613d8e0e3d..5b0b1c5e730bb857616cb39598f96ee0
  }
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/VelocitySupport.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/VelocitySupport.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..cbb30b08341071e72cca325d115853705d0f9715
+index 0000000000000000000000000000000000000000..ead85e839fda5d97f430b765052cd64b090ee99c
 --- /dev/null
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/VelocitySupport.java
-@@ -0,0 +1,79 @@
+@@ -0,0 +1,102 @@
 +package eu.mikroskeem.mikrocord.misc;
 +
 +import io.netty.buffer.ByteBuf;
 +import io.netty.buffer.Unpooled;
 +import net.md_5.bungee.UserConnection;
++import net.md_5.bungee.api.ProxyServer;
 +import net.md_5.bungee.connection.LoginResult;
 +import net.md_5.bungee.protocol.DefinedPacket;
 +
@@ -82,6 +83,8 @@ index 0000000000000000000000000000000000000000..cbb30b08341071e72cca325d11585370
 +import javax.crypto.spec.SecretKeySpec;
 +import java.security.InvalidKeyException;
 +import java.security.SecureRandom;
++import java.util.LinkedList;
++import java.util.logging.Level;
 +
 +/**
 + * @author Mark Vainomaa
@@ -106,18 +109,38 @@ index 0000000000000000000000000000000000000000..cbb30b08341071e72cca325d11585370
 +            DefinedPacket.writeUUID(user.getPendingConnection().getUniqueId(), forwarded);
 +            DefinedPacket.writeString(user.getPendingConnection().getName(), forwarded);
 +            int propertiesCount = (profile != null && profile.getProperties() != null) ? profile.getProperties().length : 0;
-+            DefinedPacket.writeVarInt(propertiesCount, forwarded);
++            var validProperties = new LinkedList<LoginResult.Property>();
 +            if (propertiesCount > 0) {
 +                for (LoginResult.Property property : profile.getProperties()) {
-+                    DefinedPacket.writeString(property.getName(), forwarded);
-+                    DefinedPacket.writeString(property.getValue(), forwarded);
-+                    String signature = property.getSignature();
-+                    if (signature != null) {
-+                        forwarded.writeBoolean(true);
-+                        DefinedPacket.writeString(signature, forwarded);
-+                    } else {
-+                        forwarded.writeBoolean(false);
++                    if (property == null) {
++                        ProxyServer.getInstance().getLogger().log(Level.WARNING, "User {0} profile has null property",
++                                user);
++                        continue;
 +                    }
++                    if (property.getName() == null) {
++                        ProxyServer.getInstance().getLogger().log(Level.WARNING, "User {0} profile has null property name",
++                                user);
++                        continue;
++                    }
++                    if (property.getValue() == null) {
++                        ProxyServer.getInstance().getLogger().log(Level.WARNING, "User {0} profile has null property ''{1}'' value",
++                                new Object[] { user, property.getName() });
++                        continue;
++                    }
++                    validProperties.add(property);
++                }
++            }
++
++            DefinedPacket.writeVarInt(validProperties.size(), forwarded);
++            for (var property : validProperties) {
++                DefinedPacket.writeString(property.getName(), forwarded);
++                DefinedPacket.writeString(property.getValue(), forwarded);
++                String signature = property.getSignature();
++                if (signature != null) {
++                    forwarded.writeBoolean(true);
++                    DefinedPacket.writeString(signature, forwarded);
++                } else {
++                    forwarded.writeBoolean(false);
 +                }
 +            }
 +
