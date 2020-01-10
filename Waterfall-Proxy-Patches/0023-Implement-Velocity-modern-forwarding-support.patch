@@ -65,10 +65,10 @@ index a8d6c8e3b223341bab21201f48adff613d8e0e3d..5b0b1c5e730bb857616cb39598f96ee0
  }
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/VelocitySupport.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/VelocitySupport.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..ead85e839fda5d97f430b765052cd64b090ee99c
+index 0000000000000000000000000000000000000000..0dfd1ace15691c0cb5c0b1637c42cd11579ad4c5
 --- /dev/null
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/VelocitySupport.java
-@@ -0,0 +1,102 @@
+@@ -0,0 +1,95 @@
 +package eu.mikroskeem.mikrocord.misc;
 +
 +import io.netty.buffer.ByteBuf;
@@ -82,6 +82,7 @@ index 0000000000000000000000000000000000000000..ead85e839fda5d97f430b765052cd64b
 +import javax.crypto.SecretKey;
 +import javax.crypto.spec.SecretKeySpec;
 +import java.security.InvalidKeyException;
++import java.security.NoSuchAlgorithmException;
 +import java.security.SecureRandom;
 +import java.util.LinkedList;
 +import java.util.logging.Level;
@@ -92,7 +93,6 @@ index 0000000000000000000000000000000000000000..ead85e839fda5d97f430b765052cd64b
 +public final class VelocitySupport {
 +    private static final String chars = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890";
 +    private static final SecureRandom secureRandom = new SecureRandom();
-+    private static final Mac mac;
 +
 +    private VelocitySupport() {}
 +
@@ -145,11 +145,12 @@ index 0000000000000000000000000000000000000000..ead85e839fda5d97f430b765052cd64b
 +            }
 +
 +            SecretKey key = new SecretKeySpec(hmacSecret, "HmacSHA256");
++            Mac mac = Mac.getInstance("HmacSHA256");
 +            mac.init(key);
 +            mac.update(forwarded.array(), forwarded.arrayOffset(), forwarded.readableBytes());
 +            byte[] sig = mac.doFinal();
 +            return Unpooled.wrappedBuffer(Unpooled.wrappedBuffer(sig), forwarded);
-+        } catch (InvalidKeyException e) {
++        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
 +            forwarded.release();
 +            throw new RuntimeException("Unable to authenticate data", e);
 +        }
@@ -161,14 +162,6 @@ index 0000000000000000000000000000000000000000..ead85e839fda5d97f430b765052cd64b
 +            builder.append(chars.charAt(secureRandom.nextInt(chars.length())));
 +        }
 +        return builder.toString();
-+    }
-+
-+    static {
-+        try {
-+            mac = Mac.getInstance("HmacSHA256");
-+        } catch (Exception e) {
-+            throw new AssertionError(e);
-+        }
 +    }
 +}
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
