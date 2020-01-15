@@ -172,10 +172,10 @@ index 00cd477f0c0fcd1c740c1f5b422c86172a9baf7b..cfcc1b39b33c205ebd86f91ff5bcb569
 +    // MikroCord end
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/UserConnection.java b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-index eeb7a51e1850676673320d36c19f068315f2165f..c2b7345e8fd6bd7af2da0a79338a59f8e571eb41 100644
+index b4cbc3f37d76edc4c3c156f3ee52c04d114504a3..5d6022071d23197c584271560edf1ba14668c1b4 100644
 --- a/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 +++ b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-@@ -65,7 +65,7 @@ import net.md_5.bungee.util.CaseInsensitiveSet;
+@@ -66,7 +66,7 @@ import net.md_5.bungee.util.CaseInsensitiveSet;
  import net.md_5.bungee.util.ChatComponentTransformer;
  
  @RequiredArgsConstructor
@@ -184,7 +184,7 @@ index eeb7a51e1850676673320d36c19f068315f2165f..c2b7345e8fd6bd7af2da0a79338a59f8
  {
  
      /*========================================================================*/
-@@ -736,4 +736,10 @@ public final class UserConnection implements ProxiedPlayer
+@@ -747,4 +747,10 @@ public final class UserConnection implements ProxiedPlayer
          return entityRewrite == net.md_5.bungee.entitymap.EntityMap_Dummy.INSTANCE;
      }
      // Waterfall end
@@ -196,10 +196,10 @@ index eeb7a51e1850676673320d36c19f068315f2165f..c2b7345e8fd6bd7af2da0a79338a59f8
 +    // MikroCord end
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-index 34f7f997c23ed6695b18403823194904c4cc940f..c18fe9efb96c7b2ea7ebd247a891664015444965 100644
+index 8e637718e94e88fa5afd154c0ab95510b91acecc..b1fdaf9b76a26a4356c61eb2975e28fd4eabef05 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-@@ -639,4 +639,10 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+@@ -640,4 +640,10 @@ public class InitialHandler extends PacketHandler implements PendingConnection
      {
          return !ch.isClosed();
      }

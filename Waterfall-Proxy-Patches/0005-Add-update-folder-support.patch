@@ -6,7 +6,7 @@ Subject: [PATCH] Add update folder support
 Who remembers https://github.com/SpigotMC/BungeeCord/pull/2314?
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
-index 884f78c8037200122a0202dc336cfff6d68ca7fe..51559a9682e295313d7e9f3f14c6c3c7433020dc 100644
+index 5b99c84a80e2ced14e1ed249392adbe99cecae33..ca93d4043346051778abff75b2c15adbe880cdcf 100644
 --- a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
 +++ b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
 @@ -9,6 +9,7 @@ import java.io.InputStream;
@@ -17,7 +17,7 @@ index 884f78c8037200122a0202dc336cfff6d68ca7fe..51559a9682e295313d7e9f3f14c6c3c7
  import java.util.Arrays;
  import java.util.Collection;
  import java.util.Collections;
-@@ -391,6 +392,7 @@ public class PluginManager
+@@ -393,6 +394,7 @@ public class PluginManager
          {
              if ( file.isFile() && file.getName().endsWith( ".jar" ) )
              {
@@ -25,7 +25,7 @@ index 884f78c8037200122a0202dc336cfff6d68ca7fe..51559a9682e295313d7e9f3f14c6c3c7
                  try ( JarFile jar = new JarFile( file ) )
                  {
                      JarEntry pdf = jar.getJarEntry( "bungee.yml" );
-@@ -497,4 +499,29 @@ public class PluginManager
+@@ -499,4 +501,29 @@ public class PluginManager
      {
          return Collections.unmodifiableCollection( commandMap.entrySet() );
      }

@@ -5,10 +5,10 @@ Subject: [PATCH] Improve configuration adapter getting/setting API
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java b/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
-index d44ac67ea1ba67867ababf695427eec0d8e8bbc1..484f424da16e1f77ca85d10a456fef95f3ad34c9 100644
+index 218ec45c922b1926651b42571db111685abe8911..40527301750000d942ff33d81e82f51b82a50870 100644
 --- a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
 +++ b/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
-@@ -137,6 +137,7 @@ public abstract class ProxyServer
+@@ -136,6 +136,7 @@ public abstract class ProxyServer
       *
       * @return the used configuration adapter
       */
@@ -16,7 +16,7 @@ index d44ac67ea1ba67867ababf695427eec0d8e8bbc1..484f424da16e1f77ca85d10a456fef95
      public abstract ConfigurationAdapter getConfigurationAdapter();
  
      /**
-@@ -145,8 +146,28 @@ public abstract class ProxyServer
+@@ -144,8 +145,28 @@ public abstract class ProxyServer
       *
       * @param adapter the adapter to use
       */
@@ -45,7 +45,7 @@ index d44ac67ea1ba67867ababf695427eec0d8e8bbc1..484f424da16e1f77ca85d10a456fef95
      /**
       * Get the currently in use reconnect handler.
       *
-@@ -315,4 +336,18 @@ public abstract class ProxyServer
+@@ -314,4 +335,18 @@ public abstract class ProxyServer
       */
      public abstract Title createTitle();
  
@@ -83,7 +83,7 @@ index e860214f8d7bedcc98d5f4cc0c2108ea153b80be..b6840f65f336d0c5ed3f8b610fde2b17
          gameVersion = config.getString("game_version", "").isEmpty() ? Joiner.on(", ").join(ProtocolConstants.SUPPORTED_VERSIONS) : config.getString("game_version", "");
          useNettyDnsResolver = config.getBoolean("use_netty_dns_resolver", useNettyDnsResolver);
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 9e78a0aeb9c0511783c86a41bda4ecb817e2a992..0a78f0697fff8518cecc359d81746be76c07bbe3 100644
+index b69720ce36f2dc01f42c8683832b51c122b84e24..ee3bb4ce9c65992a62878d77285928b24426cd42 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -166,6 +166,37 @@ public class BungeeCord extends ProxyServer

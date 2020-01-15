@@ -5,21 +5,21 @@ Subject: [PATCH] Wrap localization into configuration API
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java b/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
-index 85f038c1ff35a89bdba3c7b4b6946ae68a838f70..1fd988efda027ecd8908bb386d5aecb41000b00f 100644
+index d40489cb1c2346b1dfbdd3e17ef1e23950be98ba..3000e3352130e7369e0ac40a8de62d70a55ccafa 100644
 --- a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
 +++ b/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
 @@ -343,6 +343,11 @@ public abstract class ProxyServer
-          */
          BUNGEECORD,
  
-+        /**
+         /**
 +         * BungeeCord messages
 +         */
 +        BUNGEECORD_MESSAGES,
 +
-         /**
++        /**
           * Waterfall-specific configuration
           */
+         WATERFALL,
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/ResourceBundleConfigurationWrapper.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/ResourceBundleConfigurationWrapper.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..8e228ae9cd6df330b69a6fe4c8e32394a4ffe352
@@ -88,7 +88,7 @@ index 0000000000000000000000000000000000000000..8e228ae9cd6df330b69a6fe4c8e32394
 +    }
 +}
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 10831b38f1e305d7520d85f64e871e9ddaaa3576..435b3fba0e0bd3a7b6d4a17f5349ef0cb10e5766 100644
+index 1d782d6c9d80975e5edc26e341e5ed020c867886..909d88c8bef8e6776736506e65188ea813cb1601 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -111,6 +111,7 @@ public class BungeeCord extends ProxyServer

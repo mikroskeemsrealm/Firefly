@@ -38,7 +38,7 @@ index 20bbd5dbc87ec068db7bb6a6c24355946461bc3e..7ddcda03f9d50a04feec28cd8ebe4c18
      public static final boolean isBeforeOrEq(int before, int other)
      {
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index d3be867a4ad2d3382343a1f0e8e7720c2ddbd38c..8f42396f5fa5cc6c3031bcfff99db57e79353cd2 100644
+index 9faf6173c5cef7a1ef00b597f8a0e3c2106632ef..1e771507851761c5acb0ce165637b5efd485b6c2 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -770,7 +770,7 @@ public class BungeeCord extends ProxyServer
@@ -51,7 +51,7 @@ index d3be867a4ad2d3382343a1f0e8e7720c2ddbd38c..8f42396f5fa5cc6c3031bcfff99db57e
  
      @Override
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-index c18fe9efb96c7b2ea7ebd247a891664015444965..70e2d0a2cc4de066385c238dfd844cbab78d84c2 100644
+index b1fdaf9b76a26a4356c61eb2975e28fd4eabef05..712a2fe6e92506234758bd3d427df0349f955130 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 @@ -250,7 +250,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection
@@ -63,7 +63,7 @@ index c18fe9efb96c7b2ea7ebd247a891664015444965..70e2d0a2cc4de066385c238dfd844cba
              pingBack.done( new ServerPing(
                      new ServerPing.Protocol( bungee.getName() + " " + bungee.getGameVersion(), protocol ),
                      new ServerPing.Players( listener.getMaxPlayers(), bungee.getOnlineCount(), null ),
-@@ -321,7 +321,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+@@ -322,7 +322,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection
                  thisState = State.USERNAME;
                  ch.setProtocol( Protocol.LOGIN );
  

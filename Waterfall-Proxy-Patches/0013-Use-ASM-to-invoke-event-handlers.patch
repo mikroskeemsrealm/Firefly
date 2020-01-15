@@ -239,7 +239,7 @@ index 0000000000000000000000000000000000000000..72d8fd43bd879d00b158cbd8efb3c3ca
 +    }
 +}
 diff --git a/event/src/main/java/net/md_5/bungee/event/EventBus.java b/event/src/main/java/net/md_5/bungee/event/EventBus.java
-index 5b5d42010b6daa999714eaa9dff54eb0838c7b15..e8db3b1e03e1d9e0644b5109f23e7994ade45a97 100644
+index f5bd1f9801398e8aaa6b5b6c0722629dc94b8fe3..71f64b96ead6e9956b348de7e9c29168ab0a1873 100644
 --- a/event/src/main/java/net/md_5/bungee/event/EventBus.java
 +++ b/event/src/main/java/net/md_5/bungee/event/EventBus.java
 @@ -50,9 +50,9 @@ public class EventBus
@@ -268,7 +268,7 @@ index 5b5d42010b6daa999714eaa9dff54eb0838c7b15..e8db3b1e03e1d9e0644b5109f23e7994
                  }
                  bakeHandlers( e.getKey() );
              }
-@@ -186,13 +190,13 @@ public class EventBus
+@@ -188,13 +192,13 @@ public class EventBus
                      {
                          for ( Method method : listenerHandlers.getValue() )
                          {

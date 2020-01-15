@@ -51,7 +51,7 @@ index 3380011f0137b6f0974a4675c156e944cfc8bd15..31c6bd3627fc360f3816f2787e0a0373
  
      private TCPFastOpenMode setupTfo(int value) {
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 8360483b65cf685279cddbb28fb159d29c94e876..4d1d95383d8bb39b713904b0daf2031676dee639 100644
+index 60c63cbd8d6805b5dd8b24a6ebadc50cee53d21e..2f14327e3ea864ce3eeb82d9041611e3e5fa856c 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -475,12 +475,39 @@ public class BungeeCord extends ProxyServer
@@ -106,10 +106,10 @@ index 8360483b65cf685279cddbb28fb159d29c94e876..4d1d95383d8bb39b713904b0daf20316
                      try {
                          bossEventLoopGroup.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 diff --git a/proxy/src/main/java/net/md_5/bungee/UserConnection.java b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-index c2b7345e8fd6bd7af2da0a79338a59f8e571eb41..27eb311f54bf4b2a559a12b718eae177d17048c2 100644
+index 5d6022071d23197c584271560edf1ba14668c1b4..73e11313ab4130c04576d885158ab7d62854a93e 100644
 --- a/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 +++ b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-@@ -153,6 +153,7 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.mikroc
+@@ -154,6 +154,7 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.mikroc
              ch.write( packet );
          }
      };

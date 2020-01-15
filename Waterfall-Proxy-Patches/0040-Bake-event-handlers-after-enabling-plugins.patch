@@ -5,10 +5,10 @@ Subject: [PATCH] Bake event handlers after enabling plugins
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
-index 61678965d3225e87b3d0333f38b73bf5d44af935..765846d247f31d498904a9a33b2c8e96a364831d 100644
+index e3dc5b19286b68898fe512d7ac25bfac7f24ea27..e80eba9d60b384a207ac5849075dd164001a8830 100644
 --- a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
 +++ b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
-@@ -322,6 +322,7 @@ public class PluginManager
+@@ -324,6 +324,7 @@ public class PluginManager
                  ProxyServer.getInstance().getLogger().log( Level.WARNING, "Exception encountered when loading plugin: " + plugin.getDescription().getName(), t );
              }
          }
@@ -16,7 +16,7 @@ index 61678965d3225e87b3d0333f38b73bf5d44af935..765846d247f31d498904a9a33b2c8e96
      }
  
      private boolean enablePlugin(Map<PluginDescription, Boolean> pluginStatuses, Stack<PluginDescription> dependStack, PluginDescription plugin)
-@@ -494,6 +495,11 @@ public class PluginManager
+@@ -496,6 +497,11 @@ public class PluginManager
                      "Listener %s has registered using deprecated subscribe annotation! Please update to @EventHandler.", listener );
          }
          */ // MikroCord end
@@ -29,7 +29,7 @@ index 61678965d3225e87b3d0333f38b73bf5d44af935..765846d247f31d498904a9a33b2c8e96
          listenersByPlugin.put( plugin, listener );
      }
 diff --git a/event/src/main/java/net/md_5/bungee/event/EventBus.java b/event/src/main/java/net/md_5/bungee/event/EventBus.java
-index e8db3b1e03e1d9e0644b5109f23e7994ade45a97..0805c0bde676746dbe0e2faa9f63b3897a0ae8a8 100644
+index 71f64b96ead6e9956b348de7e9c29168ab0a1873..5a3bfc710c8164074433d30b2b1cae455802436b 100644
 --- a/event/src/main/java/net/md_5/bungee/event/EventBus.java
 +++ b/event/src/main/java/net/md_5/bungee/event/EventBus.java
 @@ -22,10 +22,12 @@ public class EventBus

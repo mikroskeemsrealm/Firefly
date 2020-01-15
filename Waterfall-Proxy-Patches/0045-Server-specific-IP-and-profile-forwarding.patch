@@ -10,18 +10,18 @@ diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxy
 index a67f3667c40aacba2d7cfe27cc6bd39950f0792a..ea7bc8574316253975813176519cfd3214b6c753 100644
 --- a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
 +++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-@@ -32,11 +32,6 @@ public interface MikroCordProxyConfig {
-      */
+@@ -33,11 +33,6 @@ public interface MikroCordProxyConfig {
      boolean isLogInvalidQueryPackets();
  
--    /**
+     /**
 -     * @return Whether Velocity modern forwarding support is enabled or not
 -     */
 -    boolean isVelocityForwardingSupport();
 -
-     /**
+-    /**
       * @return Velocity modern forwarding secret
       */
+     byte @NonNull [] getVelocityForwardingSecret();
 diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/connection/ForwardingType.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/connection/ForwardingType.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..f45a874f82a3433272cdb0cb62f308017872df06
@@ -80,10 +80,10 @@ index 0000000000000000000000000000000000000000..f45a874f82a3433272cdb0cb62f30801
 +    }
 +}
 diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-index e3591ca7feb5d4fe3dc36df11d690957416cb210..996a50cfcd8b4c50aa4d9decf26f01e0a887865e 100644
+index 647d2493f6fdfe7297124715d2f0165fb21a528e..44394d6993b89f19c545aaf2517aa3717d485894 100644
 --- a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
 +++ b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-@@ -168,6 +168,9 @@ public interface ProxyConfig extends eu.mikroskeem.mikrocord.api.config.MikroCor
+@@ -167,6 +167,9 @@ public interface ProxyConfig extends eu.mikroskeem.mikrocord.api.config.MikroCor
       */
      @Deprecated
      boolean isIpForward();
@@ -94,10 +94,10 @@ index e3591ca7feb5d4fe3dc36df11d690957416cb210..996a50cfcd8b4c50aa4d9decf26f01e0
      /**
       * The encoded favicon.
 diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java b/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
-index 1fd988efda027ecd8908bb386d5aecb41000b00f..4f2172fd0f0c49440d1dde699e54a08aec76daaf 100644
+index 3000e3352130e7369e0ac40a8de62d70a55ccafa..fed3e43c58a7d719efe74d02fab933cef2d5f632 100644
 --- a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
 +++ b/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
-@@ -242,7 +242,27 @@ public abstract class ProxyServer
+@@ -241,7 +241,27 @@ public abstract class ProxyServer
       * @param restricted whether the server info restricted property will be set
       * @return the constructed instance
       */
@@ -147,16 +147,16 @@ diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfigura
 index f243777118b19e199411b66b89759a7b85919f45..c70c1212d2ba4a6777b5ab6f4e5d6662153d83b2 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-@@ -37,9 +37,6 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
-     @Getter
+@@ -38,9 +38,6 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
      private boolean logInvalidQueryPackets = false;
  
--    @Getter
+     @Getter
 -    private boolean velocityForwardingSupport = false;
 -
-     @Getter
+-    @Getter
      private byte[] velocityForwardingSecret;
  
+     @Getter
 @@ -83,7 +80,6 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
          restartScriptPath = config.getString("restart.script_path", restartScriptPath);
          ignoredLogCommands = new HashSet<>(config.getList("log.ignored_commands", () -> ImmutableList.of("login", "register", "changepassword")));
@@ -166,7 +166,7 @@ index f243777118b19e199411b66b89759a7b85919f45..c70c1212d2ba4a6777b5ab6f4e5d6662
          tcpFastOpenEnabled = config.getBoolean("networking.tcp_fast_open.enabled", tcpFastOpenEnabled);
          tcpFastOpenMode = setupTfo(config.getInt("networking.tcp_fast_open.mode", tcpFastOpenMode.value));
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 1921d88d927aa6304ca01da73d8dd01866228eb8..d3be867a4ad2d3382343a1f0e8e7720c2ddbd38c 100644
+index 05c6c7c42709fef9c097b116fd0ffd2c59711349..9faf6173c5cef7a1ef00b597f8a0e3c2106632ef 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -780,9 +780,10 @@ public class BungeeCord extends ProxyServer

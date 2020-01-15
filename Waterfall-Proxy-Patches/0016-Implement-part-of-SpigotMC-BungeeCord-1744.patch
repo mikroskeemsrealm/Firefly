@@ -54,10 +54,10 @@ index 0000000000000000000000000000000000000000..cb68a209276ad6c00c1a90085bb9e57a
 +    }
 +}
 diff --git a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
-index 9105530acb8c091986e304f9673b2b88e31e608b..b77b69f45699aced9002b1bbdd3620837d9fa34f 100644
+index ab98f2fba375f343aa9f2733d1a0a36a38a257ce..0f3fc6721944c05ad6a3fad775aac0b0bd321c49 100644
 --- a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
 +++ b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
-@@ -153,6 +153,23 @@ public class PluginManager
+@@ -155,6 +155,23 @@ public class PluginManager
       * @return whether the command was handled
       */
      public boolean dispatchCommand(CommandSender sender, String commandLine, List<String> tabResults)
@@ -81,7 +81,7 @@ index 9105530acb8c091986e304f9673b2b88e31e608b..b77b69f45699aced9002b1bbdd362083
      {
          String[] split = commandLine.split( " ", -1 );
          // Check for chat that only contains " "
-@@ -200,6 +217,17 @@ public class PluginManager
+@@ -202,6 +219,17 @@ public class PluginManager
          {
              sender.sendMessage( ChatColor.RED + "An internal error occurred whilst executing this command, please check the console log for details." );
              ProxyServer.getInstance().getLogger().log( Level.WARNING, "Error in dispatching command", ex );
