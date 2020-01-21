@@ -1,0 +1,40 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Tue, 21 Jan 2020 20:03:41 +0200
+Subject: [PATCH] TEMPORARY - 1.15.2 protocol support
+
+
+diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/ProtocolConstants.java b/protocol/src/main/java/net/md_5/bungee/protocol/ProtocolConstants.java
+index 7ddcda03f9d50a04feec28cd8ebe4c18d2dcc1ca..7da9c2c49ad343d6b6e8e4e6f058ae53de02787f 100644
+--- a/protocol/src/main/java/net/md_5/bungee/protocol/ProtocolConstants.java
++++ b/protocol/src/main/java/net/md_5/bungee/protocol/ProtocolConstants.java
+@@ -27,6 +27,7 @@ public class ProtocolConstants
+     public static final int MINECRAFT_1_14_4 = 498;
+     public static final int MINECRAFT_1_15 = 573;
+     public static final int MINECRAFT_1_15_1 = 575;
++    public static final int MINECRAFT_1_15_2 = 578;
+     public static final List<String> SUPPORTED_VERSIONS = Arrays.asList(
+             "1.8.x",
+             "1.9.x",
+@@ -58,7 +59,8 @@ public class ProtocolConstants
+             ProtocolConstants.MINECRAFT_1_14_3,
+             ProtocolConstants.MINECRAFT_1_14_4,
+             ProtocolConstants.MINECRAFT_1_15,
+-            ProtocolConstants.MINECRAFT_1_15_1
++            ProtocolConstants.MINECRAFT_1_15_1,
++            ProtocolConstants.MINECRAFT_1_15_2
+     );
+     // MikroCord start
+     public static final int LOWEST_SUPPORTED_VERSION_ID;
+diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
+index eaacc40930ee31c703427df753563990a434f5e8..def55bffb0b257773e0b02d4be14f47e2178a4a4 100644
+--- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
++++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
+@@ -64,6 +64,7 @@ public abstract class EntityMap
+                 return EntityMap_1_14.INSTANCE;
+             case ProtocolConstants.MINECRAFT_1_15:
+             case ProtocolConstants.MINECRAFT_1_15_1:
++            case ProtocolConstants.MINECRAFT_1_15_2:
+                 return EntityMap_1_15.INSTANCE;
+         }
+         throw new RuntimeException( "Version " + version + " has no entity map" );
