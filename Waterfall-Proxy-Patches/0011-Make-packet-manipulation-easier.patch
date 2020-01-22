@@ -21,10 +21,10 @@ index 0000000000000000000000000000000000000000..834540a496667512a542969cbede2265
 +    Channel getChannel();
 +}
 diff --git a/api/src/main/java/net/md_5/bungee/api/connection/Connection.java b/api/src/main/java/net/md_5/bungee/api/connection/Connection.java
-index bfafaa863b2f4072b4718e6ef641270023821778..7aaa48261bac7123c2bb66bc135ecf21215ce435 100644
+index f59b49c78b4e95ffa9f074c34afea165a7f8fd6a..793b08596a831bf7eede3b1af328ca928fcaf2dd 100644
 --- a/api/src/main/java/net/md_5/bungee/api/connection/Connection.java
 +++ b/api/src/main/java/net/md_5/bungee/api/connection/Connection.java
-@@ -9,7 +9,7 @@ import net.md_5.bungee.protocol.DefinedPacket;
+@@ -10,7 +10,7 @@ import net.md_5.bungee.protocol.DefinedPacket;
   * It should expose information about the remote peer, however not be specific
   * to a type of connection, whether server or player.
   */
@@ -124,10 +124,10 @@ index 44dc34ff1ec4ec42fe52559ed2a9237ff6114c21..7c21c01f4d11be04869313974be245ae
  
              ProtocolData protocolData = getProtocolData( version );
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnection.java b/proxy/src/main/java/net/md_5/bungee/ServerConnection.java
-index d11d601ec6a6afdca731a2b0db1655993e3119ad..789a8ec127b1058277831ad794c5cafa75ab8c61 100644
+index 06a0afd5afefd62490a37db273e59801d322a7b2..e92fd58b43fdfb73b6a32e6343ee3fa6c9295641 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnection.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnection.java
-@@ -12,7 +12,7 @@ import net.md_5.bungee.protocol.DefinedPacket;
+@@ -13,7 +13,7 @@ import net.md_5.bungee.protocol.DefinedPacket;
  import net.md_5.bungee.protocol.packet.PluginMessage;
  
  @RequiredArgsConstructor
@@ -136,7 +136,7 @@ index d11d601ec6a6afdca731a2b0db1655993e3119ad..789a8ec127b1058277831ad794c5cafa
  {
  
      @Getter
-@@ -80,4 +80,10 @@ public class ServerConnection implements Server
+@@ -87,4 +87,10 @@ public class ServerConnection implements Server
      {
          return unsafe;
      }
@@ -148,10 +148,10 @@ index d11d601ec6a6afdca731a2b0db1655993e3119ad..789a8ec127b1058277831ad794c5cafa
 +    // MikroCord end
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-index 00cd477f0c0fcd1c740c1f5b422c86172a9baf7b..cfcc1b39b33c205ebd86f91ff5bcb569d85151fa 100644
+index 139c4f09cb731628d3ff00e4df48fec51e8f0872..679cad8b564994e155fed3f75898ea7f82f94608 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-@@ -54,7 +54,7 @@ import net.md_5.bungee.util.BufUtil;
+@@ -55,7 +55,7 @@ import net.md_5.bungee.util.BufUtil;
  import net.md_5.bungee.util.QuietException;
  
  @RequiredArgsConstructor
@@ -160,7 +160,7 @@ index 00cd477f0c0fcd1c740c1f5b422c86172a9baf7b..cfcc1b39b33c205ebd86f91ff5bcb569
  {
  
      private final ProxyServer bungee;
-@@ -440,4 +440,10 @@ public class ServerConnector extends PacketHandler
+@@ -441,4 +441,10 @@ public class ServerConnector extends PacketHandler
      {
          return "[" + user.getName() + "|" + user.getAddress() + "] <-> ServerConnector [" + target.getName() + "]";
      }
@@ -172,10 +172,10 @@ index 00cd477f0c0fcd1c740c1f5b422c86172a9baf7b..cfcc1b39b33c205ebd86f91ff5bcb569
 +    // MikroCord end
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/UserConnection.java b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-index b4cbc3f37d76edc4c3c156f3ee52c04d114504a3..5d6022071d23197c584271560edf1ba14668c1b4 100644
+index e9284882bbf5e4dfc636368456dea1738f80b524..7b30a29ffc9edc3b0c70b7f14af90ea466702e6f 100644
 --- a/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 +++ b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-@@ -66,7 +66,7 @@ import net.md_5.bungee.util.CaseInsensitiveSet;
+@@ -67,7 +67,7 @@ import net.md_5.bungee.util.CaseInsensitiveSet;
  import net.md_5.bungee.util.ChatComponentTransformer;
  
  @RequiredArgsConstructor
@@ -184,7 +184,7 @@ index b4cbc3f37d76edc4c3c156f3ee52c04d114504a3..5d6022071d23197c584271560edf1ba1
  {
  
      /*========================================================================*/
-@@ -747,4 +747,10 @@ public final class UserConnection implements ProxiedPlayer
+@@ -754,4 +754,10 @@ public final class UserConnection implements ProxiedPlayer
          return entityRewrite == net.md_5.bungee.entitymap.EntityMap_Dummy.INSTANCE;
      }
      // Waterfall end
@@ -196,10 +196,10 @@ index b4cbc3f37d76edc4c3c156f3ee52c04d114504a3..5d6022071d23197c584271560edf1ba1
 +    // MikroCord end
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-index 8e637718e94e88fa5afd154c0ab95510b91acecc..b1fdaf9b76a26a4356c61eb2975e28fd4eabef05 100644
+index 8e1b9a19c2db0243f5722ee64f3a09ce647d6626..4580752b37565e557e04ec1d1157acad68dc36ff 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-@@ -640,4 +640,10 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+@@ -647,4 +647,10 @@ public class InitialHandler extends PacketHandler implements PendingConnection
      {
          return !ch.isClosed();
      }

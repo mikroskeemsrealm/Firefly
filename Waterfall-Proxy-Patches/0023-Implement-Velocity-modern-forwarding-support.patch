@@ -165,10 +165,10 @@ index 0000000000000000000000000000000000000000..0dfd1ace15691c0cb5c0b1637c42cd11
 +    }
 +}
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-index cfcc1b39b33c205ebd86f91ff5bcb569d85151fa..66939bd589300d367ac9dfcbafcd4ade0a69f7b6 100644
+index 679cad8b564994e155fed3f75898ea7f82f94608..a9419ac80db2e504c973ad650026235c693f4837 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-@@ -65,6 +65,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
+@@ -66,6 +66,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
      @Getter
      private ForgeServerHandler handshakeHandler;
      private boolean obsolete;
@@ -176,7 +176,7 @@ index cfcc1b39b33c205ebd86f91ff5bcb569d85151fa..66939bd589300d367ac9dfcbafcd4ade
  
      private enum State
      {
-@@ -167,6 +168,11 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
+@@ -168,6 +169,11 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
          Preconditions.checkState( thisState == State.LOGIN_SUCCESS, "Not expecting LOGIN_SUCCESS" );
          ch.setProtocol( Protocol.GAME );
          thisState = State.LOGIN;
@@ -188,7 +188,7 @@ index cfcc1b39b33c205ebd86f91ff5bcb569d85151fa..66939bd589300d367ac9dfcbafcd4ade
  
          // Only reset the Forge client when:
          // 1) The user is switching servers (so has a current server)
-@@ -446,4 +452,34 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
+@@ -447,4 +453,34 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
          return ch.getHandle();
      }
      // MikroCord end

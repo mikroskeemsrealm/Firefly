@@ -5,12 +5,12 @@ Subject: [PATCH] Attempt to make supported protocol id checking faster
 
 
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/ProtocolConstants.java b/protocol/src/main/java/net/md_5/bungee/protocol/ProtocolConstants.java
-index 20bbd5dbc87ec068db7bb6a6c24355946461bc3e..7ddcda03f9d50a04feec28cd8ebe4c18d2dcc1ca 100644
+index cd987c8a8c1b9892efe6033958ec624e246808b3..7da9c2c49ad343d6b6e8e4e6f058ae53de02787f 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/ProtocolConstants.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/ProtocolConstants.java
-@@ -60,6 +60,28 @@ public class ProtocolConstants
-             ProtocolConstants.MINECRAFT_1_15,
-             ProtocolConstants.MINECRAFT_1_15_1
+@@ -62,6 +62,28 @@ public class ProtocolConstants
+             ProtocolConstants.MINECRAFT_1_15_1,
+             ProtocolConstants.MINECRAFT_1_15_2
      );
 +    // MikroCord start
 +    public static final int LOWEST_SUPPORTED_VERSION_ID;
@@ -38,10 +38,10 @@ index 20bbd5dbc87ec068db7bb6a6c24355946461bc3e..7ddcda03f9d50a04feec28cd8ebe4c18
      public static final boolean isBeforeOrEq(int before, int other)
      {
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 9faf6173c5cef7a1ef00b597f8a0e3c2106632ef..1e771507851761c5acb0ce165637b5efd485b6c2 100644
+index ece535c4de44406116c3df4c02c7f78141b61d27..2a1a0d0ea6d9ba3e5c3cb702fc416a07394dccce 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -770,7 +770,7 @@ public class BungeeCord extends ProxyServer
+@@ -773,7 +773,7 @@ public class BungeeCord extends ProxyServer
      @Override
      public int getProtocolVersion()
      {
@@ -51,10 +51,10 @@ index 9faf6173c5cef7a1ef00b597f8a0e3c2106632ef..1e771507851761c5acb0ce165637b5ef
  
      @Override
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-index b1fdaf9b76a26a4356c61eb2975e28fd4eabef05..712a2fe6e92506234758bd3d427df0349f955130 100644
+index 4580752b37565e557e04ec1d1157acad68dc36ff..d93a73a5e4b15f8e3171cef9b696bcc1a3dfa453 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-@@ -250,7 +250,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+@@ -251,7 +251,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection
              ( (BungeeServerInfo) forced ).ping( pingBack, handshake.getProtocolVersion() );
          } else
          {
@@ -63,7 +63,7 @@ index b1fdaf9b76a26a4356c61eb2975e28fd4eabef05..712a2fe6e92506234758bd3d427df034
              pingBack.done( new ServerPing(
                      new ServerPing.Protocol( bungee.getName() + " " + bungee.getGameVersion(), protocol ),
                      new ServerPing.Players( listener.getMaxPlayers(), bungee.getOnlineCount(), null ),
-@@ -322,7 +322,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+@@ -323,7 +323,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection
                  thisState = State.USERNAME;
                  ch.setProtocol( Protocol.LOGIN );
  

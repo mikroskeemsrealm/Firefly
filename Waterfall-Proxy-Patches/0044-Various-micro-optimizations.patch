@@ -38,10 +38,10 @@ index 0000000000000000000000000000000000000000..cea3f8031f5a3e9281855fe4112f8168
 +    }
 +}
 diff --git a/api/src/main/java/net/md_5/bungee/Util.java b/api/src/main/java/net/md_5/bungee/Util.java
-index aede5995fce0d46b441e38c2a0cadfa0c9c320b7..6869659b6849ad7e0527eb77f3a99c4721cee190 100644
+index 0ea352b7f4a1d9e51659b33e6739daa709cd0a55..b74babaf3179c183789e05ee5a063c6d92aaf433 100644
 --- a/api/src/main/java/net/md_5/bungee/Util.java
 +++ b/api/src/main/java/net/md_5/bungee/Util.java
-@@ -65,7 +65,7 @@ public class Util
+@@ -82,7 +82,7 @@ public class Util
      {
          // TODO: We should use clear manually written exceptions
          StackTraceElement[] trace = t.getStackTrace();
@@ -51,7 +51,7 @@ index aede5995fce0d46b441e38c2a0cadfa0c9c320b7..6869659b6849ad7e0527eb77f3a99c47
      }
  
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
-index b0d63201f39c5656afd17daabf07fc61b9a66157..8276f0c00f566deb8803f67d6e337ef7327f1acb 100644
+index d83bbdcde46567ecc76eba3c20c96d4a4d9d042e..a750232314895a7b072ac42ed92ca615d5a9d03f 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 @@ -29,6 +29,7 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
@@ -134,10 +134,10 @@ index 6cec0b5a141a41e9f4e36c25f6f7460aa5dacdc2..0be00b09ea6ff9218d3232f6d507e0ad
      }
  
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 602b58dedb3068fe89611eeb934f8428b75d691d..1921d88d927aa6304ca01da73d8dd01866228eb8 100644
+index e8c232f1c033cb8288e57fa80f14896e9d7baa01..b76356884fdcbd8b0400e7ab5cb6a497903f7a38 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -116,7 +116,7 @@ public class BungeeCord extends ProxyServer
+@@ -117,7 +117,7 @@ public class BungeeCord extends ProxyServer
      /**
       * locations.yml save thread.
       */
@@ -146,7 +146,7 @@ index 602b58dedb3068fe89611eeb934f8428b75d691d..1921d88d927aa6304ca01da73d8dd018
      // private final Timer metricsThread = new Timer( "Metrics Thread" ); // Waterfall: Disable Metrics
      /**
       * Server socket listener.
-@@ -161,6 +161,7 @@ public class BungeeCord extends ProxyServer
+@@ -162,6 +162,7 @@ public class BungeeCord extends ProxyServer
              .registerTypeAdapter( KeybindComponent.class, new KeybindComponentSerializer() )
              .registerTypeAdapter( ScoreComponent.class, new ScoreComponentSerializer() )
              .registerTypeAdapter( SelectorComponent.class, new SelectorComponentSerializer() )
@@ -154,7 +154,7 @@ index 602b58dedb3068fe89611eeb934f8428b75d691d..1921d88d927aa6304ca01da73d8dd018
              .registerTypeAdapter( ServerPing.PlayerInfo.class, new PlayerInfoSerializer() )
              .registerTypeAdapter( Favicon.class, Favicon.getFaviconTypeAdapter() ).create();
      @Getter
-@@ -345,9 +346,13 @@ public class BungeeCord extends ProxyServer
+@@ -346,9 +347,13 @@ public class BungeeCord extends ProxyServer
          {
              connectionThrottle = new ConnectionThrottle( config.getThrottle(), config.getThrottleLimit() );
          }
@@ -168,7 +168,7 @@ index 602b58dedb3068fe89611eeb934f8428b75d691d..1921d88d927aa6304ca01da73d8dd018
          saveThread.scheduleAtFixedRate( new TimerTask()
          {
              @Override
-@@ -518,6 +523,7 @@ public class BungeeCord extends ProxyServer
+@@ -521,6 +526,7 @@ public class BungeeCord extends ProxyServer
                      reconnectHandler.save();
                      reconnectHandler.close();
                  }
@@ -176,7 +176,7 @@ index 602b58dedb3068fe89611eeb934f8428b75d691d..1921d88d927aa6304ca01da73d8dd018
                  saveThread.cancel();
                  // metricsThread.cancel(); // Waterfall: Disable Metrics
  
-@@ -855,6 +861,7 @@ public class BungeeCord extends ProxyServer
+@@ -864,6 +870,7 @@ public class BungeeCord extends ProxyServer
              return Collections.singleton( exactMatch );
          }
  
@@ -184,7 +184,7 @@ index 602b58dedb3068fe89611eeb934f8428b75d691d..1921d88d927aa6304ca01da73d8dd018
          return Sets.newHashSet( Iterables.filter( getPlayers(), new Predicate<ProxiedPlayer>()
          {
  
-@@ -864,6 +871,19 @@ public class BungeeCord extends ProxyServer
+@@ -873,6 +880,19 @@ public class BungeeCord extends ProxyServer
                  return ( input == null ) ? false : input.getName().toLowerCase( Locale.ROOT ).startsWith( partialName.toLowerCase( Locale.ROOT ) );
              }
          } ) );

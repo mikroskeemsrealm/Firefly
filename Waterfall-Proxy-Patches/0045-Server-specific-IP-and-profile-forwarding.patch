@@ -10,18 +10,18 @@ diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxy
 index a67f3667c40aacba2d7cfe27cc6bd39950f0792a..ea7bc8574316253975813176519cfd3214b6c753 100644
 --- a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
 +++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-@@ -33,11 +33,6 @@ public interface MikroCordProxyConfig {
+@@ -32,11 +32,6 @@ public interface MikroCordProxyConfig {
+      */
      boolean isLogInvalidQueryPackets();
  
-     /**
+-    /**
 -     * @return Whether Velocity modern forwarding support is enabled or not
 -     */
 -    boolean isVelocityForwardingSupport();
 -
--    /**
+     /**
       * @return Velocity modern forwarding secret
       */
-     byte @NonNull [] getVelocityForwardingSecret();
 diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/connection/ForwardingType.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/connection/ForwardingType.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..f45a874f82a3433272cdb0cb62f308017872df06
@@ -94,19 +94,35 @@ index 647d2493f6fdfe7297124715d2f0165fb21a528e..44394d6993b89f19c545aaf2517aa371
      /**
       * The encoded favicon.
 diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java b/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
-index 3000e3352130e7369e0ac40a8de62d70a55ccafa..fed3e43c58a7d719efe74d02fab933cef2d5f632 100644
+index 2013df527ff15458bd5d0d877be12f60016c121b..a53421b308f9fa056f0305c0aa3c15f3af2d38d6 100644
 --- a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
 +++ b/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
-@@ -241,7 +241,27 @@ public abstract class ProxyServer
+@@ -242,8 +242,13 @@ public abstract class ProxyServer
       * @param restricted whether the server info restricted property will be set
       * @return the constructed instance
       */
 -    public abstract ServerInfo constructServerInfo(String name, InetSocketAddress address, String motd, boolean restricted);
 +    // MikroCord start - server specific IP forwarding
 +    public ServerInfo constructServerInfo(String name, InetSocketAddress address, String motd, boolean restricted) {
-+        return constructServerInfo(name, address, motd, restricted, getConfig().getIpForwardType());
++        return constructServerInfo(name, (SocketAddress) address, motd, restricted, getConfig().getIpForwardType());
 +    }
 +    // MikroCord end
+ 
++    // MikroCord start - server specific IP forwarding
+     /**
+      * Factory method to construct an implementation specific server info
+      * instance.
+@@ -252,9 +257,44 @@ public abstract class ProxyServer
+      * @param address connectable Minecraft address + port of the server
+      * @param motd the motd when used as a forced server
+      * @param restricted whether the server info restricted property will be set
++     * @param ipForwardType IP forwarding method used by this server
+      * @return the constructed instance
+      */
+-    public abstract ServerInfo constructServerInfo(String name, SocketAddress address, String motd, boolean restricted);
++    public ServerInfo constructServerInfo(String name, InetSocketAddress address, String motd, boolean restricted, eu.mikroskeem.mikrocord.api.connection.ForwardingType ipForwardType) {
++        return constructServerInfo(name, (SocketAddress) address, motd, restricted, ipForwardType);
++    }
 +
 +    // MikroCord start - server specific IP forwarding
 +    /**
@@ -120,17 +136,33 @@ index 3000e3352130e7369e0ac40a8de62d70a55ccafa..fed3e43c58a7d719efe74d02fab933ce
 +     * @param ipForwardType IP forwarding method used by this server
 +     * @return the constructed instance
 +     */
-+    public abstract ServerInfo constructServerInfo(String name, InetSocketAddress address, String motd, boolean restricted, eu.mikroskeem.mikrocord.api.connection.ForwardingType ipForwardType);
++    public abstract ServerInfo constructServerInfo(String name, SocketAddress address, String motd, boolean restricted, eu.mikroskeem.mikrocord.api.connection.ForwardingType ipForwardType);
 +    // MikroCord end
 +
++
++    /**
++     * Factory method to construct an implementation specific server info
++     * instance.
++     *
++     * @param name name of the server
++     * @param address connectable Minecraft address + port of the server
++     * @param motd the motd when used as a forced server
++     * @param restricted whether the server info restricted property will be set
++     * @return the constructed instance
++     */
++    // MikroCord start - server specific IP forwarding
++    public ServerInfo constructServerInfo(String name, SocketAddress address, String motd, boolean restricted) {
++        return constructServerInfo(name, address, motd, restricted, getConfig().getIpForwardType());
++    }
++    // MikroCord end
  
      /**
       * Returns the console overlord for this proxy. Being the console, this
 diff --git a/api/src/main/java/net/md_5/bungee/api/config/ServerInfo.java b/api/src/main/java/net/md_5/bungee/api/config/ServerInfo.java
-index 197738433006035eff85f250a94b692157e4a7b9..c6128787b763621de3196a616c0565840b1808a1 100644
+index b0fc000a32f35d68623fdf07f173e534f30ae42d..0cea0e63bf5d6c69dd834c68c2d30234120a1b3a 100644
 --- a/api/src/main/java/net/md_5/bungee/api/config/ServerInfo.java
 +++ b/api/src/main/java/net/md_5/bungee/api/config/ServerInfo.java
-@@ -104,4 +104,12 @@ public interface ServerInfo
+@@ -115,4 +115,12 @@ public interface ServerInfo
       * @param callback the callback to call when the count has been retrieved.
       */
      void ping(Callback<ServerPing> callback);
@@ -147,16 +179,16 @@ diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfigura
 index f243777118b19e199411b66b89759a7b85919f45..c70c1212d2ba4a6777b5ab6f4e5d6662153d83b2 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-@@ -38,9 +38,6 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -37,9 +37,6 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+     @Getter
      private boolean logInvalidQueryPackets = false;
  
-     @Getter
+-    @Getter
 -    private boolean velocityForwardingSupport = false;
 -
--    @Getter
+     @Getter
      private byte[] velocityForwardingSecret;
  
-     @Getter
 @@ -83,7 +80,6 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
          restartScriptPath = config.getString("restart.script_path", restartScriptPath);
          ignoredLogCommands = new HashSet<>(config.getList("log.ignored_commands", () -> ImmutableList.of("login", "register", "changepassword")));
@@ -166,16 +198,22 @@ index f243777118b19e199411b66b89759a7b85919f45..c70c1212d2ba4a6777b5ab6f4e5d6662
          tcpFastOpenEnabled = config.getBoolean("networking.tcp_fast_open.enabled", tcpFastOpenEnabled);
          tcpFastOpenMode = setupTfo(config.getInt("networking.tcp_fast_open.mode", tcpFastOpenMode.value));
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 05c6c7c42709fef9c097b116fd0ffd2c59711349..9faf6173c5cef7a1ef00b597f8a0e3c2106632ef 100644
+index b76356884fdcbd8b0400e7ab5cb6a497903f7a38..ece535c4de44406116c3df4c02c7f78141b61d27 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -780,9 +780,10 @@ public class BungeeCord extends ProxyServer
+@@ -783,15 +783,10 @@ public class BungeeCord extends ProxyServer
      }
  
      @Override
 -    public ServerInfo constructServerInfo(String name, InetSocketAddress address, String motd, boolean restricted)
-+    public ServerInfo constructServerInfo(String name, InetSocketAddress address, String motd, boolean restricted, eu.mikroskeem.mikrocord.api.connection.ForwardingType ipForwardType) // MikroCord - server specific IP forwarding
++    public ServerInfo constructServerInfo(String name, SocketAddress address, String motd, boolean restricted, eu.mikroskeem.mikrocord.api.connection.ForwardingType ipForwardType) // MikroCord - server specific IP forwarding
      {
+-        return constructServerInfo( name, (SocketAddress) address, motd, restricted );
+-    }
+-
+-    @Override
+-    public ServerInfo constructServerInfo(String name, SocketAddress address, String motd, boolean restricted)
+-    {
 -        return new BungeeServerInfo( name, address, motd, restricted );
 +        Preconditions.checkNotNull( ipForwardType, "ipForwardType" ); // MikroCord - server specific IP forwarding
 +        return new BungeeServerInfo( name, address, motd, restricted, ipForwardType ); // MikroCord - server specific IP forwarding
@@ -183,10 +221,10 @@ index 05c6c7c42709fef9c097b116fd0ffd2c59711349..9faf6173c5cef7a1ef00b597f8a0e3c2
  
      @Override
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeServerInfo.java b/proxy/src/main/java/net/md_5/bungee/BungeeServerInfo.java
-index 4c0637b9a945755a4a88cc51ad20f8418d25f06d..63228ea3f9bc5a1d5aa669fa883c7398c2be38d2 100644
+index 8e86462cbbe298c62c319e18dbe8a225fcf5e063..d8ab9ffedb32e2f1c262a388a88028183369013a 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeServerInfo.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeServerInfo.java
-@@ -34,6 +34,7 @@ import net.md_5.bungee.protocol.packet.PluginMessage;
+@@ -35,6 +35,7 @@ import net.md_5.bungee.protocol.packet.PluginMessage;
  @ToString(of =
  {
      "name", "address", "restricted"
@@ -194,7 +232,7 @@ index 4c0637b9a945755a4a88cc51ad20f8418d25f06d..63228ea3f9bc5a1d5aa669fa883c7398
  })
  public class BungeeServerInfo implements ServerInfo
  {
-@@ -49,6 +50,10 @@ public class BungeeServerInfo implements ServerInfo
+@@ -50,6 +51,10 @@ public class BungeeServerInfo implements ServerInfo
      private final boolean restricted;
      @Getter
      private final Queue<DefinedPacket> packetQueue = new LinkedList<>();
@@ -206,19 +244,19 @@ index 4c0637b9a945755a4a88cc51ad20f8418d25f06d..63228ea3f9bc5a1d5aa669fa883c7398
      @Synchronized("players")
      public void addPlayer(ProxiedPlayer player)
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-index 5ddfc271f78db9bb905108199ffcfe38cd5706fc..828811646693b033d68f46b6bf8485903b39089f 100644
+index 6f5f788bc8bad0e7b4d2411e3bbbae8fb03e1315..245366587b5bf47eb54acb9e1015773c3e8de8fc 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-@@ -100,7 +100,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
+@@ -101,7 +101,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
          Handshake originalHandshake = user.getPendingConnection().getHandshake();
          Handshake copiedHandshake = new Handshake( originalHandshake.getProtocolVersion(), originalHandshake.getHost(), originalHandshake.getPort(), 2 );
  
--        if ( BungeeCord.getInstance().config.isIpForward() )
-+        if ( target.getIpForwardType().isBungeeCord() ) // MikroCord - server specific IP forwarding
+-        if ( BungeeCord.getInstance().config.isIpForward() && user.getSocketAddress() instanceof InetSocketAddress )
++        if ( target.getIpForwardType().isBungeeCord() && user.getSocketAddress() instanceof InetSocketAddress ) // MikroCord - server specific IP forwarding
          {
              String newHost = copiedHandshake.getHost() + "\00" + user.getAddress().getHostString() + "\00" + user.getUUID();
  
-@@ -169,7 +169,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
+@@ -170,7 +170,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
          ch.setProtocol( Protocol.GAME );
          thisState = State.LOGIN;
          // MikroCord start - Implement Velocity modern forwarding support
@@ -227,7 +265,7 @@ index 5ddfc271f78db9bb905108199ffcfe38cd5706fc..828811646693b033d68f46b6bf848590
              throw new QuietException("Your server did not send a forwarding request to the proxy. Is it set up correctly?");
          }
          // MikroCord end
-@@ -456,7 +456,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
+@@ -457,7 +457,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
      // MikroCord start - Implement Velocity modern forwarding support
      @Override
      public void handle(net.md_5.bungee.protocol.packet.LoginPayloadRequest request) {
@@ -268,7 +306,7 @@ index 5c8901f9c722f61c7b5e47c44b2eebba712ab180..5bad1bcfaabfdf29a565b53c35242521
          preventProxyConnections = adapter.getBoolean( "prevent_proxy_connections", preventProxyConnections );
          forgeSupport = adapter.getBoolean( "forge_support", forgeSupport );
 diff --git a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
-index e6b44d652d53ade95612b7e4d0f2dc71514e89a9..558562cc323bc390ced08dfdbf5b388781a23955 100644
+index 908ceee5a92233c5790400ffd8a835bd4a5610cf..2d8490da87ff78f9fdcc2a3e2fa87382f4313742 100644
 --- a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
 +++ b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
 @@ -230,8 +230,17 @@ public class YamlConfig implements ConfigurationAdapter
@@ -284,17 +322,17 @@ index e6b44d652d53ade95612b7e4d0f2dc71514e89a9..558562cc323bc390ced08dfdbf5b3887
 +                throw new IllegalArgumentException("Invalid forwarding type: " + ipForwardingTypeRaw);
 +            }
 +            // MikroCord end
-             InetSocketAddress address = Util.getAddr( addr );
+             SocketAddress address = Util.getAddr( addr );
 -            ServerInfo info = ProxyServer.getInstance().constructServerInfo( name, address, motd, restricted );
 +            ServerInfo info = ProxyServer.getInstance().constructServerInfo( name, address, motd, restricted, ipForwardingType ); // MikroCord - server specific IP forwarding
              ret.put( name, info );
          }
  
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-index dde20137bf8bdb971d2ed67aa7f317e7fb47c15d..91d19d989d7c9266b8fa45f888f4863cb0008a38 100644
+index f1ea609742ac9768a161f412d097d844747947ea..60186eb2f5f7b4844750bc0e03e781d66b6d9430 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-@@ -136,7 +136,7 @@ public class DownstreamBridge extends PacketHandler
+@@ -138,7 +138,7 @@ public class DownstreamBridge extends PacketHandler
      @Override
      public void handle(PacketWrapper packet) throws Exception
      {
@@ -303,7 +341,7 @@ index dde20137bf8bdb971d2ed67aa7f317e7fb47c15d..91d19d989d7c9266b8fa45f888f4863c
          con.sendPacket( packet );
      }
  
-@@ -150,7 +150,7 @@ public class DownstreamBridge extends PacketHandler
+@@ -152,7 +152,7 @@ public class DownstreamBridge extends PacketHandler
      @Override
      public void handle(PlayerListItem playerList) throws Exception
      {
@@ -326,10 +364,10 @@ index cb52bd781b09cb5c471fdcadb93e70785e934716..d223a904f1d4406757614ae1f6d18497
          }
      }
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
-index af27f65c3ba57caccc9c25cae1da5e4e4ac43078..eaacc40930ee31c703427df753563990a434f5e8 100644
+index d210858770b335c3166dafe77c59c43e6c29267e..d8285f9d9ded8f9819c63a1c9a901c00b3a518b2 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
-@@ -89,24 +89,28 @@ public abstract class EntityMap
+@@ -90,24 +90,28 @@ public abstract class EntityMap
          }
      }
  

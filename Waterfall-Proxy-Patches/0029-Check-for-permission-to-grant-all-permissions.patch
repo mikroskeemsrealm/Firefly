@@ -5,10 +5,10 @@ Subject: [PATCH] Check for '*' permission to grant all permissions
 
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/UserConnection.java b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-index 318867098540256eaa4674e3e9cb3cdd823224a3..9af157fd44112419644af476377db8f462389270 100644
+index 39c8bc8b3a2665ced10af25fee88bdb06a4a42bf..b3c1d106f1dad6c423b7994f18a6ca4ba5aa42c4 100644
 --- a/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 +++ b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-@@ -561,7 +561,7 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.mikroc
+@@ -568,7 +568,7 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.mikroc
      @Override
      public boolean hasPermission(String permission)
      {

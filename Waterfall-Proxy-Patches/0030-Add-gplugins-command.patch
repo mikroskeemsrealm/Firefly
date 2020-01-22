@@ -51,10 +51,10 @@ index 0000000000000000000000000000000000000000..53d40cf5d783b77ed338b8f2597c03d1
 +    }
 +}
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 4d1d95383d8bb39b713904b0daf2031676dee639..98b29cf195ba04289a151c0f8410b6723834a674 100644
+index af8e57a42e77686aaedef84ccf2cd267f3ec751b..b262554d4afffde55e0d8aee7ddc25291411dc13 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -278,6 +278,7 @@ public class BungeeCord extends ProxyServer
+@@ -279,6 +279,7 @@ public class BungeeCord extends ProxyServer
          getPluginManager().registerCommand( null, new CommandPerms() );
          // MikroCord start - Fork specific commands
          getPluginManager().registerCommand(null, new eu.mikroskeem.mikrocord.command.CommandRestart());

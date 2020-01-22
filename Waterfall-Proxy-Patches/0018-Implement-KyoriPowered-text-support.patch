@@ -39,10 +39,10 @@ index d58883110e3990bc017ec74582bc48a9f7b35db7..46056f0b12afd11d1bc261a5f899d30c
       * Get all groups this user is part of. This returns an unmodifiable
       * collection.
 diff --git a/api/src/main/java/net/md_5/bungee/api/connection/Connection.java b/api/src/main/java/net/md_5/bungee/api/connection/Connection.java
-index 7aaa48261bac7123c2bb66bc135ecf21215ce435..a754af5a4260fa8705ff39b1f7bb5885fbd17183 100644
+index 793b08596a831bf7eede3b1af328ca928fcaf2dd..cb72f1cc8a3f384be73614140f08075d19b39329 100644
 --- a/api/src/main/java/net/md_5/bungee/api/connection/Connection.java
 +++ b/api/src/main/java/net/md_5/bungee/api/connection/Connection.java
-@@ -50,6 +50,20 @@ public interface Connection extends eu.mikroskeem.mikrocord.api.network.ChannelH
+@@ -60,6 +60,20 @@ public interface Connection extends eu.mikroskeem.mikrocord.api.network.ChannelH
       */
      void disconnect(BaseComponent reason);
  
@@ -136,10 +136,10 @@ index 2a780694068d013775db0bed015b62f2b2285ca6..a9950b4ae1d860a3177d2fe3f80e7244
              registerTypeAdapter( TextComponent.class, new TextComponentSerializer() ).
              registerTypeAdapter( TranslatableComponent.class, new TranslatableComponentSerializer() ).
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 435b3fba0e0bd3a7b6d4a17f5349ef0cb10e5766..ed1c30c269a005780033c9893c1c8b9306e4269a 100644
+index 56d3560d2620ece47fa02a49f850cba90e239be4..72087708b787bcb2192a0547fd70a435c13dfbbf 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -154,7 +154,7 @@ public class BungeeCord extends ProxyServer
+@@ -155,7 +155,7 @@ public class BungeeCord extends ProxyServer
      // Waterfall end
      @Getter
      private final Logger logger;

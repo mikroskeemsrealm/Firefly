@@ -30,7 +30,7 @@ index 52e085e7bdd7ff5845d3c6aab19baf0dc064ad47..a67f3667c40aacba2d7cfe27cc6bd399
 +    int getPrometheusListenPort();
  }
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
-index 393a23789286ac3c22c1f7790de3ab8f4b7dac06..b0d63201f39c5656afd17daabf07fc61b9a66157 100644
+index eb36d8607fd2d22b11772477a3f3e6d278e4102c..d83bbdcde46567ecc76eba3c20c96d4a4d9d042e 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 @@ -24,6 +24,11 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
@@ -242,10 +242,10 @@ index 0000000000000000000000000000000000000000..14d3775e1c0674d4cf89f90900ebad54
 +    }
 +}
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 98b29cf195ba04289a151c0f8410b6723834a674..602b58dedb3068fe89611eeb934f8428b75d691d 100644
+index b262554d4afffde55e0d8aee7ddc25291411dc13..e8c232f1c033cb8288e57fa80f14896e9d7baa01 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -345,6 +345,7 @@ public class BungeeCord extends ProxyServer
+@@ -346,6 +346,7 @@ public class BungeeCord extends ProxyServer
          {
              connectionThrottle = new ConnectionThrottle( config.getThrottle(), config.getThrottleLimit() );
          }
@@ -253,7 +253,7 @@ index 98b29cf195ba04289a151c0f8410b6723834a674..602b58dedb3068fe89611eeb934f8428
          startListeners();
  
          saveThread.scheduleAtFixedRate( new TimerTask()
-@@ -461,6 +462,7 @@ public class BungeeCord extends ProxyServer
+@@ -464,6 +465,7 @@ public class BungeeCord extends ProxyServer
              public void run()
              {
                  stopListeners();
@@ -261,7 +261,7 @@ index 98b29cf195ba04289a151c0f8410b6723834a674..602b58dedb3068fe89611eeb934f8428
                  getLogger().info( "Closing pending connections" );
  
                  connectionLock.readLock().lock();
-@@ -811,6 +813,7 @@ public class BungeeCord extends ProxyServer
+@@ -820,6 +822,7 @@ public class BungeeCord extends ProxyServer
              connections.put( con.getName(), con );
              connectionsByUUID.put( con.getUniqueId(), con );
              connectionsByOfflineUUID.put( con.getPendingConnection().getOfflineId(), con );

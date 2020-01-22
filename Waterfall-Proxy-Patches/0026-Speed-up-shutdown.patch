@@ -51,10 +51,10 @@ index 3380011f0137b6f0974a4675c156e944cfc8bd15..31c6bd3627fc360f3816f2787e0a0373
  
      private TCPFastOpenMode setupTfo(int value) {
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 60c63cbd8d6805b5dd8b24a6ebadc50cee53d21e..2f14327e3ea864ce3eeb82d9041611e3e5fa856c 100644
+index 2a9756a3e5381e703189f682daa4eddd08ea035d..af8e57a42e77686aaedef84ccf2cd267f3ec751b 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -475,12 +475,39 @@ public class BungeeCord extends ProxyServer
+@@ -478,12 +478,39 @@ public class BungeeCord extends ProxyServer
                      connectionLock.readLock().unlock();
                  }
  
@@ -94,7 +94,7 @@ index 60c63cbd8d6805b5dd8b24a6ebadc50cee53d21e..2f14327e3ea864ce3eeb82d9041611e3
  
                  if ( reconnectHandler != null )
                  {
-@@ -511,8 +538,8 @@ public class BungeeCord extends ProxyServer
+@@ -514,8 +541,8 @@ public class BungeeCord extends ProxyServer
                  }
  
                  getLogger().info( "Closing IO threads" );
@@ -106,10 +106,10 @@ index 60c63cbd8d6805b5dd8b24a6ebadc50cee53d21e..2f14327e3ea864ce3eeb82d9041611e3
                      try {
                          bossEventLoopGroup.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 diff --git a/proxy/src/main/java/net/md_5/bungee/UserConnection.java b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-index 5d6022071d23197c584271560edf1ba14668c1b4..73e11313ab4130c04576d885158ab7d62854a93e 100644
+index 7b30a29ffc9edc3b0c70b7f14af90ea466702e6f..57b723b1f5d6dcbb294bd5f9cdadfa13363c9577 100644
 --- a/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 +++ b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-@@ -154,6 +154,7 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.mikroc
+@@ -155,6 +155,7 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.mikroc
              ch.write( packet );
          }
      };

@@ -5,10 +5,10 @@ Subject: [PATCH] Copy new messages.properties if not present
 
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index ed1c30c269a005780033c9893c1c8b9306e4269a..8360483b65cf685279cddbb28fb159d29c94e876 100644
+index 72087708b787bcb2192a0547fd70a435c13dfbbf..2a9756a3e5381e703189f682daa4eddd08ea035d 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -579,6 +579,15 @@ public class BungeeCord extends ProxyServer
+@@ -582,6 +582,15 @@ public class BungeeCord extends ProxyServer
                  getLogger().log( Level.SEVERE, "Could not load custom messages.properties", ex );
              }
          }
