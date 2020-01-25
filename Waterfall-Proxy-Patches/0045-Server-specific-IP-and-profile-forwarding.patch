@@ -80,10 +80,10 @@ index 0000000000000000000000000000000000000000..f45a874f82a3433272cdb0cb62f30801
 +    }
 +}
 diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-index 647d2493f6fdfe7297124715d2f0165fb21a528e..44394d6993b89f19c545aaf2517aa3717d485894 100644
+index 616f6e831b01525480b7f35bbaedae8b7e483113..c95656e3f7e1f310b875bc70e8b2ccc4930ebaf8 100644
 --- a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
 +++ b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-@@ -167,6 +167,9 @@ public interface ProxyConfig extends eu.mikroskeem.mikrocord.api.config.MikroCor
+@@ -175,6 +175,9 @@ public interface ProxyConfig extends eu.mikroskeem.mikrocord.api.config.MikroCor
       */
      @Deprecated
      boolean isIpForward();
@@ -221,18 +221,18 @@ index b76356884fdcbd8b0400e7ab5cb6a497903f7a38..ece535c4de44406116c3df4c02c7f781
  
      @Override
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeServerInfo.java b/proxy/src/main/java/net/md_5/bungee/BungeeServerInfo.java
-index 8e86462cbbe298c62c319e18dbe8a225fcf5e063..d8ab9ffedb32e2f1c262a388a88028183369013a 100644
+index fa4fff0e7563e36f3b8992b3a97348c4c7a53edf..33557c8a10819ff4dd814182fabb7948a84f7746 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeServerInfo.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeServerInfo.java
-@@ -35,6 +35,7 @@ import net.md_5.bungee.protocol.packet.PluginMessage;
+@@ -36,6 +36,7 @@ import net.md_5.bungee.protocol.packet.PluginMessage;
  @ToString(of =
  {
-     "name", "address", "restricted"
+     "name", "socketAddress", "restricted"
 +        , "ipForwardType" // MikroCord - server specific IP forwarding
  })
+ // CHECKSTYLE:ON
  public class BungeeServerInfo implements ServerInfo
- {
-@@ -50,6 +51,10 @@ public class BungeeServerInfo implements ServerInfo
+@@ -52,6 +53,10 @@ public class BungeeServerInfo implements ServerInfo
      private final boolean restricted;
      @Getter
      private final Queue<DefinedPacket> packetQueue = new LinkedList<>();
@@ -275,10 +275,10 @@ index 6f5f788bc8bad0e7b4d2411e3bbbae8fb03e1315..245366587b5bf47eb54acb9e1015773c
              try {
                  // Create forwarding data
 diff --git a/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java b/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java
-index 5c8901f9c722f61c7b5e47c44b2eebba712ab180..5bad1bcfaabfdf29a565b53c35242521f3f0a189 100644
+index 6e65a3a15319a5f56446fcc4cf3ec9df7fef68f4..f562d09c08eb1b3a61506e943789283caa39e792 100644
 --- a/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java
 +++ b/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java
-@@ -63,6 +63,7 @@ public abstract class Configuration implements ProxyConfig
+@@ -64,6 +64,7 @@ public abstract class Configuration implements ProxyConfig
      private int throttle = 4000;
      private int throttleLimit = 3;
      private boolean ipForward = true; // MikroCord - sane configuration defaults
@@ -286,7 +286,7 @@ index 5c8901f9c722f61c7b5e47c44b2eebba712ab180..5bad1bcfaabfdf29a565b53c35242521
      private Favicon favicon;
      private int compressionThreshold = 256;
      private boolean preventProxyConnections;
-@@ -95,7 +96,18 @@ public abstract class Configuration implements ProxyConfig
+@@ -97,7 +98,18 @@ public abstract class Configuration implements ProxyConfig
          playerLimit = adapter.getInt( "player_limit", playerLimit );
          throttle = adapter.getInt( "connection_throttle", throttle );
          throttleLimit = adapter.getInt( "connection_throttle_limit", throttleLimit );
@@ -329,10 +329,10 @@ index 908ceee5a92233c5790400ffd8a835bd4a5610cf..2d8490da87ff78f9fdcc2a3e2fa87382
          }
  
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-index f1ea609742ac9768a161f412d097d844747947ea..60186eb2f5f7b4844750bc0e03e781d66b6d9430 100644
+index 09db9464ffaf30c1a5d3024a11d5294688d6c233..39d8ecec77874df3ebb3435a8381feaf5fc11c6c 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-@@ -138,7 +138,7 @@ public class DownstreamBridge extends PacketHandler
+@@ -139,7 +139,7 @@ public class DownstreamBridge extends PacketHandler
      @Override
      public void handle(PacketWrapper packet) throws Exception
      {
@@ -341,7 +341,7 @@ index f1ea609742ac9768a161f412d097d844747947ea..60186eb2f5f7b4844750bc0e03e781d6
          con.sendPacket( packet );
      }
  
-@@ -152,7 +152,7 @@ public class DownstreamBridge extends PacketHandler
+@@ -155,7 +155,7 @@ public class DownstreamBridge extends PacketHandler
      @Override
      public void handle(PlayerListItem playerList) throws Exception
      {
@@ -351,10 +351,10 @@ index f1ea609742ac9768a161f412d097d844747947ea..60186eb2f5f7b4844750bc0e03e781d6
          throw CancelSendSignal.INSTANCE; // Always throw because of profile rewriting
      }
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java
-index cb52bd781b09cb5c471fdcadb93e70785e934716..d223a904f1d4406757614ae1f6d18497e0ffd46c 100644
+index 9c57a972befe345557aef2668ab4f5952ed3925c..cad42aec65138a2bb15c6d461383f120704359d7 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java
-@@ -117,7 +117,7 @@ public class UpstreamBridge extends PacketHandler
+@@ -118,7 +118,7 @@ public class UpstreamBridge extends PacketHandler
      {
          if ( con.getServer() != null )
          {
@@ -364,7 +364,7 @@ index cb52bd781b09cb5c471fdcadb93e70785e934716..d223a904f1d4406757614ae1f6d18497
          }
      }
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
-index d210858770b335c3166dafe77c59c43e6c29267e..d8285f9d9ded8f9819c63a1c9a901c00b3a518b2 100644
+index e6afb98db1822d26d239bdfdfc9510fdb220f551..def55bffb0b257773e0b02d4be14f47e2178a4a4 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
 @@ -90,24 +90,28 @@ public abstract class EntityMap

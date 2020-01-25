@@ -124,10 +124,10 @@ index 44dc34ff1ec4ec42fe52559ed2a9237ff6114c21..7c21c01f4d11be04869313974be245ae
  
              ProtocolData protocolData = getProtocolData( version );
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnection.java b/proxy/src/main/java/net/md_5/bungee/ServerConnection.java
-index 06a0afd5afefd62490a37db273e59801d322a7b2..e92fd58b43fdfb73b6a32e6343ee3fa6c9295641 100644
+index 864610433bd505cedf9e770f4b4161da1e9f23e5..145cc8ee795fab770dd0ca529fa8d4c440a870cf 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnection.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnection.java
-@@ -13,7 +13,7 @@ import net.md_5.bungee.protocol.DefinedPacket;
+@@ -16,7 +16,7 @@ import net.md_5.bungee.protocol.DefinedPacket;
  import net.md_5.bungee.protocol.packet.PluginMessage;
  
  @RequiredArgsConstructor
@@ -136,9 +136,9 @@ index 06a0afd5afefd62490a37db273e59801d322a7b2..e92fd58b43fdfb73b6a32e6343ee3fa6
  {
  
      @Getter
-@@ -87,4 +87,10 @@ public class ServerConnection implements Server
-     {
-         return unsafe;
+@@ -97,4 +97,10 @@ public class ServerConnection implements Server
+         private final long id;
+         private final long time;
      }
 +    // MikroCord start - make packet manipulation easier
 +    @Override
@@ -172,7 +172,7 @@ index 139c4f09cb731628d3ff00e4df48fec51e8f0872..679cad8b564994e155fed3f75898ea7f
 +    // MikroCord end
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/UserConnection.java b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-index e9284882bbf5e4dfc636368456dea1738f80b524..7b30a29ffc9edc3b0c70b7f14af90ea466702e6f 100644
+index 95dbaefdb4b3b3bc291c555756957a041f43b844..c267b3edb2a68d8f0b61bb466283894e9f16dd88 100644
 --- a/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 +++ b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 @@ -67,7 +67,7 @@ import net.md_5.bungee.util.CaseInsensitiveSet;
@@ -184,7 +184,7 @@ index e9284882bbf5e4dfc636368456dea1738f80b524..7b30a29ffc9edc3b0c70b7f14af90ea4
  {
  
      /*========================================================================*/
-@@ -754,4 +754,10 @@ public final class UserConnection implements ProxiedPlayer
+@@ -751,4 +751,10 @@ public final class UserConnection implements ProxiedPlayer
          return entityRewrite == net.md_5.bungee.entitymap.EntityMap_Dummy.INSTANCE;
      }
      // Waterfall end
