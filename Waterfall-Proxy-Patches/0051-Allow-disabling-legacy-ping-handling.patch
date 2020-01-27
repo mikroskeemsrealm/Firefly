@@ -1,0 +1,56 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Mon, 27 Jan 2020 21:56:06 +0200
+Subject: [PATCH] Allow disabling legacy ping handling
+
+
+diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
+index b5d0cb50b65fcebb0f24dac45481ebf3f498b899..c23dc0e1f9d9803b5727d6854a72cf8e7995bb6c 100644
+--- a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
++++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
+@@ -94,4 +94,6 @@ public interface MikroCordProxyConfig {
+     boolean isDropConnectionsSendingInvalidPackets();
+ 
+     boolean isLogPacketDecodeErrors();
++
++    boolean isHandleLegacyPing();
+ }
+diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
+index d532202af2cbd90c826ee1d73382c5155c6ae650..d6e0701ecb36f8949cc26d66951c5cb5b7782d31 100644
+--- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
++++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
+@@ -87,6 +87,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+     @Getter
+     private boolean logUnparsableChatJson = true;
+ 
++    @Getter
++    private boolean handleLegacyPing = true;
++
+     @Override
+     public void load() {
+         super.load();
+@@ -113,6 +116,7 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+         logPacketDecodeErrors = config.getBoolean("packets.log_packet_decode_errors", logPacketDecodeErrors);
+         logUnparsableChatJson = config.getBoolean("log.unparsable_chat_json", logUnparsableChatJson);
+         ComponentSerializer.debugJsonParsing.set(logUnparsableChatJson);
++        handleLegacyPing = config.getBoolean("packets.handle_legacy_ping", handleLegacyPing);
+     }
+ 
+     private TCPFastOpenMode setupTfo(int value) {
+diff --git a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
+index 31a029a3380101a31199b904eb9386355a7cc7ce..f252f7b12401706defdd5b39291856533ecd2c68 100644
+--- a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
++++ b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
+@@ -171,6 +171,12 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+     {
+         this.legacy = true;
+         final boolean v1_5 = ping.isV1_5();
++        // MikroCord start
++        if (!bungee.config.isHandleLegacyPing()) {
++            ch.close();
++            return;
++        }
++        // MikroCord end
+ 
+         ServerPing legacy = new ServerPing( new ServerPing.Protocol( bungee.getName() + " " + bungee.getGameVersion(), bungee.getProtocolVersion() ),
+                 new ServerPing.Players( listener.getMaxPlayers(), bungee.getOnlineCount(), null ),
