@@ -18,7 +18,7 @@ index b1adfdd0c547befd93fef12322b29c26d23e2779..93c7f7ef2f6f3a470995692787d52103
      /**
       * The supported versions displayed to the client
 diff --git a/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java b/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java
-index 289983e16340eb0c4f41ccf505b5dbb4ca687856..6e65a3a15319a5f56446fcc4cf3ec9df7fef68f4 100644
+index 0ca9d16a6b487b362f7d5f4228c859afa377ff75..fd60b33e694e89ebf9957ee16d5d62d663989eb8 100644
 --- a/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java
 +++ b/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java
 @@ -39,7 +39,7 @@ public abstract class Configuration implements ProxyConfig
@@ -30,7 +30,7 @@ index 289983e16340eb0c4f41ccf505b5dbb4ca687856..6e65a3a15319a5f56446fcc4cf3ec9df
      /**
       * Set of all listeners.
       */
-@@ -57,13 +57,13 @@ public abstract class Configuration implements ProxyConfig
+@@ -57,7 +57,7 @@ public abstract class Configuration implements ProxyConfig
       * Whether we log proxy commands to the proxy log
       */
      private boolean logCommands;
@@ -39,6 +39,8 @@ index 289983e16340eb0c4f41ccf505b5dbb4ca687856..6e65a3a15319a5f56446fcc4cf3ec9df
      private int remotePingCache = -1;
      private int playerLimit = -1;
      private Collection<String> disabledCommands;
+@@ -65,7 +65,7 @@ public abstract class Configuration implements ProxyConfig
+     private int remotePingTimeout = 5000;
      private int throttle = 4000;
      private int throttleLimit = 3;
 -    private boolean ipForward;
@@ -46,7 +48,7 @@ index 289983e16340eb0c4f41ccf505b5dbb4ca687856..6e65a3a15319a5f56446fcc4cf3ec9df
      private Favicon favicon;
      private int compressionThreshold = 256;
      private boolean preventProxyConnections;
-@@ -89,7 +89,7 @@ public abstract class Configuration implements ProxyConfig
+@@ -91,7 +91,7 @@ public abstract class Configuration implements ProxyConfig
  
          listeners = adapter.getListeners();
          timeout = adapter.getInt( "timeout", timeout );

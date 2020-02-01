@@ -80,10 +80,10 @@ index 0000000000000000000000000000000000000000..f45a874f82a3433272cdb0cb62f30801
 +    }
 +}
 diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-index 616f6e831b01525480b7f35bbaedae8b7e483113..c95656e3f7e1f310b875bc70e8b2ccc4930ebaf8 100644
+index b31964df1b7a7d759181022ed8f33ca4ada85c54..b95a8b1b85ebe1f84de9e2f2701cf38715b5bfa3 100644
 --- a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
 +++ b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-@@ -175,6 +175,9 @@ public interface ProxyConfig extends eu.mikroskeem.mikrocord.api.config.MikroCor
+@@ -191,6 +191,9 @@ public interface ProxyConfig extends eu.mikroskeem.mikrocord.api.config.MikroCor
       */
      @Deprecated
      boolean isIpForward();
@@ -221,7 +221,7 @@ index b76356884fdcbd8b0400e7ab5cb6a497903f7a38..ece535c4de44406116c3df4c02c7f781
  
      @Override
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeServerInfo.java b/proxy/src/main/java/net/md_5/bungee/BungeeServerInfo.java
-index fa4fff0e7563e36f3b8992b3a97348c4c7a53edf..33557c8a10819ff4dd814182fabb7948a84f7746 100644
+index 7b002089ef9dd9f365dc0f7db076976b8dc6260c..170dfe4b331d5da4fff73a7321b45e590e66c2ad 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeServerInfo.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeServerInfo.java
 @@ -36,6 +36,7 @@ import net.md_5.bungee.protocol.packet.PluginMessage;
@@ -275,10 +275,10 @@ index 6f5f788bc8bad0e7b4d2411e3bbbae8fb03e1315..245366587b5bf47eb54acb9e1015773c
              try {
                  // Create forwarding data
 diff --git a/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java b/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java
-index 6e65a3a15319a5f56446fcc4cf3ec9df7fef68f4..f562d09c08eb1b3a61506e943789283caa39e792 100644
+index fd60b33e694e89ebf9957ee16d5d62d663989eb8..a5aaefc07d53a8e45c19490068c84bed78ea52b7 100644
 --- a/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java
 +++ b/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java
-@@ -64,6 +64,7 @@ public abstract class Configuration implements ProxyConfig
+@@ -66,6 +66,7 @@ public abstract class Configuration implements ProxyConfig
      private int throttle = 4000;
      private int throttleLimit = 3;
      private boolean ipForward = true; // MikroCord - sane configuration defaults
@@ -286,8 +286,8 @@ index 6e65a3a15319a5f56446fcc4cf3ec9df7fef68f4..f562d09c08eb1b3a61506e943789283c
      private Favicon favicon;
      private int compressionThreshold = 256;
      private boolean preventProxyConnections;
-@@ -97,7 +98,18 @@ public abstract class Configuration implements ProxyConfig
-         playerLimit = adapter.getInt( "player_limit", playerLimit );
+@@ -101,7 +102,18 @@ public abstract class Configuration implements ProxyConfig
+         remotePingTimeout = adapter.getInt( "remote_ping_timeout", remotePingTimeout );
          throttle = adapter.getInt( "connection_throttle", throttle );
          throttleLimit = adapter.getInt( "connection_throttle_limit", throttleLimit );
 +        /* // MikroCord start - server specific IP forwarding
@@ -329,7 +329,7 @@ index 908ceee5a92233c5790400ffd8a835bd4a5610cf..2d8490da87ff78f9fdcc2a3e2fa87382
          }
  
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-index 09db9464ffaf30c1a5d3024a11d5294688d6c233..39d8ecec77874df3ebb3435a8381feaf5fc11c6c 100644
+index a10081f800ab952a7490d9216d72b9a0543e5aca..842e01a31b2896b28612a88f3576491ab53f7fc8 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
 @@ -139,7 +139,7 @@ public class DownstreamBridge extends PacketHandler
@@ -341,7 +341,7 @@ index 09db9464ffaf30c1a5d3024a11d5294688d6c233..39d8ecec77874df3ebb3435a8381feaf
          con.sendPacket( packet );
      }
  
-@@ -155,7 +155,7 @@ public class DownstreamBridge extends PacketHandler
+@@ -156,7 +156,7 @@ public class DownstreamBridge extends PacketHandler
      @Override
      public void handle(PlayerListItem playerList) throws Exception
      {

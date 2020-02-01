@@ -124,7 +124,7 @@ index 44dc34ff1ec4ec42fe52559ed2a9237ff6114c21..7c21c01f4d11be04869313974be245ae
  
              ProtocolData protocolData = getProtocolData( version );
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnection.java b/proxy/src/main/java/net/md_5/bungee/ServerConnection.java
-index 864610433bd505cedf9e770f4b4161da1e9f23e5..145cc8ee795fab770dd0ca529fa8d4c440a870cf 100644
+index 95904de9fd0f1f34a397e714c569131a5981b145..1cfb367fe791666f8857759c6b94b07f8a6f3fd6 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnection.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnection.java
 @@ -16,7 +16,7 @@ import net.md_5.bungee.protocol.DefinedPacket;
@@ -196,10 +196,10 @@ index 95dbaefdb4b3b3bc291c555756957a041f43b844..c267b3edb2a68d8f0b61bb466283894e
 +    // MikroCord end
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-index 8e1b9a19c2db0243f5722ee64f3a09ce647d6626..4580752b37565e557e04ec1d1157acad68dc36ff 100644
+index 007d3dafc715efd5305f153b8957eb810abba585..01cad6fd6299b14664622087b76c5c8285daf452 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-@@ -647,4 +647,10 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+@@ -668,4 +668,10 @@ public class InitialHandler extends PacketHandler implements PendingConnection
      {
          return !ch.isClosed();
      }

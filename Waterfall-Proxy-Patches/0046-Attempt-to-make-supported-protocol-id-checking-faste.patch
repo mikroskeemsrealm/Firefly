@@ -51,19 +51,19 @@ index ece535c4de44406116c3df4c02c7f78141b61d27..2a1a0d0ea6d9ba3e5c3cb702fc416a07
  
      @Override
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-index 4580752b37565e557e04ec1d1157acad68dc36ff..d93a73a5e4b15f8e3171cef9b696bcc1a3dfa453 100644
+index 01cad6fd6299b14664622087b76c5c8285daf452..d4dae3cdddc2772a1b60f35db72a44d5314a054f 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-@@ -251,7 +251,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection
-             ( (BungeeServerInfo) forced ).ping( pingBack, handshake.getProtocolVersion() );
-         } else
+@@ -235,7 +235,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+ 
+         ServerInfo forced = AbstractReconnectHandler.getForcedHost( this );
+         final String motd = ( forced != null ) ? forced.getMotd() : listener.getMotd();
+-        final int protocol = ( ProtocolConstants.SUPPORTED_VERSION_IDS.contains( handshake.getProtocolVersion() ) ) ? handshake.getProtocolVersion() : bungee.getProtocolVersion();
++        final int protocol = ( ProtocolConstants.isSupportedProtocol(/*SUPPORTED_VERSION_IDS.contains(*/ handshake.getProtocolVersion() ) ) ? handshake.getProtocolVersion() : bungee.getProtocolVersion(); // MikroCord
+ 
+         Callback<ServerPing> pingBack = new Callback<ServerPing>()
          {
--            int protocol = ( ProtocolConstants.SUPPORTED_VERSION_IDS.contains( handshake.getProtocolVersion() ) ) ? handshake.getProtocolVersion() : bungee.getProtocolVersion();
-+            int protocol = ( ProtocolConstants.isSupportedProtocol(/*SUPPORTED_VERSION_IDS.contains(*/ handshake.getProtocolVersion() ) ) ? handshake.getProtocolVersion() : bungee.getProtocolVersion(); // MikroCord
-             pingBack.done( new ServerPing(
-                     new ServerPing.Protocol( bungee.getName() + " " + bungee.getGameVersion(), protocol ),
-                     new ServerPing.Players( listener.getMaxPlayers(), bungee.getOnlineCount(), null ),
-@@ -323,7 +323,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+@@ -338,7 +338,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection
                  thisState = State.USERNAME;
                  ch.setProtocol( Protocol.LOGIN );
  
