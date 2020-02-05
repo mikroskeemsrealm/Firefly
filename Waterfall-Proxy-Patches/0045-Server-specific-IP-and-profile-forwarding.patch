@@ -613,7 +613,7 @@ index e9702b16f63eb4765954d620b8b3f19942e38594..d442ab9140fd8623552e6d1c07d4386d
              UUID uuid = DefinedPacket.readUUID( packet );
              ProxiedPlayer player;
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_15.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_15.java
-index ea9e5ec9dff144ff853e5aaca997a3b85273c22f..ae65abde5e717a9be4f5c2c6472b30a19f0679a3 100644
+index ea9e5ec9dff144ff853e5aaca997a3b85273c22f..fe958bb1af0db67b45ae4e312b1c5098b2bc4461 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_15.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_15.java
 @@ -47,9 +47,9 @@ class EntityMap_1_15 extends EntityMap
@@ -628,7 +628,7 @@ index ea9e5ec9dff144ff853e5aaca997a3b85273c22f..ae65abde5e717a9be4f5c2c6472b30a1
  
          // Special cases
          int readerIndex = packet.readerIndex();
-@@ -160,9 +160,9 @@ class EntityMap_1_15 extends EntityMap
+@@ -160,15 +160,15 @@ class EntityMap_1_15 extends EntityMap
      }
  
      @Override
@@ -640,6 +640,13 @@ index ea9e5ec9dff144ff853e5aaca997a3b85273c22f..ae65abde5e717a9be4f5c2c6472b30a1
          // Special cases
          int readerIndex = packet.readerIndex();
          int packetId = DefinedPacket.readVarInt( packet );
+         int packetIdLength = packet.readerIndex() - readerIndex;
+ 
+-        if ( packetId == 0x2B /* Spectate : PacketPlayInSpectate */ && !BungeeCord.getInstance().getConfig().isIpForward() )
++        if ( packetId == 0x2B /* Spectate : PacketPlayInSpectate */ && server.getInfo().getIpForwardType().isOff() ) // MikroCord - server specific IP forwarding
+         {
+             UUID uuid = DefinedPacket.readUUID( packet );
+             ProxiedPlayer player;
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_8.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_8.java
 index 8e2dbe69929a67af592eb6aebb8049e8cb8e6171..f87213e25464f7e13204f38cb31b92ea57d93590 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_8.java
