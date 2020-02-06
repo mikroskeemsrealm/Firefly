@@ -1,0 +1,34 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Thu, 6 Feb 2020 17:53:53 +0200
+Subject: [PATCH] Print out Java runtime and OS information on startup
+
+
+diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java b/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
+index 0453d5c32c70721e6fc3f3d0e92830968ea31fc0..3d27baadb715945bb7aa0fbe690fda1f18c85080 100644
+--- a/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
++++ b/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
+@@ -61,6 +61,23 @@ public class BungeeCordLauncher
+         }
+ 
+         BungeeCord bungee = new BungeeCord();
++        // MikroCord start - Output JVM and OS information on startup
++        // Credit goes to Paper
++        var runtimeMX = java.lang.management.ManagementFactory.getRuntimeMXBean();
++        var osMX = java.lang.management.ManagementFactory.getOperatingSystemMXBean();
++        if (runtimeMX != null && osMX != null) {
++            bungee.getLogger().log(
++                    java.util.logging.Level.INFO,
++                    "System Info: Java: {0} ({1} {2}) Host: {3} {4} ({5})",
++                    new Object[]{
++                            runtimeMX.getSpecVersion(), runtimeMX.getVmName(), runtimeMX.getVmVersion(),
++                            osMX.getName(), osMX.getVersion(), osMX.getArch()
++                    }
++            );
++        } else {
++            bungee.getLogger().warning("Unable to read system info");
++        }
++        // MikroCord end
+         ProxyServer.setInstance( bungee );
+         bungee.getLogger().info( "Enabled MikroCord version " + bungee.getVersion() );
+         bungee.start();
