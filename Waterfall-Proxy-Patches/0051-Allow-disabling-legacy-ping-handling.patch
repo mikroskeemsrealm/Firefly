@@ -16,10 +16,10 @@ index b5d0cb50b65fcebb0f24dac45481ebf3f498b899..c23dc0e1f9d9803b5727d6854a72cf8e
 +    boolean isHandleLegacyPing();
  }
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index d532202af2cbd90c826ee1d73382c5155c6ae650..d6e0701ecb36f8949cc26d66951c5cb5b7782d31 100644
+index 3ffb841becd6436b7aa594adabc6a1846aa79837..3557312e0bb287f3c7f02fc86185484959c7156d 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-@@ -87,6 +87,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -88,6 +88,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
      @Getter
      private boolean logUnparsableChatJson = true;
  
@@ -29,7 +29,7 @@ index d532202af2cbd90c826ee1d73382c5155c6ae650..d6e0701ecb36f8949cc26d66951c5cb5
      @Override
      public void load() {
          super.load();
-@@ -113,6 +116,7 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -114,6 +117,7 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
          logPacketDecodeErrors = config.getBoolean("packets.log_packet_decode_errors", logPacketDecodeErrors);
          logUnparsableChatJson = config.getBoolean("log.unparsable_chat_json", logUnparsableChatJson);
          ComponentSerializer.debugJsonParsing.set(logUnparsableChatJson);

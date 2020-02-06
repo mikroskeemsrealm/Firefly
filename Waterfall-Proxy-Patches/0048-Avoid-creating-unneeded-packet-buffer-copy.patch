@@ -5,43 +5,65 @@ Subject: [PATCH] Avoid creating unneeded packet buffer copy
 
 
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
-index 4146d8b420027dbb988d888613a405587cbea712..ada1649040749d8d98605a0b935c6fdbcdb29387 100644
+index 4146d8b420027dbb988d888613a405587cbea712..73c86f130d5194dbaf344aca4040a3a8820b5573 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
-@@ -52,7 +52,11 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
+@@ -36,6 +36,10 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
+     private final boolean logPacketDumpOnDecodeError;
+     private final boolean closeConnectionOnDecodeError;
+     // MikroCord end
++    // MikroCord start - Avoid creating unneeded packet buffer copy
++    @Setter private static java.util.function.BooleanSupplier copyPacketBufferSupplier;
++    private final boolean copyPacketBuffer;
++    // MikroCord end
+ 
+     public MinecraftDecoder(Protocol protocol, boolean server, int protocolVersion) {
+         this.protocol = protocol;
+@@ -46,13 +50,21 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
+         this.logPacketDumpOnDecodeError = logPacketDumpOnDecodeErrorSupplier.getAsBoolean();
+         this.closeConnectionOnDecodeError = closeConnectionOnDecodeErrorSupplier.getAsBoolean();
+         // MikroCord end
++        // MikroCord start - Avoid creating unneeded packet buffer copy
++        this.copyPacketBuffer = copyPacketBufferSupplier.getAsBoolean();
++        // MikroCord end
+     }
+ 
+     @Override
      protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception
      {
          Protocol.DirectionData prot = ( server ) ? protocol.TO_SERVER : protocol.TO_CLIENT;
 +        /* MikroCord start - Avoid creating unneeded packet buffer copy
          ByteBuf slice = in.copy(); // Can't slice this one due to EntityMap :(
 +        */
++        var slice = copyPacketBuffer ? in.copy() : in;
 +        int readIdx = in.readerIndex();
 +        // MikroCord end
  
          Object packetTypeInfo = null;
          try
-@@ -78,13 +82,20 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
-                     throw new BadPacketException( "Did not read all bytes from packet " + packet.getClass() + " " + packetId + " Protocol " + protocol + " Direction " + prot.getDirection() );
+@@ -79,12 +91,20 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
                  }
                  decodedMetric.run(); // MikroCord - add Prometheus metrics support
-+            /* MikroCord start - Avoid creating unneeded packet buffer copy
              } else
++                if (copyPacketBuffer) // MikroCord - Avoid creating unneeded packet buffer copy
              {
                  in.skipBytes( in.readableBytes() );
-+            */ // MikroCord end
              }
  
-+            /* MikroCord start
-             out.add( new PacketWrapper( packet, slice ) );
+-            out.add( new PacketWrapper( packet, slice ) );
++            if (copyPacketBuffer) { // MikroCord - Avoid creating unneeded packet buffer copy
++            out.add(new PacketWrapper(packet, slice));
              slice = null;
-+            */
-+            in.readerIndex(readIdx);
-+            out.add(new PacketWrapper(packet, in.retain()));
-+            // MikroCord end
++            // MikroCord start - Avoid creating unneeded packet buffer copy
++            } else {
++                in.readerIndex(readIdx);
++                out.add(new PacketWrapper(packet, in.retain()));
++                slice = null;
++            } // MikroCord end
          } catch (BadPacketException | IndexOutOfBoundsException e) {
              invalidPacketMetric.run(); // MikroCord - add Prometheus metrics support
              final String packetTypeStr;
-@@ -102,19 +113,21 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
+@@ -102,7 +122,7 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
              /* // MikroCord start - add option to disable noisy packet decode exception
              throw new FastDecoderException("Error decoding packet " + packetTypeStr + " with contents:\n" + ByteBufUtil.prettyHexDump(slice), e); // Waterfall
              */
@@ -50,17 +72,15 @@ index 4146d8b420027dbb988d888613a405587cbea712..ada1649040749d8d98605a0b935c6fdb
              if (!this.noisyPacketDecodeException) {
                  de.setStackTrace(new StackTraceElement[0]);
                  de.getCause().setStackTrace(new StackTraceElement[0]);
-             }
-             throw de;
-             // MikroCord end
-+        /* // MikroCord start - Avoid creating unneeded packet buffer copy
-         } finally
-         {
-             if ( slice != null )
-             {
-                 slice.release();
-             }
-+        */ // MikroCord end
-         }
+diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
+index 3b915db9ad6669d67310f91cdab1f1fcf3eadd23..0302528391ab16f8fdadf4bdd601b3b5728023d7 100644
+--- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
++++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
+@@ -26,6 +26,7 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+         MinecraftDecoder.setNoisyPacketDecodeExceptionSupplier(this::isLogNoisyPacketDecodeException);
+         MinecraftDecoder.setLogPacketDumpOnDecodeErrorSupplier(this::isLogPacketDecodeErrors);
+         MinecraftDecoder.setCloseConnectionOnDecodeErrorSupplier(this::isDropConnectionsSendingInvalidPackets);
++        MinecraftDecoder.setCopyPacketBufferSupplier(() -> !isDisableEntityMetadataRewrite());
+         Varint21FrameDecoder.setCloseConnectionOnDecodeErrorSupplier(this::isDropConnectionsSendingInvalidPackets);
      }
- }
+ 

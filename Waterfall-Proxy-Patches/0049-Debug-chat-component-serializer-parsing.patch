@@ -33,7 +33,7 @@ index a9950b4ae1d860a3177d2fe3f80e7244037edcdb..d69660081a4a0cea127f1a014847f32b
          JsonElement jsonElement = JSON_PARSER.parse( json );
  
 diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index 3b915db9ad6669d67310f91cdab1f1fcf3eadd23..d532202af2cbd90c826ee1d73382c5155c6ae650 100644
+index 0302528391ab16f8fdadf4bdd601b3b5728023d7..3ffb841becd6436b7aa594adabc6a1846aa79837 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 @@ -8,6 +8,7 @@ import io.github.waterfallmc.waterfall.conf.WaterfallConfiguration;
@@ -44,7 +44,7 @@ index 3b915db9ad6669d67310f91cdab1f1fcf3eadd23..d532202af2cbd90c826ee1d73382c515
  import net.md_5.bungee.netty.PipelineUtils;
  import net.md_5.bungee.protocol.MinecraftDecoder;
  import net.md_5.bungee.protocol.Varint21FrameDecoder;
-@@ -83,6 +84,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -84,6 +85,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
      @Getter
      private boolean logPacketDecodeErrors = false;
  
@@ -54,7 +54,7 @@ index 3b915db9ad6669d67310f91cdab1f1fcf3eadd23..d532202af2cbd90c826ee1d73382c515
      @Override
      public void load() {
          super.load();
-@@ -107,6 +111,8 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -108,6 +112,8 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
          logInvalidLoginPackets = config.getBoolean("log.invalid_login_process_packets", logInvalidLoginPackets);
          dropConnectionsSendingInvalidPackets = config.getBoolean("packets.drop_invalid_packet_senders", dropConnectionsSendingInvalidPackets);
          logPacketDecodeErrors = config.getBoolean("packets.log_packet_decode_errors", logPacketDecodeErrors);
