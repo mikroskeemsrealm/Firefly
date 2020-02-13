@@ -10,18 +10,18 @@ diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxy
 index a67f3667c40aacba2d7cfe27cc6bd39950f0792a..ea7bc8574316253975813176519cfd3214b6c753 100644
 --- a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
 +++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-@@ -32,11 +32,6 @@ public interface MikroCordProxyConfig {
-      */
+@@ -33,11 +33,6 @@ public interface MikroCordProxyConfig {
      boolean isLogInvalidQueryPackets();
  
--    /**
+     /**
 -     * @return Whether Velocity modern forwarding support is enabled or not
 -     */
 -    boolean isVelocityForwardingSupport();
 -
-     /**
+-    /**
       * @return Velocity modern forwarding secret
       */
+     byte @NonNull [] getVelocityForwardingSecret();
 diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/connection/ForwardingType.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/connection/ForwardingType.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..f45a874f82a3433272cdb0cb62f308017872df06
@@ -179,16 +179,16 @@ diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfigura
 index f243777118b19e199411b66b89759a7b85919f45..c70c1212d2ba4a6777b5ab6f4e5d6662153d83b2 100644
 --- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-@@ -37,9 +37,6 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
-     @Getter
+@@ -38,9 +38,6 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
      private boolean logInvalidQueryPackets = false;
  
--    @Getter
+     @Getter
 -    private boolean velocityForwardingSupport = false;
 -
-     @Getter
+-    @Getter
      private byte[] velocityForwardingSecret;
  
+     @Getter
 @@ -83,7 +80,6 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
          restartScriptPath = config.getString("restart.script_path", restartScriptPath);
          ignoredLogCommands = new HashSet<>(config.getList("log.ignored_commands", () -> ImmutableList.of("login", "register", "changepassword")));
@@ -403,7 +403,7 @@ index e6afb98db1822d26d239bdfdfc9510fdb220f551..def55bffb0b257773e0b02d4be14f47e
  
      protected static void rewriteInt(ByteBuf packet, int oldId, int newId, int offset)
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_10.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_10.java
-index 39efaf99063d3a9e8416f36b7c3fae7c5b3ec9f6..ce046151ceaaf0c8c653ee9accf6363e40ec6178 100644
+index 6db530c3aeda7481b2ef967e598f3fee5b7f5acd..3bcf5e551f76e0eb6e663e5fb894f7c7f1ec2f44 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_10.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_10.java
 @@ -48,9 +48,9 @@ class EntityMap_1_10 extends EntityMap
@@ -418,7 +418,7 @@ index 39efaf99063d3a9e8416f36b7c3fae7c5b3ec9f6..ce046151ceaaf0c8c653ee9accf6363e
  
          // Special cases
          int readerIndex = packet.readerIndex();
-@@ -155,15 +155,15 @@ class EntityMap_1_10 extends EntityMap
+@@ -156,15 +156,15 @@ class EntityMap_1_10 extends EntityMap
      }
  
      @Override
@@ -438,7 +438,7 @@ index 39efaf99063d3a9e8416f36b7c3fae7c5b3ec9f6..ce046151ceaaf0c8c653ee9accf6363e
              UUID uuid = DefinedPacket.readUUID( packet );
              ProxiedPlayer player;
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_11.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_11.java
-index 6047fcb5f700533eb8d5ab101869e430c7c8ca47..6527216bd0d833fb08842b9550cd4c71168f51cf 100644
+index 368221275097dd58dbfbb5b150875424570e17c5..a663f1813864675d5cec671e7e3dead339a47728 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_11.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_11.java
 @@ -48,9 +48,9 @@ class EntityMap_1_11 extends EntityMap
@@ -453,7 +453,7 @@ index 6047fcb5f700533eb8d5ab101869e430c7c8ca47..6527216bd0d833fb08842b9550cd4c71
  
          // Special cases
          int readerIndex = packet.readerIndex();
-@@ -156,15 +156,15 @@ class EntityMap_1_11 extends EntityMap
+@@ -157,15 +157,15 @@ class EntityMap_1_11 extends EntityMap
      }
  
      @Override
@@ -473,7 +473,7 @@ index 6047fcb5f700533eb8d5ab101869e430c7c8ca47..6527216bd0d833fb08842b9550cd4c71
              UUID uuid = DefinedPacket.readUUID( packet );
              ProxiedPlayer player;
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_12.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_12.java
-index 54221465920672ed09761131f5324c451a0bb1de..80d600c0e015a94460f749c9174edfb308804749 100644
+index 38e12ce400de9dab0e90145f0e68f2ce694886ba..56f93ca7a09b7d621d7bbcd7fdfb0a38e505d526 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_12.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_12.java
 @@ -48,9 +48,9 @@ class EntityMap_1_12 extends EntityMap
@@ -488,7 +488,7 @@ index 54221465920672ed09761131f5324c451a0bb1de..80d600c0e015a94460f749c9174edfb3
  
          // Special cases
          int readerIndex = packet.readerIndex();
-@@ -156,15 +156,15 @@ class EntityMap_1_12 extends EntityMap
+@@ -157,15 +157,15 @@ class EntityMap_1_12 extends EntityMap
      }
  
      @Override
@@ -508,7 +508,7 @@ index 54221465920672ed09761131f5324c451a0bb1de..80d600c0e015a94460f749c9174edfb3
              UUID uuid = DefinedPacket.readUUID( packet );
              ProxiedPlayer player;
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_12_1.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_12_1.java
-index 75d651c579ea2f4503f55a7116bb723cadfe2385..db0ff8a250ce24efe530b177aaeb832d7f8cb94a 100644
+index 5f296839480bc0ec68c80b1bfca87ebf36df18ab..faae406a99a25c8938b04073bae577ff3ffdb187 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_12_1.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_12_1.java
 @@ -48,9 +48,9 @@ class EntityMap_1_12_1 extends EntityMap
@@ -523,7 +523,7 @@ index 75d651c579ea2f4503f55a7116bb723cadfe2385..db0ff8a250ce24efe530b177aaeb832d
  
          // Special cases
          int readerIndex = packet.readerIndex();
-@@ -156,15 +156,15 @@ class EntityMap_1_12_1 extends EntityMap
+@@ -157,15 +157,15 @@ class EntityMap_1_12_1 extends EntityMap
      }
  
      @Override
@@ -543,7 +543,7 @@ index 75d651c579ea2f4503f55a7116bb723cadfe2385..db0ff8a250ce24efe530b177aaeb832d
              UUID uuid = DefinedPacket.readUUID( packet );
              ProxiedPlayer player;
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_13.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_13.java
-index d737fe2517692d3e68976595d1bc4da4cd883a19..3056a12d406026903615de1490f01315f08c22cc 100644
+index f3372f0885073469672ec1e1da379066e00d70a4..175b1e6cddfbe84cb07dd218a581c83e59f59806 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_13.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_13.java
 @@ -48,9 +48,9 @@ class EntityMap_1_13 extends EntityMap
@@ -558,7 +558,7 @@ index d737fe2517692d3e68976595d1bc4da4cd883a19..3056a12d406026903615de1490f01315
  
          // Special cases
          int readerIndex = packet.readerIndex();
-@@ -156,15 +156,15 @@ class EntityMap_1_13 extends EntityMap
+@@ -157,15 +157,15 @@ class EntityMap_1_13 extends EntityMap
      }
  
      @Override
@@ -578,7 +578,7 @@ index d737fe2517692d3e68976595d1bc4da4cd883a19..3056a12d406026903615de1490f01315
              UUID uuid = DefinedPacket.readUUID( packet );
              ProxiedPlayer player;
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_14.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_14.java
-index e9702b16f63eb4765954d620b8b3f19942e38594..d442ab9140fd8623552e6d1c07d4386db6a8c3b9 100644
+index 8210b0a7e347e381900b5a7b2ac436c8aa085c9d..f67c235b946a0d193dd853e468cfe7b492aa65ec 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_14.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_14.java
 @@ -47,9 +47,9 @@ class EntityMap_1_14 extends EntityMap
@@ -593,7 +593,7 @@ index e9702b16f63eb4765954d620b8b3f19942e38594..d442ab9140fd8623552e6d1c07d4386d
  
          // Special cases
          int readerIndex = packet.readerIndex();
-@@ -160,15 +160,15 @@ class EntityMap_1_14 extends EntityMap
+@@ -161,15 +161,15 @@ class EntityMap_1_14 extends EntityMap
      }
  
      @Override
@@ -613,7 +613,7 @@ index e9702b16f63eb4765954d620b8b3f19942e38594..d442ab9140fd8623552e6d1c07d4386d
              UUID uuid = DefinedPacket.readUUID( packet );
              ProxiedPlayer player;
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_15.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_15.java
-index ea9e5ec9dff144ff853e5aaca997a3b85273c22f..fe958bb1af0db67b45ae4e312b1c5098b2bc4461 100644
+index c2cf810f348462b3470da2040fd1102861a20005..ba33689b371695612d39fa785c85b4660e879c74 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_15.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_15.java
 @@ -47,9 +47,9 @@ class EntityMap_1_15 extends EntityMap
@@ -628,7 +628,7 @@ index ea9e5ec9dff144ff853e5aaca997a3b85273c22f..fe958bb1af0db67b45ae4e312b1c5098
  
          // Special cases
          int readerIndex = packet.readerIndex();
-@@ -160,15 +160,15 @@ class EntityMap_1_15 extends EntityMap
+@@ -161,15 +161,15 @@ class EntityMap_1_15 extends EntityMap
      }
  
      @Override
@@ -683,7 +683,7 @@ index 8e2dbe69929a67af592eb6aebb8049e8cb8e6171..f87213e25464f7e13204f38cb31b92ea
              UUID uuid = DefinedPacket.readUUID( packet );
              ProxiedPlayer player;
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_9.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_9.java
-index a4d0ea3f92dcb6a4a4a216d32eb60bc0a8a325cc..7eac3a12c657390ef2c79a8f8d19661cf138ee7d 100644
+index d61dc0cbaf00b931523a9c3bbdc493e362d854e1..30197a354f3aaf5c055a28318e4bd23687968836 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_9.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_9.java
 @@ -48,9 +48,9 @@ class EntityMap_1_9 extends EntityMap
@@ -698,7 +698,7 @@ index a4d0ea3f92dcb6a4a4a216d32eb60bc0a8a325cc..7eac3a12c657390ef2c79a8f8d19661c
  
          // Special cases
          int readerIndex = packet.readerIndex();
-@@ -155,15 +155,15 @@ class EntityMap_1_9 extends EntityMap
+@@ -156,15 +156,15 @@ class EntityMap_1_9 extends EntityMap
      }
  
      @Override
@@ -718,7 +718,7 @@ index a4d0ea3f92dcb6a4a4a216d32eb60bc0a8a325cc..7eac3a12c657390ef2c79a8f8d19661c
              UUID uuid = DefinedPacket.readUUID( packet );
              ProxiedPlayer player;
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_9_4.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_9_4.java
-index ae7ff10e5cde31c0b01fc581d46c9eee5a2c433b..1ff37813c395a888067d1238d5d03a4779933a64 100644
+index bfbc84327c8d590f1fe1c47c83b63d9975394f54..5def2f81687734f8949efac879c572d19dd47483 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_9_4.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_9_4.java
 @@ -48,9 +48,9 @@ class EntityMap_1_9_4 extends EntityMap
@@ -733,7 +733,7 @@ index ae7ff10e5cde31c0b01fc581d46c9eee5a2c433b..1ff37813c395a888067d1238d5d03a47
  
          // Special cases
          int readerIndex = packet.readerIndex();
-@@ -155,15 +155,15 @@ class EntityMap_1_9_4 extends EntityMap
+@@ -156,15 +156,15 @@ class EntityMap_1_9_4 extends EntityMap
      }
  
      @Override

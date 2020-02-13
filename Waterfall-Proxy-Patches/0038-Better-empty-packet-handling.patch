@@ -33,7 +33,7 @@ index 743d65e43549f4db3b1f6785a69ab69e19004285..81c3626af3679671f633c561698b5519
                  {
                      throw new CorruptedFrameException( "Empty Packet!" );
 diff --git a/proxy/src/main/java/net/md_5/bungee/UserConnection.java b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-index 7398702e9fc0cd3cf3676ab88d6cce3533c18e6e..ea11c06ef1b80d4b72dfd73c097cbb112e7d935e 100644
+index 979c3030a1f8e37857e79233f5e1ff59fb46176e..62160b886d32a2d592077964cc3e6607a5aed75d 100644
 --- a/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 +++ b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 @@ -345,6 +345,7 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.mikroc
@@ -45,10 +45,10 @@ index 7398702e9fc0cd3cf3676ab88d6cce3533c18e6e..ea11c06ef1b80d4b72dfd73c097cbb11
                  ch.pipeline().addAfter( PipelineUtils.FRAME_PREPENDER, PipelineUtils.PACKET_ENCODER, new MinecraftEncoder( Protocol.HANDSHAKE, false, getPendingConnection().getVersion() ) );
                  ch.pipeline().get( HandlerBoss.class ).setHandler( new ServerConnector( bungee, UserConnection.this, target ) );
 diff --git a/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java b/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
-index 6eab1ae7e036efc9a4d9acc9dc10dd4b1f6690ce..ead795bec32b10c2ea69bd26d61319f3c1e2aabd 100644
+index 4186ab11436adce2ccb7165c6585d8c86511cd73..046c64a28f81c9f9e199b69a2fadbae38aa45b63 100644
 --- a/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
 +++ b/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
-@@ -86,6 +86,7 @@ public class PipelineUtils
+@@ -87,6 +87,7 @@ public class PipelineUtils
                  ch.config().setOption(io.netty.channel.epoll.EpollChannelOption.TCP_FASTOPEN, BungeeCord.getInstance().getConfig().getTcpFastOpenMode().value);
              }
              // MikroCord end
@@ -56,7 +56,7 @@ index 6eab1ae7e036efc9a4d9acc9dc10dd4b1f6690ce..ead795bec32b10c2ea69bd26d61319f3
              ch.pipeline().addBefore( FRAME_DECODER, LEGACY_DECODER, new LegacyDecoder() );
              ch.pipeline().addAfter( FRAME_DECODER, PACKET_DECODER, new MinecraftDecoder( Protocol.HANDSHAKE, true, ProxyServer.getInstance().getProtocolVersion() ) );
              ch.pipeline().addAfter( FRAME_PREPENDER, PACKET_ENCODER, new MinecraftEncoder( Protocol.HANDSHAKE, true, ProxyServer.getInstance().getProtocolVersion() ) );
-@@ -193,7 +194,7 @@ public class PipelineUtils
+@@ -194,7 +195,7 @@ public class PipelineUtils
              ch.config().setWriteBufferWaterMark( MARK );
  
              ch.pipeline().addLast( TIMEOUT_HANDLER, new ReadTimeoutHandler( BungeeCord.getInstance().config.getTimeout(), TimeUnit.MILLISECONDS ) );

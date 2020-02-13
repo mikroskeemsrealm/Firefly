@@ -114,10 +114,10 @@ index 5b0b1c5e730bb857616cb39598f96ee0904582aa..1df8934ab767a27f1e8a4e49816d7920
      }
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java b/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
-index e89f36691c1fe4716f7677decd8ea887a9e6dcf0..00c3b64c15500b81d200eea5e9d02daa7663a49b 100644
+index 4ad17d1a53b594e8af55fe3b84e13aa780ad8c11..e56219f8b8fbde57568e0a911a7cc64b9f5b06a5 100644
 --- a/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
 +++ b/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
-@@ -81,6 +81,11 @@ public class PipelineUtils
+@@ -82,6 +82,11 @@ public class PipelineUtils
                  ch.close();
                  return;
              }

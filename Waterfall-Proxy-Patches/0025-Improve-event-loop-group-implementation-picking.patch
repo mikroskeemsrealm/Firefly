@@ -49,10 +49,10 @@ index 1df8934ab767a27f1e8a4e49816d79200024ece7..3380011f0137b6f0974a4675c156e944
          ProxyServer.getInstance().getLogger().log(Level.INFO, "TCP fast open mode is set to {0}", actual.name());
          return actual;
 diff --git a/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java b/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
-index 00c3b64c15500b81d200eea5e9d02daa7663a49b..6eab1ae7e036efc9a4d9acc9dc10dd4b1f6690ce 100644
+index e56219f8b8fbde57568e0a911a7cc64b9f5b06a5..4186ab11436adce2ccb7165c6585d8c86511cd73 100644
 --- a/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
 +++ b/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
-@@ -116,12 +116,15 @@ public class PipelineUtils
+@@ -117,12 +117,15 @@ public class PipelineUtils
      public static final String LEGACY_KICKER = "legacy-kick";
  
      private static boolean epoll;
@@ -70,7 +70,7 @@ index 00c3b64c15500b81d200eea5e9d02daa7663a49b..6eab1ae7e036efc9a4d9acc9dc10dd4b
  
              if ( epoll = Epoll.isAvailable() )
              {
-@@ -131,6 +134,7 @@ public class PipelineUtils
+@@ -132,6 +135,7 @@ public class PipelineUtils
                  ProxyServer.getInstance().getLogger().log( Level.WARNING, "Epoll is not working, falling back to NIO: {0}", Util.exception( Epoll.unavailabilityCause() ) );
              }
          }
