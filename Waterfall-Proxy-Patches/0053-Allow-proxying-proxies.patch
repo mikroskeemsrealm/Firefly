@@ -1,0 +1,52 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Sat, 15 Feb 2020 17:42:13 +0200
+Subject: [PATCH] Allow proxying proxies
+
+Disabled by default, this option is available for few hackish things
+
+diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
+index c23dc0e1f9d9803b5727d6854a72cf8e7995bb6c..81e68ae414090752aad0f693dda884756f0ba413 100644
+--- a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
++++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
+@@ -96,4 +96,6 @@ public interface MikroCordProxyConfig {
+     boolean isLogPacketDecodeErrors();
+ 
+     boolean isHandleLegacyPing();
++
++    boolean isAllowProxyingProxies();
+ }
+diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
+index 3557312e0bb287f3c7f02fc86185484959c7156d..d6bd09baed0f6439430be2679fdf55f92309d151 100644
+--- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
++++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
+@@ -91,6 +91,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+     @Getter
+     private boolean handleLegacyPing = true;
+ 
++    @Getter
++    private boolean allowProxyingProxies = false;
++
+     @Override
+     public void load() {
+         super.load();
+@@ -118,6 +121,7 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+         logUnparsableChatJson = config.getBoolean("log.unparsable_chat_json", logUnparsableChatJson);
+         ComponentSerializer.debugJsonParsing.set(logUnparsableChatJson);
+         handleLegacyPing = config.getBoolean("packets.handle_legacy_ping", handleLegacyPing);
++        allowProxyingProxies = config.getBoolean("allow_proxying_proxies", allowProxyingProxies);
+     }
+ 
+     private TCPFastOpenMode setupTfo(int value) {
+diff --git a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
+index 842e01a31b2896b28612a88f3576491ab53f7fc8..c2c8df17a81ac84f59e33be7db9d6077976857e1 100644
+--- a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
++++ b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
+@@ -279,6 +279,7 @@ public class DownstreamBridge extends PacketHandler
+             String serverBrand = DefinedPacket.readString( brand );
+             brand.release();
+ 
++            if (!bungee.getConfig().isAllowProxyingProxies()) // MikroCord - Allow proxying proxies when enabled
+             Preconditions.checkState( !serverBrand.contains( bungee.getName() ), "Cannot connect proxy to itself!" );
+ 
+             brand = ByteBufAllocator.DEFAULT.heapBuffer();
