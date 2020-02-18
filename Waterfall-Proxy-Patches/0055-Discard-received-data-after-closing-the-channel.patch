@@ -1,0 +1,109 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Tue, 18 Feb 2020 11:06:09 +0200
+Subject: [PATCH] Discard received data after closing the channel
+
+https://github.com/VelocityPowered/Velocity/commit/8ae7945b9f41ab98ab42f0678634dd9d3aaa6aa4
+
+diff --git a/protocol/src/main/java/eu/mikroskeem/mikrocord/DiscardHandler.java b/protocol/src/main/java/eu/mikroskeem/mikrocord/DiscardHandler.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..d1e8bfcb7c83a7c51757a0a23555aa36002c9f19
+--- /dev/null
++++ b/protocol/src/main/java/eu/mikroskeem/mikrocord/DiscardHandler.java
+@@ -0,0 +1,39 @@
++package eu.mikroskeem.mikrocord;
++
++import io.netty.channel.Channel;
++import io.netty.channel.ChannelFutureListener;
++import io.netty.channel.ChannelHandlerContext;
++import io.netty.channel.ChannelInboundHandlerAdapter;
++import io.netty.channel.ChannelPipeline;
++import io.netty.util.ReferenceCountUtil;
++
++/**
++ * @author Mark Vainomaa
++ */
++public final class DiscardHandler extends ChannelInboundHandlerAdapter {
++    public static final DiscardHandler INSTANCE = new DiscardHandler();
++    public static final String NAME = "discard";
++
++    private DiscardHandler() {}
++
++    @Override
++    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
++        ReferenceCountUtil.release(msg);
++    }
++
++    public static void addBeforeAndClose(Channel channel, ChannelPipeline pipeline, String before) {
++        if (pipeline.get(NAME) != null) {
++            pipeline.addBefore(before, NAME, INSTANCE);
++        }
++        channel.close();
++    }
++
++    public static void addBeforeAndClose(ChannelHandlerContext ctx, String before) {
++        addBeforeAndClose(ctx.channel(), ctx.pipeline(), before);
++    }
++
++    public static final ChannelFutureListener CLOSE_AND_DISCARD = future -> {
++        final var ch = future.channel();
++        addBeforeAndClose(ch, ch.pipeline(), "packet-decoder");
++    };
++}
+diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
+index 73c86f130d5194dbaf344aca4040a3a8820b5573..62a90e367700802c7f6ea66d528f34305356275e 100644
+--- a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
++++ b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
+@@ -116,7 +116,7 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
+                 packetTypeStr = "unknown";
+             }
+             // MikroCord start - harden
+-            if (this.closeConnectionOnDecodeError) ctx.channel().close();
++            if (this.closeConnectionOnDecodeError) eu.mikroskeem.mikrocord.DiscardHandler.addBeforeAndClose(ctx, "packet-decoder");
+             if (!this.logPacketDumpOnDecodeError) return;
+             // MikroCord end
+             /* // MikroCord start - add option to disable noisy packet decode exception
+diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
+index 92124078d869030569d2e49eb8bd906fb98f2b5a..ce5c4ba08f3dad79060f1a1c037075976dd9cdc9 100644
+--- a/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
++++ b/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
+@@ -62,7 +62,7 @@ public class Varint21FrameDecoder extends ByteToMessageDecoder
+             }
+         }
+ 
+-        if (this.closeConnectionOnDecodeError) { ctx.channel().close(); return; } // MikroCord
++        if (this.closeConnectionOnDecodeError) { eu.mikroskeem.mikrocord.DiscardHandler.addBeforeAndClose(ctx, "packet-decoder"); return; } // MikroCord
+         throw new CorruptedFrameException( "length wider than 21-bit" );
+     }
+ }
+diff --git a/proxy/src/main/java/net/md_5/bungee/netty/ChannelWrapper.java b/proxy/src/main/java/net/md_5/bungee/netty/ChannelWrapper.java
+index 6dc5633f5241ad6a1619500d37790e5c24c67155..e1108e82b2f8d75213c836ff5444df0804df726d 100644
+--- a/proxy/src/main/java/net/md_5/bungee/netty/ChannelWrapper.java
++++ b/proxy/src/main/java/net/md_5/bungee/netty/ChannelWrapper.java
+@@ -80,11 +80,11 @@ public class ChannelWrapper
+ 
+             if ( packet != null && ch.isActive() )
+             {
+-                ch.writeAndFlush( packet ).addListeners( ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE, ChannelFutureListener.CLOSE );
++                ch.writeAndFlush( packet ).addListeners( ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE, eu.mikroskeem.mikrocord.DiscardHandler.CLOSE_AND_DISCARD ); // MikroCord
+             } else
+             {
+                 ch.flush();
+-                ch.close();
++                eu.mikroskeem.mikrocord.DiscardHandler.addBeforeAndClose(ch, ch.pipeline(), PipelineUtils.PACKET_DECODER); // MikroCord
+             }
+         }
+     }
+diff --git a/proxy/src/main/java/net/md_5/bungee/netty/HandlerBoss.java b/proxy/src/main/java/net/md_5/bungee/netty/HandlerBoss.java
+index fd5c6319dd480829954d5eac28d4b3f5e54c1b71..ed7a1d82cad2faeb00d8926559623418dab61bf2 100644
+--- a/proxy/src/main/java/net/md_5/bungee/netty/HandlerBoss.java
++++ b/proxy/src/main/java/net/md_5/bungee/netty/HandlerBoss.java
+@@ -181,7 +181,7 @@ public class HandlerBoss extends ChannelInboundHandlerAdapter
+                 }
+             }
+ 
+-            ctx.close();
++            eu.mikroskeem.mikrocord.DiscardHandler.addBeforeAndClose(ctx, PipelineUtils.PACKET_DECODER); // MikroCord
+         }
+     }
+ }
