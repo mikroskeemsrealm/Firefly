@@ -31,10 +31,10 @@ index 85203fb8ad0e95a179fbdf1a65440b456c56d1e1..141de9e68abc7b5d60a25c3819c4a4cf
  }
 diff --git a/event/src/main/java/eu/mikroskeem/mikrocord/event/ASMEventExecutor.java b/event/src/main/java/eu/mikroskeem/mikrocord/event/ASMEventExecutor.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..1d5661247ebd5f20e927a4340767312260428164
+index 0000000000000000000000000000000000000000..51ee18f6db32fcfa814e5be807644b89c56b8d33
 --- /dev/null
 +++ b/event/src/main/java/eu/mikroskeem/mikrocord/event/ASMEventExecutor.java
-@@ -0,0 +1,109 @@
+@@ -0,0 +1,101 @@
 +package eu.mikroskeem.mikrocord.event;
 +
 +import org.objectweb.asm.ClassWriter;
@@ -42,6 +42,7 @@ index 0000000000000000000000000000000000000000..1d5661247ebd5f20e927a43407673122
 +import org.objectweb.asm.Opcodes;
 +import org.objectweb.asm.Type;
 +
++import java.lang.invoke.MethodHandles;
 +import java.lang.reflect.Method;
 +import java.util.WeakHashMap;
 +import java.util.concurrent.atomic.AtomicInteger;
@@ -51,7 +52,6 @@ index 0000000000000000000000000000000000000000..1d5661247ebd5f20e927a43407673122
 + */
 +class ASMEventExecutor {
 +    private final static AtomicInteger CLASS_NAME_COUNTER = new AtomicInteger(0);
-+    private final static Method defineClassMethod;
 +
 +    private final static WeakHashMap<Method, EventExecutor> generatedExecutors = new WeakHashMap<>();
 +
@@ -76,7 +76,7 @@ index 0000000000000000000000000000000000000000..1d5661247ebd5f20e927a43407673122
 +     * @return New ASM event executor class name
 +     */
 +    static String generateNewClassName() {
-+        return ASMEventExecutor.class.getPackage().getName() + ".generated.GeneratedASMEventExecutor" + CLASS_NAME_COUNTER.getAndIncrement();
++        return ASMEventExecutor.class.getPackage().getName() + ".GeneratedASMEventExecutor" + CLASS_NAME_COUNTER.getAndIncrement();
 +    }
 +
 +    static byte[] generateEventExecutor(String className, Method handlerMethod) {
@@ -91,7 +91,7 @@ index 0000000000000000000000000000000000000000..1d5661247ebd5f20e927a43407673122
 +        String eeDesc = "(" + objectDesc + objectDesc + ")V";
 +
 +        ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
-+        cw.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, rawName, null, objectName, new String[]{ eeName });
++        cw.visit(Opcodes.V11, Opcodes.ACC_PUBLIC, rawName, null, objectName, new String[]{ eeName });
 +
 +        // Generate no-args public constructor
 +        {
@@ -112,7 +112,7 @@ index 0000000000000000000000000000000000000000..1d5661247ebd5f20e927a43407673122
 +            mv.visitTypeInsn(Opcodes.CHECKCAST, Type.getInternalName(eventClass));
 +            int inv = listenerClass.isInterface() ? Opcodes.INVOKEINTERFACE : Opcodes.INVOKEVIRTUAL;
 +            mv.visitMethodInsn(inv, Type.getInternalName(listenerClass), handlerMethod.getName(), Type.getMethodDescriptor(handlerMethod), listenerClass.isInterface());
-+            if(handlerMethod.getReturnType() != void.class) {
++            if (handlerMethod.getReturnType() != void.class) {
 +                mv.visitInsn(Opcodes.POP);
 +            }
 +            mv.visitInsn(Opcodes.RETURN);
@@ -128,19 +128,11 @@ index 0000000000000000000000000000000000000000..1d5661247ebd5f20e927a43407673122
 +        if (loader instanceof DynamicClassLoader) {
 +            return ((DynamicClassLoader) loader).defineClass(name, data);
 +        }
++
 +        try {
-+            return (Class<?>) defineClassMethod.invoke(loader, name, data, 0, data.length);
++            return MethodHandles.lookup().defineClass(data);
 +        } catch (Exception e) {
 +            throw new RuntimeException("Failed to define class '" + name + "'", e);
-+        }
-+    }
-+
-+    static {
-+        try {
-+            defineClassMethod = ClassLoader.class.getDeclaredMethod("defineClass", String.class, byte[].class, int.class, int.class);
-+            defineClassMethod.setAccessible(true);
-+        } catch (Exception e) {
-+            throw new Error("Failed to get ClassLoader#defineClass method", e);
 +        }
 +    }
 +}
