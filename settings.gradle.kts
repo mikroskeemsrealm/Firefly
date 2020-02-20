@@ -4,7 +4,11 @@ fun importProject(name: String) {
     include(name)
     project(":$name").apply {
         projectDir = File("./MikroCord-Proxy/${name}")
-        buildFileName = "../../gradle/subprojects/${name}-build.gradle.kts"
+        buildFileName = "../../gradle/subprojects/${name}-build.gradle"
+        if (!buildFile.exists()) {
+            // Default to .kts
+            buildFileName = buildFileName + ".kts"
+        }
     }
 }
 
