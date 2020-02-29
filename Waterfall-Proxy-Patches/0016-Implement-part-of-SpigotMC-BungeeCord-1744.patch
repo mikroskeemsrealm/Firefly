@@ -4,13 +4,13 @@ Date: Sun, 14 Apr 2019 18:38:49 +0300
 Subject: [PATCH] Implement part of SpigotMC/BungeeCord#1744
 
 
-diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/command/CommandExecutionException.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/command/CommandExecutionException.java
+diff --git a/api/src/main/java/eu/mikroskeem/firefly/api/command/CommandExecutionException.java b/api/src/main/java/eu/mikroskeem/firefly/api/command/CommandExecutionException.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..cb68a209276ad6c00c1a90085bb9e57a6149c904
+index 0000000000000000000000000000000000000000..47174a498b78d3ffc1c27fc79b6c179ef8655b5c
 --- /dev/null
-+++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/command/CommandExecutionException.java
++++ b/api/src/main/java/eu/mikroskeem/firefly/api/command/CommandExecutionException.java
 @@ -0,0 +1,43 @@
-+package eu.mikroskeem.mikrocord.api.command;
++package eu.mikroskeem.firefly.api.command;
 +
 +import lombok.Getter;
 +import lombok.NonNull;
@@ -54,7 +54,7 @@ index 0000000000000000000000000000000000000000..cb68a209276ad6c00c1a90085bb9e57a
 +    }
 +}
 diff --git a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
-index 7facf85bf2c0015fac4a628da32c66b4b2bed49e..36cc2862cb843f1cbb31a1f4dec6e99b8d3fb09f 100644
+index 7facf85bf2c0015fac4a628da32c66b4b2bed49e..d2f6b79dc74bb11fda2929c65ac55fc1c30d1adc 100644
 --- a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
 +++ b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
 @@ -155,6 +155,23 @@ public class PluginManager
@@ -73,7 +73,7 @@ index 7facf85bf2c0015fac4a628da32c66b4b2bed49e..36cc2862cb843f1cbb31a1f4dec6e99b
 +     * @param commandLine the complete command line including command name and
 +     * arguments
 +     * @param tabResults the List for tab results to be added to, or null if executing the command
-+     * @param throwOnFailure whether or not to throw an {@link eu.mikroskeem.mikrocord.api.command.CommandExecutionException} if the command executed throws an exception
++     * @param throwOnFailure whether or not to throw an {@link eu.mikroskeem.firefly.api.command.CommandExecutionException} if the command executed throws an exception
 +     * @return whether the command was handled
 +     */
 +    public boolean dispatchCommand(CommandSender sender, String commandLine, List<String> tabResults, boolean throwOnFailure)
@@ -87,13 +87,13 @@ index 7facf85bf2c0015fac4a628da32c66b4b2bed49e..36cc2862cb843f1cbb31a1f4dec6e99b
              ProxyServer.getInstance().getLogger().log( Level.WARNING, "Error in dispatching command", ex );
 +            // Firefly start - Import SpigotMC/BungeeCord#1744
 +            if (throwOnFailure) {
-+                var executionContext = new eu.mikroskeem.mikrocord.api.command.CommandExecutionException.CommandExecutionContext(
++                var executionContext = new eu.mikroskeem.firefly.api.command.CommandExecutionException.CommandExecutionContext(
 +                        sender,
 +                        split[0],
 +                        args,
 +                        command
 +                );
-+                throw new eu.mikroskeem.mikrocord.api.command.CommandExecutionException(executionContext, ex);
++                throw new eu.mikroskeem.firefly.api.command.CommandExecutionException(executionContext, ex);
 +            }
 +            // Firefly end
          }
