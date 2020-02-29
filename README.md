@@ -1,6 +1,6 @@
-# MikroCord
+# Firefly
 
-[![CI](https://ci.mikroskeem.eu/api/v1/teams/mikroskeemsrealm/pipelines/mikrocord/badge)](https://ci.mikroskeem.eu/teams/mikroskeemsrealm/pipelines/mikrocord)
+[![CI](https://ci.mikroskeem.eu/api/v1/teams/mikroskeemsrealm/pipelines/firefly/badge)](https://ci.mikroskeem.eu/teams/mikroskeemsrealm/pipelines/firefly)
 
 mikroskeem's special Waterfall fork
 
