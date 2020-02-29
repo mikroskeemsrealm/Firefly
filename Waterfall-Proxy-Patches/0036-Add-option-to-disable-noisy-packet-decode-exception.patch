@@ -4,11 +4,11 @@ Date: Thu, 15 Aug 2019 17:26:50 +0300
 Subject: [PATCH] Add option to disable noisy packet decode exception
 
 
-diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-index 25e30d199e0c42949be43ef026099512bba85724..52e085e7bdd7ff5845d3c6aab19baf0dc064ad47 100644
---- a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-+++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-@@ -74,4 +74,9 @@ public interface MikroCordProxyConfig {
+diff --git a/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java b/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
+index d6eba7208ce9063df112215150a1e42f7274d35f..17aa4a1d1a8bc85cf9e15e742e23166d456eaa0e 100644
+--- a/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
++++ b/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
+@@ -74,4 +74,9 @@ public interface FireflyProxyConfig {
       * @return Whether plugins list should be populated in GS4 query response or not
       */
      boolean isPopulateGS4QueryPlugins();
@@ -19,23 +19,23 @@ index 25e30d199e0c42949be43ef026099512bba85724..52e085e7bdd7ff5845d3c6aab19baf0d
 +    boolean isLogNoisyPacketDecodeException();
  }
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
-index 6c3c7ab8d872c7acffa0b1897c10ccdd9b1aefd2..eb36d8607fd2d22b11772477a3f3e6d278e4102c 100644
+index 6c3c7ab8d872c7acffa0b1897c10ccdd9b1aefd2..20e207ce1cb8da13102a155e0e88b92d349793ed 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 @@ -20,11 +20,16 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
      private int protocolVersion;
      @Setter
      private boolean supportsForge = false;
-+    // MikroCord start - add option to disable noisy packet decode exception
++    // Firefly start - add option to disable noisy packet decode exception
 +    @Setter private static java.util.function.BooleanSupplier noisyPacketDecodeExceptionSupplier;
 +    private final boolean noisyPacketDecodeException;
-+    // MikroCord end
++    // Firefly end
  
      public MinecraftDecoder(Protocol protocol, boolean server, int protocolVersion) {
          this.protocol = protocol;
          this.server = server;
          this.protocolVersion = protocolVersion;
-+        this.noisyPacketDecodeException = noisyPacketDecodeExceptionSupplier.getAsBoolean(); // MikroCord - add option to disable noisy packet decode exception
++        this.noisyPacketDecodeException = noisyPacketDecodeExceptionSupplier.getAsBoolean(); // Firefly - add option to disable noisy packet decode exception
      }
  
      @Override
@@ -43,7 +43,7 @@ index 6c3c7ab8d872c7acffa0b1897c10ccdd9b1aefd2..eb36d8607fd2d22b11772477a3f3e6d2
              } else {
                  packetTypeStr = "unknown";
              }
-+            /* // MikroCord start - add option to disable noisy packet decode exception
++            /* // Firefly start - add option to disable noisy packet decode exception
              throw new FastDecoderException("Error decoding packet " + packetTypeStr + " with contents:\n" + ByteBufUtil.prettyHexDump(slice), e); // Waterfall
 +            */
 +            FastDecoderException de = new FastDecoderException("Error decoding packet " + packetTypeStr + " with contents:\n" + ByteBufUtil.prettyHexDump(slice), e);
@@ -52,14 +52,14 @@ index 6c3c7ab8d872c7acffa0b1897c10ccdd9b1aefd2..eb36d8607fd2d22b11772477a3f3e6d2
 +                de.getCause().setStackTrace(new StackTraceElement[0]);
 +            }
 +            throw de;
-+            // MikroCord end
++            // Firefly end
          } finally
          {
              if ( slice != null )
-diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index 4bed1988e841dee904989ddfa24a18164fabc62d..1c796697ff54fefb2b3c86862a19ecc7bd1c63f9 100644
---- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-+++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
+diff --git a/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java b/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
+index 6be14f7699ff4254ba6e7b66fd20f27b2304be41..20cfd14d69d294d70506b8694c311af513e573da 100644
+--- a/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
++++ b/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
 @@ -9,6 +9,7 @@ import lombok.Getter;
  import net.md_5.bungee.api.ProxyServer;
  import net.md_5.bungee.api.config.ConfigurationAdapter;
@@ -71,8 +71,8 @@ index 4bed1988e841dee904989ddfa24a18164fabc62d..1c796697ff54fefb2b3c86862a19ecc7
 @@ -19,6 +20,11 @@ import java.util.logging.Level;
   * @author Mark Vainomaa
   */
- public class MikroCordConfiguration extends WaterfallConfiguration {
-+    public MikroCordConfiguration() {
+ public class FireflyConfiguration extends WaterfallConfiguration {
++    public FireflyConfiguration() {
 +        // Set up accessors
 +        MinecraftDecoder.setNoisyPacketDecodeExceptionSupplier(this::isLogNoisyPacketDecodeException);
 +    }
@@ -80,7 +80,7 @@ index 4bed1988e841dee904989ddfa24a18164fabc62d..1c796697ff54fefb2b3c86862a19ecc7
      @Getter
      private String restartMessage = "Proxy is restarting";
  
-@@ -55,6 +61,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -55,6 +61,9 @@ public class FireflyConfiguration extends WaterfallConfiguration {
      @Getter
      private boolean populateGS4QueryPlugins = false;
  
@@ -90,7 +90,7 @@ index 4bed1988e841dee904989ddfa24a18164fabc62d..1c796697ff54fefb2b3c86862a19ecc7
      @Override
      public void load() {
          super.load();
-@@ -73,6 +82,7 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -73,6 +82,7 @@ public class FireflyConfiguration extends WaterfallConfiguration {
          allowTablistRewrite = config.getBoolean("performance.allow_tablist_rewrite", allowTablistRewrite);
          internScoreboardTeamStrings = config.getBoolean("performance.intern_scoreboard_team_strings", internScoreboardTeamStrings);
          populateGS4QueryPlugins = config.getBoolean("query.populate_plugins", populateGS4QueryPlugins);

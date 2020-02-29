@@ -4,11 +4,11 @@ Date: Wed, 29 May 2019 20:40:02 +0300
 Subject: [PATCH] Speed up shutdown
 
 
-diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-index ccba966265138d86cacf60ef989db71f17efe893..f7ad5f76e771c50174c182f228487d247daab877 100644
---- a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-+++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-@@ -52,4 +52,9 @@ public interface MikroCordProxyConfig {
+diff --git a/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java b/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
+index d228ec40c5096a1b18ac1fc26d179781cdb1fb25..461b2641ec2445927130e258379c3235eb070c5d 100644
+--- a/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
++++ b/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
+@@ -52,4 +52,9 @@ public interface FireflyProxyConfig {
       */
      @NonNull
      TCPFastOpenMode getTcpFastOpenMode();
@@ -18,21 +18,21 @@ index ccba966265138d86cacf60ef989db71f17efe893..f7ad5f76e771c50174c182f228487d24
 +     */
 +    boolean isWaitForAllPlayersToDisconnectInfinitely();
  }
-diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index 3380011f0137b6f0974a4675c156e944cfc8bd15..31c6bd3627fc360f3816f2787e0a0373d0b98124 100644
---- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-+++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
+diff --git a/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java b/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
+index 2d5d57bdafa876053a0d17fa9517a03fab93adee..374d68b9ea690a864dec33b9772dbe713a688618 100644
+--- a/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
++++ b/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
 @@ -1,8 +1,8 @@
- package eu.mikroskeem.mikrocord.conf;
+ package eu.mikroskeem.firefly.conf;
  
  import com.google.common.collect.ImmutableList;
--import eu.mikroskeem.mikrocord.api.network.TCPFastOpenMode;
- import eu.mikroskeem.mikrocord.api.network.EventLoopGroupType;
-+import eu.mikroskeem.mikrocord.api.network.TCPFastOpenMode;
- import eu.mikroskeem.mikrocord.misc.VelocitySupport;
+-import eu.mikroskeem.firefly.api.network.TCPFastOpenMode;
+ import eu.mikroskeem.firefly.api.network.EventLoopGroupType;
++import eu.mikroskeem.firefly.api.network.TCPFastOpenMode;
+ import eu.mikroskeem.firefly.misc.VelocitySupport;
  import io.github.waterfallmc.waterfall.conf.WaterfallConfiguration;
  import lombok.Getter;
-@@ -43,6 +43,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -43,6 +43,9 @@ public class FireflyConfiguration extends WaterfallConfiguration {
      @Getter
      private TCPFastOpenMode tcpFastOpenMode = TCPFastOpenMode.CLIENT_ONLY;
  
@@ -42,7 +42,7 @@ index 3380011f0137b6f0974a4675c156e944cfc8bd15..31c6bd3627fc360f3816f2787e0a0373
      @Override
      public void load() {
          super.load();
-@@ -57,6 +60,7 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -57,6 +60,7 @@ public class FireflyConfiguration extends WaterfallConfiguration {
          velocityForwardingSecret = config.getString("velocity_modern_forwarding.secret", () -> VelocitySupport.generateRandomString(12)).getBytes(StandardCharsets.UTF_8);
          tcpFastOpenEnabled = config.getBoolean("networking.tcp_fast_open.enabled", tcpFastOpenEnabled);
          tcpFastOpenMode = setupTfo(config.getInt("networking.tcp_fast_open.mode", tcpFastOpenMode.value));
@@ -51,14 +51,14 @@ index 3380011f0137b6f0974a4675c156e944cfc8bd15..31c6bd3627fc360f3816f2787e0a0373
  
      private TCPFastOpenMode setupTfo(int value) {
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 2a9756a3e5381e703189f682daa4eddd08ea035d..af8e57a42e77686aaedef84ccf2cd267f3ec751b 100644
+index 1b300f7109143fb1f7bf8084fee1862a5d89735d..8a6dc51763d052fe4d209a12d7dbcb1390df70f4 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -478,12 +478,39 @@ public class BungeeCord extends ProxyServer
                      connectionLock.readLock().unlock();
                  }
  
-+                /* MikroCord start - wait for all players to disconnect instead of using hardcoded delay
++                /* Firefly start - wait for all players to disconnect instead of using hardcoded delay
                  try
                  {
                      Thread.sleep( 500 );
@@ -90,7 +90,7 @@ index 2a9756a3e5381e703189f682daa4eddd08ea035d..af8e57a42e77686aaedef84ccf2cd267
 +                } catch (InterruptedException e) {
 +                    Thread.currentThread().interrupt();
 +                }
-+                // MikroCord end
++                // Firefly end
  
                  if ( reconnectHandler != null )
                  {
@@ -100,32 +100,32 @@ index 2a9756a3e5381e703189f682daa4eddd08ea035d..af8e57a42e77686aaedef84ccf2cd267
                  getLogger().info( "Closing IO threads" );
 -                bossEventLoopGroup.shutdownGracefully();
 -                workerEventLoopGroup.shutdownGracefully();
-+                bossEventLoopGroup.shutdownGracefully(100, 5000, TimeUnit.MILLISECONDS); // MikroCord - speed up shutdown
-+                workerEventLoopGroup.shutdownGracefully(100, 5000, TimeUnit.MILLISECONDS); // MikroCord - speed up shutdown
++                bossEventLoopGroup.shutdownGracefully(100, 5000, TimeUnit.MILLISECONDS); // Firefly - speed up shutdown
++                workerEventLoopGroup.shutdownGracefully(100, 5000, TimeUnit.MILLISECONDS); // Firefly - speed up shutdown
                  while (true) {
                      try {
                          bossEventLoopGroup.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 diff --git a/proxy/src/main/java/net/md_5/bungee/UserConnection.java b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-index c267b3edb2a68d8f0b61bb466283894e9f16dd88..2ffd76e22560b336f1392d6cbefccaf2e64d5f83 100644
+index 9ee7ca44ee59ca94b988122865cb3b649b9fc811..c3ed56d5093ac29bfdeb81e404db0069d4c4b0ae 100644
 --- a/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 +++ b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-@@ -152,6 +152,7 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.mikroc
+@@ -152,6 +152,7 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.firefl
              ch.write( packet );
          }
      };
-+    @Getter private final java.util.concurrent.CompletableFuture<Void> disconnectFuture = new java.util.concurrent.CompletableFuture<>(); // MikroCord - wait for all players to disconnect instead of using hardcoded delay
++    @Getter private final java.util.concurrent.CompletableFuture<Void> disconnectFuture = new java.util.concurrent.CompletableFuture<>(); // Firefly - wait for all players to disconnect instead of using hardcoded delay
  
      public void init()
      {
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java
-index 4d8bac5d171e0e0d98b7876aa09c1a9a6d4d20eb..9c57a972befe345557aef2668ab4f5952ed3925c 100644
+index 4d8bac5d171e0e0d98b7876aa09c1a9a6d4d20eb..f987995e43c12462977b12074ec9c03bd3323e95 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java
 @@ -88,6 +88,7 @@ public class UpstreamBridge extends PacketHandler
              }
              con.getServer().disconnect( "Quitting" );
          }
-+        this.con.getDisconnectFuture().complete(null); // MikroCord - wait for all players to disconnect instead of using hardcoded delay
++        this.con.getDisconnectFuture().complete(null); // Firefly - wait for all players to disconnect instead of using hardcoded delay
      }
  
      @Override

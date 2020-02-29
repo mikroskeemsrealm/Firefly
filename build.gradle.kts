@@ -31,7 +31,7 @@ val originalGroup = "io.github.waterfallmc"
 val originalProjectNamePrefix = "waterfall"
 
 allprojects {
-    group = "eu.mikroskeem.mikrocord"
+    group = "eu.mikroskeem.firefly"
     version = "1.15-SNAPSHOT"
 }
 
@@ -55,7 +55,7 @@ subprojects {
 
     dependencies {
         if (project !== rootProject) {
-            loadDependencies("${rootProject.projectDir}/MikroCord-Proxy/pom.xml", isRoot = true)
+            loadDependencies("${rootProject.projectDir}/Firefly-Proxy/pom.xml", isRoot = true)
             loadDependencies("${project.projectDir}/pom.xml")
         }
 

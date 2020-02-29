@@ -1,32 +1,11 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
-set -e
-case "$1" in
-    "rb" | "rbp" | "rebuild")
-        scripts/rebuildPatches.sh
-    ;;
-    "p" | "patch")
-        scripts/build.sh
-    ;;
-    "m" | "up" | "merge")
-        scripts/mergeUpstream.sh
-    ;;
-    "b" | "build")
-        scripts/build.sh --jar
-    ;;
-    "e" | "edit")
-        scripts/edit.sh
-    ;;
-    *)
-        echo "MikroCord build tool command. This provides a variety of commands to control the MikroCord"
-        echo "build. View below for details of the available commands."
-        echo ""
-        echo "Commands:"
-        echo "  * rb, rbp, rebuild | Rebuilds the patches"
-        echo "  * p, patch         | Applies all the patches to BungeeCord"
-        echo "  * m, up, merge     | Utility to aid in merging upstream"
-        echo "  * b, build         | Builds the project"
-        echo "                     | The artifact can be found in MikroCord-Proxy/proxy/target/"
-        echo "  * e, edit          | Runs git rebase -i for MikroCord, allowing patches to be easily modified"
-    ;;
-esac
+cat <<EOF
+***
+*** You're still using old 'mikrocord\` script, please migrate to using
+*** new 'firefly\` script
+***
+
+EOF
+
+exec ./firefly "$@"

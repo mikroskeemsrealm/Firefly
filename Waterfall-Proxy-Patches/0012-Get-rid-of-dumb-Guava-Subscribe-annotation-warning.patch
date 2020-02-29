@@ -5,20 +5,20 @@ Subject: [PATCH] Get rid of dumb Guava Subscribe annotation warning
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
-index ca93d4043346051778abff75b2c15adbe880cdcf..ab98f2fba375f343aa9f2733d1a0a36a38a257ce 100644
+index 463163123067cf2e1a16f57c3cdf3c143af4267c..7facf85bf2c0015fac4a628da32c66b4b2bed49e 100644
 --- a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
 +++ b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
 @@ -458,11 +458,13 @@ public class PluginManager
       */
      public void registerListener(Plugin plugin, Listener listener)
      {
-+        /* // MikroCord start - get rid of dumb Guava Subscribe annotation warning
++        /* // Firefly start - get rid of dumb Guava Subscribe annotation warning
          for ( Method method : listener.getClass().getDeclaredMethods() )
          {
              Preconditions.checkArgument( !method.isAnnotationPresent( Subscribe.class ),
                      "Listener %s has registered using deprecated subscribe annotation! Please update to @EventHandler.", listener );
          }
-+        */ // MikroCord end
++        */ // Firefly end
          eventBus.register( listener );
          listenersByPlugin.put( plugin, listener );
      }

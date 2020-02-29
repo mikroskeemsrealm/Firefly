@@ -5,14 +5,14 @@ Subject: [PATCH] Attempt to make supported protocol id checking faster
 
 
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/ProtocolConstants.java b/protocol/src/main/java/net/md_5/bungee/protocol/ProtocolConstants.java
-index cd987c8a8c1b9892efe6033958ec624e246808b3..7da9c2c49ad343d6b6e8e4e6f058ae53de02787f 100644
+index cd987c8a8c1b9892efe6033958ec624e246808b3..6bbab1ae1aafcaed5db8237b9de90b6a4cb553d2 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/ProtocolConstants.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/ProtocolConstants.java
 @@ -62,6 +62,28 @@ public class ProtocolConstants
              ProtocolConstants.MINECRAFT_1_15_1,
              ProtocolConstants.MINECRAFT_1_15_2
      );
-+    // MikroCord start
++    // Firefly start
 +    public static final int LOWEST_SUPPORTED_VERSION_ID;
 +    public static final int HIGHEST_SUPPORTED_VERSION_ID;
 +    private static final boolean[] SUPPORTED_VERSION_IDS_FAST;
@@ -33,12 +33,12 @@ index cd987c8a8c1b9892efe6033958ec624e246808b3..7da9c2c49ad343d6b6e8e4e6f058ae53
 +                protocolIndex < ProtocolConstants.SUPPORTED_VERSION_IDS_FAST.length &&
 +                ProtocolConstants.SUPPORTED_VERSION_IDS_FAST[protocolIndex];
 +    }
-+    // MikroCord end
++    // Firefly end
  
      public static final boolean isBeforeOrEq(int before, int other)
      {
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index ece535c4de44406116c3df4c02c7f78141b61d27..2a1a0d0ea6d9ba3e5c3cb702fc416a07394dccce 100644
+index 3ee64e9982bb09dfa08ccea4456950fc90d06fb6..1348ac0a465e35633f632d61ce46c2aa6ae1b50f 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -773,7 +773,7 @@ public class BungeeCord extends ProxyServer
@@ -46,12 +46,12 @@ index ece535c4de44406116c3df4c02c7f78141b61d27..2a1a0d0ea6d9ba3e5c3cb702fc416a07
      public int getProtocolVersion()
      {
 -        return ProtocolConstants.SUPPORTED_VERSION_IDS.get( ProtocolConstants.SUPPORTED_VERSION_IDS.size() - 1 );
-+        return ProtocolConstants.HIGHEST_SUPPORTED_VERSION_ID; //SUPPORTED_VERSION_IDS.get( ProtocolConstants.SUPPORTED_VERSION_IDS.size() - 1 ); // MikroCord
++        return ProtocolConstants.HIGHEST_SUPPORTED_VERSION_ID; //SUPPORTED_VERSION_IDS.get( ProtocolConstants.SUPPORTED_VERSION_IDS.size() - 1 ); // Firefly
      }
  
      @Override
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-index 01cad6fd6299b14664622087b76c5c8285daf452..d4dae3cdddc2772a1b60f35db72a44d5314a054f 100644
+index 4ffe885ebdd70460f0447dbbfcff30df935997df..466655f5100c5b279cfeaf7d8fd1e0d8b5fc218a 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 @@ -235,7 +235,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection
@@ -59,7 +59,7 @@ index 01cad6fd6299b14664622087b76c5c8285daf452..d4dae3cdddc2772a1b60f35db72a44d5
          ServerInfo forced = AbstractReconnectHandler.getForcedHost( this );
          final String motd = ( forced != null ) ? forced.getMotd() : listener.getMotd();
 -        final int protocol = ( ProtocolConstants.SUPPORTED_VERSION_IDS.contains( handshake.getProtocolVersion() ) ) ? handshake.getProtocolVersion() : bungee.getProtocolVersion();
-+        final int protocol = ( ProtocolConstants.isSupportedProtocol(/*SUPPORTED_VERSION_IDS.contains(*/ handshake.getProtocolVersion() ) ) ? handshake.getProtocolVersion() : bungee.getProtocolVersion(); // MikroCord
++        final int protocol = ( ProtocolConstants.isSupportedProtocol(/*SUPPORTED_VERSION_IDS.contains(*/ handshake.getProtocolVersion() ) ) ? handshake.getProtocolVersion() : bungee.getProtocolVersion(); // Firefly
  
          Callback<ServerPing> pingBack = new Callback<ServerPing>()
          {
@@ -68,7 +68,7 @@ index 01cad6fd6299b14664622087b76c5c8285daf452..d4dae3cdddc2772a1b60f35db72a44d5
                  ch.setProtocol( Protocol.LOGIN );
  
 -                if ( !ProtocolConstants.SUPPORTED_VERSION_IDS.contains( handshake.getProtocolVersion() ) )
-+                if ( !ProtocolConstants.isSupportedProtocol(handshake.getProtocolVersion())) //.SUPPORTED_VERSION_IDS.contains( handshake.getProtocolVersion() ) ) // MikroCord
++                if ( !ProtocolConstants.isSupportedProtocol(handshake.getProtocolVersion())) //.SUPPORTED_VERSION_IDS.contains( handshake.getProtocolVersion() ) ) // Firefly
                  {
                      if ( handshake.getProtocolVersion() > bungee.getProtocolVersion() )
                      {

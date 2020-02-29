@@ -4,19 +4,19 @@ Date: Tue, 19 Mar 2019 23:17:23 +0200
 Subject: [PATCH] Add /grestart command
 
 
-diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-index be3bbe9adf29253ec1d62ac7e563629e0ea7f9a5..ef1a82dd100dad66676b10fc9cc654bdc4e539c0 100644
---- a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-+++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
+diff --git a/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java b/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
+index 3def5ca2ae147d395bef5750727df7a8a72e91de..3507e4b235fef56dc1ce7c23a9412b723558f54e 100644
+--- a/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
++++ b/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
 @@ -1,7 +1,20 @@
- package eu.mikroskeem.mikrocord.api.config;
+ package eu.mikroskeem.firefly.api.config;
  
 +import org.checkerframework.checker.nullness.qual.NonNull;
 +
  /**
   * @author Mark Vainomaa
   */
- public interface MikroCordProxyConfig {
+ public interface FireflyProxyConfig {
 +    /**
 +     * @return Player disconnect message on restart attempt
 +     */
@@ -30,41 +30,41 @@ index be3bbe9adf29253ec1d62ac7e563629e0ea7f9a5..ef1a82dd100dad66676b10fc9cc654bd
 +    String getRestartScriptPath();
  }
 diff --git a/log4j/src/main/java/io/github/waterfallmc/waterfall/log4j/WaterfallLogger.java b/log4j/src/main/java/io/github/waterfallmc/waterfall/log4j/WaterfallLogger.java
-index e046897a13fe9ab64ecd3589f73f3f7403b06d91..75e45c12d9e028b87b9277ea79ae60e15e5ce8d5 100644
+index e046897a13fe9ab64ecd3589f73f3f7403b06d91..14fcdb11d94b3adc2f49db7429194b7af2619982 100644
 --- a/log4j/src/main/java/io/github/waterfallmc/waterfall/log4j/WaterfallLogger.java
 +++ b/log4j/src/main/java/io/github/waterfallmc/waterfall/log4j/WaterfallLogger.java
 @@ -7,12 +7,24 @@ import java.util.logging.Handler;
  import java.util.logging.Logger;
  
  public final class WaterfallLogger {
-+    // MikroCord start - restore old stdout/stderr on exit
++    // Firefly start - restore old stdout/stderr on exit
 +    private static java.io.PrintStream oldOut;
 +    private static java.io.PrintStream oldErr;
 +    public static void restoreOldOutputStreams() {
 +        System.setOut(oldOut);
 +        System.setErr(oldErr);
 +    }
-+    // MikroCord end
++    // Firefly end
  
      private WaterfallLogger() {
      }
  
      public static Logger create() {
          org.apache.logging.log4j.Logger redirect = LogManager.getRootLogger();
-+        // MikroCord start - restore old stdout/stderr on exit
++        // Firefly start - restore old stdout/stderr on exit
 +        oldOut = System.out;
 +        oldErr = System.err;
-+        // MikroCord end
++        // Firefly end
          System.setOut(IoBuilder.forLogger(redirect).setLevel(Level.INFO).buildPrintStream());
          System.setErr(IoBuilder.forLogger(redirect).setLevel(Level.ERROR).buildPrintStream());
  
-diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/command/CommandRestart.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/command/CommandRestart.java
+diff --git a/proxy/src/main/java/eu/mikroskeem/firefly/command/CommandRestart.java b/proxy/src/main/java/eu/mikroskeem/firefly/command/CommandRestart.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..c95abc80112f49da97e77f7b4ce16935a385f81a
+index 0000000000000000000000000000000000000000..7e5be7e2c291efec816f644bf13bbb188d8af06d
 --- /dev/null
-+++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/command/CommandRestart.java
++++ b/proxy/src/main/java/eu/mikroskeem/firefly/command/CommandRestart.java
 @@ -0,0 +1,51 @@
-+package eu.mikroskeem.mikrocord.command;
++package eu.mikroskeem.firefly.command;
 +
 +import com.google.common.base.Joiner;
 +import io.netty.util.internal.PlatformDependent;
@@ -83,7 +83,7 @@ index 0000000000000000000000000000000000000000..c95abc80112f49da97e77f7b4ce16935
 + */
 +public final class CommandRestart extends Command {
 +    public CommandRestart() {
-+        super("grestart", "mikrocord.command.restart");
++        super("grestart", "firefly.command.restart");
 +    }
 +
 +    @Override
@@ -115,12 +115,12 @@ index 0000000000000000000000000000000000000000..c95abc80112f49da97e77f7b4ce16935
 +        }
 +    }
 +}
-diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index 0b613f678092224ee72152a718a96fe7702ab6ef..633e3093fad60741db3e72901086644a374af8a4 100644
---- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-+++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
+diff --git a/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java b/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
+index 7f3947e5c955c4bf49a973304b09c66651f32711..1692f8efe71f8e3ac6ae154af46a6d5f8a36f9cc 100644
+--- a/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
++++ b/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
 @@ -1,6 +1,7 @@
- package eu.mikroskeem.mikrocord.conf;
+ package eu.mikroskeem.firefly.conf;
  
  import io.github.waterfallmc.waterfall.conf.WaterfallConfiguration;
 +import lombok.Getter;
@@ -130,7 +130,7 @@ index 0b613f678092224ee72152a718a96fe7702ab6ef..633e3093fad60741db3e72901086644a
 @@ -8,10 +9,19 @@ import net.md_5.bungee.api.config.ConfigurationAdapter;
   * @author Mark Vainomaa
   */
- public class MikroCordConfiguration extends WaterfallConfiguration {
+ public class FireflyConfiguration extends WaterfallConfiguration {
 +    @Getter
 +    private String restartMessage = "Proxy is restarting";
 +
@@ -140,7 +140,7 @@ index 0b613f678092224ee72152a718a96fe7702ab6ef..633e3093fad60741db3e72901086644a
      @Override
      public void load() {
          super.load();
-         ConfigurationAdapter config = ProxyServer.getInstance().getConfigurationAdapter(ProxyServer.ConfigurationType.MIKROCORD);
+         ConfigurationAdapter config = ProxyServer.getInstance().getConfigurationAdapter(ProxyServer.ConfigurationType.FIREFLY);
          config.load();
 +
 +        restartMessage = config.getString("restart.message", restartMessage);
@@ -148,16 +148,16 @@ index 0b613f678092224ee72152a718a96fe7702ab6ef..633e3093fad60741db3e72901086644a
      }
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 4a473e0b35d1a304f06f8b9d07919f8e5e913295..701c3461b309e2312ca2f8b7e8fe2ea8ac4e8924 100644
+index b35ee08d0aeb3e7415e25da64fc52827330639f5..d8b574e797a9a7356d3b3080779cd8ec8149a7e2 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -270,6 +270,9 @@ public class BungeeCord extends ProxyServer
          getPluginManager().registerCommand( null, new CommandIP() );
          getPluginManager().registerCommand( null, new CommandBungee() );
          getPluginManager().registerCommand( null, new CommandPerms() );
-+        // MikroCord start - Fork specific commands
-+        getPluginManager().registerCommand(null, new eu.mikroskeem.mikrocord.command.CommandRestart());
-+        // MikroCord end
++        // Firefly start - Fork specific commands
++        getPluginManager().registerCommand(null, new eu.mikroskeem.firefly.command.CommandRestart());
++        // Firefly end
  
          if ( !Boolean.getBoolean( "net.md_5.bungee.native.disable" ) )
          {
@@ -165,12 +165,12 @@ index 4a473e0b35d1a304f06f8b9d07919f8e5e913295..701c3461b309e2312ca2f8b7e8fe2ea8
                  {
                      handler.close();
                  }
-+                io.github.waterfallmc.waterfall.log4j.WaterfallLogger.restoreOldOutputStreams(); // MikroCord - restore old stdout/stderr on exit
++                io.github.waterfallmc.waterfall.log4j.WaterfallLogger.restoreOldOutputStreams(); // Firefly - restore old stdout/stderr on exit
                  System.exit( 0 );
              }
          }.start();
 diff --git a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
-index 3437a5cac608d1b1b39cc42a904225190a02d156..549e59ef1dff844df0f8f53fbd5b94d69ce7aaf1 100644
+index 678d1304aada1ee09114853c87b9d638d854b2c3..01f8889ab3987fd7bf6a00baf34f7944670a2006 100644
 --- a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
 +++ b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
 @@ -103,7 +103,7 @@ public class YamlConfig implements ConfigurationAdapter
@@ -178,7 +178,7 @@ index 3437a5cac608d1b1b39cc42a904225190a02d156..549e59ef1dff844df0f8f53fbd5b94d6
              set( "permissions.admin", Arrays.asList( new String[]
              {
 -                "bungeecord.command.alert", "bungeecord.command.end", "bungeecord.command.ip", "bungeecord.command.reload"
-+                "bungeecord.command.alert", "bungeecord.command.end", "bungeecord.command.ip", "bungeecord.command.reload", "mikrocord.command.restart" // MikroCord - /grestart command
++                "bungeecord.command.alert", "bungeecord.command.end", "bungeecord.command.ip", "bungeecord.command.reload", "firefly.command.restart" // Firefly - /grestart command
              } ) );
          }
  

@@ -5,11 +5,11 @@ Subject: [PATCH] Utilize FastUUID utility
 
 Taken from https://github.com/VelocityPowered/Velocity/commit/47ada83700b8a7fb1d702f54b9c60739ce1abbf8#diff-b4d6cb122a7a2dbb6de45d82c422deb6
 
-diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/misc/FastUUID.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/misc/FastUUID.java
+diff --git a/api/src/main/java/eu/mikroskeem/firefly/api/misc/FastUUID.java b/api/src/main/java/eu/mikroskeem/firefly/api/misc/FastUUID.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..4999cdd3a406732c87efdaa8c733754e6464be81
+index 0000000000000000000000000000000000000000..cc3ef41e2f4a5d14942f9df0b4de04da5cb70d2b
 --- /dev/null
-+++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/misc/FastUUID.java
++++ b/api/src/main/java/eu/mikroskeem/firefly/api/misc/FastUUID.java
 @@ -0,0 +1,194 @@
 +/*
 + * The MIT License (MIT)
@@ -35,7 +35,7 @@ index 0000000000000000000000000000000000000000..4999cdd3a406732c87efdaa8c733754e
 + * SOFTWARE.
 + */
 +
-+package eu.mikroskeem.mikrocord.api.misc;
++package eu.mikroskeem.firefly.api.misc;
 +
 +import java.util.Arrays;
 +import java.util.UUID;
@@ -207,19 +207,19 @@ index 0000000000000000000000000000000000000000..4999cdd3a406732c87efdaa8c733754e
 +}
 \ No newline at end of file
 diff --git a/api/src/main/java/io/github/waterfallmc/waterfall/utils/UUIDUtils.java b/api/src/main/java/io/github/waterfallmc/waterfall/utils/UUIDUtils.java
-index cc24dd35cb49237f8f133788f4534f7fc2ab8089..0560ac93c37bb499d5619d4974fcdd8646e52768 100644
+index cc24dd35cb49237f8f133788f4534f7fc2ab8089..05ec0c15bba541bceeb86575c0deba9c094c769c 100644
 --- a/api/src/main/java/io/github/waterfallmc/waterfall/utils/UUIDUtils.java
 +++ b/api/src/main/java/io/github/waterfallmc/waterfall/utils/UUIDUtils.java
 @@ -12,8 +12,12 @@ public class UUIDUtils {
      }
  
      public static String toMojangString(UUID id) {
-+        // MikroCord start - utilize FastUUID utility
-+        return eu.mikroskeem.mikrocord.api.misc.FastUUID.toString(id);
++        // Firefly start - utilize FastUUID utility
++        return eu.mikroskeem.firefly.api.misc.FastUUID.toString(id);
 +        /*
          Preconditions.checkNotNull(id, "Null id");
          return Hex.encodeString(toBytes(id));
-+        */ // MikroCord end
++        */ // Firefly end
      }
  
      public static UUID fromString(String s) {
@@ -227,30 +227,30 @@ index cc24dd35cb49237f8f133788f4534f7fc2ab8089..0560ac93c37bb499d5619d4974fcdd86
      }
  
      public static UUID fromMojangString(String s) {
-+        // MikroCord start - utilize FastUUID utility
-+        return eu.mikroskeem.mikrocord.api.misc.FastUUID.parseUuid(s);
++        // Firefly start - utilize FastUUID utility
++        return eu.mikroskeem.firefly.api.misc.FastUUID.parseUuid(s);
 +        /*
          Preconditions.checkNotNull(s, "Null string");
          if (s.length() != 32) {
              throw new IllegalArgumentException("UUID not in mojang format: " + s);
          }
          return fromMojangString0(s);
-+        */ // MikroCord end
++        */ // Firefly end
      }
  
      private static UUID fromMojangString0(String s) {
 diff --git a/api/src/main/java/net/md_5/bungee/Util.java b/api/src/main/java/net/md_5/bungee/Util.java
-index 77eb64a1fb291667aaef9234a57f2204b84c6ecc..0ea352b7f4a1d9e51659b33e6739daa709cd0a55 100644
+index 77eb64a1fb291667aaef9234a57f2204b84c6ecc..888cfe2f52236328a95a17aec11df5b5d24aaa5b 100644
 --- a/api/src/main/java/net/md_5/bungee/Util.java
 +++ b/api/src/main/java/net/md_5/bungee/Util.java
 @@ -104,6 +104,10 @@ public class Util
       */
      public static UUID getUUID(String uuid)
      {
-+        /* // MikroCord start - utilize FastUUID utility
++        /* // Firefly start - utilize FastUUID utility
          return new UUID( UnsignedLongs.parseUnsignedLong( uuid.substring( 0, 16 ), 16 ), UnsignedLongs.parseUnsignedLong( uuid.substring( 16 ), 16 ) );
 +        */
-+        return eu.mikroskeem.mikrocord.api.misc.FastUUID.parseUuid(uuid);
-+        // MikroCord end
++        return eu.mikroskeem.firefly.api.misc.FastUUID.parseUuid(uuid);
++        // Firefly end
      }
  }

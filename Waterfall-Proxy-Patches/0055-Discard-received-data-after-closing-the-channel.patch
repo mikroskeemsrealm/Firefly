@@ -5,13 +5,13 @@ Subject: [PATCH] Discard received data after closing the channel
 
 https://github.com/VelocityPowered/Velocity/commit/8ae7945b9f41ab98ab42f0678634dd9d3aaa6aa4
 
-diff --git a/protocol/src/main/java/eu/mikroskeem/mikrocord/DiscardHandler.java b/protocol/src/main/java/eu/mikroskeem/mikrocord/DiscardHandler.java
+diff --git a/protocol/src/main/java/eu/mikroskeem/firefly/DiscardHandler.java b/protocol/src/main/java/eu/mikroskeem/firefly/DiscardHandler.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..d1e8bfcb7c83a7c51757a0a23555aa36002c9f19
+index 0000000000000000000000000000000000000000..06a5bf3f816bcb42565a0841f32ae0499aae1a71
 --- /dev/null
-+++ b/protocol/src/main/java/eu/mikroskeem/mikrocord/DiscardHandler.java
++++ b/protocol/src/main/java/eu/mikroskeem/firefly/DiscardHandler.java
 @@ -0,0 +1,39 @@
-+package eu.mikroskeem.mikrocord;
++package eu.mikroskeem.firefly;
 +
 +import io.netty.channel.Channel;
 +import io.netty.channel.ChannelFutureListener;
@@ -51,33 +51,33 @@ index 0000000000000000000000000000000000000000..d1e8bfcb7c83a7c51757a0a23555aa36
 +    };
 +}
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
-index 73c86f130d5194dbaf344aca4040a3a8820b5573..62a90e367700802c7f6ea66d528f34305356275e 100644
+index 5dd9865ad1c12d63ed0a86ad71fa34751241eb3d..677ab911a584d9f13d4fd2c24c349055695059f6 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 @@ -116,7 +116,7 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
                  packetTypeStr = "unknown";
              }
-             // MikroCord start - harden
+             // Firefly start - harden
 -            if (this.closeConnectionOnDecodeError) ctx.channel().close();
-+            if (this.closeConnectionOnDecodeError) eu.mikroskeem.mikrocord.DiscardHandler.addBeforeAndClose(ctx, "packet-decoder");
++            if (this.closeConnectionOnDecodeError) eu.mikroskeem.firefly.DiscardHandler.addBeforeAndClose(ctx, "packet-decoder");
              if (!this.logPacketDumpOnDecodeError) return;
-             // MikroCord end
-             /* // MikroCord start - add option to disable noisy packet decode exception
+             // Firefly end
+             /* // Firefly start - add option to disable noisy packet decode exception
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
-index 92124078d869030569d2e49eb8bd906fb98f2b5a..ce5c4ba08f3dad79060f1a1c037075976dd9cdc9 100644
+index e62c88df7e439ca34c897a0f2e09938796c33d8b..550f0d1e75203743ff30dbd99ce86b2e6dcb0c72 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
 @@ -62,7 +62,7 @@ public class Varint21FrameDecoder extends ByteToMessageDecoder
              }
          }
  
--        if (this.closeConnectionOnDecodeError) { ctx.channel().close(); return; } // MikroCord
-+        if (this.closeConnectionOnDecodeError) { eu.mikroskeem.mikrocord.DiscardHandler.addBeforeAndClose(ctx, "packet-decoder"); return; } // MikroCord
+-        if (this.closeConnectionOnDecodeError) { ctx.channel().close(); return; } // Firefly
++        if (this.closeConnectionOnDecodeError) { eu.mikroskeem.firefly.DiscardHandler.addBeforeAndClose(ctx, "packet-decoder"); return; } // Firefly
          throw new CorruptedFrameException( "length wider than 21-bit" );
      }
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/netty/ChannelWrapper.java b/proxy/src/main/java/net/md_5/bungee/netty/ChannelWrapper.java
-index 6dc5633f5241ad6a1619500d37790e5c24c67155..e1108e82b2f8d75213c836ff5444df0804df726d 100644
+index 6dc5633f5241ad6a1619500d37790e5c24c67155..05d3d03c68f6f3cb137fde996c79ab0e4a0076ad 100644
 --- a/proxy/src/main/java/net/md_5/bungee/netty/ChannelWrapper.java
 +++ b/proxy/src/main/java/net/md_5/bungee/netty/ChannelWrapper.java
 @@ -80,11 +80,11 @@ public class ChannelWrapper
@@ -85,17 +85,17 @@ index 6dc5633f5241ad6a1619500d37790e5c24c67155..e1108e82b2f8d75213c836ff5444df08
              if ( packet != null && ch.isActive() )
              {
 -                ch.writeAndFlush( packet ).addListeners( ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE, ChannelFutureListener.CLOSE );
-+                ch.writeAndFlush( packet ).addListeners( ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE, eu.mikroskeem.mikrocord.DiscardHandler.CLOSE_AND_DISCARD ); // MikroCord
++                ch.writeAndFlush( packet ).addListeners( ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE, eu.mikroskeem.firefly.DiscardHandler.CLOSE_AND_DISCARD ); // Firefly
              } else
              {
                  ch.flush();
 -                ch.close();
-+                eu.mikroskeem.mikrocord.DiscardHandler.addBeforeAndClose(ch, ch.pipeline(), PipelineUtils.PACKET_DECODER); // MikroCord
++                eu.mikroskeem.firefly.DiscardHandler.addBeforeAndClose(ch, ch.pipeline(), PipelineUtils.PACKET_DECODER); // Firefly
              }
          }
      }
 diff --git a/proxy/src/main/java/net/md_5/bungee/netty/HandlerBoss.java b/proxy/src/main/java/net/md_5/bungee/netty/HandlerBoss.java
-index fd5c6319dd480829954d5eac28d4b3f5e54c1b71..ed7a1d82cad2faeb00d8926559623418dab61bf2 100644
+index 2cf0d588eb78fb724bf7a15f4656dfd1d92ad10d..07de83f7b6982252839d6b643ae564dfb73620e3 100644
 --- a/proxy/src/main/java/net/md_5/bungee/netty/HandlerBoss.java
 +++ b/proxy/src/main/java/net/md_5/bungee/netty/HandlerBoss.java
 @@ -181,7 +181,7 @@ public class HandlerBoss extends ChannelInboundHandlerAdapter
@@ -103,7 +103,7 @@ index fd5c6319dd480829954d5eac28d4b3f5e54c1b71..ed7a1d82cad2faeb00d8926559623418
              }
  
 -            ctx.close();
-+            eu.mikroskeem.mikrocord.DiscardHandler.addBeforeAndClose(ctx, PipelineUtils.PACKET_DECODER); // MikroCord
++            eu.mikroskeem.firefly.DiscardHandler.addBeforeAndClose(ctx, PipelineUtils.PACKET_DECODER); // Firefly
          }
      }
  }

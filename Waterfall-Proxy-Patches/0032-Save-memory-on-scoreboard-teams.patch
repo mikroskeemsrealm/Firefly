@@ -4,11 +4,11 @@ Date: Mon, 17 Jun 2019 14:45:40 +0300
 Subject: [PATCH] Save memory on scoreboard teams
 
 
-diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-index 1c38c8e1c09d0c37e74b42f7952964ab83cf5724..555431dba5926c7aeb287b589a21ba4d74c547d6 100644
---- a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-+++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-@@ -62,4 +62,11 @@ public interface MikroCordProxyConfig {
+diff --git a/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java b/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
+index 055b13a27016397d5eee1920286c6b30d1252264..4216d9dfb8963577f10e1a3a601f9b3387ebc862 100644
+--- a/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
++++ b/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
+@@ -62,4 +62,11 @@ public interface FireflyProxyConfig {
       * @return Whether tablist should be rewritten on online mode connections or not
       */
      boolean isAllowTablistRewrite();
@@ -21,7 +21,7 @@ index 1c38c8e1c09d0c37e74b42f7952964ab83cf5724..555431dba5926c7aeb287b589a21ba4d
 +    boolean isInternScoreboardTeamStrings();
  }
 diff --git a/api/src/main/java/net/md_5/bungee/api/score/Team.java b/api/src/main/java/net/md_5/bungee/api/score/Team.java
-index 39f81fd1a68fc8f2908aad2c79b832d90ba18fba..7dcb7175caa0660f02df5888fdd7ea15a05e6f54 100644
+index 39f81fd1a68fc8f2908aad2c79b832d90ba18fba..0f0fa959faebc95da22937e7d7283536ff5dba24 100644
 --- a/api/src/main/java/net/md_5/bungee/api/score/Team.java
 +++ b/api/src/main/java/net/md_5/bungee/api/score/Team.java
 @@ -17,8 +17,8 @@ public class Team
@@ -30,8 +30,8 @@ index 39f81fd1a68fc8f2908aad2c79b832d90ba18fba..7dcb7175caa0660f02df5888fdd7ea15
      private byte friendlyFire;
 -    private String nameTagVisibility;
 -    private String collisionRule;
-+    private NametagVisibility nameTagVisibility; // MikroCord - save memory on scoreboard teams
-+    private CollisionRule collisionRule; // MikroCord - save memory on scoreboard teams
++    private NametagVisibility nameTagVisibility; // Firefly - save memory on scoreboard teams
++    private CollisionRule collisionRule; // Firefly - save memory on scoreboard teams
      private int color;
      private Set<String> players = new HashSet<>();
  
@@ -40,7 +40,7 @@ index 39f81fd1a68fc8f2908aad2c79b832d90ba18fba..7dcb7175caa0660f02df5888fdd7ea15
          players.remove( name );
      }
 +
-+    // MikroCord start - save memory on scoreboard teams
++    // Firefly start - save memory on scoreboard teams
 +    public void setDisplayName(String displayName) {
 +        this.displayName = net.md_5.bungee.api.ProxyServer.getInstance().getConfig().isInternScoreboardTeamStrings() ? displayName.intern() : displayName;
 +    }
@@ -126,13 +126,13 @@ index 39f81fd1a68fc8f2908aad2c79b832d90ba18fba..7dcb7175caa0660f02df5888fdd7ea15
 +            }
 +        }
 +    }
-+    // MikroCord end
++    // Firefly end
  }
-diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index c76c61a5c49e76600fe14f979b0663bcca63c2bc..daae1811572243f17402b526ade9a04dd9c69e18 100644
---- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-+++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-@@ -49,6 +49,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+diff --git a/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java b/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
+index 7b6a539aace1923651790d90e2bb8e9ad4c9c1ab..a654bcec0681b8063119f1c9e3a8e8be394e44c7 100644
+--- a/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
++++ b/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
+@@ -49,6 +49,9 @@ public class FireflyConfiguration extends WaterfallConfiguration {
      @Getter
      private boolean allowTablistRewrite = true;
  
@@ -142,7 +142,7 @@ index c76c61a5c49e76600fe14f979b0663bcca63c2bc..daae1811572243f17402b526ade9a04d
      @Override
      public void load() {
          super.load();
-@@ -64,7 +67,8 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -64,7 +67,8 @@ public class FireflyConfiguration extends WaterfallConfiguration {
          tcpFastOpenEnabled = config.getBoolean("networking.tcp_fast_open.enabled", tcpFastOpenEnabled);
          tcpFastOpenMode = setupTfo(config.getInt("networking.tcp_fast_open.mode", tcpFastOpenMode.value));
          waitForAllPlayersToDisconnectInfinitely = config.getBoolean("shutdown.wait_for_all_players_to_disconnect_infinitely", waitForAllPlayersToDisconnectInfinitely);

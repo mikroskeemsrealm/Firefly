@@ -5,22 +5,22 @@ Subject: [PATCH] Allow proxying proxies
 
 Disabled by default, this option is available for few hackish things
 
-diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-index c23dc0e1f9d9803b5727d6854a72cf8e7995bb6c..81e68ae414090752aad0f693dda884756f0ba413 100644
---- a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-+++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-@@ -96,4 +96,6 @@ public interface MikroCordProxyConfig {
+diff --git a/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java b/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
+index 55d42b9775ec274b21568a86303f0a9e0bbde1f5..a60866930c8862cefe6ebd905083f565411a36dc 100644
+--- a/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
++++ b/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
+@@ -96,4 +96,6 @@ public interface FireflyProxyConfig {
      boolean isLogPacketDecodeErrors();
  
      boolean isHandleLegacyPing();
 +
 +    boolean isAllowProxyingProxies();
  }
-diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index 3557312e0bb287f3c7f02fc86185484959c7156d..d6bd09baed0f6439430be2679fdf55f92309d151 100644
---- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-+++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-@@ -91,6 +91,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+diff --git a/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java b/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
+index 30788138b01d3da1cb3bd76d66b6a85f2f0253f6..e03a9ab1f3c203868037a19d9381883527eaef73 100644
+--- a/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
++++ b/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
+@@ -91,6 +91,9 @@ public class FireflyConfiguration extends WaterfallConfiguration {
      @Getter
      private boolean handleLegacyPing = true;
  
@@ -30,7 +30,7 @@ index 3557312e0bb287f3c7f02fc86185484959c7156d..d6bd09baed0f6439430be2679fdf55f9
      @Override
      public void load() {
          super.load();
-@@ -118,6 +121,7 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -118,6 +121,7 @@ public class FireflyConfiguration extends WaterfallConfiguration {
          logUnparsableChatJson = config.getBoolean("log.unparsable_chat_json", logUnparsableChatJson);
          ComponentSerializer.debugJsonParsing.set(logUnparsableChatJson);
          handleLegacyPing = config.getBoolean("packets.handle_legacy_ping", handleLegacyPing);
@@ -39,14 +39,14 @@ index 3557312e0bb287f3c7f02fc86185484959c7156d..d6bd09baed0f6439430be2679fdf55f9
  
      private TCPFastOpenMode setupTfo(int value) {
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-index 842e01a31b2896b28612a88f3576491ab53f7fc8..c2c8df17a81ac84f59e33be7db9d6077976857e1 100644
+index dec1a266655251399e572e5bd2091c6ec7e589de..be918eed7e7d0c2205c848b0883becb72741fa4b 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
 @@ -279,6 +279,7 @@ public class DownstreamBridge extends PacketHandler
              String serverBrand = DefinedPacket.readString( brand );
              brand.release();
  
-+            if (!bungee.getConfig().isAllowProxyingProxies()) // MikroCord - Allow proxying proxies when enabled
++            if (!bungee.getConfig().isAllowProxyingProxies()) // Firefly - Allow proxying proxies when enabled
              Preconditions.checkState( !serverBrand.contains( bungee.getName() ), "Cannot connect proxy to itself!" );
  
              brand = ByteBufAllocator.DEFAULT.heapBuffer();

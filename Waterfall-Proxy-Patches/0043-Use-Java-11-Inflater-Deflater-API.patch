@@ -14,28 +14,28 @@ Credit for the idea (and now implementation) goes to @astei
 https://github.com/VelocityPowered/Velocity/commit/7747679ee1b3bb661c2bf849e221559ea5f661ce
 
 diff --git a/native/src/main/java/net/md_5/bungee/jni/zlib/BungeeZlib.java b/native/src/main/java/net/md_5/bungee/jni/zlib/BungeeZlib.java
-index 0c98ad4073898cd6dfe5df951568b29d8eefcbee..dd00beb4b5980f286099a920bb37d2fb9ce988a1 100644
+index 0c98ad4073898cd6dfe5df951568b29d8eefcbee..48fd43ff570969d80d7ab2020bb0b4cd0c9e0dec 100644
 --- a/native/src/main/java/net/md_5/bungee/jni/zlib/BungeeZlib.java
 +++ b/native/src/main/java/net/md_5/bungee/jni/zlib/BungeeZlib.java
 @@ -11,4 +11,5 @@ public interface BungeeZlib
      void free();
  
      void process(ByteBuf in, ByteBuf out) throws DataFormatException;
-+    default void process(ByteBuf in, ByteBuf out, int maxOutSize) throws DataFormatException { process(in, out); } // MikroCord - Java 11 inflater/deflater
++    default void process(ByteBuf in, ByteBuf out, int maxOutSize) throws DataFormatException { process(in, out); } // Firefly - Java 11 inflater/deflater
  }
 diff --git a/native/src/main/java/net/md_5/bungee/jni/zlib/JavaZlib.java b/native/src/main/java/net/md_5/bungee/jni/zlib/JavaZlib.java
-index 10da5d95c351e03d2c7700c070ce2bceb65719cb..0e035077a7de6aa6ff0b20179268f0e267787eb2 100644
+index 10da5d95c351e03d2c7700c070ce2bceb65719cb..daf2b11d36473d2fb10f35d1b45d0f58bcec13b4 100644
 --- a/native/src/main/java/net/md_5/bungee/jni/zlib/JavaZlib.java
 +++ b/native/src/main/java/net/md_5/bungee/jni/zlib/JavaZlib.java
 @@ -8,7 +8,11 @@ import java.util.zip.Inflater;
  public class JavaZlib implements BungeeZlib
  {
  
-+    /* // MikroCord start - Java 11 inflater/deflater
++    /* // Firefly start - Java 11 inflater/deflater
      private final byte[] buffer = new byte[ 8192 ];
 +    */
 +    private static final int ZLIB_BUF_SIZE = 8192;
-+    // MikroCord end
++    // Firefly end
      //
      private boolean compress;
      private Deflater deflater;
@@ -43,7 +43,7 @@ index 10da5d95c351e03d2c7700c070ce2bceb65719cb..0e035077a7de6aa6ff0b20179268f0e2
  
      @Override
      public void process(ByteBuf in, ByteBuf out) throws DataFormatException
-+    // MikroCord start - Java 11 inflater/deflater
++    // Firefly start - Java 11 inflater/deflater
      {
 +        process(in, out, Integer.MAX_VALUE);
 +    }
@@ -57,20 +57,20 @@ index 10da5d95c351e03d2c7700c070ce2bceb65719cb..0e035077a7de6aa6ff0b20179268f0e2
 +        if (in.nioBufferCount() != 1) throw new IllegalStateException("in has multiple NIO buffers");
 +        if (out.nioBufferCount() != 1) throw new IllegalStateException("out has multiple NIO buffers");
 +        int origIdx = in.readerIndex();
-+        // MikroCord end
++        // Firefly end
  
          if ( compress )
          {
-+            /* // MikroCord start - Java 11 inflater/deflater
++            /* // Firefly start - Java 11 inflater/deflater
              deflater.setInput( inData );
 +            */
 +            deflater.setInput(in.nioBuffer());
-+            // MikroCord end
++            // Firefly end
              deflater.finish();
  
              while ( !deflater.finished() )
              {
-+                /* // MikroCord start - Java 11 inflater/deflater
++                /* // Firefly start - Java 11 inflater/deflater
                  int count = deflater.deflate( buffer );
                  out.writeBytes( buffer, 0, count );
 +                */
@@ -81,22 +81,22 @@ index 10da5d95c351e03d2c7700c070ce2bceb65719cb..0e035077a7de6aa6ff0b20179268f0e2
 +                int count = deflater.deflate(outNioBuf);
 +                in.readerIndex(origIdx + deflater.getTotalIn());
 +                out.writerIndex(out.writerIndex() + count);
-+                // MikroCord end
++                // Firefly end
              }
  
              deflater.reset();
          } else
          {
-+            /* // MikroCord start - Java 11 inflater/deflater
++            /* // Firefly start - Java 11 inflater/deflater
              inflater.setInput( inData );
 +            */
 +            inflater.setInput(in.nioBuffer());
-+            // MikroCord end
++            // Firefly end
  
 -            while ( !inflater.finished() && inflater.getTotalIn() < inData.length )
-+            while ( !inflater.finished() && /*inflater.getTotalIn() < inData.length*/inflater.getBytesRead() < in.readableBytes() ) // MikroCord - Java 11 inflater/deflater
++            while ( !inflater.finished() && /*inflater.getTotalIn() < inData.length*/inflater.getBytesRead() < in.readableBytes() ) // Firefly - Java 11 inflater/deflater
              {
-+                /* // MikroCord start - Java 11 inflater/deflater
++                /* // Firefly start - Java 11 inflater/deflater
                  int count = inflater.inflate( buffer );
                  out.writeBytes( buffer, 0, count );
 +                */
@@ -111,12 +111,12 @@ index 10da5d95c351e03d2c7700c070ce2bceb65719cb..0e035077a7de6aa6ff0b20179268f0e2
 +                int count = inflater.inflate(outNioBuf);
 +                in.readerIndex(origIdx + inflater.getTotalIn());
 +                out.writerIndex(out.writerIndex() + count);
-+                // MikroCord end
++                // Firefly end
              }
  
              inflater.reset();
 diff --git a/proxy/src/main/java/net/md_5/bungee/compress/PacketDecompressor.java b/proxy/src/main/java/net/md_5/bungee/compress/PacketDecompressor.java
-index 37fe6ac73504cee4ba7fc336d6623b5c833c6d1d..df260317766c3702dca255023e1c69989993a38f 100644
+index 37fe6ac73504cee4ba7fc336d6623b5c833c6d1d..047d4cae9641f255a4b8e56009c9555da0c6d317 100644
 --- a/proxy/src/main/java/net/md_5/bungee/compress/PacketDecompressor.java
 +++ b/proxy/src/main/java/net/md_5/bungee/compress/PacketDecompressor.java
 @@ -40,12 +40,16 @@ public class PacketDecompressor extends MessageToMessageDecoder<ByteBuf>
@@ -124,16 +124,16 @@ index 37fe6ac73504cee4ba7fc336d6623b5c833c6d1d..df260317766c3702dca255023e1c6998
          {
              Preconditions.checkArgument( size >= compressionThreshold, "Decompressed size %s less than compression threshold %s", size, compressionThreshold);
 -            ByteBuf decompressed = ctx.alloc().directBuffer();
-+            ByteBuf decompressed = ctx.alloc().directBuffer(Math.min(size, 2 * 1024 * 1024)); // MikroCord - Java 11 inflater/deflater; preallocate at most 2mb buffer for decompressed packet
++            ByteBuf decompressed = ctx.alloc().directBuffer(Math.min(size, 2 * 1024 * 1024)); // Firefly - Java 11 inflater/deflater; preallocate at most 2mb buffer for decompressed packet
  
              try
              {
-+                /* // MikroCord start - Java 11 inflater/deflater
++                /* // Firefly start - Java 11 inflater/deflater
                  zlib.process( in, decompressed );
                  Preconditions.checkArgument( decompressed.readableBytes() == size, "Decompressed size %s is not equal to actual decompressed bytes", size, decompressed.readableBytes());
 +                */
 +                zlib.process(in, decompressed, size); // Enforce size check in decompressor, should be safer than checking readable bytes later.
-+                // MikroCord end
++                // Firefly end
  
                  out.add( decompressed );
                  decompressed = null;

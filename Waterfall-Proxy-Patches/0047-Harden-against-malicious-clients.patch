@@ -7,11 +7,11 @@ Credits:
 * Fix potential UDP speculative reflection attack - https://github.com/VelocityPowered/Velocity/commit/ae14eb8ccb56f6b12e210a145837f4545607f416
 * (will release details when this issue gets fixed on upstreams as well)
 
-diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-index ea7bc8574316253975813176519cfd3214b6c753..b5d0cb50b65fcebb0f24dac45481ebf3f498b899 100644
---- a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-+++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-@@ -90,4 +90,8 @@ public interface MikroCordProxyConfig {
+diff --git a/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java b/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
+index 8b9834ea3a561624cd1aa43ace4b69f1379e8387..0757f3bdfed36e5c2b71c01f847ecff56e409fbe 100644
+--- a/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
++++ b/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
+@@ -90,4 +90,8 @@ public interface FireflyProxyConfig {
       * @return Port where Prometheus exporter should listen on
       */
      int getPrometheusListenPort();
@@ -20,13 +20,13 @@ index ea7bc8574316253975813176519cfd3214b6c753..b5d0cb50b65fcebb0f24dac45481ebf3
 +
 +    boolean isLogPacketDecodeErrors();
  }
-diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/event/MaliciousClientEvent.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/event/MaliciousClientEvent.java
+diff --git a/api/src/main/java/eu/mikroskeem/firefly/api/event/MaliciousClientEvent.java b/api/src/main/java/eu/mikroskeem/firefly/api/event/MaliciousClientEvent.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..cbd719a6bd39f3727bfa4540e58a61b71d47c88c
+index 0000000000000000000000000000000000000000..a496cefd0b590f3ef2f19a878ead4eeb2c9ad898
 --- /dev/null
-+++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/event/MaliciousClientEvent.java
++++ b/api/src/main/java/eu/mikroskeem/firefly/api/event/MaliciousClientEvent.java
 @@ -0,0 +1,51 @@
-+package eu.mikroskeem.mikrocord.api.event;
++package eu.mikroskeem.firefly.api.event;
 +
 +import net.md_5.bungee.api.connection.Connection;
 +import net.md_5.bungee.api.connection.PendingConnection;
@@ -78,29 +78,29 @@ index 0000000000000000000000000000000000000000..cbd719a6bd39f3727bfa4540e58a61b7
 +    }
 +}
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
-index a750232314895a7b072ac42ed92ca615d5a9d03f..4146d8b420027dbb988d888613a405587cbea712 100644
+index 9615de6e74f95abf962177c3ce6e114bb7864687..05e7cdc28bd7bf62ee0db5b6c5dce3c0d737dc3d 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 @@ -30,12 +30,22 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
      @Setter private static Runnable invalidPacketMetric;
-     // MikroCord end
-     @Setter private static java.util.function.Function<Class<?>, String> getClassNameFunction; // MikroCord - don't use Class#getSimpleName()
-+    // MikroCord start - harden
+     // Firefly end
+     @Setter private static java.util.function.Function<Class<?>, String> getClassNameFunction; // Firefly - don't use Class#getSimpleName()
++    // Firefly start - harden
 +    @Setter private static java.util.function.BooleanSupplier logPacketDumpOnDecodeErrorSupplier;
 +    @Setter private static java.util.function.BooleanSupplier closeConnectionOnDecodeErrorSupplier;
 +    private final boolean logPacketDumpOnDecodeError;
 +    private final boolean closeConnectionOnDecodeError;
-+    // MikroCord end
++    // Firefly end
  
      public MinecraftDecoder(Protocol protocol, boolean server, int protocolVersion) {
          this.protocol = protocol;
          this.server = server;
          this.protocolVersion = protocolVersion;
-         this.noisyPacketDecodeException = noisyPacketDecodeExceptionSupplier.getAsBoolean(); // MikroCord - add option to disable noisy packet decode exception
-+        // MikroCord start - harden
+         this.noisyPacketDecodeException = noisyPacketDecodeExceptionSupplier.getAsBoolean(); // Firefly - add option to disable noisy packet decode exception
++        // Firefly start - harden
 +        this.logPacketDumpOnDecodeError = logPacketDumpOnDecodeErrorSupplier.getAsBoolean();
 +        this.closeConnectionOnDecodeError = closeConnectionOnDecodeErrorSupplier.getAsBoolean();
-+        // MikroCord end
++        // Firefly end
      }
  
      @Override
@@ -108,25 +108,25 @@ index a750232314895a7b072ac42ed92ca615d5a9d03f..4146d8b420027dbb988d888613a40558
              } else {
                  packetTypeStr = "unknown";
              }
-+            // MikroCord start - harden
++            // Firefly start - harden
 +            if (this.closeConnectionOnDecodeError) ctx.channel().close();
 +            if (!this.logPacketDumpOnDecodeError) return;
-+            // MikroCord end
-             /* // MikroCord start - add option to disable noisy packet decode exception
++            // Firefly end
+             /* // Firefly start - add option to disable noisy packet decode exception
              throw new FastDecoderException("Error decoding packet " + packetTypeStr + " with contents:\n" + ByteBufUtil.prettyHexDump(slice), e); // Waterfall
              */
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
-index 81c3626af3679671f633c561698b5519290003af..92124078d869030569d2e49eb8bd906fb98f2b5a 100644
+index eff71ed639325acbd5e8f22e31c4f7bb367390f2..e62c88df7e439ca34c897a0f2e09938796c33d8b 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
 @@ -11,6 +11,10 @@ import java.util.List;
  public class Varint21FrameDecoder extends ByteToMessageDecoder
  {
-     private final boolean server; // MikroCord - Better empty packet handling
-+    // MikroCord start - harden
+     private final boolean server; // Firefly - Better empty packet handling
++    // Firefly start - harden
 +    @lombok.Setter private static java.util.function.BooleanSupplier closeConnectionOnDecodeErrorSupplier;
 +    private final boolean closeConnectionOnDecodeError = closeConnectionOnDecodeErrorSupplier.getAsBoolean();
-+    // MikroCord end
++    // Firefly end
  
      private static boolean DIRECT_WARNING;
  
@@ -134,14 +134,14 @@ index 81c3626af3679671f633c561698b5519290003af..92124078d869030569d2e49eb8bd906f
              }
          }
  
-+        if (this.closeConnectionOnDecodeError) { ctx.channel().close(); return; } // MikroCord
++        if (this.closeConnectionOnDecodeError) { ctx.channel().close(); return; } // Firefly
          throw new CorruptedFrameException( "length wider than 21-bit" );
      }
  }
-diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index c70c1212d2ba4a6777b5ab6f4e5d6662153d83b2..3b915db9ad6669d67310f91cdab1f1fcf3eadd23 100644
---- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-+++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
+diff --git a/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java b/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
+index 48d177aa48f9a756aa44aac7ddf75006e355606e..416507bd8c667e8b48384e5e88eca429dc8461a8 100644
+--- a/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
++++ b/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
 @@ -10,6 +10,7 @@ import net.md_5.bungee.api.ProxyServer;
  import net.md_5.bungee.api.config.ConfigurationAdapter;
  import net.md_5.bungee.netty.PipelineUtils;
@@ -150,8 +150,8 @@ index c70c1212d2ba4a6777b5ab6f4e5d6662153d83b2..3b915db9ad6669d67310f91cdab1f1fc
  
  import java.nio.charset.StandardCharsets;
  import java.util.HashSet;
-@@ -23,6 +24,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
-     public MikroCordConfiguration() {
+@@ -23,6 +24,9 @@ public class FireflyConfiguration extends WaterfallConfiguration {
+     public FireflyConfiguration() {
          // Set up accessors
          MinecraftDecoder.setNoisyPacketDecodeExceptionSupplier(this::isLogNoisyPacketDecodeException);
 +        MinecraftDecoder.setLogPacketDumpOnDecodeErrorSupplier(this::isLogPacketDecodeErrors);
@@ -160,7 +160,7 @@ index c70c1212d2ba4a6777b5ab6f4e5d6662153d83b2..3b915db9ad6669d67310f91cdab1f1fc
      }
  
      @Getter
-@@ -70,6 +74,15 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -70,6 +74,15 @@ public class FireflyConfiguration extends WaterfallConfiguration {
      @Getter
      private int prometheusListenPort = 8888;
  
@@ -176,7 +176,7 @@ index c70c1212d2ba4a6777b5ab6f4e5d6662153d83b2..3b915db9ad6669d67310f91cdab1f1fc
      @Override
      public void load() {
          super.load();
-@@ -91,6 +104,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -91,6 +104,9 @@ public class FireflyConfiguration extends WaterfallConfiguration {
          prometheusEnabled = config.getBoolean("prometheus.enabled", prometheusEnabled);
          prometheusListenHost = config.getString("prometheus.listen_host", prometheusListenHost);
          prometheusListenPort = config.getInt("prometheus.listen_port", prometheusListenPort);
@@ -187,23 +187,23 @@ index c70c1212d2ba4a6777b5ab6f4e5d6662153d83b2..3b915db9ad6669d67310f91cdab1f1fc
  
      private TCPFastOpenMode setupTfo(int value) {
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-index d4dae3cdddc2772a1b60f35db72a44d5314a054f..e58f51c36c58f5d2146ac62371b33467ac194d42 100644
+index 466655f5100c5b279cfeaf7d8fd1e0d8b5fc218a..2a8b1e5421f4a0fa29145be812d436ad921bd87e 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 @@ -146,6 +146,16 @@ public class InitialHandler extends PacketHandler implements PendingConnection
      {
          if ( packet.packet == null )
          {
-+            // MikroCord start
++            // Firefly start
 +            if (bungee.getConfig().isDropConnectionsSendingInvalidPackets()) {
-+                eu.mikroskeem.mikrocord.api.event.MaliciousClientEvent.invalidLoginProcess(this).callEvent();
++                eu.mikroskeem.firefly.api.event.MaliciousClientEvent.invalidLoginProcess(this).callEvent();
 +                if (bungee.getConfig().isLogPacketDecodeErrors()) {
 +                    bungee.getLogger().log(Level.WARNING, "{0} Received invalid (potentially junk) data, disconnecting", this);
 +                }
 +                ch.close("Unexpected packet received during login process!");
 +                return;
 +            }
-+            // MikroCord end
++            // Firefly end
              throw new QuietException( "Unexpected packet received during login process! " + BufUtil.dump( packet.buf, 16 ) );
          }
      }
@@ -211,18 +211,18 @@ index d4dae3cdddc2772a1b60f35db72a44d5314a054f..e58f51c36c58f5d2146ac62371b33467
      @Override
      public void handle(StatusRequest statusRequest) throws Exception
      {
-+        /* // MikroCord start - harden
++        /* // Firefly start - harden
          Preconditions.checkState( thisState == State.STATUS, "Not expecting STATUS" );
 +        */
 +        if (thisState != State.STATUS) {
-+            eu.mikroskeem.mikrocord.api.event.MaliciousClientEvent.invalidGameState(this).callEvent();
++            eu.mikroskeem.firefly.api.event.MaliciousClientEvent.invalidGameState(this).callEvent();
 +            if (bungee.getConfig().isLogPacketDecodeErrors()) {
 +                bungee.getLogger().log(Level.WARNING, "{0} Received invalid game state {1} (expected {2}), disconnecting", new Object[] { this, thisState, State.STATUS});
 +            }
 +            ch.close();
 +            return;
 +        }
-+        // MikroCord end
++        // Firefly end
  
          ServerInfo forced = AbstractReconnectHandler.getForcedHost( this );
          final String motd = ( forced != null ) ? forced.getMotd() : listener.getMotd();
@@ -230,18 +230,18 @@ index d4dae3cdddc2772a1b60f35db72a44d5314a054f..e58f51c36c58f5d2146ac62371b33467
      public void handle(PingPacket ping) throws Exception
      {
          if (!ACCEPT_INVALID_PACKETS) {
-+            /* // MikroCord start - harden
++            /* // Firefly start - harden
              Preconditions.checkState(thisState == State.PING, "Not expecting PING");
 +            */
 +            if (thisState != State.PING) {
-+                eu.mikroskeem.mikrocord.api.event.MaliciousClientEvent.invalidGameState(this).callEvent();
++                eu.mikroskeem.firefly.api.event.MaliciousClientEvent.invalidGameState(this).callEvent();
 +                if (bungee.getConfig().isLogPacketDecodeErrors()) {
 +                    bungee.getLogger().log(Level.WARNING, "{0} Received invalid game state {1} (expected {2}), disconnecting", new Object[] { this, thisState, State.PING});
 +                }
 +                ch.close();
 +                return;
 +            }
-+            // MikroCord end
++            // Firefly end
          }
          unsafe.sendPacket( ping );
          disconnect( "" );
@@ -249,18 +249,18 @@ index d4dae3cdddc2772a1b60f35db72a44d5314a054f..e58f51c36c58f5d2146ac62371b33467
      @Override
      public void handle(Handshake handshake) throws Exception
      {
-+        /* // MikroCord start - harden
++        /* // Firefly start - harden
          Preconditions.checkState( thisState == State.HANDSHAKE, "Not expecting HANDSHAKE" );
 +        */
 +        if (thisState != State.HANDSHAKE) {
-+            eu.mikroskeem.mikrocord.api.event.MaliciousClientEvent.invalidGameState(this).callEvent();
++            eu.mikroskeem.firefly.api.event.MaliciousClientEvent.invalidGameState(this).callEvent();
 +            if (bungee.getConfig().isLogPacketDecodeErrors()) {
 +                bungee.getLogger().log(Level.WARNING, "{0} Received invalid game state {1} (expected {2}), disconnecting", new Object[] { this, thisState, State.HANDSHAKE});
 +            }
 +            ch.close();
 +            return;
 +        }
-+        // MikroCord end
++        // Firefly end
          this.handshake = handshake;
          ch.setVersion( handshake.getProtocolVersion() );
  
@@ -268,11 +268,11 @@ index d4dae3cdddc2772a1b60f35db72a44d5314a054f..e58f51c36c58f5d2146ac62371b33467
                  }
                  break;
              default:
-+                // MikroCord start - harden
-+                eu.mikroskeem.mikrocord.api.event.MaliciousClientEvent.invalidProtocolRequested(this).callEvent();
++                // Firefly start - harden
++                eu.mikroskeem.firefly.api.event.MaliciousClientEvent.invalidProtocolRequested(this).callEvent();
 +                bungee.getLogger().log(Level.WARNING, "{0} Invalid protocol {1}, disconnecting", new Object[] { this, handshake.getRequestedProtocol() });
 +                ch.close();
-+                if (false) // MikroCord end
++                if (false) // Firefly end
                  throw new IllegalArgumentException( "Cannot request protocol " + handshake.getRequestedProtocol() );
          }
      }
@@ -280,22 +280,22 @@ index d4dae3cdddc2772a1b60f35db72a44d5314a054f..e58f51c36c58f5d2146ac62371b33467
      @Override
      public void handle(LoginRequest loginRequest) throws Exception
      {
-+        /* // MikroCord start - harden
++        /* // Firefly start - harden
          Preconditions.checkState( thisState == State.USERNAME, "Not expecting USERNAME" );
 +        */
 +        if (thisState != State.USERNAME) {
-+            eu.mikroskeem.mikrocord.api.event.MaliciousClientEvent.invalidGameState(this).callEvent();
++            eu.mikroskeem.firefly.api.event.MaliciousClientEvent.invalidGameState(this).callEvent();
 +            if (bungee.getConfig().isLogPacketDecodeErrors()) {
 +                bungee.getLogger().log(Level.WARNING, "{0} Received invalid game state {1} (expected {2}), disconnecting", new Object[] { this, thisState, State.USERNAME});
 +            }
 +            ch.close();
 +            return;
 +        }
-+        // MikroCord end
++        // Firefly end
          this.loginRequest = loginRequest;
  
 -        if ( getName().contains( "." ) )
-+        if ( getName().contains( "." ) || getName().contains(" ") || getName().length() < 1 ) // MikroCord - harden
++        if ( getName().contains( "." ) || getName().contains(" ") || getName().length() < 1 ) // Firefly - harden
          {
              disconnect( bungee.getTranslation( "name_invalid" ) );
              return;
@@ -303,23 +303,23 @@ index d4dae3cdddc2772a1b60f35db72a44d5314a054f..e58f51c36c58f5d2146ac62371b33467
      @Override
      public void handle(final EncryptionResponse encryptResponse) throws Exception
      {
-+        /* // MikroCord start - harden
++        /* // Firefly start - harden
          Preconditions.checkState( thisState == State.ENCRYPT, "Not expecting ENCRYPT" );
 +        */
 +        if (thisState != State.ENCRYPT) {
-+            eu.mikroskeem.mikrocord.api.event.MaliciousClientEvent.invalidGameState(this).callEvent();
++            eu.mikroskeem.firefly.api.event.MaliciousClientEvent.invalidGameState(this).callEvent();
 +            if (bungee.getConfig().isLogPacketDecodeErrors()) {
 +                bungee.getLogger().log(Level.WARNING, "{0} Received invalid game state {1} (expected {2}), disconnecting", new Object[] { this, thisState, State.ENCRYPT});
 +            }
 +            ch.close();
 +            return;
 +        }
-+        // MikroCord end
++        // Firefly end
  
          SecretKey sharedKey = EncryptionUtil.getSecret( encryptResponse, request );
          BungeeCipher decrypt = EncryptionUtil.getCipher( false, sharedKey );
 diff --git a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
-index cdf31661b5fc10e5029cda7208596f56a66ab5d1..79953dc5198d05d86a96043f1a2ec2bf4233ced3 100644
+index 40b76f48b515f6660d0eaa46f9e01289e7d85c31..6b8503ef7c0ebec1e80ab9d4b3bca1eda366702c 100644
 --- a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
 +++ b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
 @@ -30,7 +30,7 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket>
@@ -327,7 +327,7 @@ index cdf31661b5fc10e5029cda7208596f56a66ab5d1..79953dc5198d05d86a96043f1a2ec2bf
      private final ListenerInfo listener;
      /*========================================================================*/
 -    private final Random random = new Random();
-+    private final Random random = new java.security.SecureRandom(); //Random(); // MikroCord - misc security enhancements
++    private final Random random = new java.security.SecureRandom(); //Random(); // Firefly - misc security enhancements
      private final Cache<InetAddress, QuerySession> sessions = CacheBuilder.newBuilder().expireAfterWrite( 30, TimeUnit.SECONDS ).build();
      private static io.github.waterfallmc.waterfall.utils.FastException cachedNoSessionException = new io.github.waterfallmc.waterfall.utils.FastException("No Session!");
-     private final Cache<InetAddress, Integer> blacklistedAddresses = CacheBuilder.newBuilder().maximumSize(1024).expireAfterWrite( 120, TimeUnit.SECONDS ).build(); // MikroCord - Blacklist invalid query packet spammers
+     private final Cache<InetAddress, Integer> blacklistedAddresses = CacheBuilder.newBuilder().maximumSize(1024).expireAfterWrite( 120, TimeUnit.SECONDS ).build(); // Firefly - Blacklist invalid query packet spammers

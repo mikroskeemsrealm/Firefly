@@ -4,22 +4,22 @@ Date: Mon, 27 Jan 2020 21:56:06 +0200
 Subject: [PATCH] Allow disabling legacy ping handling
 
 
-diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-index b5d0cb50b65fcebb0f24dac45481ebf3f498b899..c23dc0e1f9d9803b5727d6854a72cf8e7995bb6c 100644
---- a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-+++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-@@ -94,4 +94,6 @@ public interface MikroCordProxyConfig {
+diff --git a/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java b/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
+index 0757f3bdfed36e5c2b71c01f847ecff56e409fbe..55d42b9775ec274b21568a86303f0a9e0bbde1f5 100644
+--- a/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
++++ b/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
+@@ -94,4 +94,6 @@ public interface FireflyProxyConfig {
      boolean isDropConnectionsSendingInvalidPackets();
  
      boolean isLogPacketDecodeErrors();
 +
 +    boolean isHandleLegacyPing();
  }
-diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index 3ffb841becd6436b7aa594adabc6a1846aa79837..3557312e0bb287f3c7f02fc86185484959c7156d 100644
---- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-+++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-@@ -88,6 +88,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+diff --git a/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java b/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
+index 85d48589a7d604c022ded8299e154eaa31e0130b..30788138b01d3da1cb3bd76d66b6a85f2f0253f6 100644
+--- a/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
++++ b/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
+@@ -88,6 +88,9 @@ public class FireflyConfiguration extends WaterfallConfiguration {
      @Getter
      private boolean logUnparsableChatJson = true;
  
@@ -29,7 +29,7 @@ index 3ffb841becd6436b7aa594adabc6a1846aa79837..3557312e0bb287f3c7f02fc861854849
      @Override
      public void load() {
          super.load();
-@@ -114,6 +117,7 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -114,6 +117,7 @@ public class FireflyConfiguration extends WaterfallConfiguration {
          logPacketDecodeErrors = config.getBoolean("packets.log_packet_decode_errors", logPacketDecodeErrors);
          logUnparsableChatJson = config.getBoolean("log.unparsable_chat_json", logUnparsableChatJson);
          ComponentSerializer.debugJsonParsing.set(logUnparsableChatJson);
@@ -38,19 +38,19 @@ index 3ffb841becd6436b7aa594adabc6a1846aa79837..3557312e0bb287f3c7f02fc861854849
  
      private TCPFastOpenMode setupTfo(int value) {
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-index e58f51c36c58f5d2146ac62371b33467ac194d42..04f5204f207b47e3f0ef4155cda49b6f79dfbf21 100644
+index 2a8b1e5421f4a0fa29145be812d436ad921bd87e..50893057dacd94d58f331869594c45cd3914b3aa 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 @@ -182,6 +182,12 @@ public class InitialHandler extends PacketHandler implements PendingConnection
      {
          this.legacy = true;
          final boolean v1_5 = ping.isV1_5();
-+        // MikroCord start
++        // Firefly start
 +        if (!bungee.config.isHandleLegacyPing()) {
 +            ch.close();
 +            return;
 +        }
-+        // MikroCord end
++        // Firefly end
  
          ServerPing legacy = new ServerPing( new ServerPing.Protocol( bungee.getName() + " " + bungee.getGameVersion(), bungee.getProtocolVersion() ),
                  new ServerPing.Players( listener.getMaxPlayers(), bungee.getOnlineCount(), null ),

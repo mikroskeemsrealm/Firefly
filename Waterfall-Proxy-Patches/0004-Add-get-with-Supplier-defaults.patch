@@ -5,14 +5,14 @@ Subject: [PATCH] Add get* with Supplier defaults
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/config/ConfigurationAdapter.java b/api/src/main/java/net/md_5/bungee/api/config/ConfigurationAdapter.java
-index 8ee8d33fe1b69227ad39615382f0bdccbb40df4d..31b6ea53d40fc995087a8afb367c23c4f4f1dce7 100644
+index 8ee8d33fe1b69227ad39615382f0bdccbb40df4d..b1cd5f93bb50e44c2a079ef1b44b58c20d14ff16 100644
 --- a/api/src/main/java/net/md_5/bungee/api/config/ConfigurationAdapter.java
 +++ b/api/src/main/java/net/md_5/bungee/api/config/ConfigurationAdapter.java
 @@ -24,6 +24,7 @@ public interface ConfigurationAdapter
       * @return the retrieved integer
       */
      public int getInt(String path, int def);
-+    default int getInt(String path, java.util.function.Supplier<Integer> def) { return getInt(path, def.get()); } // MikroCord - Add get* with Supplier defaults
++    default int getInt(String path, java.util.function.Supplier<Integer> def) { return getInt(path, def.get()); } // Firefly - Add get* with Supplier defaults
  
      /**
       * Gets a string from the specified path.
@@ -20,7 +20,7 @@ index 8ee8d33fe1b69227ad39615382f0bdccbb40df4d..31b6ea53d40fc995087a8afb367c23c4
       * @return the retrieved string
       */
      public String getString(String path, String def);
-+    default String getString(String path, java.util.function.Supplier<String> def) { return getString(path, def.get()); } // MikroCord - Add get* with Supplier defaults
++    default String getString(String path, java.util.function.Supplier<String> def) { return getString(path, def.get()); } // Firefly - Add get* with Supplier defaults
  
      /**
       * Gets a boolean from the specified path.
@@ -28,7 +28,7 @@ index 8ee8d33fe1b69227ad39615382f0bdccbb40df4d..31b6ea53d40fc995087a8afb367c23c4
       * @return the retrieved boolean
       */
      public boolean getBoolean(String path, boolean def);
-+    default boolean getBoolean(String path, java.util.function.Supplier<Boolean> def) { return getBoolean(path, def.get()); } // MikroCord - Add get* with Supplier defaults
++    default boolean getBoolean(String path, java.util.function.Supplier<Boolean> def) { return getBoolean(path, def.get()); } // Firefly - Add get* with Supplier defaults
  
      /**
       * Get a list from the specified path.
@@ -36,19 +36,19 @@ index 8ee8d33fe1b69227ad39615382f0bdccbb40df4d..31b6ea53d40fc995087a8afb367c23c4
       * @return the retrieved list
       */
      public Collection<?> getList(String path, Collection<?> def);
-+    default <T, C extends Collection<T>> C getList(String path, java.util.function.Supplier<C> def) { return (C) getList(path, def.get()); } // MikroCord - Add get* with Supplier defaults
++    default <T, C extends Collection<T>> C getList(String path, java.util.function.Supplier<C> def) { return (C) getList(path, def.get()); } // Firefly - Add get* with Supplier defaults
  
      /**
       * Get the configuration all servers which may be accessible via the proxy.
 diff --git a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
-index 44011a9655331056c0e29ee98612f446700a52c8..e62951d74c2fdda98b17986ff58fc8d392ff7c2c 100644
+index 85c2a0b52f5035cbb52df009c54327aedbcbf0bd..678d1304aada1ee09114853c87b9d638d854b2c3 100644
 --- a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
 +++ b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
 @@ -326,4 +326,46 @@ public class YamlConfig implements ConfigurationAdapter
          Collection<String> permissions = get( "permissions." + group, null );
          return ( permissions == null ) ? Collections.EMPTY_SET : permissions;
      }
-+    // MikroCord start - Add get* with Supplier defaults
++    // Firefly start - Add get* with Supplier defaults
 +    @SuppressWarnings("unchecked")
 +    private <T> T getWithSupplier(String path, java.util.function.Supplier<T> defSupplier, Map submap)
 +    {
@@ -89,5 +89,5 @@ index 44011a9655331056c0e29ee98612f446700a52c8..e62951d74c2fdda98b17986ff58fc8d3
 +
 +    @Override
 +    public <T, C extends Collection<T>> C getList(String path, java.util.function.Supplier<C> def) { return getWithSupplier(path, def, config); }
-+    // MikroCord end
++    // Firefly end
  }

@@ -5,15 +5,15 @@ Subject: [PATCH] Disable bungee & perms command by default
 
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java b/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java
-index 5841cf630b1e956c5512f85117bcc31225446766..51ddb4121454aa8589b8cfddfcc73073882b7d4f 100644
+index 85d2197ac37651dfcd7decec5355d1f4fc82aa94..6c3ca2130c87043b4ecb83b2762c5e19c0534023 100644
 --- a/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java
 +++ b/proxy/src/main/java/net/md_5/bungee/conf/Configuration.java
-@@ -100,7 +100,7 @@ public abstract class Configuration implements ProxyConfig
+@@ -106,7 +106,7 @@ public abstract class Configuration implements ProxyConfig
          preventProxyConnections = adapter.getBoolean( "prevent_proxy_connections", preventProxyConnections );
          forgeSupport = adapter.getBoolean( "forge_support", forgeSupport );
  
 -        disabledCommands = new CaseInsensitiveSet( (Collection<String>) adapter.getList( "disabled_commands", Arrays.asList( "disabledcommandhere" ) ) );
-+        disabledCommands = new CaseInsensitiveSet( (Collection<String>) adapter.getList( "disabled_commands", Arrays.asList( "disabledcommandhere", "bungee", "perms" ) ) ); // MikroCord - more default disabled commands
++        disabledCommands = new CaseInsensitiveSet( (Collection<String>) adapter.getList( "disabled_commands", Arrays.asList( "disabledcommandhere", "bungee", "perms" ) ) ); // Firefly - more default disabled commands
  
          Preconditions.checkArgument( listeners != null && !listeners.isEmpty(), "No listeners defined." );
  

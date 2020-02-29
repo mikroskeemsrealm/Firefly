@@ -5,69 +5,69 @@ Subject: [PATCH] IP address and handshake spoofing
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/connection/PendingConnection.java b/api/src/main/java/net/md_5/bungee/api/connection/PendingConnection.java
-index f497395eb2587b46fab991f3cf5f6285320126cc..76da9d643655f4fec45e23b6c1aab3e2ee0cf8de 100644
+index f497395eb2587b46fab991f3cf5f6285320126cc..18db187d23dbf99715d56835c336b9273b1d545c 100644
 --- a/api/src/main/java/net/md_5/bungee/api/connection/PendingConnection.java
 +++ b/api/src/main/java/net/md_5/bungee/api/connection/PendingConnection.java
 @@ -89,4 +89,8 @@ public interface PendingConnection extends Connection
       * @return Whether the client is using a legacy client.
       */
      boolean isLegacy();
-+    // MikroCord start - IP address and handshake spoofing
++    // Firefly start - IP address and handshake spoofing
 +    net.md_5.bungee.protocol.packet. @org.checkerframework.checker.nullness.qual.NonNull Handshake getHandshake();
 +    void setHandshake(net.md_5.bungee.protocol.packet. @org.checkerframework.checker.nullness.qual.NonNull Handshake handshake);
-+    // MikroCord end
++    // Firefly end
  }
 diff --git a/api/src/main/java/net/md_5/bungee/api/connection/ProxiedPlayer.java b/api/src/main/java/net/md_5/bungee/api/connection/ProxiedPlayer.java
-index f7459860f9da503cdafceacb31ecd4dd0e9346d2..36968c15bfa270084e02bec659375e5937027210 100644
+index f7459860f9da503cdafceacb31ecd4dd0e9346d2..0de3e34543eb25fe0439a1780606c60cd41ba967 100644
 --- a/api/src/main/java/net/md_5/bungee/api/connection/ProxiedPlayer.java
 +++ b/api/src/main/java/net/md_5/bungee/api/connection/ProxiedPlayer.java
 @@ -372,4 +372,8 @@ public interface ProxiedPlayer extends Connection, CommandSender
       * @return this player's {@link Scoreboard}
       */
      Scoreboard getScoreboard();
-+    // MikroCord start - IP address and handshake spoofing
++    // Firefly start - IP address and handshake spoofing
 +    java.net. @org.checkerframework.checker.nullness.qual.NonNull InetSocketAddress getSpoofedAddress();
 +    void setSpoofedAddress(java.net. @org.checkerframework.checker.nullness.qual.NonNull InetSocketAddress spoofedAddress);
-+    // MikroCord end
++    // Firefly end
  }
-diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/VelocitySupport.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/VelocitySupport.java
-index 0dfd1ace15691c0cb5c0b1637c42cd11579ad4c5..605352675643798ccfb346fb25a1a32ae70266ca 100644
---- a/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/VelocitySupport.java
-+++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/VelocitySupport.java
+diff --git a/proxy/src/main/java/eu/mikroskeem/firefly/misc/VelocitySupport.java b/proxy/src/main/java/eu/mikroskeem/firefly/misc/VelocitySupport.java
+index 72f989ca748f08d3e891a5ffd65bb078aaff2a7e..19dd4e8db3c21c8fa11e0bf9a3715ab6d196e215 100644
+--- a/proxy/src/main/java/eu/mikroskeem/firefly/misc/VelocitySupport.java
++++ b/proxy/src/main/java/eu/mikroskeem/firefly/misc/VelocitySupport.java
 @@ -33,7 +33,7 @@ public final class VelocitySupport {
          ByteBuf forwarded = Unpooled.buffer(2048);
          try {
              DefinedPacket.writeVarInt(MODERN_FORWARDING_VERSION, forwarded);
 -            DefinedPacket.writeString(user.getAddress().getHostString(), forwarded);
-+            DefinedPacket.writeString(user.getSpoofedAddress().getHostString(), forwarded); // MikroCord - IP address and handshake spoofing
++            DefinedPacket.writeString(user.getSpoofedAddress().getHostString(), forwarded); // Firefly - IP address and handshake spoofing
              LoginResult profile = user.getPendingConnection().getLoginProfile();
              DefinedPacket.writeUUID(user.getPendingConnection().getUniqueId(), forwarded);
              DefinedPacket.writeString(user.getPendingConnection().getName(), forwarded);
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-index 245366587b5bf47eb54acb9e1015773c3e8de8fc..541762d5aed07e119f2a26ede685973e40174174 100644
+index 522a06d56dbf5420f9ebc9dbab206ee6f6078a3d..e526904d101ae2a3171b1916866cad5ae507ce03 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-@@ -101,9 +101,9 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikr
+@@ -101,9 +101,9 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.fire
          Handshake originalHandshake = user.getPendingConnection().getHandshake();
          Handshake copiedHandshake = new Handshake( originalHandshake.getProtocolVersion(), originalHandshake.getHost(), originalHandshake.getPort(), 2 );
  
--        if ( target.getIpForwardType().isBungeeCord() && user.getSocketAddress() instanceof InetSocketAddress ) // MikroCord - server specific IP forwarding
-+        if ( target.getIpForwardType().isBungeeCord() && user.getSpoofedAddress() instanceof InetSocketAddress ) // MikroCord - server specific IP forwarding // MikroCord - IP address and handshake spoofing
+-        if ( target.getIpForwardType().isBungeeCord() && user.getSocketAddress() instanceof InetSocketAddress ) // Firefly - server specific IP forwarding
++        if ( target.getIpForwardType().isBungeeCord() && user.getSpoofedAddress() instanceof InetSocketAddress ) // Firefly - server specific IP forwarding // Firefly - IP address and handshake spoofing
          {
 -            String newHost = copiedHandshake.getHost() + "\00" + user.getAddress().getHostString() + "\00" + user.getUUID();
-+            String newHost = copiedHandshake.getHost() + "\00" + user.getSpoofedAddress().getHostString() + "\00" + user.getUUID(); // MikroCord - IP address and handshake spoofing
++            String newHost = copiedHandshake.getHost() + "\00" + user.getSpoofedAddress().getHostString() + "\00" + user.getUUID(); // Firefly - IP address and handshake spoofing
  
              LoginResult profile = user.getPendingConnection().getLoginProfile();
  
 diff --git a/proxy/src/main/java/net/md_5/bungee/UserConnection.java b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-index 62160b886d32a2d592077964cc3e6607a5aed75d..92d71a72000dc935fbeff4ed18ab0169c92442d2 100644
+index dcb319203c447f57fc2eca3d477d7a008d7405e4..02b9b676a011c3bbec2f21e2f1d03be9d04aad71 100644
 --- a/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 +++ b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-@@ -153,6 +153,15 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.mikroc
+@@ -153,6 +153,15 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.firefl
          }
      };
-     @Getter private final java.util.concurrent.CompletableFuture<Void> disconnectFuture = new java.util.concurrent.CompletableFuture<>(); // MikroCord - wait for all players to disconnect instead of using hardcoded delay
-+    // MikroCord start - IP spoofing
+     @Getter private final java.util.concurrent.CompletableFuture<Void> disconnectFuture = new java.util.concurrent.CompletableFuture<>(); // Firefly - wait for all players to disconnect instead of using hardcoded delay
++    // Firefly start - IP spoofing
 +    @Setter private InetSocketAddress spoofedAddress = null;
 +    public InetSocketAddress getSpoofedAddress() {
 +        if (spoofedAddress != null) {
@@ -75,12 +75,12 @@ index 62160b886d32a2d592077964cc3e6607a5aed75d..92d71a72000dc935fbeff4ed18ab0169
 +        }
 +        return getAddress();
 +    }
-+    // MikroCord end
++    // Firefly end
  
      public void init()
      {
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-index c2c8df17a81ac84f59e33be7db9d6077976857e1..6c90a20405e4964a81322e023c7ef408517a603e 100644
+index be918eed7e7d0c2205c848b0883becb72741fa4b..74bf27f1b6f6f1c9ad8bfbaad1bb6a9c2b6cda12 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
 @@ -388,10 +388,10 @@ public class DownstreamBridge extends PacketHandler
@@ -88,24 +88,24 @@ index c2c8df17a81ac84f59e33be7db9d6077976857e1..6c90a20405e4964a81322e023c7ef408
              {
                  out.writeUTF( "IP" );
 -                if ( con.getSocketAddress() instanceof InetSocketAddress )
-+                if ( con.getSpoofedAddress() instanceof InetSocketAddress ) // MikroCord - IP address and handshake spoofing
++                if ( con.getSpoofedAddress() instanceof InetSocketAddress ) // Firefly - IP address and handshake spoofing
                  {
 -                    out.writeUTF( con.getAddress().getHostString() );
 -                    out.writeInt( con.getAddress().getPort() );
-+                    out.writeUTF( con.getSpoofedAddress().getHostString() ); // MikroCord - IP address and handshake spoofing
-+                    out.writeInt( con.getSpoofedAddress().getPort() ); // MikroCord - IP address and handshake spoofing
++                    out.writeUTF( con.getSpoofedAddress().getHostString() ); // Firefly - IP address and handshake spoofing
++                    out.writeInt( con.getSpoofedAddress().getPort() ); // Firefly - IP address and handshake spoofing
                  } else
                  {
                      out.writeUTF( "unix://" + ( (DomainSocketAddress) con.getSocketAddress() ).path() );
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-index 04f5204f207b47e3f0ef4155cda49b6f79dfbf21..25a065219bcb9bb7ac89d798aef203d8f232463f 100644
+index 50893057dacd94d58f331869594c45cd3914b3aa..f5c791a2d6aae679353484b94caa4be383408292 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 @@ -75,6 +75,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection
      @Getter
      private final ListenerInfo listener;
      @Getter
-+    @lombok.Setter // MikroCord - IP address and handshake spoofing
++    @lombok.Setter // Firefly - IP address and handshake spoofing
      private Handshake handshake;
      @Getter
      private LoginRequest loginRequest;

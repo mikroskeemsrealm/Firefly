@@ -124,7 +124,7 @@ val collectDependencies by tasks.creating {
 }
 
 val shadowJar by tasks.getting(ShadowJar::class) {
-    archiveBaseName.set("MikroCord")
+    archiveBaseName.set("Firefly")
     archiveAppendix.set("")
     archiveVersion.set("")
     archiveClassifier.set("")
@@ -132,9 +132,9 @@ val shadowJar by tasks.getting(ShadowJar::class) {
 
     manifest {
         attributes(
-                "Main-Class" to "eu.mikroskeem.mikrocord.Bootstrap",
+                "Main-Class" to "eu.mikroskeem.firefly.Bootstrap",
                 "Multi-Release" to "true",
-                "Implementation-Version" to "git:MikroCord-Proxy:${project.version}:${rootProject.extra["gitHash"]}:${System.getenv("BUILD_NUMBER") ?: "unknown"}",
+                "Implementation-Version" to "git:Firefly-Proxy:${project.version}:${rootProject.extra["gitHash"]}:${System.getenv("BUILD_NUMBER") ?: "unknown"}",
                 "Specification-Version" to SimpleDateFormat("yyyyMMdd").format(Date())
         )
     }

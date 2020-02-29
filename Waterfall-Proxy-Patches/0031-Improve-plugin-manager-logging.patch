@@ -5,18 +5,18 @@ Subject: [PATCH] Improve plugin manager logging
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
-index 435eab1fed4798bae0efa71c583cd5321a6a6b96..e3dc5b19286b68898fe512d7ac25bfac7f24ea27 100644
+index 8d818da906026da1eb774de37d38e44cb9d494b1..c7dcd93eba3d5e6d50f7f445d04a49e73a280697 100644
 --- a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
 +++ b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
 @@ -297,9 +297,10 @@ public class PluginManager
          for ( Map.Entry<String, PluginDescription> entry : toLoad.entrySet() )
          {
              PluginDescription plugin = entry.getValue();
-+            ProxyServer.getInstance().getLogger().log( Level.INFO, "Loading plugin {0}...", plugin.getName()); // MikroCord - log when plugins are about to be enabled
++            ProxyServer.getInstance().getLogger().log( Level.INFO, "Loading plugin {0}...", plugin.getName()); // Firefly - log when plugins are about to be enabled
              if ( !enablePlugin( pluginStatuses, new Stack<PluginDescription>(), plugin ) )
              {
 -                ProxyServer.getInstance().getLogger().log( Level.WARNING, "Failed to enable {0}", entry.getKey() );
-+                ProxyServer.getInstance().getLogger().log( Level.WARNING, "Failed to load {0}", entry.getKey() ); // MikroCord - fix inaccurate log message
++                ProxyServer.getInstance().getLogger().log( Level.WARNING, "Failed to load {0}", entry.getKey() ); // Firefly - fix inaccurate log message
              }
          }
          toLoad.clear();
@@ -24,7 +24,7 @@ index 435eab1fed4798bae0efa71c583cd5321a6a6b96..e3dc5b19286b68898fe512d7ac25bfac
      {
          for ( Plugin plugin : plugins.values() )
          {
-+            ProxyServer.getInstance().getLogger().log( Level.INFO, "Enabling plugin {0}...", plugin.getDescription().getName()); // MikroCord - log when plugins are about to be enabled
++            ProxyServer.getInstance().getLogger().log( Level.INFO, "Enabling plugin {0}...", plugin.getDescription().getName()); // Firefly - log when plugins are about to be enabled
              try
              {
                  plugin.onEnable();

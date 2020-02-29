@@ -5,14 +5,14 @@ Subject: [PATCH] Don't complain about duplicate scoreboard items
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/score/Scoreboard.java b/api/src/main/java/net/md_5/bungee/api/score/Scoreboard.java
-index c10c7b11e0142c781b445f6a4f422ee7c2ae688d..594f9a0797f260991fdb3cc013cca6893c27f42a 100644
+index c10c7b11e0142c781b445f6a4f422ee7c2ae688d..1861216b552ff3682f73148993605dc10d854ee0 100644
 --- a/api/src/main/java/net/md_5/bungee/api/score/Scoreboard.java
 +++ b/api/src/main/java/net/md_5/bungee/api/score/Scoreboard.java
 @@ -52,6 +52,7 @@ public class Scoreboard
      public void addObjective(Objective objective)
      {
          Preconditions.checkNotNull( objective, "objective" );
-+        if (false) // MikroCord - don't complain about duplicate scoreboard items
++        if (false) // Firefly - don't complain about duplicate scoreboard items
          Preconditions.checkArgument( !objectives.containsKey( objective.getName() ), "Objective %s already exists in this scoreboard", objective.getName() );
          objectives.put( objective.getName(), objective );
      }
@@ -20,7 +20,7 @@ index c10c7b11e0142c781b445f6a4f422ee7c2ae688d..594f9a0797f260991fdb3cc013cca689
      public void addTeam(Team team)
      {
          Preconditions.checkNotNull( team, "team" );
-+        if (false) // MikroCord - don't complain about duplicate scoreboard items
++        if (false) // Firefly - don't complain about duplicate scoreboard items
          Preconditions.checkArgument( !teams.containsKey( team.getName() ), "Team %s already exists in this scoreboard", team.getName() );
          teams.put( team.getName(), team );
      }

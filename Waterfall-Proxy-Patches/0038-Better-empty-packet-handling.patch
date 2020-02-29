@@ -5,17 +5,17 @@ Subject: [PATCH] Better empty packet handling
 
 
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
-index 743d65e43549f4db3b1f6785a69ab69e19004285..81c3626af3679671f633c561698b5519290003af 100644
+index 743d65e43549f4db3b1f6785a69ab69e19004285..eff71ed639325acbd5e8f22e31c4f7bb367390f2 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
 @@ -7,8 +7,10 @@ import io.netty.handler.codec.ByteToMessageDecoder;
  import io.netty.handler.codec.CorruptedFrameException;
  import java.util.List;
  
-+@lombok.RequiredArgsConstructor // MikroCord - Better empty packet handling
++@lombok.RequiredArgsConstructor // Firefly - Better empty packet handling
  public class Varint21FrameDecoder extends ByteToMessageDecoder
  {
-+    private final boolean server; // MikroCord - Better empty packet handling
++    private final boolean server; // Firefly - Better empty packet handling
  
      private static boolean DIRECT_WARNING;
  
@@ -23,45 +23,45 @@ index 743d65e43549f4db3b1f6785a69ab69e19004285..81c3626af3679671f633c561698b5519
                  in.resetReaderIndex();
                  int length = DefinedPacket.readVarInt( in );
                  // Waterfall end
-+                // MikroCord start - Better empty packet handling
++                // Firefly start - Better empty packet handling
 +                if (length == 0 && !server) {
 +                    ctx.channel().close();
 +                    return;
 +                }
-+                // MikroCord end
++                // Firefly end
                  if ( false && length == 0) // Waterfall - ignore
                  {
                      throw new CorruptedFrameException( "Empty Packet!" );
 diff --git a/proxy/src/main/java/net/md_5/bungee/UserConnection.java b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-index 979c3030a1f8e37857e79233f5e1ff59fb46176e..62160b886d32a2d592077964cc3e6607a5aed75d 100644
+index 000d833c97d6091a16ee0138c0218432df05ee50..dcb319203c447f57fc2eca3d477d7a008d7405e4 100644
 --- a/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 +++ b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-@@ -345,6 +345,7 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.mikroc
+@@ -345,6 +345,7 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.firefl
              protected void initChannel(Channel ch) throws Exception
              {
                  PipelineUtils.BASE.initChannel( ch );
-+                ch.pipeline().addAfter(PipelineUtils.TIMEOUT_HANDLER, PipelineUtils.FRAME_DECODER, new net.md_5.bungee.protocol.Varint21FrameDecoder(true)); // MikroCord - Better empty packet handling
++                ch.pipeline().addAfter(PipelineUtils.TIMEOUT_HANDLER, PipelineUtils.FRAME_DECODER, new net.md_5.bungee.protocol.Varint21FrameDecoder(true)); // Firefly - Better empty packet handling
                  ch.pipeline().addAfter( PipelineUtils.FRAME_DECODER, PipelineUtils.PACKET_DECODER, new MinecraftDecoder( Protocol.HANDSHAKE, false, getPendingConnection().getVersion() ) );
                  ch.pipeline().addAfter( PipelineUtils.FRAME_PREPENDER, PipelineUtils.PACKET_ENCODER, new MinecraftEncoder( Protocol.HANDSHAKE, false, getPendingConnection().getVersion() ) );
                  ch.pipeline().get( HandlerBoss.class ).setHandler( new ServerConnector( bungee, UserConnection.this, target ) );
 diff --git a/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java b/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
-index 4186ab11436adce2ccb7165c6585d8c86511cd73..046c64a28f81c9f9e199b69a2fadbae38aa45b63 100644
+index 4dd4d57def155bd23679d171462e98650b086752..add26b2133302561d39e3fdd0baeb2e3a86bacee 100644
 --- a/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
 +++ b/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
-@@ -87,6 +87,7 @@ public class PipelineUtils
+@@ -93,6 +93,7 @@ public class PipelineUtils
                  ch.config().setOption(io.netty.channel.epoll.EpollChannelOption.TCP_FASTOPEN, BungeeCord.getInstance().getConfig().getTcpFastOpenMode().value);
              }
-             // MikroCord end
-+            ch.pipeline().addAfter(TIMEOUT_HANDLER, FRAME_DECODER, new Varint21FrameDecoder(false)); // MikroCord - Better empty packet handling
+             // Firefly end
++            ch.pipeline().addAfter(TIMEOUT_HANDLER, FRAME_DECODER, new Varint21FrameDecoder(false)); // Firefly - Better empty packet handling
              ch.pipeline().addBefore( FRAME_DECODER, LEGACY_DECODER, new LegacyDecoder() );
              ch.pipeline().addAfter( FRAME_DECODER, PACKET_DECODER, new MinecraftDecoder( Protocol.HANDSHAKE, true, ProxyServer.getInstance().getProtocolVersion() ) );
              ch.pipeline().addAfter( FRAME_PREPENDER, PACKET_ENCODER, new MinecraftEncoder( Protocol.HANDSHAKE, true, ProxyServer.getInstance().getProtocolVersion() ) );
-@@ -194,7 +195,7 @@ public class PipelineUtils
+@@ -200,7 +201,7 @@ public class PipelineUtils
              ch.config().setWriteBufferWaterMark( MARK );
  
              ch.pipeline().addLast( TIMEOUT_HANDLER, new ReadTimeoutHandler( BungeeCord.getInstance().config.getTimeout(), TimeUnit.MILLISECONDS ) );
 -            ch.pipeline().addLast( FRAME_DECODER, new Varint21FrameDecoder() );
-+            //ch.pipeline().addLast( FRAME_DECODER, new Varint21FrameDecoder() ); // MikroCord - Better empty packet handling
++            //ch.pipeline().addLast( FRAME_DECODER, new Varint21FrameDecoder() ); // Firefly - Better empty packet handling
              ch.pipeline().addLast( FRAME_PREPENDER, framePrepender );
  
              ch.pipeline().addLast( BOSS_HANDLER, new HandlerBoss() );

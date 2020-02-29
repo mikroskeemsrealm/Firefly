@@ -4,11 +4,11 @@ Date: Sat, 20 Jul 2019 16:49:01 +0300
 Subject: [PATCH] Allow Query response plugins population
 
 
-diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-index 555431dba5926c7aeb287b589a21ba4d74c547d6..25e30d199e0c42949be43ef026099512bba85724 100644
---- a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-+++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-@@ -69,4 +69,9 @@ public interface MikroCordProxyConfig {
+diff --git a/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java b/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
+index 4216d9dfb8963577f10e1a3a601f9b3387ebc862..d6eba7208ce9063df112215150a1e42f7274d35f 100644
+--- a/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
++++ b/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
+@@ -69,4 +69,9 @@ public interface FireflyProxyConfig {
       * @return Whether scoreboard team strings should be interned or not
       */
      boolean isInternScoreboardTeamStrings();
@@ -19,14 +19,14 @@ index 555431dba5926c7aeb287b589a21ba4d74c547d6..25e30d199e0c42949be43ef026099512
 +    boolean isPopulateGS4QueryPlugins();
  }
 diff --git a/api/src/main/java/io/github/waterfallmc/waterfall/QueryResult.java b/api/src/main/java/io/github/waterfallmc/waterfall/QueryResult.java
-index 9a262c8a11caeade95a084e5e5bc0be398917bbf..eecdcfeb293646f01ab847bec80caf9165618d34 100644
+index 9a262c8a11caeade95a084e5e5bc0be398917bbf..172006d3ec5a071a39fcee55a7e893a75603e9b4 100644
 --- a/api/src/main/java/io/github/waterfallmc/waterfall/QueryResult.java
 +++ b/api/src/main/java/io/github/waterfallmc/waterfall/QueryResult.java
 @@ -56,4 +56,15 @@ public class QueryResult {
       */
      @NonNull
      private String version;
-+    // MikroCord start - allow Query response plugins population
++    // Firefly start - allow Query response plugins population
 +    private final List<PluginInfo> plugins = new java.util.LinkedList<>();
 +    @Data
 +    public static final class PluginInfo {
@@ -36,13 +36,13 @@ index 9a262c8a11caeade95a084e5e5bc0be398917bbf..eecdcfeb293646f01ab847bec80caf91
 +        @NonNull
 +        private final String version;
 +    }
-+    // MikroCord end
++    // Firefly end
  }
-diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index daae1811572243f17402b526ade9a04dd9c69e18..4bed1988e841dee904989ddfa24a18164fabc62d 100644
---- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-+++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-@@ -52,6 +52,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+diff --git a/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java b/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
+index a654bcec0681b8063119f1c9e3a8e8be394e44c7..6be14f7699ff4254ba6e7b66fd20f27b2304be41 100644
+--- a/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
++++ b/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
+@@ -52,6 +52,9 @@ public class FireflyConfiguration extends WaterfallConfiguration {
      @Getter
      private boolean internScoreboardTeamStrings = false;
  
@@ -52,7 +52,7 @@ index daae1811572243f17402b526ade9a04dd9c69e18..4bed1988e841dee904989ddfa24a1816
      @Override
      public void load() {
          super.load();
-@@ -69,6 +72,7 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -69,6 +72,7 @@ public class FireflyConfiguration extends WaterfallConfiguration {
          waitForAllPlayersToDisconnectInfinitely = config.getBoolean("shutdown.wait_for_all_players_to_disconnect_infinitely", waitForAllPlayersToDisconnectInfinitely);
          allowTablistRewrite = config.getBoolean("performance.allow_tablist_rewrite", allowTablistRewrite);
          internScoreboardTeamStrings = config.getBoolean("performance.intern_scoreboard_team_strings", internScoreboardTeamStrings);
@@ -61,14 +61,14 @@ index daae1811572243f17402b526ade9a04dd9c69e18..4bed1988e841dee904989ddfa24a1816
  
      private TCPFastOpenMode setupTfo(int value) {
 diff --git a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
-index 6f4e99d68f69320f21a4bbb48c37d39392013f3c..d886639f75dad3ad3ab36b852cc7ae6cb359ee78 100644
+index edcaa76a2d3e2cb82b3effdc16c030aaf6b395c4..1fe520b31a58483b6aae920458d3cb968b25e6b1 100644
 --- a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
 +++ b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
 @@ -34,6 +34,7 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket>
      private final Cache<InetAddress, QuerySession> sessions = CacheBuilder.newBuilder().expireAfterWrite( 30, TimeUnit.SECONDS ).build();
      private static io.github.waterfallmc.waterfall.utils.FastException cachedNoSessionException = new io.github.waterfallmc.waterfall.utils.FastException("No Session!");
-     private final Cache<InetAddress, Integer> blacklistedAddresses = CacheBuilder.newBuilder().maximumSize(1024).expireAfterWrite( 120, TimeUnit.SECONDS ).build(); // MikroCord - Blacklist invalid query packet spammers
-+    private volatile List<QueryResult.PluginInfo> cachedPluginInfoList = null; // MikroCord - allow Query response plugins population
+     private final Cache<InetAddress, Integer> blacklistedAddresses = CacheBuilder.newBuilder().maximumSize(1024).expireAfterWrite( 120, TimeUnit.SECONDS ).build(); // Firefly - Blacklist invalid query packet spammers
++    private volatile List<QueryResult.PluginInfo> cachedPluginInfoList = null; // Firefly - allow Query response plugins population
  
      private void writeShort(ByteBuf buf, int s)
      {
@@ -76,7 +76,7 @@ index 6f4e99d68f69320f21a4bbb48c37d39392013f3c..d886639f75dad3ad3ab36b852cc7ae6c
                  throw cachedNoSessionException; // Waterfall
              }
  
-+            // MikroCord start - allow Query response plugins population
++            // Firefly start - allow Query response plugins population
 +            List<QueryResult.PluginInfo> plugins = this.cachedPluginInfoList;
 +            if (plugins == null) {
 +                synchronized (this) {
@@ -90,14 +90,14 @@ index 6f4e99d68f69320f21a4bbb48c37d39392013f3c..d886639f75dad3ad3ab36b852cc7ae6c
 +                    }
 +                }
 +            }
-+            // MikroCord end
++            // Firefly end
              // Waterfall start
              List<String> players = bungee.getPlayers().stream().map(ProxiedPlayer::getName).collect(Collectors.toList());
  
-             ProxyQueryEvent event = new ProxyQueryEvent(listener, new QueryResult(listener.getMotd(), "SMP", "MikroCord_Proxy",
+             ProxyQueryEvent event = new ProxyQueryEvent(listener, new QueryResult(listener.getMotd(), "SMP", "Firefly_Proxy",
                      bungee.getOnlineCount(), listener.getMaxPlayers(), listener.getHost().getPort(),
                      listener.getHost().getHostString(), "MINECRAFT",  players, bungee.getGameVersion()));
-+            event.getResult().getPlugins().addAll(plugins); // MikroCord - allow Query response plugins population
++            event.getResult().getPlugins().addAll(plugins); // Firefly - allow Query response plugins population
              QueryResult result = bungee.getPluginManager().callEvent(event).getResult();
              // Waterfall end
  
@@ -105,7 +105,7 @@ index 6f4e99d68f69320f21a4bbb48c37d39392013f3c..d886639f75dad3ad3ab36b852cc7ae6c
                  // Start Extra Info
                  data.put( "game_id", result.getGameId() );
                  data.put( "version", result.getVersion() );
-+                /* MikroCord start - allow Query response plugins population
++                /* Firefly start - allow Query response plugins population
                  data.put( "plugins", "" ); // TODO: Allow population?
 +                 */
 +                StringBuilder pluginsString = new StringBuilder();
@@ -123,7 +123,7 @@ index 6f4e99d68f69320f21a4bbb48c37d39392013f3c..d886639f75dad3ad3ab36b852cc7ae6c
 +                    }
 +                }
 +                data.put("plugins", pluginsString.toString());
-+                // MikroCord end
++                // Firefly end
                  // End Extra Info
                  data.put( "map", result.getWorldName() );
                  data.put( "numplayers", Integer.toString( result.getOnlinePlayers() ) );

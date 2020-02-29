@@ -10,13 +10,13 @@ Subject: [PATCH] Various micro-optimizations
 * Add ServerPing serializer
 * Re-use static chat components instead of reallocating them
 
-diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/misc/ClassUtil.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/misc/ClassUtil.java
+diff --git a/api/src/main/java/eu/mikroskeem/firefly/api/misc/ClassUtil.java b/api/src/main/java/eu/mikroskeem/firefly/api/misc/ClassUtil.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..cea3f8031f5a3e9281855fe4112f81687df0691f
+index 0000000000000000000000000000000000000000..546bef8e2a62c307c2e59dce884489148b23722f
 --- /dev/null
-+++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/misc/ClassUtil.java
++++ b/api/src/main/java/eu/mikroskeem/firefly/api/misc/ClassUtil.java
 @@ -0,0 +1,21 @@
-+package eu.mikroskeem.mikrocord.api.misc;
++package eu.mikroskeem.firefly.api.misc;
 +
 +/**
 + * @author Mark Vainomaa
@@ -38,7 +38,7 @@ index 0000000000000000000000000000000000000000..cea3f8031f5a3e9281855fe4112f8168
 +    }
 +}
 diff --git a/api/src/main/java/net/md_5/bungee/Util.java b/api/src/main/java/net/md_5/bungee/Util.java
-index 0ea352b7f4a1d9e51659b33e6739daa709cd0a55..b74babaf3179c183789e05ee5a063c6d92aaf433 100644
+index 888cfe2f52236328a95a17aec11df5b5d24aaa5b..3d0e4b3ebba0757ee336b9f39f82145eda5c2387 100644
 --- a/api/src/main/java/net/md_5/bungee/Util.java
 +++ b/api/src/main/java/net/md_5/bungee/Util.java
 @@ -82,7 +82,7 @@ public class Util
@@ -46,19 +46,19 @@ index 0ea352b7f4a1d9e51659b33e6739daa709cd0a55..b74babaf3179c183789e05ee5a063c6d
          // TODO: We should use clear manually written exceptions
          StackTraceElement[] trace = t.getStackTrace();
 -        return t.getClass().getSimpleName() + " : " + t.getMessage()
-+        return eu.mikroskeem.mikrocord.api.misc.ClassUtil.getClassName(t.getClass()) + " : " + t.getMessage() // MikroCord - don't use Class#getSimpleName()
++        return eu.mikroskeem.firefly.api.misc.ClassUtil.getClassName(t.getClass()) + " : " + t.getMessage() // Firefly - don't use Class#getSimpleName()
                  + ( ( trace.length > 0 ) ? " @ " + t.getStackTrace()[0].getClassName() + ":" + t.getStackTrace()[0].getLineNumber() : "" );
      }
  
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
-index d83bbdcde46567ecc76eba3c20c96d4a4d9d042e..a750232314895a7b072ac42ed92ca615d5a9d03f 100644
+index 9333b64248c4ab89fe9ce2829dbf09039bdfc064..9615de6e74f95abf962177c3ce6e114bb7864687 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 @@ -29,6 +29,7 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
      @Setter private static Runnable emptyPacketMetric;
      @Setter private static Runnable invalidPacketMetric;
-     // MikroCord end
-+    @Setter private static java.util.function.Function<Class<?>, String> getClassNameFunction; // MikroCord - don't use Class#getSimpleName()
+     // Firefly end
++    @Setter private static java.util.function.Function<Class<?>, String> getClassNameFunction; // Firefly - don't use Class#getSimpleName()
  
      public MinecraftDecoder(Protocol protocol, boolean server, int protocolVersion) {
          this.protocol = protocol;
@@ -67,17 +67,17 @@ index d83bbdcde46567ecc76eba3c20c96d4a4d9d042e..a750232314895a7b072ac42ed92ca615
                  packetTypeStr = "id " + Integer.toHexString((Integer) packetTypeInfo);
              } else if (packetTypeInfo instanceof Class) {
 -                packetTypeStr = "class " + ((Class) packetTypeInfo).getSimpleName();
-+                packetTypeStr = "class " + getClassNameFunction.apply((Class) packetTypeInfo); // MikroCord - don't use Class#getSimpleName()
++                packetTypeStr = "class " + getClassNameFunction.apply((Class) packetTypeInfo); // Firefly - don't use Class#getSimpleName()
              } else {
                  packetTypeStr = "unknown";
              }
-diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/gson/ServerPingSerializer.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/gson/ServerPingSerializer.java
+diff --git a/proxy/src/main/java/eu/mikroskeem/firefly/gson/ServerPingSerializer.java b/proxy/src/main/java/eu/mikroskeem/firefly/gson/ServerPingSerializer.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..54e54a1115bc1bd62797ba07f171c8d30c87b255
+index 0000000000000000000000000000000000000000..29e05a380ce3e0ee638c8297437dc1b9c5879ae9
 --- /dev/null
-+++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/gson/ServerPingSerializer.java
++++ b/proxy/src/main/java/eu/mikroskeem/firefly/gson/ServerPingSerializer.java
 @@ -0,0 +1,35 @@
-+package eu.mikroskeem.mikrocord.gson;
++package eu.mikroskeem.firefly.gson;
 +
 +import com.google.gson.JsonElement;
 +import com.google.gson.JsonObject;
@@ -113,14 +113,14 @@ index 0000000000000000000000000000000000000000..54e54a1115bc1bd62797ba07f171c8d3
 +    }
 +}
 diff --git a/proxy/src/main/java/io/github/waterfallmc/waterfall/console/WaterfallConsole.java b/proxy/src/main/java/io/github/waterfallmc/waterfall/console/WaterfallConsole.java
-index 6cec0b5a141a41e9f4e36c25f6f7460aa5dacdc2..0be00b09ea6ff9218d3232f6d507e0ad1186784c 100644
+index 6cec0b5a141a41e9f4e36c25f6f7460aa5dacdc2..0dfde6a2e331f4d4166ec6d7ee0b87790968e82f 100644
 --- a/proxy/src/main/java/io/github/waterfallmc/waterfall/console/WaterfallConsole.java
 +++ b/proxy/src/main/java/io/github/waterfallmc/waterfall/console/WaterfallConsole.java
 @@ -9,6 +9,7 @@ import org.jline.reader.LineReader;
  import org.jline.reader.LineReaderBuilder;
  
  public final class WaterfallConsole extends SimpleTerminalConsole {
-+    private static final net.md_5.bungee.api.chat.BaseComponent[] COMMAND_NOT_FOUND = new ComponentBuilder("Command not found").color(ChatColor.RED).create(); // MikroCord - micro-optimize
++    private static final net.md_5.bungee.api.chat.BaseComponent[] COMMAND_NOT_FOUND = new ComponentBuilder("Command not found").color(ChatColor.RED).create(); // Firefly - micro-optimize
  
      @Override
      protected LineReader buildReader(LineReaderBuilder builder) {
@@ -129,12 +129,12 @@ index 6cec0b5a141a41e9f4e36c25f6f7460aa5dacdc2..0be00b09ea6ff9218d3232f6d507e0ad
          ProxyServer proxy = ProxyServer.getInstance();
          if (!proxy.getPluginManager().dispatchCommand(proxy.getConsole(), command)) {
 -            proxy.getConsole().sendMessage(new ComponentBuilder("Command not found").color(ChatColor.RED).create());
-+            proxy.getConsole().sendMessage(COMMAND_NOT_FOUND);//new ComponentBuilder("Command not found").color(ChatColor.RED).create()); // MikroCord - micro-optimize
++            proxy.getConsole().sendMessage(COMMAND_NOT_FOUND);//new ComponentBuilder("Command not found").color(ChatColor.RED).create()); // Firefly - micro-optimize
          }
      }
  
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index e8c232f1c033cb8288e57fa80f14896e9d7baa01..b76356884fdcbd8b0400e7ab5cb6a497903f7a38 100644
+index 57ee0aba32dea3bc64d689c34f059690db33c55f..6c5f91a62179948508b028999f28fb82e141e58a 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -117,7 +117,7 @@ public class BungeeCord extends ProxyServer
@@ -142,7 +142,7 @@ index e8c232f1c033cb8288e57fa80f14896e9d7baa01..b76356884fdcbd8b0400e7ab5cb6a497
       * locations.yml save thread.
       */
 -    private final Timer saveThread = new Timer( "Reconnect Saver" );
-+    private /*final*/ Timer saveThread /*= new Timer( "Reconnect Saver" )*/; // MikroCord - don't initialize reconnect save thread when it's not set
++    private /*final*/ Timer saveThread /*= new Timer( "Reconnect Saver" )*/; // Firefly - don't initialize reconnect save thread when it's not set
      // private final Timer metricsThread = new Timer( "Metrics Thread" ); // Waterfall: Disable Metrics
      /**
       * Server socket listener.
@@ -150,7 +150,7 @@ index e8c232f1c033cb8288e57fa80f14896e9d7baa01..b76356884fdcbd8b0400e7ab5cb6a497
              .registerTypeAdapter( KeybindComponent.class, new KeybindComponentSerializer() )
              .registerTypeAdapter( ScoreComponent.class, new ScoreComponentSerializer() )
              .registerTypeAdapter( SelectorComponent.class, new SelectorComponentSerializer() )
-+            .registerTypeAdapter(ServerPing.class, new eu.mikroskeem.mikrocord.gson.ServerPingSerializer()) // MikroCord - add ServerPing serializer
++            .registerTypeAdapter(ServerPing.class, new eu.mikroskeem.firefly.gson.ServerPingSerializer()) // Firefly - add ServerPing serializer
              .registerTypeAdapter( ServerPing.PlayerInfo.class, new PlayerInfoSerializer() )
              .registerTypeAdapter( Favicon.class, Favicon.getFaviconTypeAdapter() ).create();
      @Getter
@@ -158,13 +158,13 @@ index e8c232f1c033cb8288e57fa80f14896e9d7baa01..b76356884fdcbd8b0400e7ab5cb6a497
          {
              connectionThrottle = new ConnectionThrottle( config.getThrottle(), config.getThrottleLimit() );
          }
-+        net.md_5.bungee.protocol.MinecraftDecoder.setGetClassNameFunction(eu.mikroskeem.mikrocord.api.misc.ClassUtil::getClassName); // MikroCord - don't use Class#getSimpleName()
-         eu.mikroskeem.mikrocord.misc.PrometheusMetrics.initialize(); // MikroCord - add Prometheus metrics support
++        net.md_5.bungee.protocol.MinecraftDecoder.setGetClassNameFunction(eu.mikroskeem.firefly.api.misc.ClassUtil::getClassName); // Firefly - don't use Class#getSimpleName()
+         eu.mikroskeem.firefly.misc.PrometheusMetrics.initialize(); // Firefly - add Prometheus metrics support
          startListeners();
  
-+        // MikroCord start - don't initialize reconnect save thread when it's not set
++        // Firefly start - don't initialize reconnect save thread when it's not set
 +        if (getReconnectHandler() != null && (saveThread = new Timer( "Reconnect Saver" )) != null) // Last "check" is intended and does basically a lazy init
-+        // MikroCord end
++        // Firefly end
          saveThread.scheduleAtFixedRate( new TimerTask()
          {
              @Override
@@ -172,7 +172,7 @@ index e8c232f1c033cb8288e57fa80f14896e9d7baa01..b76356884fdcbd8b0400e7ab5cb6a497
                      reconnectHandler.save();
                      reconnectHandler.close();
                  }
-+                if (saveThread != null) // MikroCord - don't initialize reconnect save thread when it's not set
++                if (saveThread != null) // Firefly - don't initialize reconnect save thread when it's not set
                  saveThread.cancel();
                  // metricsThread.cancel(); // Waterfall: Disable Metrics
  
@@ -180,7 +180,7 @@ index e8c232f1c033cb8288e57fa80f14896e9d7baa01..b76356884fdcbd8b0400e7ab5cb6a497
              return Collections.singleton( exactMatch );
          }
  
-+        /* MikroCord start - improve matchPlayer
++        /* Firefly start - improve matchPlayer
          return Sets.newHashSet( Iterables.filter( getPlayers(), new Predicate<ProxiedPlayer>()
          {
  
@@ -200,39 +200,39 @@ index e8c232f1c033cb8288e57fa80f14896e9d7baa01..b76356884fdcbd8b0400e7ab5cb6a497
 +            }
 +        }
 +        return java.util.Set.copyOf(foundPlayers);
-+        // MikroCord end
++        // Firefly end
      }
  
      @Override
 diff --git a/proxy/src/main/java/net/md_5/bungee/netty/HandlerBoss.java b/proxy/src/main/java/net/md_5/bungee/netty/HandlerBoss.java
-index a66099fc682b02b1d4d55447b77433f31f4adbce..282ece156c66ada7ab045d9f2f6876bc26cf3b95 100644
+index 989bfd87b9e6d62abba28d51984b8526d6298bfd..2cf0d588eb78fb724bf7a15f4656dfd1d92ad10d 100644
 --- a/proxy/src/main/java/net/md_5/bungee/netty/HandlerBoss.java
 +++ b/proxy/src/main/java/net/md_5/bungee/netty/HandlerBoss.java
-@@ -146,7 +146,7 @@ public class HandlerBoss extends ChannelInboundHandlerAdapter
+@@ -156,7 +156,7 @@ public class HandlerBoss extends ChannelInboundHandlerAdapter
                  {
                      ProxyServer.getInstance().getLogger().log( Level.WARNING, "{0} - {1}: {2}", new Object[]
                      {
 -                        handler, cause.getClass().getSimpleName(), cause.getMessage()
-+                        handler, eu.mikroskeem.mikrocord.api.misc.ClassUtil.getClassName(cause), cause.getMessage() // MikroCord - don't use Class#getSimpleName()
++                        handler, eu.mikroskeem.firefly.api.misc.ClassUtil.getClassName(cause), cause.getMessage() // Firefly - don't use Class#getSimpleName()
                      } );
                  } else if ( cause instanceof QuietException )
                  {
 diff --git a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
-index d886639f75dad3ad3ab36b852cc7ae6cb359ee78..cdf31661b5fc10e5029cda7208596f56a66ab5d1 100644
+index 1fe520b31a58483b6aae920458d3cb968b25e6b1..40b76f48b515f6660d0eaa46f9e01289e7d85c31 100644
 --- a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
 +++ b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
 @@ -48,10 +48,14 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket>
  
      private void writeString(ByteBuf buf, String s)
      {
-+        /* // MikroCord start - optimize query packet string writing
++        /* // Firefly start - optimize query packet string writing
          for ( char c : s.toCharArray() )
          {
              buf.writeByte( c );
          }
 +        */
 +        buf.writeCharSequence(s, java.nio.charset.StandardCharsets.ISO_8859_1);
-+        // MikroCord end
++        // Firefly end
          buf.writeByte( 0x00 );
      }
  

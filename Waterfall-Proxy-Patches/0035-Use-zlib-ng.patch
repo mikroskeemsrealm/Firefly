@@ -5,14 +5,14 @@ Subject: [PATCH] Use zlib-ng
 
 
 diff --git a/native/compile-native.sh b/native/compile-native.sh
-index bdd1cd6b7fcddb69427343b408420d578916592b..180056c53d42dd0ba68d6623e8aa4d641fcca263 100755
+index bdd1cd6b7fcddb69427343b408420d578916592b..2921cd79ec3b339005bea2f22f396556e73179d7 100755
 --- a/native/compile-native.sh
 +++ b/native/compile-native.sh
 @@ -11,6 +11,32 @@ else
    CXX_ARGS="-lcrypto -lz -I$JAVA_HOME/include/ -I$JAVA_HOME/include/linux/"
  fi
  
-+# MikroCord start - use zlib-ng
++# Firefly start - use zlib-ng
 +if [ -n "${ZLIBNG}" ]; then
 +    set -e
 +    if [ ! -d "./zlib-ng" ]; then
@@ -36,25 +36,25 @@ index bdd1cd6b7fcddb69427343b408420d578916592b..180056c53d42dd0ba68d6623e8aa4d64
 +
 +    CXX_ARGS="-I./zlib-ng -I./zlib-ng/build ./zlib-ng/build/libz.a ${CXX_ARGS/-lz /}"
 +fi
-+# MikroCord end
++# Firefly end
 +
  CXX="g++ -shared -fPIC -O3 -Wall -Werror"
  
  $CXX src/main/c/NativeCipherImpl.cpp -o src/main/resources/${PREFIX}native-cipher.so $CXX_ARGS
 diff --git a/native/src/main/c/NativeCompressImpl.cpp b/native/src/main/c/NativeCompressImpl.cpp
-index 9bda6300caf0c4b695cdf6ef55a626b132bb84df..bed161d03f1f2395a4363f3f3a93e0751e2e420c 100644
+index 9bda6300caf0c4b695cdf6ef55a626b132bb84df..5deeabb6a7192fc71600496a87207e33624e45da 100644
 --- a/native/src/main/c/NativeCompressImpl.cpp
 +++ b/native/src/main/c/NativeCompressImpl.cpp
 @@ -1,7 +1,27 @@
  #include <stdlib.h>
-+#ifndef MC_USE_ZLIBNG // MikroCord start - use zlib-ng
++#ifndef MC_USE_ZLIBNG // Firefly start - use zlib-ng
  #include <zlib.h>
 +#else
 +#include <zlib-ng.h>
-+#endif                // MikroCord end
++#endif                // Firefly end
  #include "net_md_5_bungee_jni_zlib_NativeCompressImpl.h"
  
-+#ifdef MC_USE_ZLIBNG // MikroCord start - use zlib-ng
++#ifdef MC_USE_ZLIBNG // Firefly start - use zlib-ng
 +#define z_stream zng_stream
 +
 +#define deflate zng_deflate
@@ -68,7 +68,7 @@ index 9bda6300caf0c4b695cdf6ef55a626b132bb84df..bed161d03f1f2395a4363f3f3a93e075
 +#define inflateStart zng_inflateStart
 +#define inflateReset zng_inflateReset
 +#define inflateEnd zng_inflateEnd
-+#endif             // MikroCord end
++#endif             // Firefly end
 +
  typedef unsigned char byte;
  

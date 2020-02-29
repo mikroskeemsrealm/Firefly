@@ -5,14 +5,14 @@ Subject: [PATCH] Improve configuration adapter getting/setting API
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java b/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
-index a401133595c203de499483ced0d2dda09ab147c8..05b57d8900a5e98d7d38a87c6c0ab44f04d26f2f 100644
+index a401133595c203de499483ced0d2dda09ab147c8..521fbfa00656e12470e3be514186a31b8e4f63be 100644
 --- a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
 +++ b/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
 @@ -137,6 +137,7 @@ public abstract class ProxyServer
       *
       * @return the used configuration adapter
       */
-+    @Deprecated // MikroCord
++    @Deprecated // Firefly
      public abstract ConfigurationAdapter getConfigurationAdapter();
  
      /**
@@ -20,10 +20,10 @@ index a401133595c203de499483ced0d2dda09ab147c8..05b57d8900a5e98d7d38a87c6c0ab44f
       *
       * @param adapter the adapter to use
       */
-+    @Deprecated // MikroCord
++    @Deprecated // Firefly
      public abstract void setConfigurationAdapter(ConfigurationAdapter adapter);
  
-+    // MikroCord start - Configuration adapters
++    // Firefly start - Configuration adapters
 +    /**
 +     * Returns the currently in use configuration adapter by {@link ConfigurationType}.
 +     *
@@ -40,7 +40,7 @@ index a401133595c203de499483ced0d2dda09ab147c8..05b57d8900a5e98d7d38a87c6c0ab44f
 +     * @param configurationType The configuration type
 +     */
 +    public abstract void setConfigurationAdapter(ConfigurationType configurationType, ConfigurationAdapter adapter);
-+    // MikroCord end
++    // Firefly end
 +
      /**
       * Get the currently in use reconnect handler.
@@ -49,7 +49,7 @@ index a401133595c203de499483ced0d2dda09ab147c8..05b57d8900a5e98d7d38a87c6c0ab44f
       */
      public abstract Title createTitle();
  
-+    // MikroCord start - Configuration adapters
++    // Firefly start - Configuration adapters
 +    public enum ConfigurationType {
 +        /**
 +         * Generic BungeeCord configuration
@@ -62,35 +62,35 @@ index a401133595c203de499483ced0d2dda09ab147c8..05b57d8900a5e98d7d38a87c6c0ab44f
 +        WATERFALL,
 +        ;
 +    }
-+    // MikroCord end
++    // Firefly end
  }
 diff --git a/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java b/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
-index e860214f8d7bedcc98d5f4cc0c2108ea153b80be..b6840f65f336d0c5ed3f8b610fde2b17bbc2512a 100644
+index e860214f8d7bedcc98d5f4cc0c2108ea153b80be..83d44abb87fe522e7b8b7a1560968af2883ef974 100644
 --- a/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
 +++ b/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
 @@ -47,8 +47,13 @@ public class WaterfallConfiguration extends Configuration {
      @Override
      public void load() {
          super.load();
-+        /* // MikroCord start - Improve configuration adapter getting/setting API
++        /* // Firefly start - Improve configuration adapter getting/setting API
          YamlConfig config = new YamlConfig(new File("waterfall.yml"));
          config.load(false); // Load, but no permissions
 +        */
 +        var config = net.md_5.bungee.api.ProxyServer.getInstance().getConfigurationAdapter(net.md_5.bungee.api.ProxyServer.ConfigurationType.WATERFALL);
 +        config.load();
-+        // MikroCord end
++        // Firefly end
          logInitialHandlerConnections = config.getBoolean( "log_initial_handler_connections", logInitialHandlerConnections );
          gameVersion = config.getString("game_version", "").isEmpty() ? Joiner.on(", ").join(ProtocolConstants.SUPPORTED_VERSIONS) : config.getString("game_version", "");
          useNettyDnsResolver = config.getBoolean("use_netty_dns_resolver", useNettyDnsResolver);
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index d53e6b14ded923e658221edc46df5a8628f0db41..819cbf85f1d907086ca3220f3452f96c983f1535 100644
+index 2e958ad474638c6efc02c8cc13b7e97f98e56393..c36ca2c72b02f8ebe874fc9282e0a355ee9063d2 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -167,6 +167,37 @@ public class BungeeCord extends ProxyServer
      private ConnectionThrottle connectionThrottle;
-     //private final ModuleManager moduleManager = new ModuleManager(); // MikroCord - drop modules support
+     //private final ModuleManager moduleManager = new ModuleManager(); // Firefly - drop modules support
  
-+    // MikroCord start - Configuration adapters
++    // Firefly start - Configuration adapters
 +    private ConfigurationAdapter waterfallConfigurationAdapter = new YamlConfig(new File("waterfall.yml")) {
 +        @Override
 +        public void load() {
@@ -120,7 +120,7 @@ index d53e6b14ded923e658221edc46df5a8628f0db41..819cbf85f1d907086ca3220f3452f96c
 +                break;
 +        }
 +    }
-+    // MikroCord end
++    // Firefly end
      {
          // TODO: Proper fallback when we interface the manager
          registerChannel( "BungeeCord" );

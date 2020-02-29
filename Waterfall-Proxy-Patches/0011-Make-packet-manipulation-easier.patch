@@ -4,13 +4,13 @@ Date: Sat, 13 Apr 2019 20:13:53 +0300
 Subject: [PATCH] Make packet manipulation easier
 
 
-diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/network/ChannelHolder.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/network/ChannelHolder.java
+diff --git a/api/src/main/java/eu/mikroskeem/firefly/api/network/ChannelHolder.java b/api/src/main/java/eu/mikroskeem/firefly/api/network/ChannelHolder.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..834540a496667512a542969cbede2265e15652cc
+index 0000000000000000000000000000000000000000..0bc586e751d03c98c250d9d647366274627deea1
 --- /dev/null
-+++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/network/ChannelHolder.java
++++ b/api/src/main/java/eu/mikroskeem/firefly/api/network/ChannelHolder.java
 @@ -0,0 +1,10 @@
-+package eu.mikroskeem.mikrocord.api.network;
++package eu.mikroskeem.firefly.api.network;
 +
 +import io.netty.channel.Channel;
 +
@@ -21,7 +21,7 @@ index 0000000000000000000000000000000000000000..834540a496667512a542969cbede2265
 +    Channel getChannel();
 +}
 diff --git a/api/src/main/java/net/md_5/bungee/api/connection/Connection.java b/api/src/main/java/net/md_5/bungee/api/connection/Connection.java
-index f59b49c78b4e95ffa9f074c34afea165a7f8fd6a..793b08596a831bf7eede3b1af328ca928fcaf2dd 100644
+index f59b49c78b4e95ffa9f074c34afea165a7f8fd6a..a779bc9aee2eed5d960ba4d90a1b0af2353fd346 100644
 --- a/api/src/main/java/net/md_5/bungee/api/connection/Connection.java
 +++ b/api/src/main/java/net/md_5/bungee/api/connection/Connection.java
 @@ -10,7 +10,7 @@ import net.md_5.bungee.protocol.DefinedPacket;
@@ -29,12 +29,12 @@ index f59b49c78b4e95ffa9f074c34afea165a7f8fd6a..793b08596a831bf7eede3b1af328ca92
   * to a type of connection, whether server or player.
   */
 -public interface Connection
-+public interface Connection extends eu.mikroskeem.mikrocord.api.network.ChannelHolder // MikroCord - make packet manipulation easier
++public interface Connection extends eu.mikroskeem.firefly.api.network.ChannelHolder // Firefly - make packet manipulation easier
  {
  
      /**
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/Protocol.java b/protocol/src/main/java/net/md_5/bungee/protocol/Protocol.java
-index 44dc34ff1ec4ec42fe52559ed2a9237ff6114c21..7c21c01f4d11be04869313974be245aeb3d3302e 100644
+index 44dc34ff1ec4ec42fe52559ed2a9237ff6114c21..bcee617b9b927e920e9168c7cf5fbbeffc5a0cd1 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/Protocol.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/Protocol.java
 @@ -383,8 +383,8 @@ public enum Protocol
@@ -43,8 +43,8 @@ index 44dc34ff1ec4ec42fe52559ed2a9237ff6114c21..7c21c01f4d11be04869313974be245ae
      /*========================================================================*/
 -    final DirectionData TO_SERVER = new DirectionData( this, ProtocolConstants.Direction.TO_SERVER );
 -    final DirectionData TO_CLIENT = new DirectionData( this, ProtocolConstants.Direction.TO_CLIENT );
-+    public final DirectionData TO_SERVER = new DirectionData( this, ProtocolConstants.Direction.TO_SERVER ); // MikroCord - make packet manipulation easier
-+    public final DirectionData TO_CLIENT = new DirectionData( this, ProtocolConstants.Direction.TO_CLIENT ); // MikroCord - make packet manipulation easier
++    public final DirectionData TO_SERVER = new DirectionData( this, ProtocolConstants.Direction.TO_SERVER ); // Firefly - make packet manipulation easier
++    public final DirectionData TO_CLIENT = new DirectionData( this, ProtocolConstants.Direction.TO_CLIENT ); // Firefly - make packet manipulation easier
  
      public static void main(String[] args)
      {
@@ -53,7 +53,7 @@ index 44dc34ff1ec4ec42fe52559ed2a9237ff6114c21..7c21c01f4d11be04869313974be245ae
  
      @Data
 -    private static class ProtocolData
-+    public static class ProtocolData // MikroCord - make packet manipulation easier
++    public static class ProtocolData // Firefly - make packet manipulation easier
      {
  
          private final int protocolVersion;
@@ -62,7 +62,7 @@ index 44dc34ff1ec4ec42fe52559ed2a9237ff6114c21..7c21c01f4d11be04869313974be245ae
  
      @Data
 -    private static class ProtocolMapping
-+    public static class ProtocolMapping // MikroCord - make packet manipulation easier
++    public static class ProtocolMapping // Firefly - make packet manipulation easier
      {
  
          private final int protocolVersion;
@@ -71,19 +71,19 @@ index 44dc34ff1ec4ec42fe52559ed2a9237ff6114c21..7c21c01f4d11be04869313974be245ae
  
      // Helper method
 -    private static ProtocolMapping map(int protocol, int id)
-+    public static ProtocolMapping map(int protocol, int id) // MikroCord - make packet manipulation easier
++    public static ProtocolMapping map(int protocol, int id) // Firefly - make packet manipulation easier
      {
          return new ProtocolMapping( protocol, id );
      }
  
 -    static final class DirectionData
-+    public static final class DirectionData // MikroCord - make packet manipulation easier
++    public static final class DirectionData // Firefly - make packet manipulation easier
      {
  
-+        @Getter // MikroCord - make packet manipulation easier
++        @Getter // Firefly - make packet manipulation easier
          private final TIntObjectMap<ProtocolData> protocols = new TIntObjectHashMap<>();
          //
-+        @Getter // MikroCord - make packet manipulation easier
++        @Getter // Firefly - make packet manipulation easier
          private final Protocol protocolPhase;
          @Getter
          private final ProtocolConstants.Direction direction;
@@ -92,7 +92,7 @@ index 44dc34ff1ec4ec42fe52559ed2a9237ff6114c21..7c21c01f4d11be04869313974be245ae
          }
  
 -        private ProtocolData getProtocolData(int version)
-+        public ProtocolData getProtocolData(int version) // MikroCord - make packet manipulation easier
++        public ProtocolData getProtocolData(int version) // Firefly - make packet manipulation easier
          {
              ProtocolData protocol = protocols.get( version );
              if ( protocol == null && ( protocolPhase != Protocol.GAME ) )
@@ -101,7 +101,7 @@ index 44dc34ff1ec4ec42fe52559ed2a9237ff6114c21..7c21c01f4d11be04869313974be245ae
          }
  
 -        private <P extends DefinedPacket> void registerPacket(Class<P> packetClass, java.util.function.Supplier<P> constructor, ProtocolMapping... mappings) // Waterfall - speed up packet construction
-+        public <P extends DefinedPacket> void registerPacket(Class<P> packetClass, java.util.function.Supplier<P> constructor, ProtocolMapping... mappings) // Waterfall - speed up packet construction // MikroCord - make packet manipulation easier
++        public <P extends DefinedPacket> void registerPacket(Class<P> packetClass, java.util.function.Supplier<P> constructor, ProtocolMapping... mappings) // Waterfall - speed up packet construction // Firefly - make packet manipulation easier
          {
              // Waterfall start - speed up packet construction
              /*
@@ -110,7 +110,7 @@ index 44dc34ff1ec4ec42fe52559ed2a9237ff6114c21..7c21c01f4d11be04869313974be245ae
          }
          // Waterfall start - speed up packet construction (backwards compat)
 -        private <P extends DefinedPacket> void registerPacket(Class<P> packetClass, ProtocolMapping... mappings) {
-+        public <P extends DefinedPacket> void registerPacket(Class<P> packetClass, ProtocolMapping... mappings) { // MikroCord - make packet manipulation easier
++        public <P extends DefinedPacket> void registerPacket(Class<P> packetClass, ProtocolMapping... mappings) { // Firefly - make packet manipulation easier
              java.util.function.Supplier<P> packetSupplier;
              try {
                  Constructor<? extends DefinedPacket> constructor = packetClass.getDeclaredConstructor();
@@ -119,12 +119,12 @@ index 44dc34ff1ec4ec42fe52559ed2a9237ff6114c21..7c21c01f4d11be04869313974be245ae
          // Waterfall end
  
 -        final int getId(Class<? extends DefinedPacket> packet, int version)
-+        public final int getId(Class<? extends DefinedPacket> packet, int version) // MikroCord - make packet manipulation easier
++        public final int getId(Class<? extends DefinedPacket> packet, int version) // Firefly - make packet manipulation easier
          {
  
              ProtocolData protocolData = getProtocolData( version );
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnection.java b/proxy/src/main/java/net/md_5/bungee/ServerConnection.java
-index 95904de9fd0f1f34a397e714c569131a5981b145..1cfb367fe791666f8857759c6b94b07f8a6f3fd6 100644
+index 95904de9fd0f1f34a397e714c569131a5981b145..1e427793cec4de8becf7fe0ca9b86719696ea20c 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnection.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnection.java
 @@ -16,7 +16,7 @@ import net.md_5.bungee.protocol.DefinedPacket;
@@ -132,7 +132,7 @@ index 95904de9fd0f1f34a397e714c569131a5981b145..1cfb367fe791666f8857759c6b94b07f
  
  @RequiredArgsConstructor
 -public class ServerConnection implements Server
-+public class ServerConnection implements Server, eu.mikroskeem.mikrocord.api.network.ChannelHolder // MikroCord - make packet manipulation easier
++public class ServerConnection implements Server, eu.mikroskeem.firefly.api.network.ChannelHolder // Firefly - make packet manipulation easier
  {
  
      @Getter
@@ -140,15 +140,15 @@ index 95904de9fd0f1f34a397e714c569131a5981b145..1cfb367fe791666f8857759c6b94b07f
          private final long id;
          private final long time;
      }
-+    // MikroCord start - make packet manipulation easier
++    // Firefly start - make packet manipulation easier
 +    @Override
 +    public io.netty.channel.Channel getChannel() {
 +        return ch.getHandle();
 +    }
-+    // MikroCord end
++    // Firefly end
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-index 139c4f09cb731628d3ff00e4df48fec51e8f0872..679cad8b564994e155fed3f75898ea7f82f94608 100644
+index 139c4f09cb731628d3ff00e4df48fec51e8f0872..e3cf180301e19b9ffaa0ce4458781bcee276a154 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 @@ -55,7 +55,7 @@ import net.md_5.bungee.util.BufUtil;
@@ -156,7 +156,7 @@ index 139c4f09cb731628d3ff00e4df48fec51e8f0872..679cad8b564994e155fed3f75898ea7f
  
  @RequiredArgsConstructor
 -public class ServerConnector extends PacketHandler
-+public class ServerConnector extends PacketHandler implements eu.mikroskeem.mikrocord.api.network.ChannelHolder // MikroCord - make packet manipulation easier
++public class ServerConnector extends PacketHandler implements eu.mikroskeem.firefly.api.network.ChannelHolder // Firefly - make packet manipulation easier
  {
  
      private final ProxyServer bungee;
@@ -164,15 +164,15 @@ index 139c4f09cb731628d3ff00e4df48fec51e8f0872..679cad8b564994e155fed3f75898ea7f
      {
          return "[" + user.getName() + "|" + user.getAddress() + "] <-> ServerConnector [" + target.getName() + "]";
      }
-+    // MikroCord start - make packet manipulation easier
++    // Firefly start - make packet manipulation easier
 +    @Override
 +    public io.netty.channel.Channel getChannel() {
 +        return ch.getHandle();
 +    }
-+    // MikroCord end
++    // Firefly end
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/UserConnection.java b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-index 95dbaefdb4b3b3bc291c555756957a041f43b844..c267b3edb2a68d8f0b61bb466283894e9f16dd88 100644
+index d82a363bb18ad38f6dbacb35ee476a0cc39222d4..9ee7ca44ee59ca94b988122865cb3b649b9fc811 100644
 --- a/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 +++ b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 @@ -67,7 +67,7 @@ import net.md_5.bungee.util.CaseInsensitiveSet;
@@ -180,7 +180,7 @@ index 95dbaefdb4b3b3bc291c555756957a041f43b844..c267b3edb2a68d8f0b61bb466283894e
  
  @RequiredArgsConstructor
 -public final class UserConnection implements ProxiedPlayer
-+public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.mikrocord.api.network.ChannelHolder // MikroCord - make packet manipulation easier
++public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.firefly.api.network.ChannelHolder // Firefly - make packet manipulation easier
  {
  
      /*========================================================================*/
@@ -188,25 +188,25 @@ index 95dbaefdb4b3b3bc291c555756957a041f43b844..c267b3edb2a68d8f0b61bb466283894e
          return entityRewrite == net.md_5.bungee.entitymap.EntityMap_Dummy.INSTANCE;
      }
      // Waterfall end
-+    // MikroCord start - make packet manipulation easier
++    // Firefly start - make packet manipulation easier
 +    @Override
 +    public io.netty.channel.Channel getChannel() {
 +        return ch.getHandle();
 +    }
-+    // MikroCord end
++    // Firefly end
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-index 007d3dafc715efd5305f153b8957eb810abba585..01cad6fd6299b14664622087b76c5c8285daf452 100644
+index 007d3dafc715efd5305f153b8957eb810abba585..4ffe885ebdd70460f0447dbbfcff30df935997df 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 @@ -668,4 +668,10 @@ public class InitialHandler extends PacketHandler implements PendingConnection
      {
          return !ch.isClosed();
      }
-+    // MikroCord start - make packet manipulation easier
++    // Firefly start - make packet manipulation easier
 +    @Override
 +    public io.netty.channel.Channel getChannel() {
 +        return ch.getHandle();
 +    }
-+    // MikroCord end
++    // Firefly end
  }

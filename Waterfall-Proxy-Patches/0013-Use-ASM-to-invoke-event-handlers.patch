@@ -5,7 +5,7 @@ Subject: [PATCH] Use ASM to invoke event handlers
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/plugin/PluginClassloader.java b/api/src/main/java/net/md_5/bungee/api/plugin/PluginClassloader.java
-index 85203fb8ad0e95a179fbdf1a65440b456c56d1e1..141de9e68abc7b5d60a25c3819c4a4cf4985f623 100644
+index 85203fb8ad0e95a179fbdf1a65440b456c56d1e1..0f2c98245dda7cf84bf9d459296710ac3c998c59 100644
 --- a/api/src/main/java/net/md_5/bungee/api/plugin/PluginClassloader.java
 +++ b/api/src/main/java/net/md_5/bungee/api/plugin/PluginClassloader.java
 @@ -5,7 +5,7 @@ import java.net.URLClassLoader;
@@ -13,7 +13,7 @@ index 85203fb8ad0e95a179fbdf1a65440b456c56d1e1..141de9e68abc7b5d60a25c3819c4a4cf
  import java.util.concurrent.CopyOnWriteArraySet;
  
 -public class PluginClassloader extends URLClassLoader
-+public class PluginClassloader extends URLClassLoader implements eu.mikroskeem.mikrocord.event.DynamicClassLoader // MikroCord - implement DynamicClassLoader
++public class PluginClassloader extends URLClassLoader implements eu.mikroskeem.firefly.event.DynamicClassLoader // Firefly - implement DynamicClassLoader
  {
  
      private static final Set<PluginClassloader> allLoaders = new CopyOnWriteArraySet<>();
@@ -22,20 +22,20 @@ index 85203fb8ad0e95a179fbdf1a65440b456c56d1e1..141de9e68abc7b5d60a25c3819c4a4cf
          throw new ClassNotFoundException( name );
      }
 +
-+    // MikroCord start - implement DynamicClassLoader
++    // Firefly start - implement DynamicClassLoader
 +    @Override
 +    public Class<?> defineClass(String name, byte[] data) {
 +        return this.defineClass(name, data, 0, data.length);
 +    }
-+    // MikroCord end
++    // Firefly end
  }
-diff --git a/event/src/main/java/eu/mikroskeem/mikrocord/event/ASMEventExecutor.java b/event/src/main/java/eu/mikroskeem/mikrocord/event/ASMEventExecutor.java
+diff --git a/event/src/main/java/eu/mikroskeem/firefly/event/ASMEventExecutor.java b/event/src/main/java/eu/mikroskeem/firefly/event/ASMEventExecutor.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..51ee18f6db32fcfa814e5be807644b89c56b8d33
+index 0000000000000000000000000000000000000000..218fb088069285d280a40c43af6073a2945e7949
 --- /dev/null
-+++ b/event/src/main/java/eu/mikroskeem/mikrocord/event/ASMEventExecutor.java
++++ b/event/src/main/java/eu/mikroskeem/firefly/event/ASMEventExecutor.java
 @@ -0,0 +1,101 @@
-+package eu.mikroskeem.mikrocord.event;
++package eu.mikroskeem.firefly.event;
 +
 +import org.objectweb.asm.ClassWriter;
 +import org.objectweb.asm.MethodVisitor;
@@ -137,13 +137,13 @@ index 0000000000000000000000000000000000000000..51ee18f6db32fcfa814e5be807644b89
 +    }
 +}
 \ No newline at end of file
-diff --git a/event/src/main/java/eu/mikroskeem/mikrocord/event/DynamicClassLoader.java b/event/src/main/java/eu/mikroskeem/mikrocord/event/DynamicClassLoader.java
+diff --git a/event/src/main/java/eu/mikroskeem/firefly/event/DynamicClassLoader.java b/event/src/main/java/eu/mikroskeem/firefly/event/DynamicClassLoader.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..727ef5f7388e78ddadd02719c3ef91ec5b4b0bda
+index 0000000000000000000000000000000000000000..fb24f4757a57aa0c8cd23ee104e0267a0feaf023
 --- /dev/null
-+++ b/event/src/main/java/eu/mikroskeem/mikrocord/event/DynamicClassLoader.java
++++ b/event/src/main/java/eu/mikroskeem/firefly/event/DynamicClassLoader.java
 @@ -0,0 +1,11 @@
-+package eu.mikroskeem.mikrocord.event;
++package eu.mikroskeem.firefly.event;
 +
 +import org.checkerframework.checker.nullness.qual.NonNull;
 +
@@ -154,13 +154,13 @@ index 0000000000000000000000000000000000000000..727ef5f7388e78ddadd02719c3ef91ec
 +    @NonNull
 +    Class<?> defineClass(String name, byte[] data);
 +}
-diff --git a/event/src/main/java/eu/mikroskeem/mikrocord/event/EventExecutor.java b/event/src/main/java/eu/mikroskeem/mikrocord/event/EventExecutor.java
+diff --git a/event/src/main/java/eu/mikroskeem/firefly/event/EventExecutor.java b/event/src/main/java/eu/mikroskeem/firefly/event/EventExecutor.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..ad7bcbf698f24c45d3f3eec10a2289c80b9585c6
+index 0000000000000000000000000000000000000000..f796f801939ff5b38caecba981d1275f558973d8
 --- /dev/null
-+++ b/event/src/main/java/eu/mikroskeem/mikrocord/event/EventExecutor.java
++++ b/event/src/main/java/eu/mikroskeem/firefly/event/EventExecutor.java
 @@ -0,0 +1,20 @@
-+package eu.mikroskeem.mikrocord.event;
++package eu.mikroskeem.firefly.event;
 +
 +import java.lang.reflect.Method;
 +import java.lang.reflect.Modifier;
@@ -180,13 +180,13 @@ index 0000000000000000000000000000000000000000..ad7bcbf698f24c45d3f3eec10a2289c8
 +        }
 +    }
 +}
-diff --git a/event/src/main/java/eu/mikroskeem/mikrocord/event/MethodHandleEventExecutor.java b/event/src/main/java/eu/mikroskeem/mikrocord/event/MethodHandleEventExecutor.java
+diff --git a/event/src/main/java/eu/mikroskeem/firefly/event/MethodHandleEventExecutor.java b/event/src/main/java/eu/mikroskeem/firefly/event/MethodHandleEventExecutor.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..72d8fd43bd879d00b158cbd8efb3c3ca34f4f9fd
+index 0000000000000000000000000000000000000000..edca44565a7019c3a380ad3540d0a7d2f6ca2285
 --- /dev/null
-+++ b/event/src/main/java/eu/mikroskeem/mikrocord/event/MethodHandleEventExecutor.java
++++ b/event/src/main/java/eu/mikroskeem/firefly/event/MethodHandleEventExecutor.java
 @@ -0,0 +1,44 @@
-+package eu.mikroskeem.mikrocord.event;
++package eu.mikroskeem.firefly.event;
 +
 +import lombok.SneakyThrows;
 +
@@ -231,7 +231,7 @@ index 0000000000000000000000000000000000000000..72d8fd43bd879d00b158cbd8efb3c3ca
 +    }
 +}
 diff --git a/event/src/main/java/net/md_5/bungee/event/EventBus.java b/event/src/main/java/net/md_5/bungee/event/EventBus.java
-index f5bd1f9801398e8aaa6b5b6c0722629dc94b8fe3..71f64b96ead6e9956b348de7e9c29168ab0a1873 100644
+index f5bd1f9801398e8aaa6b5b6c0722629dc94b8fe3..ac2cdd90246a20165e0410eb9aae886aec04d4e0 100644
 --- a/event/src/main/java/net/md_5/bungee/event/EventBus.java
 +++ b/event/src/main/java/net/md_5/bungee/event/EventBus.java
 @@ -50,9 +50,9 @@ public class EventBus
@@ -239,10 +239,10 @@ index f5bd1f9801398e8aaa6b5b6c0722629dc94b8fe3..71f64b96ead6e9956b348de7e9c29168
                  {
                      throw new Error( "Method rejected target/argument: " + event, ex );
 -                } catch ( InvocationTargetException ex )
-+                } catch ( Exception ex ) // MikroCord - Use ASM to invoke event handlers
++                } catch ( Exception ex ) // Firefly - Use ASM to invoke event handlers
                  {
 -                    logger.log( Level.WARNING, MessageFormat.format( "Error dispatching event {0} to listener {1}", event, method.getListener() ), ex.getCause() );
-+                    logger.log( Level.WARNING, MessageFormat.format( "Error dispatching event {0} to listener {1}", event, method.getListener() ), ex ); // MikroCord - Use ASM to invoke event handlers
++                    logger.log( Level.WARNING, MessageFormat.format( "Error dispatching event {0} to listener {1}", event, method.getListener() ), ex ); // Firefly - Use ASM to invoke event handlers
                  }
              }
          }
@@ -250,13 +250,13 @@ index f5bd1f9801398e8aaa6b5b6c0722629dc94b8fe3..71f64b96ead6e9956b348de7e9c29168
                          currentPriorityMap = new HashMap<>();
                          prioritiesMap.put( entry.getKey(), currentPriorityMap );
                      }
-+                    // MikroCord start - 0 is faster
++                    // Firefly start - 0 is faster
 +                    /*
                      Method[] baked = new Method[ entry.getValue().size() ];
 -                    currentPriorityMap.put( listener, entry.getValue().toArray( baked ) );
 +                    */
 +                    currentPriorityMap.put( listener, entry.getValue().toArray( new Method[0] ) );
-+                    // MikroCord end
++                    // Firefly end
                  }
                  bakeHandlers( e.getKey() );
              }
@@ -265,30 +265,30 @@ index f5bd1f9801398e8aaa6b5b6c0722629dc94b8fe3..71f64b96ead6e9956b348de7e9c29168
                          for ( Method method : listenerHandlers.getValue() )
                          {
 -                            EventHandlerMethod ehm = new EventHandlerMethod( listenerHandlers.getKey(), method );
-+                            EventHandlerMethod ehm = new EventHandlerMethod( listenerHandlers.getKey(), method, eu.mikroskeem.mikrocord.event.EventExecutor.create(method) ); // MikroCord - Use ASM to invoke event handlers
++                            EventHandlerMethod ehm = new EventHandlerMethod( listenerHandlers.getKey(), method, eu.mikroskeem.firefly.event.EventExecutor.create(method) ); // Firefly - Use ASM to invoke event handlers
                              handlersList.add( ehm );
                          }
                      }
                  }
              } while ( value++ < Byte.MAX_VALUE );
 -            byEventBaked.put( eventClass, handlersList.toArray( new EventHandlerMethod[ handlersList.size() ] ) );
-+            byEventBaked.put( eventClass, handlersList.toArray( new EventHandlerMethod[ 0 ] ) ); // MikroCord - 0 is faster
++            byEventBaked.put( eventClass, handlersList.toArray( new EventHandlerMethod[ 0 ] ) ); // Firefly - 0 is faster
          } else
          {
              byEventBaked.remove( eventClass );
 diff --git a/event/src/main/java/net/md_5/bungee/event/EventHandlerMethod.java b/event/src/main/java/net/md_5/bungee/event/EventHandlerMethod.java
-index ad19c020c77a45c3b3a8a18aaf2f59c2de15ec7c..3d98102d236c09a79d86e1b67767befcec0ae165 100644
+index ad19c020c77a45c3b3a8a18aaf2f59c2de15ec7c..fcdbdf971db404f33b931e14c874133e2708fde3 100644
 --- a/event/src/main/java/net/md_5/bungee/event/EventHandlerMethod.java
 +++ b/event/src/main/java/net/md_5/bungee/event/EventHandlerMethod.java
 @@ -13,9 +13,10 @@ public class EventHandlerMethod
      private final Object listener;
      @Getter
      private final Method method;
-+    private final eu.mikroskeem.mikrocord.event.EventExecutor executor; // MikroCord - Use ASM to invoke event handlers
++    private final eu.mikroskeem.firefly.event.EventExecutor executor; // Firefly - Use ASM to invoke event handlers
  
      public void invoke(Object event) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
      {
 -        method.invoke( listener, event );
-+        executor.execute( listener, event ); // MikroCord - Use ASM to invoke event handlers
++        executor.execute( listener, event ); // Firefly - Use ASM to invoke event handlers
      }
  }

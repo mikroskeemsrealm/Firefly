@@ -1,9 +1,9 @@
-rootProject.name = "mikrocord"
+rootProject.name = "firefly"
 
 fun importProject(name: String) {
     include(name)
     project(":$name").apply {
-        projectDir = File("./MikroCord-Proxy/${name}")
+        projectDir = File("./Firefly-Proxy/${name}")
         buildFileName = "../../gradle/subprojects/${name}-build.gradle.kts"
     }
 }

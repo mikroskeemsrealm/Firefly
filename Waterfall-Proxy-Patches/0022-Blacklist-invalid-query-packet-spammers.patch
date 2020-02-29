@@ -5,14 +5,14 @@ Subject: [PATCH] Blacklist invalid query packet spammers
 
 
 diff --git a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
-index 532e2c677a4691d2970d2915197d2d184f6cbe9b..6f4e99d68f69320f21a4bbb48c37d39392013f3c 100644
+index c3e296a8c941f409d50a18e3fb12874fbcd1fe58..edcaa76a2d3e2cb82b3effdc16c030aaf6b395c4 100644
 --- a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
 +++ b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
 @@ -33,6 +33,7 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket>
      private final Random random = new Random();
      private final Cache<InetAddress, QuerySession> sessions = CacheBuilder.newBuilder().expireAfterWrite( 30, TimeUnit.SECONDS ).build();
      private static io.github.waterfallmc.waterfall.utils.FastException cachedNoSessionException = new io.github.waterfallmc.waterfall.utils.FastException("No Session!");
-+    private final Cache<InetAddress, Integer> blacklistedAddresses = CacheBuilder.newBuilder().maximumSize(1024).expireAfterWrite( 120, TimeUnit.SECONDS ).build(); // MikroCord - Blacklist invalid query packet spammers
++    private final Cache<InetAddress, Integer> blacklistedAddresses = CacheBuilder.newBuilder().maximumSize(1024).expireAfterWrite( 120, TimeUnit.SECONDS ).build(); // Firefly - Blacklist invalid query packet spammers
  
      private void writeShort(ByteBuf buf, int s)
      {
@@ -20,20 +20,20 @@ index 532e2c677a4691d2970d2915197d2d184f6cbe9b..6f4e99d68f69320f21a4bbb48c37d393
  
      private void handleMessage(ChannelHandlerContext ctx, DatagramPacket msg)
      {
-+        // MikroCord start - Blacklist invalid query packet spammers
++        // Firefly start - Blacklist invalid query packet spammers
 +        Integer invalidQueries = blacklistedAddresses.getIfPresent(msg.sender().getAddress());
 +        if (invalidQueries != null && invalidQueries > 5) {
 +            if (bungee.getConfig().isLogInvalidQueryPackets())
 +                bungee.getLogger().log( Level.WARNING, "Query - Ignoring packet from: {0}", msg.sender() );
 +            return;
 +        }
-+        // MikroCord end
++        // Firefly end
          ByteBuf in = msg.content();
          if ( in.readUnsignedByte() != 0xFE || in.readUnsignedByte() != 0xFD )
          {
-             if (bungee.getConfig().isLogInvalidQueryPackets()) // MikroCord - Add option to exclude logging invalid query packets
+             if (bungee.getConfig().isLogInvalidQueryPackets()) // Firefly - Add option to exclude logging invalid query packets
              bungee.getLogger().log( Level.WARNING, "Query - Incorrect magic!: {0}", msg.sender() );
-+            // MikroCord start - Blacklist invalid query packet spammers
++            // Firefly start - Blacklist invalid query packet spammers
 +            try {
 +                if (invalidQueries == null) {
 +                    invalidQueries = 0;
@@ -42,7 +42,7 @@ index 532e2c677a4691d2970d2915197d2d184f6cbe9b..6f4e99d68f69320f21a4bbb48c37d393
 +            } catch (Exception e) {
 +                throw new RuntimeException(e);
 +            }
-+            // MikroCord end
++            // Firefly end
              return;
          }
  

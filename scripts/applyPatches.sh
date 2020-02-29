@@ -68,6 +68,6 @@ popd
 basedir=$(dirname $basedir)
 
 # Apply travertine patches
-applyPatch Waterfall/Waterfall-Proxy MikroCord-Proxy HEAD
+applyPatch Waterfall/Waterfall-Proxy Firefly-Proxy HEAD
 
 enableCommitSigningIfNeeded

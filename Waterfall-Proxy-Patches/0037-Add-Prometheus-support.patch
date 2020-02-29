@@ -4,11 +4,11 @@ Date: Sun, 25 Aug 2019 05:00:39 +0300
 Subject: [PATCH] Add Prometheus support
 
 
-diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-index 52e085e7bdd7ff5845d3c6aab19baf0dc064ad47..a67f3667c40aacba2d7cfe27cc6bd39950f0792a 100644
---- a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-+++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-@@ -79,4 +79,20 @@ public interface MikroCordProxyConfig {
+diff --git a/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java b/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
+index 17aa4a1d1a8bc85cf9e15e742e23166d456eaa0e..a6aecceb7bc77b9005a3c28ba2f773929fbc5746 100644
+--- a/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
++++ b/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
+@@ -79,4 +79,20 @@ public interface FireflyProxyConfig {
       * @return Whether packet decode exceptions should be noisy or not
       */
      boolean isLogNoisyPacketDecodeException();
@@ -30,18 +30,18 @@ index 52e085e7bdd7ff5845d3c6aab19baf0dc064ad47..a67f3667c40aacba2d7cfe27cc6bd399
 +    int getPrometheusListenPort();
  }
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
-index eb36d8607fd2d22b11772477a3f3e6d278e4102c..d83bbdcde46567ecc76eba3c20c96d4a4d9d042e 100644
+index 20e207ce1cb8da13102a155e0e88b92d349793ed..9333b64248c4ab89fe9ce2829dbf09039bdfc064 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 @@ -24,6 +24,11 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
      @Setter private static java.util.function.BooleanSupplier noisyPacketDecodeExceptionSupplier;
      private final boolean noisyPacketDecodeException;
-     // MikroCord end
-+    // MikroCord start - add Prometheus metrics support
+     // Firefly end
++    // Firefly start - add Prometheus metrics support
 +    @Setter private static Runnable decodedMetric;
 +    @Setter private static Runnable emptyPacketMetric;
 +    @Setter private static Runnable invalidPacketMetric;
-+    // MikroCord end
++    // Firefly end
  
      public MinecraftDecoder(Protocol protocol, boolean server, int protocolVersion) {
          this.protocol = protocol;
@@ -49,7 +49,7 @@ index eb36d8607fd2d22b11772477a3f3e6d278e4102c..d83bbdcde46567ecc76eba3c20c96d4a
          {
              // Waterfall start
              if (in.readableBytes() == 0) {
-+                emptyPacketMetric.run(); // MikroCord - add Prometheus metrics support
++                emptyPacketMetric.run(); // Firefly - add Prometheus metrics support
                  return;
              }
              // Waterfall end
@@ -57,7 +57,7 @@ index eb36d8607fd2d22b11772477a3f3e6d278e4102c..d83bbdcde46567ecc76eba3c20c96d4a
                  {
                      throw new BadPacketException( "Did not read all bytes from packet " + packet.getClass() + " " + packetId + " Protocol " + protocol + " Direction " + prot.getDirection() );
                  }
-+                decodedMetric.run(); // MikroCord - add Prometheus metrics support
++                decodedMetric.run(); // Firefly - add Prometheus metrics support
              } else
              {
                  in.skipBytes( in.readableBytes() );
@@ -65,21 +65,21 @@ index eb36d8607fd2d22b11772477a3f3e6d278e4102c..d83bbdcde46567ecc76eba3c20c96d4a
              out.add( new PacketWrapper( packet, slice ) );
              slice = null;
          } catch (BadPacketException | IndexOutOfBoundsException e) {
-+            invalidPacketMetric.run(); // MikroCord - add Prometheus metrics support
++            invalidPacketMetric.run(); // Firefly - add Prometheus metrics support
              final String packetTypeStr;
              if (packetTypeInfo instanceof Integer) {
                  packetTypeStr = "id " + Integer.toHexString((Integer) packetTypeInfo);
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftEncoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftEncoder.java
-index d4b0384348c17de5c2350c8c5f928fcc0c1868db..073004e479a7707b8a72f7b44974741203d983f0 100644
+index d4b0384348c17de5c2350c8c5f928fcc0c1868db..50f0460138ee34fab302bee708453b7ea47ca07e 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftEncoder.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftEncoder.java
 @@ -15,6 +15,9 @@ public class MinecraftEncoder extends MessageToByteEncoder<DefinedPacket>
      private boolean server;
      @Setter
      private int protocolVersion;
-+    // MikroCord start - add Prometheus metrics support
++    // Firefly start - add Prometheus metrics support
 +    @Setter private static Runnable encodedMetric;
-+    // MikroCord end
++    // Firefly end
  
      @Override
      protected void encode(ChannelHandlerContext ctx, DefinedPacket msg, ByteBuf out) throws Exception
@@ -87,14 +87,14 @@ index d4b0384348c17de5c2350c8c5f928fcc0c1868db..073004e479a7707b8a72f7b449747412
          Protocol.DirectionData prot = ( server ) ? protocol.TO_CLIENT : protocol.TO_SERVER;
          DefinedPacket.writeVarInt( prot.getId( msg.getClass(), protocolVersion ), out );
          msg.write( out, prot.getDirection(), protocolVersion );
-+        encodedMetric.run(); // MikroCord - add Prometheus metrics support
++        encodedMetric.run(); // Firefly - add Prometheus metrics support
      }
  }
-diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index 1c796697ff54fefb2b3c86862a19ecc7bd1c63f9..f243777118b19e199411b66b89759a7b85919f45 100644
---- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-+++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-@@ -64,6 +64,15 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+diff --git a/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java b/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
+index 20cfd14d69d294d70506b8694c311af513e573da..d08986932da4bc4a704feb4de9aeeeeb5bffd638 100644
+--- a/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
++++ b/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
+@@ -64,6 +64,15 @@ public class FireflyConfiguration extends WaterfallConfiguration {
      @Getter
      private boolean logNoisyPacketDecodeException = false;
  
@@ -110,7 +110,7 @@ index 1c796697ff54fefb2b3c86862a19ecc7bd1c63f9..f243777118b19e199411b66b89759a7b
      @Override
      public void load() {
          super.load();
-@@ -83,6 +92,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -83,6 +92,9 @@ public class FireflyConfiguration extends WaterfallConfiguration {
          internScoreboardTeamStrings = config.getBoolean("performance.intern_scoreboard_team_strings", internScoreboardTeamStrings);
          populateGS4QueryPlugins = config.getBoolean("query.populate_plugins", populateGS4QueryPlugins);
          logNoisyPacketDecodeException = config.getBoolean("log.noisy_packet_decode_exception", logNoisyPacketDecodeException);
@@ -120,13 +120,13 @@ index 1c796697ff54fefb2b3c86862a19ecc7bd1c63f9..f243777118b19e199411b66b89759a7b
      }
  
      private TCPFastOpenMode setupTfo(int value) {
-diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/PrometheusMetrics.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/PrometheusMetrics.java
+diff --git a/proxy/src/main/java/eu/mikroskeem/firefly/misc/PrometheusMetrics.java b/proxy/src/main/java/eu/mikroskeem/firefly/misc/PrometheusMetrics.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..14d3775e1c0674d4cf89f90900ebad540661a5ec
+index 0000000000000000000000000000000000000000..e1239484f90f32c5ba0aa3f05d4256ac6ebf45b7
 --- /dev/null
-+++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/misc/PrometheusMetrics.java
++++ b/proxy/src/main/java/eu/mikroskeem/firefly/misc/PrometheusMetrics.java
 @@ -0,0 +1,115 @@
-+package eu.mikroskeem.mikrocord.misc;
++package eu.mikroskeem.firefly.misc;
 +
 +import eu.mikroskeem.jvmhiccup.HiccupMeterThread;
 +import io.prometheus.client.Collector;
@@ -242,14 +242,14 @@ index 0000000000000000000000000000000000000000..14d3775e1c0674d4cf89f90900ebad54
 +    }
 +}
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index b262554d4afffde55e0d8aee7ddc25291411dc13..e8c232f1c033cb8288e57fa80f14896e9d7baa01 100644
+index 626e49a067f521ec345c3ef248632d21ec417396..57ee0aba32dea3bc64d689c34f059690db33c55f 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -346,6 +346,7 @@ public class BungeeCord extends ProxyServer
          {
              connectionThrottle = new ConnectionThrottle( config.getThrottle(), config.getThrottleLimit() );
          }
-+        eu.mikroskeem.mikrocord.misc.PrometheusMetrics.initialize(); // MikroCord - add Prometheus metrics support
++        eu.mikroskeem.firefly.misc.PrometheusMetrics.initialize(); // Firefly - add Prometheus metrics support
          startListeners();
  
          saveThread.scheduleAtFixedRate( new TimerTask()
@@ -257,7 +257,7 @@ index b262554d4afffde55e0d8aee7ddc25291411dc13..e8c232f1c033cb8288e57fa80f14896e
              public void run()
              {
                  stopListeners();
-+                eu.mikroskeem.mikrocord.misc.PrometheusMetrics.deinitialize(); // MikroCord - add Prometheus metrics support
++                eu.mikroskeem.firefly.misc.PrometheusMetrics.deinitialize(); // Firefly - add Prometheus metrics support
                  getLogger().info( "Closing pending connections" );
  
                  connectionLock.readLock().lock();
@@ -265,19 +265,19 @@ index b262554d4afffde55e0d8aee7ddc25291411dc13..e8c232f1c033cb8288e57fa80f14896e
              connections.put( con.getName(), con );
              connectionsByUUID.put( con.getUniqueId(), con );
              connectionsByOfflineUUID.put( con.getPendingConnection().getOfflineId(), con );
-+            eu.mikroskeem.mikrocord.misc.PrometheusMetrics.RUNTIME_CONNECTED_CLIENTS.inc(); // MikroCord - add Prometheus metrics support
++            eu.mikroskeem.firefly.misc.PrometheusMetrics.RUNTIME_CONNECTED_CLIENTS.inc(); // Firefly - add Prometheus metrics support
          } finally
          {
              connectionLock.writeLock().unlock();
 diff --git a/proxy/src/main/java/net/md_5/bungee/command/CommandReload.java b/proxy/src/main/java/net/md_5/bungee/command/CommandReload.java
-index 0ad37d4e3de8dc16cf197d8c96e9fcd70ad7eae5..e91f68fe201ccba4ad9b950aafc27eb677f3ca75 100644
+index 7cf5ebe77c9325eb4440c63d832a6aabd0ad9b0d..db52f3bb158ba8384d7a5df55b7f427aee9bacf0 100644
 --- a/proxy/src/main/java/net/md_5/bungee/command/CommandReload.java
 +++ b/proxy/src/main/java/net/md_5/bungee/command/CommandReload.java
 @@ -22,6 +22,7 @@ public class CommandReload extends Command
          BungeeCord.getInstance().stopListeners();
          BungeeCord.getInstance().startListeners();
          BungeeCord.getInstance().getPluginManager().callEvent( new ProxyReloadEvent( sender ) );
-+        eu.mikroskeem.mikrocord.misc.PrometheusMetrics.initialize(); // MikroCord - add Prometheus metrics support
++        eu.mikroskeem.firefly.misc.PrometheusMetrics.initialize(); // Firefly - add Prometheus metrics support
  
-         sender.sendMessage(ChatColor.GREEN + "MikroCord has been reloaded"); if(true) return; // MikroCord
+         sender.sendMessage(ChatColor.GREEN + "Firefly has been reloaded"); if(true) return; // Firefly
          sender.sendMessage( ChatColor.BOLD.toString() + ChatColor.RED.toString() + "Waterfall has been reloaded."

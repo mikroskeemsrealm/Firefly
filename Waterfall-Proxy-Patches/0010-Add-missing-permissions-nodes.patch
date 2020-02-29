@@ -5,7 +5,7 @@ Subject: [PATCH] Add missing permissions nodes
 
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/command/CommandBungee.java b/proxy/src/main/java/net/md_5/bungee/command/CommandBungee.java
-index b26035cf971c9a12af75582d9294cae090c8cdce..bc6b015fd5c06d6f4af7646e5e7fb83f3189285e 100644
+index b26035cf971c9a12af75582d9294cae090c8cdce..c8bc8dbf335da8afad44f8884beb669f328aef50 100644
 --- a/proxy/src/main/java/net/md_5/bungee/command/CommandBungee.java
 +++ b/proxy/src/main/java/net/md_5/bungee/command/CommandBungee.java
 @@ -10,7 +10,7 @@ public class CommandBungee extends Command
@@ -13,12 +13,12 @@ index b26035cf971c9a12af75582d9294cae090c8cdce..bc6b015fd5c06d6f4af7646e5e7fb83f
      public CommandBungee()
      {
 -        super( "bungee" );
-+        super( "bungee", "bungeecord.command.bungee" ); // MikroCord - add missing permission node
++        super( "bungee", "bungeecord.command.bungee" ); // Firefly - add missing permission node
      }
  
      @Override
 diff --git a/proxy/src/main/java/net/md_5/bungee/command/CommandPerms.java b/proxy/src/main/java/net/md_5/bungee/command/CommandPerms.java
-index 18422669106553a2e6555c47ef06a8eaf891a989..e5943a319549c508a993524bc2f77164eae523c4 100644
+index 18422669106553a2e6555c47ef06a8eaf891a989..cd8df4df25ed052f6dba84a0251246865179b670 100644
 --- a/proxy/src/main/java/net/md_5/bungee/command/CommandPerms.java
 +++ b/proxy/src/main/java/net/md_5/bungee/command/CommandPerms.java
 @@ -12,7 +12,7 @@ public class CommandPerms extends Command
@@ -26,7 +26,7 @@ index 18422669106553a2e6555c47ef06a8eaf891a989..e5943a319549c508a993524bc2f77164
      public CommandPerms()
      {
 -        super( "perms" );
-+        super( "perms", "bungeecord.command.ip" ); // MikroCord - add missing permission node
++        super( "perms", "bungeecord.command.ip" ); // Firefly - add missing permission node
      }
  
      @Override

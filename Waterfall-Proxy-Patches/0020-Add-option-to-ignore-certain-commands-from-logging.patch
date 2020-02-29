@@ -4,11 +4,11 @@ Date: Fri, 19 Apr 2019 18:31:13 +0300
 Subject: [PATCH] Add option to ignore certain commands from logging
 
 
-diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-index ef1a82dd100dad66676b10fc9cc654bdc4e539c0..ce8ac985963227c49e05e42ed49c5d2e1c0bd415 100644
---- a/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-+++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/config/MikroCordProxyConfig.java
-@@ -2,6 +2,8 @@ package eu.mikroskeem.mikrocord.api.config;
+diff --git a/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java b/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
+index 3507e4b235fef56dc1ce7c23a9412b723558f54e..6b695652c71740d3fb3e55651b1a913a53011fa7 100644
+--- a/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
++++ b/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
+@@ -2,6 +2,8 @@ package eu.mikroskeem.firefly.api.config;
  
  import org.checkerframework.checker.nullness.qual.NonNull;
  
@@ -17,7 +17,7 @@ index ef1a82dd100dad66676b10fc9cc654bdc4e539c0..ce8ac985963227c49e05e42ed49c5d2e
  /**
   * @author Mark Vainomaa
   */
-@@ -17,4 +19,10 @@ public interface MikroCordProxyConfig {
+@@ -17,4 +19,10 @@ public interface FireflyProxyConfig {
       */
      @NonNull
      String getRestartScriptPath();
@@ -29,23 +29,23 @@ index ef1a82dd100dad66676b10fc9cc654bdc4e539c0..ce8ac985963227c49e05e42ed49c5d2e
 +    Set<@NonNull String> getIgnoredLogCommands();
  }
 diff --git a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
-index 0f3fc6721944c05ad6a3fad775aac0b0bd321c49..435eab1fed4798bae0efa71c583cd5321a6a6b96 100644
+index 36cc2862cb843f1cbb31a1f4dec6e99b8d3fb09f..8d818da906026da1eb774de37d38e44cb9d494b1 100644
 --- a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
 +++ b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
 @@ -202,6 +202,7 @@ public class PluginManager
              {
                  if ( proxy.getConfig().isLogCommands() )
                  {
-+                    if(!proxy.getConfig().getIgnoredLogCommands().contains(split[0].toLowerCase(Locale.ROOT))) // MikroCord - Add option to exclude certain commands from logging
++                    if(!proxy.getConfig().getIgnoredLogCommands().contains(split[0].toLowerCase(Locale.ROOT))) // Firefly - Add option to exclude certain commands from logging
                      proxy.getLogger().log( Level.INFO, "{0} executed command: /{1}", new Object[]
                      {
                          sender.getName(), commandLine
-diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index 633e3093fad60741db3e72901086644a374af8a4..000a9861436fa8777c8d18c0654454235d9cb093 100644
---- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-+++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
+diff --git a/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java b/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
+index 1692f8efe71f8e3ac6ae154af46a6d5f8a36f9cc..a0efffca96f0d9fd5be3138630bbecbdce37569a 100644
+--- a/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
++++ b/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
 @@ -1,10 +1,14 @@
- package eu.mikroskeem.mikrocord.conf;
+ package eu.mikroskeem.firefly.conf;
  
 +import com.google.common.collect.ImmutableList;
  import io.github.waterfallmc.waterfall.conf.WaterfallConfiguration;
@@ -59,7 +59,7 @@ index 633e3093fad60741db3e72901086644a374af8a4..000a9861436fa8777c8d18c065445423
  /**
   * @author Mark Vainomaa
   */
-@@ -15,6 +19,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -15,6 +19,9 @@ public class FireflyConfiguration extends WaterfallConfiguration {
      @Getter
      private String restartScriptPath = "./restart.sh";
  
@@ -69,7 +69,7 @@ index 633e3093fad60741db3e72901086644a374af8a4..000a9861436fa8777c8d18c065445423
      @Override
      public void load() {
          super.load();
-@@ -23,5 +30,6 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -23,5 +30,6 @@ public class FireflyConfiguration extends WaterfallConfiguration {
  
          restartMessage = config.getString("restart.message", restartMessage);
          restartScriptPath = config.getString("restart.script_path", restartScriptPath);

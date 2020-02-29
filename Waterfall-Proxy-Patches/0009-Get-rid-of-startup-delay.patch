@@ -5,22 +5,22 @@ Subject: [PATCH] Get rid of startup delay
 
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java b/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
-index e81304583d18d34f0921ad40232224715c3b8063..0453d5c32c70721e6fc3f3d0e92830968ea31fc0 100644
+index 49f1ac8e8d3dffb725793709ddbf48b2444df4af..adbe8f37ecd8421843bc490916a14e6b848c4c4f 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
 @@ -48,11 +48,15 @@ public class BungeeCordLauncher
              deadline.add( Calendar.WEEK_OF_YEAR, -8 );
              if ( buildDate.before( deadline.getTime() ) )
              {
-+                /* MikroCord start - remove this dumb delay
++                /* Firefly start - remove this dumb delay
                  System.err.println( "*** Hey! This build is potentially outdated :( ***" );
                  System.err.println( "*** Please check for a new build from https://papermc.io/ci/job/Waterfall/ ***" );
                  System.err.println( "*** Should this build be outdated, you will get NO support for it. ***" );
                  System.err.println( "*** Server will start in 10 seconds ***" );
                  Thread.sleep( TimeUnit.SECONDS.toMillis( 10 ) );
 +                */
-+                System.err.println("This MikroCord build is potentially outdated, please check for updates");
-+                // MikroCord end
++                System.err.println("This Firefly build is potentially outdated, please check for updates");
++                // Firefly end
              }
          }
  

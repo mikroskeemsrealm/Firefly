@@ -5,7 +5,7 @@ Subject: [PATCH] Rebranding
 
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index c7ac1735dda933cc58321f839e11ce457f445e9d..45051fdab0691358c48335c7c1b34e0b5290df1d 100644
+index c7ac1735dda933cc58321f839e11ce457f445e9d..ca9b782d3eec5c544912212a30c3b5f58fffe4ef 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -498,7 +498,7 @@ public class BungeeCord extends ProxyServer
@@ -13,12 +13,12 @@ index c7ac1735dda933cc58321f839e11ce457f445e9d..45051fdab0691358c48335c7c1b34e0b
      public String getName()
      {
 -        return "Waterfall";
-+        return "MikroCord"; // MikroCord
++        return "Firefly"; // Firefly
      }
  
      @Override
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java b/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
-index dc2c584d19972bcf0690db15c49aa7d590a5eaa1..e81304583d18d34f0921ad40232224715c3b8063 100644
+index dc2c584d19972bcf0690db15c49aa7d590a5eaa1..49f1ac8e8d3dffb725793709ddbf48b2444df4af 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
 @@ -58,7 +58,7 @@ public class BungeeCordLauncher
@@ -26,24 +26,24 @@ index dc2c584d19972bcf0690db15c49aa7d590a5eaa1..e81304583d18d34f0921ad4023222471
          BungeeCord bungee = new BungeeCord();
          ProxyServer.setInstance( bungee );
 -        bungee.getLogger().info( "Enabled Waterfall version " + bungee.getVersion() );
-+        bungee.getLogger().info( "Enabled MikroCord version " + bungee.getVersion() );
++        bungee.getLogger().info( "Enabled Firefly version " + bungee.getVersion() );
          bungee.start();
  
          if ( !options.has( "noconsole" ) )
 diff --git a/proxy/src/main/java/net/md_5/bungee/command/CommandReload.java b/proxy/src/main/java/net/md_5/bungee/command/CommandReload.java
-index 720d0c3b5ef7107690757142a5ded0268a84270a..0ad37d4e3de8dc16cf197d8c96e9fcd70ad7eae5 100644
+index 720d0c3b5ef7107690757142a5ded0268a84270a..7cf5ebe77c9325eb4440c63d832a6aabd0ad9b0d 100644
 --- a/proxy/src/main/java/net/md_5/bungee/command/CommandReload.java
 +++ b/proxy/src/main/java/net/md_5/bungee/command/CommandReload.java
 @@ -23,6 +23,7 @@ public class CommandReload extends Command
          BungeeCord.getInstance().startListeners();
          BungeeCord.getInstance().getPluginManager().callEvent( new ProxyReloadEvent( sender ) );
  
-+        sender.sendMessage(ChatColor.GREEN + "MikroCord has been reloaded"); if(true) return; // MikroCord
++        sender.sendMessage(ChatColor.GREEN + "Firefly has been reloaded"); if(true) return; // Firefly
          sender.sendMessage( ChatColor.BOLD.toString() + ChatColor.RED.toString() + "Waterfall has been reloaded."
                  + " This is NOT advisable and you will not be supported with any issues that arise! Please restart Waterfall ASAP." );
      }
 diff --git a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
-index 0c1ecfb8e6016659fc308c2e16ec1ab1d257fe49..0300b897cdea41e512fb13abe319a936d5787b7e 100644
+index 0c1ecfb8e6016659fc308c2e16ec1ab1d257fe49..e4c3502582852387df22d34267503d31445f80d7 100644
 --- a/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
 +++ b/query/src/main/java/net/md_5/bungee/query/QueryHandler.java
 @@ -103,7 +103,7 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket>
@@ -51,7 +51,7 @@ index 0c1ecfb8e6016659fc308c2e16ec1ab1d257fe49..0300b897cdea41e512fb13abe319a936
              List<String> players = bungee.getPlayers().stream().map(ProxiedPlayer::getName).collect(Collectors.toList());
  
 -            ProxyQueryEvent event = new ProxyQueryEvent(listener, new QueryResult(listener.getMotd(), "SMP", "Waterfall_Proxy",
-+            ProxyQueryEvent event = new ProxyQueryEvent(listener, new QueryResult(listener.getMotd(), "SMP", "MikroCord_Proxy",
++            ProxyQueryEvent event = new ProxyQueryEvent(listener, new QueryResult(listener.getMotd(), "SMP", "Firefly_Proxy",
                      bungee.getOnlineCount(), listener.getMaxPlayers(), listener.getHost().getPort(),
                      listener.getHost().getHostString(), "MINECRAFT",  players, bungee.getGameVersion()));
              QueryResult result = bungee.getPluginManager().callEvent(event).getResult();

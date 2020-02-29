@@ -5,22 +5,22 @@ Subject: [PATCH] Fix dumb connection message behaviour
 
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/UserConnection.java b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-index 2ffd76e22560b336f1392d6cbefccaf2e64d5f83..f4983d6057d332a501026a23bf81e61838856aca 100644
+index c3ed56d5093ac29bfdeb81e404db0069d4c4b0ae..d606c9640aaf6775e8b43ba20a5cadb5d566b804 100644
 --- a/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 +++ b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-@@ -321,6 +321,7 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.mikroc
+@@ -321,6 +321,7 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.firefl
                  callback.done( ServerConnectRequest.Result.ALREADY_CONNECTED, null );
              }
  
-+            else // MikroCord - Fix dumb connection message behaviour
++            else // Firefly - Fix dumb connection message behaviour
              sendMessage( bungee.getTranslation( "already_connected" ) );
              return;
          }
-@@ -331,6 +332,7 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.mikroc
+@@ -331,6 +332,7 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.firefl
                  callback.done( ServerConnectRequest.Result.ALREADY_CONNECTING, null );
              }
  
-+            else // MikroCord - Fix dumb connection message behaviour
++            else // Firefly - Fix dumb connection message behaviour
              sendMessage( bungee.getTranslation( "already_connecting" ) );
              return;
          }

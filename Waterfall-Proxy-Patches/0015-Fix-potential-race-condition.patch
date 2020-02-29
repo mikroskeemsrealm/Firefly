@@ -5,21 +5,21 @@ Subject: [PATCH] Fix potential race condition
 
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 701c3461b309e2312ca2f8b7e8fe2ea8ac4e8924..b8ac5b909faf1d1829f1145c278d6b418b4f157b 100644
+index d8b574e797a9a7356d3b3080779cd8ec8149a7e2..006b5e834b97f1b99dfdc6075ec246e15c68c37e 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -608,7 +608,14 @@ public class BungeeCord extends ProxyServer
      @Override
      public int getOnlineCount()
      {
-+        // MikroCord start - fix potential race condition
++        // Firefly start - fix potential race condition
 +        connectionLock.readLock().lock();
 +        try {
          return connections.size();
 +        } finally {
 +            connectionLock.readLock().unlock();
 +        }
-+        // MikroCord end
++        // Firefly end
      }
  
      @Override

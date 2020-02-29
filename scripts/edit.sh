@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-pushd MikroCord-Proxy
+pushd Firefly-Proxy
 git rebase --interactive upstream/upstream
 popd

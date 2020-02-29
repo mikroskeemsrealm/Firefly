@@ -4,13 +4,13 @@ Date: Wed, 29 May 2019 20:16:16 +0300
 Subject: [PATCH] Improve event loop group implementation picking
 
 
-diff --git a/api/src/main/java/eu/mikroskeem/mikrocord/api/network/EventLoopGroupType.java b/api/src/main/java/eu/mikroskeem/mikrocord/api/network/EventLoopGroupType.java
+diff --git a/api/src/main/java/eu/mikroskeem/firefly/api/network/EventLoopGroupType.java b/api/src/main/java/eu/mikroskeem/firefly/api/network/EventLoopGroupType.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..5ba35f16b22aabe70a9df611ffbe8310d1445a12
+index 0000000000000000000000000000000000000000..d296b53db63a2a58e5fc6378062235b992a95e39
 --- /dev/null
-+++ b/api/src/main/java/eu/mikroskeem/mikrocord/api/network/EventLoopGroupType.java
++++ b/api/src/main/java/eu/mikroskeem/firefly/api/network/EventLoopGroupType.java
 @@ -0,0 +1,9 @@
-+package eu.mikroskeem.mikrocord.api.network;
++package eu.mikroskeem.firefly.api.network;
 +
 +/**
 + * @author Mark Vainomaa
@@ -20,16 +20,16 @@ index 0000000000000000000000000000000000000000..5ba35f16b22aabe70a9df611ffbe8310
 +    NIO
 +}
 \ No newline at end of file
-diff --git a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-index 1df8934ab767a27f1e8a4e49816d79200024ece7..3380011f0137b6f0974a4675c156e944cfc8bd15 100644
---- a/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-+++ b/proxy/src/main/java/eu/mikroskeem/mikrocord/conf/MikroCordConfiguration.java
-@@ -2,11 +2,13 @@ package eu.mikroskeem.mikrocord.conf;
+diff --git a/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java b/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
+index 79d37cf0bab25301b713361ee71e29ae1f447276..2d5d57bdafa876053a0d17fa9517a03fab93adee 100644
+--- a/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
++++ b/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
+@@ -2,11 +2,13 @@ package eu.mikroskeem.firefly.conf;
  
  import com.google.common.collect.ImmutableList;
- import eu.mikroskeem.mikrocord.api.network.TCPFastOpenMode;
-+import eu.mikroskeem.mikrocord.api.network.EventLoopGroupType;
- import eu.mikroskeem.mikrocord.misc.VelocitySupport;
+ import eu.mikroskeem.firefly.api.network.TCPFastOpenMode;
++import eu.mikroskeem.firefly.api.network.EventLoopGroupType;
+ import eu.mikroskeem.firefly.misc.VelocitySupport;
  import io.github.waterfallmc.waterfall.conf.WaterfallConfiguration;
  import lombok.Getter;
  import net.md_5.bungee.api.ProxyServer;
@@ -38,7 +38,7 @@ index 1df8934ab767a27f1e8a4e49816d79200024ece7..3380011f0137b6f0974a4675c156e944
  
  import java.nio.charset.StandardCharsets;
  import java.util.HashSet;
-@@ -58,6 +60,9 @@ public class MikroCordConfiguration extends WaterfallConfiguration {
+@@ -58,6 +60,9 @@ public class FireflyConfiguration extends WaterfallConfiguration {
      }
  
      private TCPFastOpenMode setupTfo(int value) {
@@ -49,32 +49,32 @@ index 1df8934ab767a27f1e8a4e49816d79200024ece7..3380011f0137b6f0974a4675c156e944
          ProxyServer.getInstance().getLogger().log(Level.INFO, "TCP fast open mode is set to {0}", actual.name());
          return actual;
 diff --git a/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java b/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
-index e56219f8b8fbde57568e0a911a7cc64b9f5b06a5..4186ab11436adce2ccb7165c6585d8c86511cd73 100644
+index 4d2d014de20eb20759e1b802833f720714caa10e..4dd4d57def155bd23679d171462e98650b086752 100644
 --- a/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
 +++ b/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
-@@ -117,12 +117,15 @@ public class PipelineUtils
+@@ -123,12 +123,15 @@ public class PipelineUtils
      public static final String LEGACY_KICKER = "legacy-kick";
  
      private static boolean epoll;
-+    // MikroCord start - Improve event loop group implementation picking
-+    @lombok.Getter private static eu.mikroskeem.mikrocord.api.network.EventLoopGroupType eventLoopGroupType;
-+    // MikroCord end
++    // Firefly start - Improve event loop group implementation picking
++    @lombok.Getter private static eu.mikroskeem.firefly.api.network.EventLoopGroupType eventLoopGroupType;
++    // Firefly end
  
      static
      {
 -        if ( !PlatformDependent.isWindows() && Boolean.parseBoolean( System.getProperty( "bungee.epoll", "true" ) ) )
-+        if ( !PlatformDependent.isWindows() && !PlatformDependent.isOsx() && Boolean.parseBoolean( System.getProperty( "bungee.epoll", "true" ) ) ) // MikroCord - Improve event loop group implementation picking
++        if ( !PlatformDependent.isWindows() && !PlatformDependent.isOsx() && Boolean.parseBoolean( System.getProperty( "bungee.epoll", "true" ) ) ) // Firefly - Improve event loop group implementation picking
          {
 -            ProxyServer.getInstance().getLogger().info( "Not on Windows, attempting to use enhanced EpollEventLoop" );
-+            ProxyServer.getInstance().getLogger().info("Attempting to use enhanced EpollEventLoop"); //"Not on Windows, attempting to use enhanced EpollEventLoop" ); // MikroCord start - Improve event loop group implementation picking
++            ProxyServer.getInstance().getLogger().info("Attempting to use enhanced EpollEventLoop"); //"Not on Windows, attempting to use enhanced EpollEventLoop" ); // Firefly start - Improve event loop group implementation picking
  
              if ( epoll = Epoll.isAvailable() )
              {
-@@ -132,6 +135,7 @@ public class PipelineUtils
+@@ -138,6 +141,7 @@ public class PipelineUtils
                  ProxyServer.getInstance().getLogger().log( Level.WARNING, "Epoll is not working, falling back to NIO: {0}", Util.exception( Epoll.unavailabilityCause() ) );
              }
          }
-+        eventLoopGroupType = epoll ? eu.mikroskeem.mikrocord.api.network.EventLoopGroupType.EPOLL : eu.mikroskeem.mikrocord.api.network.EventLoopGroupType.NIO;
++        eventLoopGroupType = epoll ? eu.mikroskeem.firefly.api.network.EventLoopGroupType.EPOLL : eu.mikroskeem.firefly.api.network.EventLoopGroupType.NIO;
      }
  
      public static EventLoopGroup newEventLoopGroup(int threads, ThreadFactory factory)

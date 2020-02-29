@@ -5,22 +5,22 @@ Subject: [PATCH] Copy new messages.properties if not present
 
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 72087708b787bcb2192a0547fd70a435c13dfbbf..2a9756a3e5381e703189f682daa4eddd08ea035d 100644
+index c9402774b6f3e3218b64244f82c9de355256586e..1b300f7109143fb1f7bf8084fee1862a5d89735d 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -582,6 +582,15 @@ public class BungeeCord extends ProxyServer
                  getLogger().log( Level.SEVERE, "Could not load custom messages.properties", ex );
              }
          }
-+        // MikroCord start - copy new messages.properties if not present
-+        else if(localizationBundleWrapper instanceof eu.mikroskeem.mikrocord.misc.ResourceBundleConfigurationWrapper) {
++        // Firefly start - copy new messages.properties if not present
++        else if(localizationBundleWrapper instanceof eu.mikroskeem.firefly.misc.ResourceBundleConfigurationWrapper) {
 +            try(java.io.InputStream stream = BungeeCord.class.getResourceAsStream("/messages.properties")) {
 +                java.nio.file.Files.copy(stream, file.toPath());
 +            } catch (IOException e) {
 +                getLogger().log(Level.WARNING, "Could not copy default messages.properties", e);
 +            }
 +        }
-+        // MikroCord end
++        // Firefly end
      }
  
      @Override
