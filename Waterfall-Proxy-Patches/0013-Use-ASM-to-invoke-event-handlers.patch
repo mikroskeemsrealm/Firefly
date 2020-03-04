@@ -5,7 +5,7 @@ Subject: [PATCH] Use ASM to invoke event handlers
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/plugin/PluginClassloader.java b/api/src/main/java/net/md_5/bungee/api/plugin/PluginClassloader.java
-index 85203fb8ad0e95a179fbdf1a65440b456c56d1e1..0f2c98245dda7cf84bf9d459296710ac3c998c59 100644
+index 85203fb8ad0e95a179fbdf1a65440b456c56d1e1..141de9e68abc7b5d60a25c3819c4a4cf4985f623 100644
 --- a/api/src/main/java/net/md_5/bungee/api/plugin/PluginClassloader.java
 +++ b/api/src/main/java/net/md_5/bungee/api/plugin/PluginClassloader.java
 @@ -5,7 +5,7 @@ import java.net.URLClassLoader;
@@ -29,12 +29,12 @@ index 85203fb8ad0e95a179fbdf1a65440b456c56d1e1..0f2c98245dda7cf84bf9d459296710ac
 +    }
 +    // Firefly end
  }
-diff --git a/event/src/main/java/eu/mikroskeem/firefly/event/ASMEventExecutor.java b/event/src/main/java/eu/mikroskeem/firefly/event/ASMEventExecutor.java
+diff --git a/event/src/main/java/eu/mikroskeem/mikrocord/event/ASMEventExecutor.java b/event/src/main/java/eu/mikroskeem/mikrocord/event/ASMEventExecutor.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..218fb088069285d280a40c43af6073a2945e7949
+index 0000000000000000000000000000000000000000..1d5661247ebd5f20e927a4340767312260428164
 --- /dev/null
-+++ b/event/src/main/java/eu/mikroskeem/firefly/event/ASMEventExecutor.java
-@@ -0,0 +1,101 @@
++++ b/event/src/main/java/eu/mikroskeem/mikrocord/event/ASMEventExecutor.java
+@@ -0,0 +1,109 @@
 +package eu.mikroskeem.firefly.event;
 +
 +import org.objectweb.asm.ClassWriter;
@@ -42,7 +42,6 @@ index 0000000000000000000000000000000000000000..218fb088069285d280a40c43af6073a2
 +import org.objectweb.asm.Opcodes;
 +import org.objectweb.asm.Type;
 +
-+import java.lang.invoke.MethodHandles;
 +import java.lang.reflect.Method;
 +import java.util.WeakHashMap;
 +import java.util.concurrent.atomic.AtomicInteger;
@@ -52,6 +51,7 @@ index 0000000000000000000000000000000000000000..218fb088069285d280a40c43af6073a2
 + */
 +class ASMEventExecutor {
 +    private final static AtomicInteger CLASS_NAME_COUNTER = new AtomicInteger(0);
++    private final static Method defineClassMethod;
 +
 +    private final static WeakHashMap<Method, EventExecutor> generatedExecutors = new WeakHashMap<>();
 +
@@ -76,7 +76,7 @@ index 0000000000000000000000000000000000000000..218fb088069285d280a40c43af6073a2
 +     * @return New ASM event executor class name
 +     */
 +    static String generateNewClassName() {
-+        return ASMEventExecutor.class.getPackage().getName() + ".GeneratedASMEventExecutor" + CLASS_NAME_COUNTER.getAndIncrement();
++        return ASMEventExecutor.class.getPackage().getName() + ".generated.GeneratedASMEventExecutor" + CLASS_NAME_COUNTER.getAndIncrement();
 +    }
 +
 +    static byte[] generateEventExecutor(String className, Method handlerMethod) {
@@ -91,7 +91,7 @@ index 0000000000000000000000000000000000000000..218fb088069285d280a40c43af6073a2
 +        String eeDesc = "(" + objectDesc + objectDesc + ")V";
 +
 +        ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
-+        cw.visit(Opcodes.V11, Opcodes.ACC_PUBLIC, rawName, null, objectName, new String[]{ eeName });
++        cw.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, rawName, null, objectName, new String[]{ eeName });
 +
 +        // Generate no-args public constructor
 +        {
@@ -112,7 +112,7 @@ index 0000000000000000000000000000000000000000..218fb088069285d280a40c43af6073a2
 +            mv.visitTypeInsn(Opcodes.CHECKCAST, Type.getInternalName(eventClass));
 +            int inv = listenerClass.isInterface() ? Opcodes.INVOKEINTERFACE : Opcodes.INVOKEVIRTUAL;
 +            mv.visitMethodInsn(inv, Type.getInternalName(listenerClass), handlerMethod.getName(), Type.getMethodDescriptor(handlerMethod), listenerClass.isInterface());
-+            if (handlerMethod.getReturnType() != void.class) {
++            if(handlerMethod.getReturnType() != void.class) {
 +                mv.visitInsn(Opcodes.POP);
 +            }
 +            mv.visitInsn(Opcodes.RETURN);
@@ -128,20 +128,28 @@ index 0000000000000000000000000000000000000000..218fb088069285d280a40c43af6073a2
 +        if (loader instanceof DynamicClassLoader) {
 +            return ((DynamicClassLoader) loader).defineClass(name, data);
 +        }
-+
 +        try {
-+            return MethodHandles.lookup().defineClass(data);
++            return (Class<?>) defineClassMethod.invoke(loader, name, data, 0, data.length);
 +        } catch (Exception e) {
 +            throw new RuntimeException("Failed to define class '" + name + "'", e);
 +        }
 +    }
++
++    static {
++        try {
++            defineClassMethod = ClassLoader.class.getDeclaredMethod("defineClass", String.class, byte[].class, int.class, int.class);
++            defineClassMethod.setAccessible(true);
++        } catch (Exception e) {
++            throw new Error("Failed to get ClassLoader#defineClass method", e);
++        }
++    }
 +}
 \ No newline at end of file
-diff --git a/event/src/main/java/eu/mikroskeem/firefly/event/DynamicClassLoader.java b/event/src/main/java/eu/mikroskeem/firefly/event/DynamicClassLoader.java
+diff --git a/event/src/main/java/eu/mikroskeem/mikrocord/event/DynamicClassLoader.java b/event/src/main/java/eu/mikroskeem/mikrocord/event/DynamicClassLoader.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..fb24f4757a57aa0c8cd23ee104e0267a0feaf023
+index 0000000000000000000000000000000000000000..727ef5f7388e78ddadd02719c3ef91ec5b4b0bda
 --- /dev/null
-+++ b/event/src/main/java/eu/mikroskeem/firefly/event/DynamicClassLoader.java
++++ b/event/src/main/java/eu/mikroskeem/mikrocord/event/DynamicClassLoader.java
 @@ -0,0 +1,11 @@
 +package eu.mikroskeem.firefly.event;
 +
@@ -154,11 +162,11 @@ index 0000000000000000000000000000000000000000..fb24f4757a57aa0c8cd23ee104e0267a
 +    @NonNull
 +    Class<?> defineClass(String name, byte[] data);
 +}
-diff --git a/event/src/main/java/eu/mikroskeem/firefly/event/EventExecutor.java b/event/src/main/java/eu/mikroskeem/firefly/event/EventExecutor.java
+diff --git a/event/src/main/java/eu/mikroskeem/mikrocord/event/EventExecutor.java b/event/src/main/java/eu/mikroskeem/mikrocord/event/EventExecutor.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..f796f801939ff5b38caecba981d1275f558973d8
+index 0000000000000000000000000000000000000000..ad7bcbf698f24c45d3f3eec10a2289c80b9585c6
 --- /dev/null
-+++ b/event/src/main/java/eu/mikroskeem/firefly/event/EventExecutor.java
++++ b/event/src/main/java/eu/mikroskeem/mikrocord/event/EventExecutor.java
 @@ -0,0 +1,20 @@
 +package eu.mikroskeem.firefly.event;
 +
@@ -180,11 +188,11 @@ index 0000000000000000000000000000000000000000..f796f801939ff5b38caecba981d1275f
 +        }
 +    }
 +}
-diff --git a/event/src/main/java/eu/mikroskeem/firefly/event/MethodHandleEventExecutor.java b/event/src/main/java/eu/mikroskeem/firefly/event/MethodHandleEventExecutor.java
+diff --git a/event/src/main/java/eu/mikroskeem/mikrocord/event/MethodHandleEventExecutor.java b/event/src/main/java/eu/mikroskeem/mikrocord/event/MethodHandleEventExecutor.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..edca44565a7019c3a380ad3540d0a7d2f6ca2285
+index 0000000000000000000000000000000000000000..72d8fd43bd879d00b158cbd8efb3c3ca34f4f9fd
 --- /dev/null
-+++ b/event/src/main/java/eu/mikroskeem/firefly/event/MethodHandleEventExecutor.java
++++ b/event/src/main/java/eu/mikroskeem/mikrocord/event/MethodHandleEventExecutor.java
 @@ -0,0 +1,44 @@
 +package eu.mikroskeem.firefly.event;
 +
@@ -231,7 +239,7 @@ index 0000000000000000000000000000000000000000..edca44565a7019c3a380ad3540d0a7d2
 +    }
 +}
 diff --git a/event/src/main/java/net/md_5/bungee/event/EventBus.java b/event/src/main/java/net/md_5/bungee/event/EventBus.java
-index f5bd1f9801398e8aaa6b5b6c0722629dc94b8fe3..ac2cdd90246a20165e0410eb9aae886aec04d4e0 100644
+index f5bd1f9801398e8aaa6b5b6c0722629dc94b8fe3..71f64b96ead6e9956b348de7e9c29168ab0a1873 100644
 --- a/event/src/main/java/net/md_5/bungee/event/EventBus.java
 +++ b/event/src/main/java/net/md_5/bungee/event/EventBus.java
 @@ -50,9 +50,9 @@ public class EventBus
@@ -277,7 +285,7 @@ index f5bd1f9801398e8aaa6b5b6c0722629dc94b8fe3..ac2cdd90246a20165e0410eb9aae886a
          {
              byEventBaked.remove( eventClass );
 diff --git a/event/src/main/java/net/md_5/bungee/event/EventHandlerMethod.java b/event/src/main/java/net/md_5/bungee/event/EventHandlerMethod.java
-index ad19c020c77a45c3b3a8a18aaf2f59c2de15ec7c..fcdbdf971db404f33b931e14c874133e2708fde3 100644
+index ad19c020c77a45c3b3a8a18aaf2f59c2de15ec7c..3d98102d236c09a79d86e1b67767befcec0ae165 100644
 --- a/event/src/main/java/net/md_5/bungee/event/EventHandlerMethod.java
 +++ b/event/src/main/java/net/md_5/bungee/event/EventHandlerMethod.java
 @@ -13,9 +13,10 @@ public class EventHandlerMethod
