@@ -1,0 +1,18 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Fri, 6 Mar 2020 00:04:47 +0200
+Subject: [PATCH] Enable TCP keepalive
+
+
+diff --git a/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java b/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
+index add26b2133302561d39e3fdd0baeb2e3a86bacee..9b3c9ed5192a02b3e3dc91e58d878ea3a438f2c8 100644
+--- a/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
++++ b/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
+@@ -197,6 +197,7 @@ public class PipelineUtils
+                 // IP_TOS is not supported (Windows XP / Windows Server 2003)
+             }
+             ch.config().setOption( ChannelOption.TCP_NODELAY, true );
++            ch.config().setOption(ChannelOption.SO_KEEPALIVE, true); // Firefly - Enable TCP keepalive
+             ch.config().setAllocator( PooledByteBufAllocator.DEFAULT );
+             ch.config().setWriteBufferWaterMark( MARK );
+ 
