@@ -1,0 +1,36 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
+Date: Fri, 6 Mar 2020 00:24:43 +0200
+Subject: [PATCH] Fire ClientConnectEvent later when PROXY protocol is enabled
+
+
+diff --git a/proxy/src/main/java/net/md_5/bungee/netty/HandlerBoss.java b/proxy/src/main/java/net/md_5/bungee/netty/HandlerBoss.java
+index 07de83f7b6982252839d6b643ae564dfb73620e3..6f549ad2cea682568fb677a1aadfcc026b69cdfb 100644
+--- a/proxy/src/main/java/net/md_5/bungee/netty/HandlerBoss.java
++++ b/proxy/src/main/java/net/md_5/bungee/netty/HandlerBoss.java
+@@ -82,6 +82,12 @@ public class HandlerBoss extends ChannelInboundHandlerAdapter
+         {
+             HAProxyMessage proxy = (HAProxyMessage) msg;
+             InetSocketAddress newAddress = new InetSocketAddress( proxy.sourceAddress(), proxy.sourcePort() );
++            // Firefly start - Fire ClientConnectEvent later when PROXY protocol is enabled
++            if (!new net.md_5.bungee.api.event.ClientConnectEvent(newAddress, channel.getHandle().attr(PipelineUtils.LISTENER).get()).callEvent()) {
++                eu.mikroskeem.firefly.DiscardHandler.addBeforeAndClose(channel.getHandle(), channel.getHandle().pipeline(), PipelineUtils.PACKET_DECODER);
++                return;
++            }
++            // Firefly end
+ 
+             ProxyServer.getInstance().getLogger().log( Level.FINE, "Set remote address via PROXY {0} -> {1}", new Object[]
+             {
+diff --git a/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java b/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
+index 9b3c9ed5192a02b3e3dc91e58d878ea3a438f2c8..e3ea4a1f7c868183d5ed0fb05a94f41e5ffd6499 100644
+--- a/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
++++ b/proxy/src/main/java/net/md_5/bungee/netty/PipelineUtils.java
+@@ -67,7 +67,7 @@ public class PipelineUtils
+             }
+             ListenerInfo listener = ch.attr( LISTENER ).get();
+ 
+-            if ( BungeeCord.getInstance().getPluginManager().callEvent( new ClientConnectEvent( remoteAddress, listener ) ).isCancelled() )
++            if (!listener.isProxyProtocol() && BungeeCord.getInstance().getPluginManager().callEvent( new ClientConnectEvent( remoteAddress, listener ) ).isCancelled() ) // Firefly - Fire ClientConnectEvent later when PROXY protocol is enabled
+             {
+                 ch.close();
+                 return;
