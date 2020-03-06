@@ -17,10 +17,10 @@ index 55d42b9775ec274b21568a86303f0a9e0bbde1f5..a60866930c8862cefe6ebd905083f565
 +    boolean isAllowProxyingProxies();
  }
 diff --git a/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java b/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
-index 30788138b01d3da1cb3bd76d66b6a85f2f0253f6..e03a9ab1f3c203868037a19d9381883527eaef73 100644
+index 0d4608bac359f5e784c0474616821c296de920e2..144d8b4c3f4e93ab9fa917e6e9b4bc70701076d0 100644
 --- a/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
-@@ -91,6 +91,9 @@ public class FireflyConfiguration extends WaterfallConfiguration {
+@@ -87,6 +87,9 @@ public class FireflyConfiguration extends WaterfallConfiguration {
      @Getter
      private boolean handleLegacyPing = true;
  
@@ -30,9 +30,9 @@ index 30788138b01d3da1cb3bd76d66b6a85f2f0253f6..e03a9ab1f3c203868037a19d93818835
      @Override
      public void load() {
          super.load();
-@@ -118,6 +121,7 @@ public class FireflyConfiguration extends WaterfallConfiguration {
-         logUnparsableChatJson = config.getBoolean("log.unparsable_chat_json", logUnparsableChatJson);
-         ComponentSerializer.debugJsonParsing.set(logUnparsableChatJson);
+@@ -112,6 +115,7 @@ public class FireflyConfiguration extends WaterfallConfiguration {
+         dropConnectionsSendingInvalidPackets = config.getBoolean("packets.drop_invalid_packet_senders", dropConnectionsSendingInvalidPackets);
+         logPacketDecodeErrors = config.getBoolean("packets.log_packet_decode_errors", logPacketDecodeErrors);
          handleLegacyPing = config.getBoolean("packets.handle_legacy_ping", handleLegacyPing);
 +        allowProxyingProxies = config.getBoolean("allow_proxying_proxies", allowProxyingProxies);
      }
