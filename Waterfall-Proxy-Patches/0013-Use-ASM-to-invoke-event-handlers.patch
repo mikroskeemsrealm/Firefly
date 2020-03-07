@@ -5,23 +5,22 @@ Subject: [PATCH] Use ASM to invoke event handlers
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/plugin/PluginClassloader.java b/api/src/main/java/net/md_5/bungee/api/plugin/PluginClassloader.java
-index 85203fb8ad0e95a179fbdf1a65440b456c56d1e1..0f2c98245dda7cf84bf9d459296710ac3c998c59 100644
+index 75c75e2db14b893dbe7fb5f41562a98f47763d38..0aa80e6a452aee3aec36f2327ed6ade77697efe7 100644
 --- a/api/src/main/java/net/md_5/bungee/api/plugin/PluginClassloader.java
 +++ b/api/src/main/java/net/md_5/bungee/api/plugin/PluginClassloader.java
-@@ -5,7 +5,7 @@ import java.net.URLClassLoader;
- import java.util.Set;
+@@ -7,7 +7,7 @@ import java.util.Set;
  import java.util.concurrent.CopyOnWriteArraySet;
+ import net.md_5.bungee.api.ProxyServer;
  
--public class PluginClassloader extends URLClassLoader
-+public class PluginClassloader extends URLClassLoader implements eu.mikroskeem.firefly.event.DynamicClassLoader // Firefly - implement DynamicClassLoader
+-final class PluginClassloader extends URLClassLoader
++public final class PluginClassloader extends URLClassLoader implements eu.mikroskeem.firefly.event.DynamicClassLoader // Firefly - implement DynamicClassLoader
  {
  
      private static final Set<PluginClassloader> allLoaders = new CopyOnWriteArraySet<>();
-@@ -52,4 +52,11 @@ public class PluginClassloader extends URLClassLoader
-         }
-         throw new ClassNotFoundException( name );
+@@ -75,4 +75,10 @@ final class PluginClassloader extends URLClassLoader
+         this.plugin = plugin;
+         plugin.init( proxy, desc );
      }
-+
 +    // Firefly start - implement DynamicClassLoader
 +    @Override
 +    public Class<?> defineClass(String name, byte[] data) {

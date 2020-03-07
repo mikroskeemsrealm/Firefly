@@ -41,10 +41,10 @@ index 8ee8d33fe1b69227ad39615382f0bdccbb40df4d..b1cd5f93bb50e44c2a079ef1b44b58c2
      /**
       * Get the configuration all servers which may be accessible via the proxy.
 diff --git a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
-index 85c2a0b52f5035cbb52df009c54327aedbcbf0bd..678d1304aada1ee09114853c87b9d638d854b2c3 100644
+index 65121ba2472c2b939d0de78880d14ea63f2dbc1d..e3e6746b5c746c33054110fb98dcaaf98a8c3ea8 100644
 --- a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
 +++ b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
-@@ -326,4 +326,46 @@ public class YamlConfig implements ConfigurationAdapter
+@@ -329,4 +329,46 @@ public class YamlConfig implements ConfigurationAdapter
          Collection<String> permissions = get( "permissions." + group, null );
          return ( permissions == null ) ? Collections.EMPTY_SET : permissions;
      }

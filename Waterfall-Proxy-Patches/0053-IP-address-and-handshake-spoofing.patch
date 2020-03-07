@@ -44,10 +44,10 @@ index 72f989ca748f08d3e891a5ffd65bb078aaff2a7e..19dd4e8db3c21c8fa11e0bf9a3715ab6
              DefinedPacket.writeUUID(user.getPendingConnection().getUniqueId(), forwarded);
              DefinedPacket.writeString(user.getPendingConnection().getName(), forwarded);
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-index 522a06d56dbf5420f9ebc9dbab206ee6f6078a3d..e526904d101ae2a3171b1916866cad5ae507ce03 100644
+index 37305a7d0523c259419e0d3cf8bb3d5081b564b0..1bda2548538a270e2b233e5b5e6630e1ac0f3cba 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-@@ -101,9 +101,9 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.fire
+@@ -102,9 +102,9 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.fire
          Handshake originalHandshake = user.getPendingConnection().getHandshake();
          Handshake copiedHandshake = new Handshake( originalHandshake.getProtocolVersion(), originalHandshake.getHost(), originalHandshake.getPort(), 2 );
  
@@ -60,7 +60,7 @@ index 522a06d56dbf5420f9ebc9dbab206ee6f6078a3d..e526904d101ae2a3171b1916866cad5a
              LoginResult profile = user.getPendingConnection().getLoginProfile();
  
 diff --git a/proxy/src/main/java/net/md_5/bungee/UserConnection.java b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-index dcb319203c447f57fc2eca3d477d7a008d7405e4..02b9b676a011c3bbec2f21e2f1d03be9d04aad71 100644
+index f8c4e57855f4c65b65520fd28b5f3fe0364eed70..5e7f3fa2c8e4f72bee433ad9d9b932a354c8c276 100644
 --- a/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 +++ b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 @@ -153,6 +153,15 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.firefl

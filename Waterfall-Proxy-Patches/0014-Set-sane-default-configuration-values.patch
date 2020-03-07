@@ -58,10 +58,10 @@ index 6c3ca2130c87043b4ecb83b2762c5e19c0534023..89f2b533bc55219843bbd3eb9ed75ee6
          logCommands = adapter.getBoolean( "log_commands", logCommands );
          logPings = adapter.getBoolean( "log_pings", logPings );
 diff --git a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
-index 01f8889ab3987fd7bf6a00baf34f7944670a2006..7c840a583e71c6f31c64ed376a584f13c995efac 100644
+index 95a8ee5138125613a2b31353963e0be29892693a..f447a9ed70c14b78daf179d545889dc87af6c49a 100644
 --- a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
 +++ b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
-@@ -110,7 +110,11 @@ public class YamlConfig implements ConfigurationAdapter
+@@ -113,7 +113,11 @@ public class YamlConfig implements ConfigurationAdapter
          Map<String, Object> groups = get( "groups", null );
          if ( groups == null )
          {
@@ -73,7 +73,7 @@ index 01f8889ab3987fd7bf6a00baf34f7944670a2006..7c840a583e71c6f31c64ed376a584f13
          }
      }
  
-@@ -244,7 +248,7 @@ public class YamlConfig implements ConfigurationAdapter
+@@ -247,7 +251,7 @@ public class YamlConfig implements ConfigurationAdapter
              new HashMap()
          } ) );
          Map<String, String> forcedDef = new HashMap<>();

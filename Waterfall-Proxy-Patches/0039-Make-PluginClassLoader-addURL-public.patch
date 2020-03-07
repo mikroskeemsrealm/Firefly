@@ -5,10 +5,10 @@ Subject: [PATCH] Make PluginClassLoader#addURL public
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/plugin/PluginClassloader.java b/api/src/main/java/net/md_5/bungee/api/plugin/PluginClassloader.java
-index 0f2c98245dda7cf84bf9d459296710ac3c998c59..3bcc4e5d09fd4df13ad2273a57a2a6a6d078b2e7 100644
+index 0aa80e6a452aee3aec36f2327ed6ade77697efe7..60497563f888c78469a84d0bdd4754fbe10921fd 100644
 --- a/api/src/main/java/net/md_5/bungee/api/plugin/PluginClassloader.java
 +++ b/api/src/main/java/net/md_5/bungee/api/plugin/PluginClassloader.java
-@@ -59,4 +59,5 @@ public class PluginClassloader extends URLClassLoader implements eu.mikroskeem.f
+@@ -81,4 +81,5 @@ public final class PluginClassloader extends URLClassLoader implements eu.mikros
          return this.defineClass(name, data, 0, data.length);
      }
      // Firefly end

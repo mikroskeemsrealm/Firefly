@@ -244,10 +244,10 @@ index 7b002089ef9dd9f365dc0f7db076976b8dc6260c..8d10c9188f642c97451ae34b44745660
      @Synchronized("players")
      public void addPlayer(ProxiedPlayer player)
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-index d87c4d69f732dbb8964261d380f844904e0b2d8c..522a06d56dbf5420f9ebc9dbab206ee6f6078a3d 100644
+index 18c7daa408cb6dc990201ae7bb5ec8a3319e465a..37305a7d0523c259419e0d3cf8bb3d5081b564b0 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-@@ -101,7 +101,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.fire
+@@ -102,7 +102,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.fire
          Handshake originalHandshake = user.getPendingConnection().getHandshake();
          Handshake copiedHandshake = new Handshake( originalHandshake.getProtocolVersion(), originalHandshake.getHost(), originalHandshake.getPort(), 2 );
  
@@ -256,7 +256,7 @@ index d87c4d69f732dbb8964261d380f844904e0b2d8c..522a06d56dbf5420f9ebc9dbab206ee6
          {
              String newHost = copiedHandshake.getHost() + "\00" + user.getAddress().getHostString() + "\00" + user.getUUID();
  
-@@ -170,7 +170,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.fire
+@@ -171,7 +171,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.fire
          ch.setProtocol( Protocol.GAME );
          thisState = State.LOGIN;
          // Firefly start - Implement Velocity modern forwarding support
@@ -265,7 +265,7 @@ index d87c4d69f732dbb8964261d380f844904e0b2d8c..522a06d56dbf5420f9ebc9dbab206ee6
              throw new QuietException("Your server did not send a forwarding request to the proxy. Is it set up correctly?");
          }
          // Firefly end
-@@ -457,7 +457,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.fire
+@@ -463,7 +463,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.fire
      // Firefly start - Implement Velocity modern forwarding support
      @Override
      public void handle(net.md_5.bungee.protocol.packet.LoginPayloadRequest request) {
@@ -306,10 +306,10 @@ index 89f2b533bc55219843bbd3eb9ed75ee677be82b2..52b5f8101b4541664455ce755571e751
          preventProxyConnections = adapter.getBoolean( "prevent_proxy_connections", preventProxyConnections );
          forgeSupport = adapter.getBoolean( "forge_support", forgeSupport );
 diff --git a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
-index 7c840a583e71c6f31c64ed376a584f13c995efac..2b0252a821c10051b8e4a5ed50d79ab8817d9158 100644
+index f447a9ed70c14b78daf179d545889dc87af6c49a..da7f0cde52fd7cff87251262f54ad92a95720316 100644
 --- a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
 +++ b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
-@@ -230,8 +230,17 @@ public class YamlConfig implements ConfigurationAdapter
+@@ -233,8 +233,17 @@ public class YamlConfig implements ConfigurationAdapter
              String addr = get( "address", "localhost:25565", val );
              String motd = ChatColor.translateAlternateColorCodes( '&', get( "motd", "&1Just another Waterfall - Forced Host", val ) );
              boolean restricted = get( "restricted", false, val );
