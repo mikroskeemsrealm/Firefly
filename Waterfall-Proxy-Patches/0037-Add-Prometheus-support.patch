@@ -242,10 +242,10 @@ index 0000000000000000000000000000000000000000..e1239484f90f32c5ba0aa3f05d4256ac
 +    }
 +}
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 626e49a067f521ec345c3ef248632d21ec417396..57ee0aba32dea3bc64d689c34f059690db33c55f 100644
+index ba5193dea1c0ade6c5ef700aa7bd633872b54167..36d7f7b312279feeacd4cdcbd332441e92f6a4f0 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -346,6 +346,7 @@ public class BungeeCord extends ProxyServer
+@@ -352,6 +352,7 @@ public class BungeeCord extends ProxyServer
          {
              connectionThrottle = new ConnectionThrottle( config.getThrottle(), config.getThrottleLimit() );
          }
@@ -253,15 +253,15 @@ index 626e49a067f521ec345c3ef248632d21ec417396..57ee0aba32dea3bc64d689c34f059690
          startListeners();
  
          saveThread.scheduleAtFixedRate( new TimerTask()
-@@ -464,6 +465,7 @@ public class BungeeCord extends ProxyServer
-             public void run()
-             {
-                 stopListeners();
-+                eu.mikroskeem.firefly.misc.PrometheusMetrics.deinitialize(); // Firefly - add Prometheus metrics support
-                 getLogger().info( "Closing pending connections" );
+@@ -494,6 +495,7 @@ public class BungeeCord extends ProxyServer
+         isRunning = false;
  
-                 connectionLock.readLock().lock();
-@@ -820,6 +822,7 @@ public class BungeeCord extends ProxyServer
+         stopListeners();
++        eu.mikroskeem.firefly.misc.PrometheusMetrics.deinitialize(); // Firefly - add Prometheus metrics support
+         getLogger().info( "Closing pending connections" );
+ 
+         Collection<UserConnection> disconnectingPlayers; // Firefly - wait for all players to disconnect instead of using hardcoded delay
+@@ -850,6 +852,7 @@ public class BungeeCord extends ProxyServer
              connections.put( con.getName(), con );
              connectionsByUUID.put( con.getUniqueId(), con );
              connectionsByOfflineUUID.put( con.getPendingConnection().getOfflineId(), con );

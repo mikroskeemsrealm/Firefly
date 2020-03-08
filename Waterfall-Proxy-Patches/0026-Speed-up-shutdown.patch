@@ -51,53 +51,58 @@ index 2d5d57bdafa876053a0d17fa9517a03fab93adee..374d68b9ea690a864dec33b9772dbe71
  
      private TCPFastOpenMode setupTfo(int value) {
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 1b300f7109143fb1f7bf8084fee1862a5d89735d..8a6dc51763d052fe4d209a12d7dbcb1390df70f4 100644
+index d2730a660b444bb501b537592dc3383ae28e0f74..4704c2c992ce06a3e1b96568ed14f2b6110cf5ed 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -478,12 +478,39 @@ public class BungeeCord extends ProxyServer
-                     connectionLock.readLock().unlock();
-                 }
+@@ -495,9 +495,11 @@ public class BungeeCord extends ProxyServer
+         stopListeners();
+         getLogger().info( "Closing pending connections" );
  
-+                /* Firefly start - wait for all players to disconnect instead of using hardcoded delay
-                 try
-                 {
-                     Thread.sleep( 500 );
-                 } catch ( InterruptedException ex )
-                 {
-                 }
-+                */
-+                Collection<UserConnection> disconnectingPlayers;
-+                try {
-+                    connectionLock.readLock().lock();
-+                    disconnectingPlayers = java.util.Set.copyOf(connections.values());
-+                } finally {
-+                    connectionLock.readLock().unlock();
-+                }
-+                try {
-+                    var disconnectFuture = java.util.concurrent.CompletableFuture
-+                            .allOf(disconnectingPlayers.stream()
-+                                    .map(UserConnection::getDisconnectFuture)
-+                                    .toArray(java.util.concurrent.CompletableFuture[]::new));
-+                    if (config.isWaitForAllPlayersToDisconnectInfinitely()) {
-+                        disconnectFuture.get();
-+                    } else {
-+                        disconnectFuture.get(10, TimeUnit.SECONDS);
-+                    }
-+                } catch (java.util.concurrent.ExecutionException e) {
-+                    throw new RuntimeException(e);
-+                } catch (java.util.concurrent.TimeoutException e) {
-+                    getLogger().log(Level.WARNING, "Timeout while waiting all players to clean up - something is taking too long!", e);
-+                } catch (InterruptedException e) {
-+                    Thread.currentThread().interrupt();
-+                }
-+                // Firefly end
++        Collection<UserConnection> disconnectingPlayers; // Firefly - wait for all players to disconnect instead of using hardcoded delay
+         connectionLock.readLock().lock();
+         try
+         {
++            disconnectingPlayers = java.util.Set.copyOf(connections.values()); // Firefly - wait for all players to disconnect instead of using hardcoded delay
+             getLogger().log( Level.INFO, "Disconnecting {0} connections", connections.size() );
+             for ( UserConnection user : connections.values() )
+             {
+@@ -508,12 +510,32 @@ public class BungeeCord extends ProxyServer
+             connectionLock.readLock().unlock();
+         }
  
-                 if ( reconnectHandler != null )
-                 {
-@@ -514,8 +541,8 @@ public class BungeeCord extends ProxyServer
-                 }
++        /* Firefly start - wait for all players to disconnect instead of using hardcoded delay
+         try
+         {
+             Thread.sleep( 500 );
+         } catch ( InterruptedException ex )
+         {
+         }
++        */
++        try {
++            var disconnectFuture = java.util.concurrent.CompletableFuture
++                    .allOf(disconnectingPlayers.stream()
++                            .map(UserConnection::getDisconnectFuture)
++                            .toArray(java.util.concurrent.CompletableFuture[]::new));
++            if (config.isWaitForAllPlayersToDisconnectInfinitely()) {
++                disconnectFuture.get();
++            } else {
++                disconnectFuture.get(10, TimeUnit.SECONDS);
++            }
++        } catch (java.util.concurrent.ExecutionException e) {
++            throw new RuntimeException(e);
++        } catch (java.util.concurrent.TimeoutException e) {
++            getLogger().log(Level.WARNING, "Timeout while waiting all players to clean up - something is taking too long!", e);
++        } catch (InterruptedException e) {
++            Thread.currentThread().interrupt();
++        }
++        // Firefly end
  
-                 getLogger().info( "Closing IO threads" );
+         if ( reconnectHandler != null )
+         {
+@@ -543,8 +565,8 @@ public class BungeeCord extends ProxyServer
+         }
+ 
+         getLogger().info( "Closing IO threads" );
 -                bossEventLoopGroup.shutdownGracefully();
 -                workerEventLoopGroup.shutdownGracefully();
 +                bossEventLoopGroup.shutdownGracefully(100, 5000, TimeUnit.MILLISECONDS); // Firefly - speed up shutdown
@@ -106,7 +111,7 @@ index 1b300f7109143fb1f7bf8084fee1862a5d89735d..8a6dc51763d052fe4d209a12d7dbcb13
                      try {
                          bossEventLoopGroup.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 diff --git a/proxy/src/main/java/net/md_5/bungee/UserConnection.java b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-index 9ee7ca44ee59ca94b988122865cb3b649b9fc811..c3ed56d5093ac29bfdeb81e404db0069d4c4b0ae 100644
+index 4c009edf7ec3b887fc82fbb83ae8df51e916f7e6..194b06b6abcdf6a5650136131765129515ad8cde 100644
 --- a/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 +++ b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 @@ -152,6 +152,7 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.firefl

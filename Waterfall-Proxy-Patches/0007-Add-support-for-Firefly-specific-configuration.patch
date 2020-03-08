@@ -83,10 +83,10 @@ index 83d44abb87fe522e7b8b7a1560968af2883ef974..946c9f8ee86ca4826c8ded8092806936
      /**
       * Whether we log InitialHandler connections
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index c36ca2c72b02f8ebe874fc9282e0a355ee9063d2..b35ee08d0aeb3e7415e25da64fc52827330639f5 100644
+index dce21504e8e211e774b7b51b9007b299c0f0a830..28475898b9d593fe162f911bd1a49f82dd17fec0 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -106,7 +106,7 @@ public class BungeeCord extends ProxyServer
+@@ -107,7 +107,7 @@ public class BungeeCord extends ProxyServer
       * Configuration.
       */
      @Getter
@@ -95,7 +95,7 @@ index c36ca2c72b02f8ebe874fc9282e0a355ee9063d2..b35ee08d0aeb3e7415e25da64fc52827
      /**
       * Localization bundle.
       */
-@@ -174,6 +174,14 @@ public class BungeeCord extends ProxyServer
+@@ -180,6 +180,14 @@ public class BungeeCord extends ProxyServer
              super.load(false);
          }
      };
@@ -110,7 +110,7 @@ index c36ca2c72b02f8ebe874fc9282e0a355ee9063d2..b35ee08d0aeb3e7415e25da64fc52827
  
      @Override
      public ConfigurationAdapter getConfigurationAdapter(ConfigurationType configurationType) {
-@@ -182,6 +190,10 @@ public class BungeeCord extends ProxyServer
+@@ -188,6 +196,10 @@ public class BungeeCord extends ProxyServer
                  return configurationAdapter;
              case WATERFALL:
                  return waterfallConfigurationAdapter;
@@ -121,7 +121,7 @@ index c36ca2c72b02f8ebe874fc9282e0a355ee9063d2..b35ee08d0aeb3e7415e25da64fc52827
          }
          return null;
      }
-@@ -195,6 +207,11 @@ public class BungeeCord extends ProxyServer
+@@ -201,6 +213,11 @@ public class BungeeCord extends ProxyServer
              case WATERFALL:
                  waterfallConfigurationAdapter = adapter;
                  break;

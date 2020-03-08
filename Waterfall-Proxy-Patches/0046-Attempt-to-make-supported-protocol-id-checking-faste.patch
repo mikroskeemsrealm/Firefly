@@ -38,10 +38,10 @@ index cd987c8a8c1b9892efe6033958ec624e246808b3..6bbab1ae1aafcaed5db8237b9de90b6a
      public static final boolean isBeforeOrEq(int before, int other)
      {
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 3ee64e9982bb09dfa08ccea4456950fc90d06fb6..1348ac0a465e35633f632d61ce46c2aa6ae1b50f 100644
+index 84e68231ba798489ab113d4fa075775c61e327a8..18a2e694ae37b061a6c98d8b1fab152e0275a1d6 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -773,7 +773,7 @@ public class BungeeCord extends ProxyServer
+@@ -803,7 +803,7 @@ public class BungeeCord extends ProxyServer
      @Override
      public int getProtocolVersion()
      {

@@ -5,10 +5,10 @@ Subject: [PATCH] Rebranding
 
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index c7ac1735dda933cc58321f839e11ce457f445e9d..ca9b782d3eec5c544912212a30c3b5f58fffe4ef 100644
+index 6b5df2b00b00b88777d3277480e9059a2a821604..ae007b0e36cc0052a2311ba3e040cf8881b9ccba 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -498,7 +498,7 @@ public class BungeeCord extends ProxyServer
+@@ -533,7 +533,7 @@ public class BungeeCord extends ProxyServer
      @Override
      public String getName()
      {

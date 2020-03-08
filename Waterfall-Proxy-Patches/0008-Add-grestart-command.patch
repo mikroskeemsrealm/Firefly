@@ -148,10 +148,10 @@ index 7f3947e5c955c4bf49a973304b09c66651f32711..1692f8efe71f8e3ac6ae154af46a6d5f
      }
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index b35ee08d0aeb3e7415e25da64fc52827330639f5..d8b574e797a9a7356d3b3080779cd8ec8149a7e2 100644
+index 28475898b9d593fe162f911bd1a49f82dd17fec0..5ae55ab88478defbeb2e350af569594100bd8e05 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -270,6 +270,9 @@ public class BungeeCord extends ProxyServer
+@@ -276,6 +276,9 @@ public class BungeeCord extends ProxyServer
          getPluginManager().registerCommand( null, new CommandIP() );
          getPluginManager().registerCommand( null, new CommandBungee() );
          getPluginManager().registerCommand( null, new CommandPerms() );
@@ -161,19 +161,19 @@ index b35ee08d0aeb3e7415e25da64fc52827330639f5..d8b574e797a9a7356d3b3080779cd8ec
  
          if ( !Boolean.getBoolean( "net.md_5.bungee.native.disable" ) )
          {
-@@ -520,6 +523,7 @@ public class BungeeCord extends ProxyServer
-                 {
-                     handler.close();
-                 }
-+                io.github.waterfallmc.waterfall.log4j.WaterfallLogger.restoreOldOutputStreams(); // Firefly - restore old stdout/stderr on exit
-                 System.exit( 0 );
-             }
-         }.start();
+@@ -556,6 +559,7 @@ public class BungeeCord extends ProxyServer
+ 
+         if ( callSystemExit )
+         {
++            io.github.waterfallmc.waterfall.log4j.WaterfallLogger.restoreOldOutputStreams(); // Firefly - restore old stdout/stderr on exit
+             System.exit( 0 );
+         }
+     }
 diff --git a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
-index 678d1304aada1ee09114853c87b9d638d854b2c3..01f8889ab3987fd7bf6a00baf34f7944670a2006 100644
+index e3e6746b5c746c33054110fb98dcaaf98a8c3ea8..95a8ee5138125613a2b31353963e0be29892693a 100644
 --- a/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
 +++ b/proxy/src/main/java/net/md_5/bungee/conf/YamlConfig.java
-@@ -103,7 +103,7 @@ public class YamlConfig implements ConfigurationAdapter
+@@ -106,7 +106,7 @@ public class YamlConfig implements ConfigurationAdapter
              } ) );
              set( "permissions.admin", Arrays.asList( new String[]
              {

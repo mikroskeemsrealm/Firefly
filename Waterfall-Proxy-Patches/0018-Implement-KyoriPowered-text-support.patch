@@ -136,10 +136,10 @@ index 2a780694068d013775db0bed015b62f2b2285ca6..7b09f8e6242b24c614685032e3663c0e
              registerTypeAdapter( TextComponent.class, new TextComponentSerializer() ).
              registerTypeAdapter( TranslatableComponent.class, new TranslatableComponentSerializer() ).
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index f04ea7efb38f0087d22c6a2b3a9569414a6ca886..c9402774b6f3e3218b64244f82c9de355256586e 100644
+index 57a35baf121dafa3640d8057482c3627b409a741..0720ad08279d9447bf662a085cb90041831e2f33 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -155,7 +155,7 @@ public class BungeeCord extends ProxyServer
+@@ -161,7 +161,7 @@ public class BungeeCord extends ProxyServer
      // Waterfall end
      @Getter
      private final Logger logger;
