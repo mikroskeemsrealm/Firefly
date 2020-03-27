@@ -44,7 +44,7 @@ index 72f989ca748f08d3e891a5ffd65bb078aaff2a7e..19dd4e8db3c21c8fa11e0bf9a3715ab6
              DefinedPacket.writeUUID(user.getPendingConnection().getUniqueId(), forwarded);
              DefinedPacket.writeString(user.getPendingConnection().getName(), forwarded);
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-index 37305a7d0523c259419e0d3cf8bb3d5081b564b0..1bda2548538a270e2b233e5b5e6630e1ac0f3cba 100644
+index df0ebb78114415042545d555a8025c577ac25da5..69917cea166b76dd1f6f0b210daf690d25ccce8f 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 @@ -102,9 +102,9 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.fire

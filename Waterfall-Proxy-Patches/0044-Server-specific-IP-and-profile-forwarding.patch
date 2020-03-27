@@ -198,7 +198,7 @@ index d08986932da4bc4a704feb4de9aeeeeb5bffd638..48d177aa48f9a756aa44aac7ddf75006
          tcpFastOpenEnabled = config.getBoolean("networking.tcp_fast_open.enabled", tcpFastOpenEnabled);
          tcpFastOpenMode = setupTfo(config.getInt("networking.tcp_fast_open.mode", tcpFastOpenMode.value));
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index f79e1d00e98ef78f0cddc7cab4a8eacf69adb430..84e68231ba798489ab113d4fa075775c61e327a8 100644
+index 5318d94d3cd33ac784680dd12193f78d986b16e3..d2b71f553e7b5a5ee880820306dbe4ef8302b3a8 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -813,15 +813,10 @@ public class BungeeCord extends ProxyServer
@@ -244,7 +244,7 @@ index 7b002089ef9dd9f365dc0f7db076976b8dc6260c..8d10c9188f642c97451ae34b44745660
      @Synchronized("players")
      public void addPlayer(ProxiedPlayer player)
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-index 18c7daa408cb6dc990201ae7bb5ec8a3319e465a..37305a7d0523c259419e0d3cf8bb3d5081b564b0 100644
+index 12001f6a441c69520cd6221fe18b44cc3f92f048..df0ebb78114415042545d555a8025c577ac25da5 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 @@ -102,7 +102,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.fire

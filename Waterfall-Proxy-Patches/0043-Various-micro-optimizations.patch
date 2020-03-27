@@ -134,7 +134,7 @@ index 6cec0b5a141a41e9f4e36c25f6f7460aa5dacdc2..0dfde6a2e331f4d4166ec6d7ee0b8779
      }
  
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 36d7f7b312279feeacd4cdcbd332441e92f6a4f0..f79e1d00e98ef78f0cddc7cab4a8eacf69adb430 100644
+index f2217a24c4bb22181ac238caff4890ab3d8728a5..5318d94d3cd33ac784680dd12193f78d986b16e3 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -118,7 +118,7 @@ public class BungeeCord extends ProxyServer
@@ -174,7 +174,7 @@ index 36d7f7b312279feeacd4cdcbd332441e92f6a4f0..f79e1d00e98ef78f0cddc7cab4a8eacf
          }
 +                if (saveThread != null) // Firefly - don't initialize reconnect save thread when it's not set
          saveThread.cancel();
-         // metricsThread.cancel(); // Waterfall: Disable Metrics
+         //metricsThread.cancel(); // Waterfall: Disable Metrics
  
 @@ -894,6 +900,7 @@ public class BungeeCord extends ProxyServer
              return Collections.singleton( exactMatch );

@@ -33,7 +33,7 @@ index 743d65e43549f4db3b1f6785a69ab69e19004285..eff71ed639325acbd5e8f22e31c4f7bb
                  {
                      throw new CorruptedFrameException( "Empty Packet!" );
 diff --git a/proxy/src/main/java/net/md_5/bungee/UserConnection.java b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-index 000d833c97d6091a16ee0138c0218432df05ee50..dcb319203c447f57fc2eca3d477d7a008d7405e4 100644
+index 24c9f4547386fa4635ff9291bada78458128c7d1..f8c4e57855f4c65b65520fd28b5f3fe0364eed70 100644
 --- a/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 +++ b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 @@ -345,6 +345,7 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.firefl
