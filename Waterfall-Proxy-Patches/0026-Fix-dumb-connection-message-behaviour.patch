@@ -5,7 +5,7 @@ Subject: [PATCH] Fix dumb connection message behaviour
 
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/UserConnection.java b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-index c3ed56d5093ac29bfdeb81e404db0069d4c4b0ae..d606c9640aaf6775e8b43ba20a5cadb5d566b804 100644
+index 194b06b6abcdf6a5650136131765129515ad8cde..af3c55679347ae5b82d2a40360129a5263f95988 100644
 --- a/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 +++ b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 @@ -321,6 +321,7 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.firefl

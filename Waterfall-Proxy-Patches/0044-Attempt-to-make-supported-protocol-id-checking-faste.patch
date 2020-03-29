@@ -38,7 +38,7 @@ index cd987c8a8c1b9892efe6033958ec624e246808b3..6bbab1ae1aafcaed5db8237b9de90b6a
      public static final boolean isBeforeOrEq(int before, int other)
      {
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index d2b71f553e7b5a5ee880820306dbe4ef8302b3a8..c1b960b517d22d91f848f1823270d0dc3cc826e9 100644
+index 7ec891f6675079f1657e39c58377b14a52651b0a..a0893eb0b14d9eba244a2d001693a1ec9b857520 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -803,7 +803,7 @@ public class BungeeCord extends ProxyServer

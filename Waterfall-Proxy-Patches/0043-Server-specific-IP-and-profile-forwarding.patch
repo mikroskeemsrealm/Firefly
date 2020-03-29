@@ -198,7 +198,7 @@ index d08986932da4bc4a704feb4de9aeeeeb5bffd638..48d177aa48f9a756aa44aac7ddf75006
          tcpFastOpenEnabled = config.getBoolean("networking.tcp_fast_open.enabled", tcpFastOpenEnabled);
          tcpFastOpenMode = setupTfo(config.getInt("networking.tcp_fast_open.mode", tcpFastOpenMode.value));
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 5318d94d3cd33ac784680dd12193f78d986b16e3..d2b71f553e7b5a5ee880820306dbe4ef8302b3a8 100644
+index 6099a2ed3c2b77779242cf665e22989c704e1d25..7ec891f6675079f1657e39c58377b14a52651b0a 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -813,15 +813,10 @@ public class BungeeCord extends ProxyServer

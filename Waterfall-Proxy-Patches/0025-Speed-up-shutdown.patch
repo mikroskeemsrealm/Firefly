@@ -51,7 +51,7 @@ index 2d5d57bdafa876053a0d17fa9517a03fab93adee..374d68b9ea690a864dec33b9772dbe71
  
      private TCPFastOpenMode setupTfo(int value) {
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index d2730a660b444bb501b537592dc3383ae28e0f74..4704c2c992ce06a3e1b96568ed14f2b6110cf5ed 100644
+index 8c084a712a302b5913d2d39d7c28f02cbc4aeb91..652198b203354933272f41c5e072ca93052e52e3 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -495,9 +495,11 @@ public class BungeeCord extends ProxyServer
