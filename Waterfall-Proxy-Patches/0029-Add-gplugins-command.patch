@@ -6,16 +6,17 @@ Subject: [PATCH] Add gplugins command
 
 diff --git a/proxy/src/main/java/eu/mikroskeem/firefly/command/CommandPlugins.java b/proxy/src/main/java/eu/mikroskeem/firefly/command/CommandPlugins.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..e4d11a7cad80a29d9831bff316beda4de8048564
+index 0000000000000000000000000000000000000000..5f74b61d4fa101557230d12008546c31e5e59cad
 --- /dev/null
 +++ b/proxy/src/main/java/eu/mikroskeem/firefly/command/CommandPlugins.java
-@@ -0,0 +1,40 @@
+@@ -0,0 +1,42 @@
 +package eu.mikroskeem.firefly.command;
 +
-+import net.kyori.text.TextComponent;
-+import net.kyori.text.format.TextColor;
++import net.md_5.bungee.api.ChatColor;
 +import net.md_5.bungee.api.CommandSender;
 +import net.md_5.bungee.api.ProxyServer;
++import net.md_5.bungee.api.chat.ComponentBuilder;
++import net.md_5.bungee.api.chat.TextComponent;
 +import net.md_5.bungee.api.plugin.Command;
 +import net.md_5.bungee.api.plugin.Plugin;
 +
@@ -36,18 +37,19 @@ index 0000000000000000000000000000000000000000..e4d11a7cad80a29d9831bff316beda4d
 +            plugins.put(plugin.getDescription().getName(), plugin);
 +        }
 +
-+        TextComponent.Builder builder = TextComponent.builder("Plugins (" + plugins.size() + "): ");
++
++        var builder = new ComponentBuilder("Plugins (" + plugins.size() + "): ");
 +        boolean firstDone = false;
 +        for (Plugin plugin : plugins.values()) {
 +            if (firstDone) {
-+                builder.append(TextComponent.of(", "));
++                builder.append(new TextComponent(", "));
 +            }
 +
-+            builder.append(TextComponent.of(plugin.getDescription().getName()).color(TextColor.GREEN));
++            builder.append(new ComponentBuilder(plugin.getDescription().getName()).color(ChatColor.GREEN).create());
 +            firstDone = true;
 +        }
 +
-+        sender.sendMessage(builder.build());
++        sender.sendMessage(builder.create());
 +    }
 +}
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
