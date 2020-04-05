@@ -8,18 +8,18 @@ diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java b/api/src/ma
 index 525a8071cbb9c5c6d3f73f587c7bdb1ae678654e..54a1e5094ea5212e86be26832389d427824153d9 100644
 --- a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
 +++ b/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
-@@ -355,6 +355,11 @@ public abstract class ProxyServer
-          */
+@@ -356,6 +356,11 @@ public abstract class ProxyServer
          BUNGEECORD,
  
-+        /**
+         /**
 +         * BungeeCord messages
 +         */
 +        BUNGEECORD_MESSAGES,
 +
-         /**
++        /**
           * Waterfall-specific configuration
           */
+         WATERFALL,
 diff --git a/proxy/src/main/java/eu/mikroskeem/firefly/misc/ResourceBundleConfigurationWrapper.java b/proxy/src/main/java/eu/mikroskeem/firefly/misc/ResourceBundleConfigurationWrapper.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..6ee1f37b91f9962b0e8e390e17b3fd1f02662538
@@ -88,7 +88,7 @@ index 0000000000000000000000000000000000000000..6ee1f37b91f9962b0e8e390e17b3fd1f
 +    }
 +}
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 03bb1da42bf1b9447834decdf9117ca541cc38df..57a35baf121dafa3640d8057482c3627b409a741 100644
+index 1f5a89a4edef1db5503f4113d642ebe2f9f2d860..1054b3fd71415ccf3532a065ed5316e86c2417bb 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -113,6 +113,7 @@ public class BungeeCord extends ProxyServer
