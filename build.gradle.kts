@@ -19,7 +19,7 @@ buildscript {
 plugins {
     `java-library`
     `maven-publish`
-    id("com.github.johnrengelman.shadow") version "5.1.0" apply false
+    id("com.github.johnrengelman.shadow") version "5.2.0" apply false
 }
 
 extra["gitHash"] = describe()
