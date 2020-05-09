@@ -21,7 +21,7 @@ index 055b13a27016397d5eee1920286c6b30d1252264..4216d9dfb8963577f10e1a3a601f9b33
 +    boolean isInternScoreboardTeamStrings();
  }
 diff --git a/api/src/main/java/net/md_5/bungee/api/score/Team.java b/api/src/main/java/net/md_5/bungee/api/score/Team.java
-index 39f81fd1a68fc8f2908aad2c79b832d90ba18fba..0f0fa959faebc95da22937e7d7283536ff5dba24 100644
+index 39f81fd1a68fc8f2908aad2c79b832d90ba18fba..dfa02d3b91fb2ce5243170794d38cf1e21400368 100644
 --- a/api/src/main/java/net/md_5/bungee/api/score/Team.java
 +++ b/api/src/main/java/net/md_5/bungee/api/score/Team.java
 @@ -17,8 +17,8 @@ public class Team
@@ -35,7 +35,7 @@ index 39f81fd1a68fc8f2908aad2c79b832d90ba18fba..0f0fa959faebc95da22937e7d7283536
      private int color;
      private Set<String> players = new HashSet<>();
  
-@@ -36,4 +36,92 @@ public class Team
+@@ -36,4 +36,91 @@ public class Team
      {
          players.remove( name );
      }
@@ -55,34 +55,32 @@ index 39f81fd1a68fc8f2908aad2c79b832d90ba18fba..0f0fa959faebc95da22937e7d7283536
 +
 +    @Deprecated
 +    public String getNameTagVisibility() {
-+        return nameTagVisibility.getValue();
++        return nameTagVisibility == null ? null : nameTagVisibility.getValue();
 +    }
 +
 +    @Deprecated
 +    public void setNameTagVisibility(String value) {
 +        NametagVisibility enumValue;
 +        if (value == null) {
-+            enumValue = NametagVisibility.ALWAYS;
++            enumValue = null;
 +        } else if ((enumValue = NametagVisibility.VALUES.get(value)) == null) {
 +            net.md_5.bungee.api.ProxyServer.getInstance().getLogger().log(java.util.logging.Level.WARNING, "Unknown team name tag visibility value: {0} -> {1}", new Object[] { name, value });
-+            enumValue = NametagVisibility.ALWAYS;
 +        }
 +        this.nameTagVisibility = enumValue;
 +    }
 +
 +    @Deprecated
 +    public String getCollisionRule() {
-+        return collisionRule.getValue();
++        return collisionRule == null ? null : collisionRule.getValue();
 +    }
 +
 +    @Deprecated
 +    public void setCollisionRule(String value) {
 +        CollisionRule enumValue;
 +        if (value == null) {
-+            enumValue = CollisionRule.ALWAYS;
++            enumValue = null;
 +        } else if ((enumValue = CollisionRule.VALUES.get(value)) == null) {
 +            net.md_5.bungee.api.ProxyServer.getInstance().getLogger().log(java.util.logging.Level.WARNING, "Unknown team collision rule value: {0} -> {1}", new Object[] { name, value });
-+            enumValue = CollisionRule.ALWAYS;
 +        }
 +        this.collisionRule = enumValue;
 +    }
@@ -113,6 +111,7 @@ index 39f81fd1a68fc8f2908aad2c79b832d90ba18fba..0f0fa959faebc95da22937e7d7283536
 +        HIDE_FOR_OTHER_TEAMS("hideForOtherTeams"),
 +        HIDE_FOR_OWN_TEAM("hideForOwnTeam"),
 +        NEVER("never"),
++        EMPTY_STRING(""), // Viaversion does this
 +        ;
 +
 +        @lombok.Getter
