@@ -5,10 +5,10 @@ Subject: [PATCH] Improve plugin manager logging
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
-index a2ac350963dc476f6c8c4ad33faf19738928d71e..392130f3b45544c1836cd3d93d161c6552e824d5 100644
+index e8447d755452609d796f3ef02be2f698b5471fce..f198f40a51084a902d81688e9930ebc058222342 100644
 --- a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
 +++ b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
-@@ -297,9 +297,10 @@ public final class PluginManager
+@@ -312,9 +312,10 @@ public final class PluginManager
          for ( Map.Entry<String, PluginDescription> entry : toLoad.entrySet() )
          {
              PluginDescription plugin = entry.getValue();
@@ -20,7 +20,7 @@ index a2ac350963dc476f6c8c4ad33faf19738928d71e..392130f3b45544c1836cd3d93d161c65
              }
          }
          toLoad.clear();
-@@ -310,6 +311,7 @@ public final class PluginManager
+@@ -325,6 +326,7 @@ public final class PluginManager
      {
          for ( Plugin plugin : plugins.values() )
          {

@@ -53,10 +53,10 @@ index 0000000000000000000000000000000000000000..5f74b61d4fa101557230d12008546c31
 +    }
 +}
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 652198b203354933272f41c5e072ca93052e52e3..159f9f8d0e8cc96da475439c515e2cb08375753f 100644
+index 68d7fc5654e195c496b0673e772767d41e565a48..b37e7f1b325e121782f7c7505163d9c7601a6b95 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -285,6 +285,7 @@ public class BungeeCord extends ProxyServer
+@@ -287,6 +287,7 @@ public class BungeeCord extends ProxyServer
          getPluginManager().registerCommand( null, new CommandPerms() );
          // Firefly start - Fork specific commands
          getPluginManager().registerCommand(null, new eu.mikroskeem.firefly.command.CommandRestart());

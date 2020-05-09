@@ -83,10 +83,10 @@ index e860214f8d7bedcc98d5f4cc0c2108ea153b80be..83d44abb87fe522e7b8b7a1560968af2
          gameVersion = config.getString("game_version", "").isEmpty() ? Joiner.on(", ").join(ProtocolConstants.SUPPORTED_VERSIONS) : config.getString("game_version", "");
          useNettyDnsResolver = config.getBoolean("use_netty_dns_resolver", useNettyDnsResolver);
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index bad69befb59afb4a82839dc11ea430ac68023ff3..dce21504e8e211e774b7b51b9007b299c0f0a830 100644
+index 3c952940fb09572df8ac3c4add4064128260b4ac..85db0c5e35476f3a2ed8b14d7a1e5ccd7ba01d48 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -173,6 +173,37 @@ public class BungeeCord extends ProxyServer
+@@ -175,6 +175,37 @@ public class BungeeCord extends ProxyServer
      private ConnectionThrottle connectionThrottle;
      //private final ModuleManager moduleManager = new ModuleManager(); // Firefly - drop modules support
  

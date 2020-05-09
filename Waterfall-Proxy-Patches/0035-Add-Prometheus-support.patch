@@ -242,10 +242,10 @@ index 0000000000000000000000000000000000000000..e1239484f90f32c5ba0aa3f05d4256ac
 +    }
 +}
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 159f9f8d0e8cc96da475439c515e2cb08375753f..8f70a2287b5f6ed518a1b319bf0ca5c390121786 100644
+index b37e7f1b325e121782f7c7505163d9c7601a6b95..0b55b8d88bf87073a011d85e2231a741044a3f7f 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -352,6 +352,7 @@ public class BungeeCord extends ProxyServer
+@@ -354,6 +354,7 @@ public class BungeeCord extends ProxyServer
          {
              connectionThrottle = new ConnectionThrottle( config.getThrottle(), config.getThrottleLimit() );
          }
@@ -253,7 +253,7 @@ index 159f9f8d0e8cc96da475439c515e2cb08375753f..8f70a2287b5f6ed518a1b319bf0ca5c3
          startListeners();
  
          saveThread.scheduleAtFixedRate( new TimerTask()
-@@ -494,6 +495,7 @@ public class BungeeCord extends ProxyServer
+@@ -496,6 +497,7 @@ public class BungeeCord extends ProxyServer
          isRunning = false;
  
          stopListeners();
@@ -261,7 +261,7 @@ index 159f9f8d0e8cc96da475439c515e2cb08375753f..8f70a2287b5f6ed518a1b319bf0ca5c3
          getLogger().info( "Closing pending connections" );
  
          Collection<UserConnection> disconnectingPlayers; // Firefly - wait for all players to disconnect instead of using hardcoded delay
-@@ -850,6 +852,7 @@ public class BungeeCord extends ProxyServer
+@@ -856,6 +858,7 @@ public class BungeeCord extends ProxyServer
              connections.put( con.getName(), con );
              connectionsByUUID.put( con.getUniqueId(), con );
              connectionsByOfflineUUID.put( con.getPendingConnection().getOfflineId(), con );

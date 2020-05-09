@@ -5,10 +5,10 @@ Subject: [PATCH] Get rid of dumb Guava Subscribe annotation warning
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
-index bdef31d4771df613044f0e4ff1a4ba45ceb48a93..25acd6f3df2a4b76cbaadf3a08edb24a8638bac3 100644
+index 9e72e24b7d6ee3f040db2b991bbb38e5a513d913..109f92f38e3e82157b090cb85314a136f949c296 100644
 --- a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
 +++ b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
-@@ -457,11 +457,13 @@ public final class PluginManager
+@@ -484,11 +484,13 @@ public final class PluginManager
       */
      public void registerListener(Plugin plugin, Listener listener)
      {

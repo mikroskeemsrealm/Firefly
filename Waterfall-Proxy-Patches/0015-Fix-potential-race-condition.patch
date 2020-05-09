@@ -5,10 +5,10 @@ Subject: [PATCH] Fix potential race condition
 
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 5ae55ab88478defbeb2e350af569594100bd8e05..03bb1da42bf1b9447834decdf9117ca541cc38df 100644
+index 5dbf005ad51aa49ce24e6372f6709d19124b76f3..631ed6b9b04490a5c6343eecbea277f676c5ec42 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -643,7 +643,14 @@ public class BungeeCord extends ProxyServer
+@@ -649,7 +649,14 @@ public class BungeeCord extends ProxyServer
      @Override
      public int getOnlineCount()
      {

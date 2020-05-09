@@ -238,22 +238,23 @@ index 0000000000000000000000000000000000000000..edca44565a7019c3a380ad3540d0a7d2
 +    }
 +}
 diff --git a/event/src/main/java/net/md_5/bungee/event/EventBus.java b/event/src/main/java/net/md_5/bungee/event/EventBus.java
-index f5bd1f9801398e8aaa6b5b6c0722629dc94b8fe3..ac2cdd90246a20165e0410eb9aae886aec04d4e0 100644
+index d7c3b90d54a3003395e6e85d1a4a66fbaea0259b..95d93cdc2b094ee93abea2bf6c71571b6a5ff7c6 100644
 --- a/event/src/main/java/net/md_5/bungee/event/EventBus.java
 +++ b/event/src/main/java/net/md_5/bungee/event/EventBus.java
-@@ -50,9 +50,9 @@ public class EventBus
+@@ -51,10 +51,10 @@ public class EventBus
                  } catch ( IllegalArgumentException ex )
                  {
                      throw new Error( "Method rejected target/argument: " + event, ex );
 -                } catch ( InvocationTargetException ex )
 +                } catch ( Exception ex ) // Firefly - Use ASM to invoke event handlers
                  {
--                    logger.log( Level.WARNING, MessageFormat.format( "Error dispatching event {0} to listener {1}", event, method.getListener() ), ex.getCause() );
-+                    logger.log( Level.WARNING, MessageFormat.format( "Error dispatching event {0} to listener {1}", event, method.getListener() ), ex ); // Firefly - Use ASM to invoke event handlers
+                     String msg = MessageFormat.format( "Error dispatching event {0} to listener {1}", event, method.getListener() );
+-                    logger.log( Level.WARNING, msg, ex.getCause() );
++                    logger.log( Level.WARNING, msg, ex ); // Firefly - Use ASM to invoke event handlers
+                     if( exceptionHandler != null ) exceptionHandler.handleEventException( msg, event, method, ex ); //Waterfall - call passed exception handler
                  }
              }
-         }
-@@ -115,8 +115,12 @@ public class EventBus
+@@ -118,8 +118,12 @@ public class EventBus
                          currentPriorityMap = new HashMap<>();
                          prioritiesMap.put( entry.getKey(), currentPriorityMap );
                      }
@@ -267,7 +268,7 @@ index f5bd1f9801398e8aaa6b5b6c0722629dc94b8fe3..ac2cdd90246a20165e0410eb9aae886a
                  }
                  bakeHandlers( e.getKey() );
              }
-@@ -188,13 +192,13 @@ public class EventBus
+@@ -191,13 +195,13 @@ public class EventBus
                      {
                          for ( Method method : listenerHandlers.getValue() )
                          {

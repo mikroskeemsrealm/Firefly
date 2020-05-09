@@ -5,18 +5,18 @@ Subject: [PATCH] Bake event handlers after enabling plugins
 
 
 diff --git a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
-index 392130f3b45544c1836cd3d93d161c6552e824d5..c185b6137370152b932b92a2f504afd44ebc8665 100644
+index f198f40a51084a902d81688e9930ebc058222342..fa9e60e939507887e793e25041945e3af01af548 100644
 --- a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
 +++ b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
-@@ -324,6 +324,7 @@ public final class PluginManager
-                 ProxyServer.getInstance().getLogger().log( Level.WARNING, "Exception encountered when loading plugin: " + plugin.getDescription().getName(), t );
+@@ -343,6 +343,7 @@ public final class PluginManager
+                 // Waterfall end
              }
          }
 +        this.eventBus.doBakeHandlers(); // Firefly - bake event handlers after enabling plugins
      }
  
      private boolean enablePlugin(Map<PluginDescription, Boolean> pluginStatuses, Stack<PluginDescription> dependStack, PluginDescription plugin)
-@@ -495,6 +496,11 @@ public final class PluginManager
+@@ -522,6 +523,11 @@ public final class PluginManager
                      "Listener %s has registered using deprecated subscribe annotation! Please update to @EventHandler.", listener );
          }
          */ // Firefly end
@@ -29,7 +29,7 @@ index 392130f3b45544c1836cd3d93d161c6552e824d5..c185b6137370152b932b92a2f504afd4
          listenersByPlugin.put( plugin, listener );
      }
 diff --git a/event/src/main/java/net/md_5/bungee/event/EventBus.java b/event/src/main/java/net/md_5/bungee/event/EventBus.java
-index ac2cdd90246a20165e0410eb9aae886aec04d4e0..53904d38e952e809ccf8bccde2eb8fa1e4796b13 100644
+index 95d93cdc2b094ee93abea2bf6c71571b6a5ff7c6..e253da9b5af1684ef33d5cd03615f7bc3408829a 100644
 --- a/event/src/main/java/net/md_5/bungee/event/EventBus.java
 +++ b/event/src/main/java/net/md_5/bungee/event/EventBus.java
 @@ -22,10 +22,12 @@ public class EventBus
@@ -45,7 +45,7 @@ index ac2cdd90246a20165e0410eb9aae886aec04d4e0..53904d38e952e809ccf8bccde2eb8fa1
      }
  
      public EventBus(Logger logger)
-@@ -122,6 +124,7 @@ public class EventBus
+@@ -125,6 +127,7 @@ public class EventBus
                      currentPriorityMap.put( listener, entry.getValue().toArray( new Method[0] ) );
                      // Firefly end
                  }
@@ -53,7 +53,7 @@ index ac2cdd90246a20165e0410eb9aae886aec04d4e0..53904d38e952e809ccf8bccde2eb8fa1
                  bakeHandlers( e.getKey() );
              }
          } finally
-@@ -158,6 +161,7 @@ public class EventBus
+@@ -161,6 +164,7 @@ public class EventBus
                          byListenerAndPriority.remove( e.getKey() );
                      }
                  }
@@ -61,7 +61,7 @@ index ac2cdd90246a20165e0410eb9aae886aec04d4e0..53904d38e952e809ccf8bccde2eb8fa1
                  bakeHandlers( e.getKey() );
              }
          } finally
-@@ -166,6 +170,27 @@ public class EventBus
+@@ -169,6 +173,27 @@ public class EventBus
          }
      }
  

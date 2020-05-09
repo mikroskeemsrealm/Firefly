@@ -54,10 +54,10 @@ index 0000000000000000000000000000000000000000..47174a498b78d3ffc1c27fc79b6c179e
 +    }
 +}
 diff --git a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
-index 25acd6f3df2a4b76cbaadf3a08edb24a8638bac3..00f9c059ef618ace3a3ec415e4de4b6db5e271b8 100644
+index 109f92f38e3e82157b090cb85314a136f949c296..b714503bef028b3fca0e72701477d87d8c28690d 100644
 --- a/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
 +++ b/api/src/main/java/net/md_5/bungee/api/plugin/PluginManager.java
-@@ -155,6 +155,23 @@ public final class PluginManager
+@@ -161,6 +161,23 @@ public final class PluginManager
       * @return whether the command was handled
       */
      public boolean dispatchCommand(CommandSender sender, String commandLine, List<String> tabResults)
@@ -81,10 +81,10 @@ index 25acd6f3df2a4b76cbaadf3a08edb24a8638bac3..00f9c059ef618ace3a3ec415e4de4b6d
      {
          String[] split = commandLine.split( " ", -1 );
          // Check for chat that only contains " "
-@@ -202,6 +219,17 @@ public final class PluginManager
-         {
+@@ -215,6 +232,17 @@ public final class PluginManager
              sender.sendMessage( ChatColor.RED + "An internal error occurred whilst executing this command, please check the console log for details." );
              ProxyServer.getInstance().getLogger().log( Level.WARNING, "Error in dispatching command", ex );
+             this.callEvent( new ProxyExceptionEvent( new ProxyTabCompleteException( ex, command, sender, args ) ) ); //Waterfall - throw error event
 +            // Firefly start - Import SpigotMC/BungeeCord#1744
 +            if (throwOnFailure) {
 +                var executionContext = new eu.mikroskeem.firefly.api.command.CommandExecutionException.CommandExecutionContext(
@@ -97,5 +97,5 @@ index 25acd6f3df2a4b76cbaadf3a08edb24a8638bac3..00f9c059ef618ace3a3ec415e4de4b6d
 +            }
 +            // Firefly end
          }
-         return true;
-     }
+         // Waterfall end
+             }
