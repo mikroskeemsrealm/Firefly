@@ -32,8 +32,30 @@ index 743d65e43549f4db3b1f6785a69ab69e19004285..eff71ed639325acbd5e8f22e31c4f7bb
                  if ( false && length == 0) // Waterfall - ignore
                  {
                      throw new CorruptedFrameException( "Empty Packet!" );
+diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeServerInfo.java b/proxy/src/main/java/net/md_5/bungee/BungeeServerInfo.java
+index 7b002089ef9dd9f365dc0f7db076976b8dc6260c..1dfc177b02f03d91a3659a109e07f3761271b609 100644
+--- a/proxy/src/main/java/net/md_5/bungee/BungeeServerInfo.java
++++ b/proxy/src/main/java/net/md_5/bungee/BungeeServerInfo.java
+@@ -185,7 +185,16 @@ public class BungeeServerInfo implements ServerInfo
+         new Bootstrap()
+                 .channel( PipelineUtils.getChannel( socketAddress ) )
+                 .group( BungeeCord.getInstance().workerEventLoopGroup )
+-                .handler( PipelineUtils.BASE )
++                // Firefly start - Better empty packet handling
++                //.handler( PipelineUtils.BASE )
++                .handler(new io.netty.channel.ChannelInitializer<io.netty.channel.Channel>() {
++                    @Override
++                    protected void initChannel(io.netty.channel.Channel ch) throws Exception {
++                        net.md_5.bungee.netty.PipelineUtils.BASE.initChannel(ch);
++                        ch.pipeline().addAfter(net.md_5.bungee.netty.PipelineUtils.TIMEOUT_HANDLER, net.md_5.bungee.netty.PipelineUtils.FRAME_DECODER, new net.md_5.bungee.protocol.Varint21FrameDecoder(false));
++                    }
++                })
++                // Firefly end
+                 .option( ChannelOption.CONNECT_TIMEOUT_MILLIS, BungeeCord.getInstance().getConfig().getRemotePingTimeout() )
+                 .remoteAddress( socketAddress )
+                 .connect()
 diff --git a/proxy/src/main/java/net/md_5/bungee/UserConnection.java b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-index 24c9f4547386fa4635ff9291bada78458128c7d1..f8c4e57855f4c65b65520fd28b5f3fe0364eed70 100644
+index b87b6bc66fb3ad135048d5d4422385110bb499c2..23fa5ca65d575066211657cba93f311a487e4b97 100644
 --- a/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 +++ b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 @@ -345,6 +345,7 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.firefl
