@@ -5,15 +5,20 @@ Subject: [PATCH] Port Velocity's faster varint decoder - take 2
 
 
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
-index 550f0d1e75203743ff30dbd99ce86b2e6dcb0c72..2732aba6cefaba273b95a4d53cb527b0c1be3bb2 100644
+index 0ce0f1b30faebafa4875bc7e8e63844dbc056fe0..1e563dfc6c9dfeea85d3c62a7cc77d9531d7a4b5 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
-@@ -20,6 +20,80 @@ public class Varint21FrameDecoder extends ByteToMessageDecoder
+@@ -20,6 +20,85 @@ public class Varint21FrameDecoder extends ByteToMessageDecoder
  
      @Override
      protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception
 +    // Firefly start - Port Velocity's faster varint decoder
 +    {
++        if (!ctx.channel().isActive()) {
++            in.skipBytes(in.readableBytes());
++            return;
++        }
++
 +        while (in.isReadable()) {
 +            int varintEnd = in.forEachByte(reader);
 +            if (varintEnd == -1) {
@@ -25,7 +30,7 @@ index 550f0d1e75203743ff30dbd99ce86b2e6dcb0c72..2732aba6cefaba273b95a4d53cb527b0
 +                reader.reset();
 +                if (tooBig) {
 +                    if (this.closeConnectionOnDecodeError) {
-+                        eu.mikroskeem.firefly.DiscardHandler.addBeforeAndClose(ctx, "packet-decoder");
++                        ctx.channel().close();
 +                    } else {
 +                        throw BAD_LENGTH_CACHED;
 +                    }
@@ -35,7 +40,7 @@ index 550f0d1e75203743ff30dbd99ce86b2e6dcb0c72..2732aba6cefaba273b95a4d53cb527b0
 +
 +            if (reader.accumulated < 0) {
 +                if (this.closeConnectionOnDecodeError) {
-+                    eu.mikroskeem.firefly.DiscardHandler.addBeforeAndClose(ctx, "packet-decoder");
++                    ctx.channel().close();
 +                } else {
 +                    throw BAD_LENGTH_CACHED;
 +                }
@@ -43,7 +48,7 @@ index 550f0d1e75203743ff30dbd99ce86b2e6dcb0c72..2732aba6cefaba273b95a4d53cb527b0
 +            }
 +
 +            if (reader.accumulated == 0 && !server) {
-+                eu.mikroskeem.firefly.DiscardHandler.addBeforeAndClose(ctx, "packet-decoder");
++                ctx.channel().close();
 +                return;
 +            }
 +
@@ -87,5 +92,5 @@ index 550f0d1e75203743ff30dbd99ce86b2e6dcb0c72..2732aba6cefaba273b95a4d53cb527b0
 +    protected void old_decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception
 +    // Firefly end
      {
-         in.markReaderIndex();
- 
+         // Firefly start - Discard received data after closing the channel
+         if (!ctx.channel().isActive()) {

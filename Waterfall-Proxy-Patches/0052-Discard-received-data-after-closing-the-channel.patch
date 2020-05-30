@@ -1,109 +1,24 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Mark Vainomaa <mikroskeem@mikroskeem.eu>
-Date: Tue, 18 Feb 2020 11:06:09 +0200
+Date: Sat, 30 May 2020 23:01:27 +0300
 Subject: [PATCH] Discard received data after closing the channel
 
-https://github.com/VelocityPowered/Velocity/commit/8ae7945b9f41ab98ab42f0678634dd9d3aaa6aa4
 
-diff --git a/protocol/src/main/java/eu/mikroskeem/firefly/DiscardHandler.java b/protocol/src/main/java/eu/mikroskeem/firefly/DiscardHandler.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..06a5bf3f816bcb42565a0841f32ae0499aae1a71
---- /dev/null
-+++ b/protocol/src/main/java/eu/mikroskeem/firefly/DiscardHandler.java
-@@ -0,0 +1,39 @@
-+package eu.mikroskeem.firefly;
-+
-+import io.netty.channel.Channel;
-+import io.netty.channel.ChannelFutureListener;
-+import io.netty.channel.ChannelHandlerContext;
-+import io.netty.channel.ChannelInboundHandlerAdapter;
-+import io.netty.channel.ChannelPipeline;
-+import io.netty.util.ReferenceCountUtil;
-+
-+/**
-+ * @author Mark Vainomaa
-+ */
-+public final class DiscardHandler extends ChannelInboundHandlerAdapter {
-+    public static final DiscardHandler INSTANCE = new DiscardHandler();
-+    public static final String NAME = "discard";
-+
-+    private DiscardHandler() {}
-+
-+    @Override
-+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-+        ReferenceCountUtil.release(msg);
-+    }
-+
-+    public static void addBeforeAndClose(Channel channel, ChannelPipeline pipeline, String before) {
-+        if (pipeline.get(NAME) != null) {
-+            pipeline.addBefore(before, NAME, INSTANCE);
-+        }
-+        channel.close();
-+    }
-+
-+    public static void addBeforeAndClose(ChannelHandlerContext ctx, String before) {
-+        addBeforeAndClose(ctx.channel(), ctx.pipeline(), before);
-+    }
-+
-+    public static final ChannelFutureListener CLOSE_AND_DISCARD = future -> {
-+        final var ch = future.channel();
-+        addBeforeAndClose(ch, ch.pipeline(), "packet-decoder");
-+    };
-+}
-diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
-index 5dd9865ad1c12d63ed0a86ad71fa34751241eb3d..677ab911a584d9f13d4fd2c24c349055695059f6 100644
---- a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
-+++ b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
-@@ -116,7 +116,7 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
-                 packetTypeStr = "unknown";
-             }
-             // Firefly start - harden
--            if (this.closeConnectionOnDecodeError) ctx.channel().close();
-+            if (this.closeConnectionOnDecodeError) eu.mikroskeem.firefly.DiscardHandler.addBeforeAndClose(ctx, "packet-decoder");
-             if (!this.logPacketDumpOnDecodeError) return;
-             // Firefly end
-             /* // Firefly start - add option to disable noisy packet decode exception
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
-index e62c88df7e439ca34c897a0f2e09938796c33d8b..550f0d1e75203743ff30dbd99ce86b2e6dcb0c72 100644
+index e62c88df7e439ca34c897a0f2e09938796c33d8b..0ce0f1b30faebafa4875bc7e8e63844dbc056fe0 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
-@@ -62,7 +62,7 @@ public class Varint21FrameDecoder extends ByteToMessageDecoder
-             }
-         }
+@@ -21,6 +21,13 @@ public class Varint21FrameDecoder extends ByteToMessageDecoder
+     @Override
+     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception
+     {
++        // Firefly start - Discard received data after closing the channel
++        if (!ctx.channel().isActive()) {
++            in.skipBytes(in.readableBytes());
++            return;
++        }
++        // Firefly end
++
+         in.markReaderIndex();
  
--        if (this.closeConnectionOnDecodeError) { ctx.channel().close(); return; } // Firefly
-+        if (this.closeConnectionOnDecodeError) { eu.mikroskeem.firefly.DiscardHandler.addBeforeAndClose(ctx, "packet-decoder"); return; } // Firefly
-         throw new CorruptedFrameException( "length wider than 21-bit" );
-     }
- }
-diff --git a/proxy/src/main/java/net/md_5/bungee/netty/ChannelWrapper.java b/proxy/src/main/java/net/md_5/bungee/netty/ChannelWrapper.java
-index 6dc5633f5241ad6a1619500d37790e5c24c67155..05d3d03c68f6f3cb137fde996c79ab0e4a0076ad 100644
---- a/proxy/src/main/java/net/md_5/bungee/netty/ChannelWrapper.java
-+++ b/proxy/src/main/java/net/md_5/bungee/netty/ChannelWrapper.java
-@@ -80,11 +80,11 @@ public class ChannelWrapper
- 
-             if ( packet != null && ch.isActive() )
-             {
--                ch.writeAndFlush( packet ).addListeners( ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE, ChannelFutureListener.CLOSE );
-+                ch.writeAndFlush( packet ).addListeners( ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE, eu.mikroskeem.firefly.DiscardHandler.CLOSE_AND_DISCARD ); // Firefly
-             } else
-             {
-                 ch.flush();
--                ch.close();
-+                eu.mikroskeem.firefly.DiscardHandler.addBeforeAndClose(ch, ch.pipeline(), PipelineUtils.PACKET_DECODER); // Firefly
-             }
-         }
-     }
-diff --git a/proxy/src/main/java/net/md_5/bungee/netty/HandlerBoss.java b/proxy/src/main/java/net/md_5/bungee/netty/HandlerBoss.java
-index 2cf0d588eb78fb724bf7a15f4656dfd1d92ad10d..07de83f7b6982252839d6b643ae564dfb73620e3 100644
---- a/proxy/src/main/java/net/md_5/bungee/netty/HandlerBoss.java
-+++ b/proxy/src/main/java/net/md_5/bungee/netty/HandlerBoss.java
-@@ -181,7 +181,7 @@ public class HandlerBoss extends ChannelInboundHandlerAdapter
-                 }
-             }
- 
--            ctx.close();
-+            eu.mikroskeem.firefly.DiscardHandler.addBeforeAndClose(ctx, PipelineUtils.PACKET_DECODER); // Firefly
-         }
-     }
- }
+         for ( int i = 0; i < 3; i++ ) // Waterfall
