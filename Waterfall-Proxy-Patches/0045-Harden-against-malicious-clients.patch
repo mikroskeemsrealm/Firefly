@@ -187,7 +187,7 @@ index 48d177aa48f9a756aa44aac7ddf75006e355606e..416507bd8c667e8b48384e5e88eca429
  
      private TCPFastOpenMode setupTfo(int value) {
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-index 466655f5100c5b279cfeaf7d8fd1e0d8b5fc218a..2a8b1e5421f4a0fa29145be812d436ad921bd87e 100644
+index 3107165538c1cb088612884fa289ad69fe23a88d..da65b6aa1a9bdc06f9267a4c34c28026e2651e81 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 @@ -146,6 +146,16 @@ public class InitialHandler extends PacketHandler implements PendingConnection
@@ -273,7 +273,7 @@ index 466655f5100c5b279cfeaf7d8fd1e0d8b5fc218a..2a8b1e5421f4a0fa29145be812d436ad
 +                bungee.getLogger().log(Level.WARNING, "{0} Invalid protocol {1}, disconnecting", new Object[] { this, handshake.getRequestedProtocol() });
 +                ch.close();
 +                if (false) // Firefly end
-                 throw new IllegalArgumentException( "Cannot request protocol " + handshake.getRequestedProtocol() );
+                 throw new QuietException( "Cannot request protocol " + handshake.getRequestedProtocol() );
          }
      }
 @@ -358,10 +406,21 @@ public class InitialHandler extends PacketHandler implements PendingConnection
