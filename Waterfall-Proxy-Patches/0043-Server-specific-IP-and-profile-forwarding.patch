@@ -10,18 +10,18 @@ diff --git a/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConf
 index a6aecceb7bc77b9005a3c28ba2f773929fbc5746..8b9834ea3a561624cd1aa43ace4b69f1379e8387 100644
 --- a/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
 +++ b/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
-@@ -32,11 +32,6 @@ public interface FireflyProxyConfig {
-      */
+@@ -33,11 +33,6 @@ public interface FireflyProxyConfig {
      boolean isLogInvalidQueryPackets();
  
--    /**
+     /**
 -     * @return Whether Velocity modern forwarding support is enabled or not
 -     */
 -    boolean isVelocityForwardingSupport();
 -
-     /**
+-    /**
       * @return Velocity modern forwarding secret
       */
+     byte @NonNull [] getVelocityForwardingSecret();
 diff --git a/api/src/main/java/eu/mikroskeem/firefly/api/connection/ForwardingType.java b/api/src/main/java/eu/mikroskeem/firefly/api/connection/ForwardingType.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..e1a651748b7f3e7056775e3d3c0c5c7469d206f6
@@ -179,16 +179,16 @@ diff --git a/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration
 index d08986932da4bc4a704feb4de9aeeeeb5bffd638..48d177aa48f9a756aa44aac7ddf75006e355606e 100644
 --- a/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
-@@ -37,9 +37,6 @@ public class FireflyConfiguration extends WaterfallConfiguration {
-     @Getter
+@@ -38,9 +38,6 @@ public class FireflyConfiguration extends WaterfallConfiguration {
      private boolean logInvalidQueryPackets = false;
  
--    @Getter
+     @Getter
 -    private boolean velocityForwardingSupport = false;
 -
-     @Getter
+-    @Getter
      private byte[] velocityForwardingSecret;
  
+     @Getter
 @@ -83,7 +80,6 @@ public class FireflyConfiguration extends WaterfallConfiguration {
          restartScriptPath = config.getString("restart.script_path", restartScriptPath);
          ignoredLogCommands = new HashSet<>(config.getList("log.ignored_commands", () -> ImmutableList.of("login", "register", "changepassword")));
