@@ -244,7 +244,7 @@ index 1dfc177b02f03d91a3659a109e07f3761271b609..1c94e7e09503e02d0f3a7daa56c7106c
      @Synchronized("players")
      public void addPlayer(ProxiedPlayer player)
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-index 12001f6a441c69520cd6221fe18b44cc3f92f048..df0ebb78114415042545d555a8025c577ac25da5 100644
+index 30168fe18a66a7a81180cab1d722a28ddf782e2d..d48cb2fd53989a953c6b8608c31b30c8f2ff1436 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 @@ -102,7 +102,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.fire
@@ -265,7 +265,7 @@ index 12001f6a441c69520cd6221fe18b44cc3f92f048..df0ebb78114415042545d555a8025c57
              throw new QuietException("Your server did not send a forwarding request to the proxy. Is it set up correctly?");
          }
          // Firefly end
-@@ -463,7 +463,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.fire
+@@ -490,7 +490,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.fire
      // Firefly start - Implement Velocity modern forwarding support
      @Override
      public void handle(net.md_5.bungee.protocol.packet.LoginPayloadRequest request) {
@@ -329,7 +329,7 @@ index f447a9ed70c14b78daf179d545889dc87af6c49a..da7f0cde52fd7cff87251262f54ad92a
          }
  
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-index 1a33bb8949558ff1b06fc84478cb89caa24ca4aa..dec1a266655251399e572e5bd2091c6ec7e589de 100644
+index d1c2e2f72220658499fa9550080152ce2a342737..78200d295b8d400d8d54f313c7fec4a30fd9ab3c 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
 @@ -139,7 +139,7 @@ public class DownstreamBridge extends PacketHandler
@@ -351,7 +351,7 @@ index 1a33bb8949558ff1b06fc84478cb89caa24ca4aa..dec1a266655251399e572e5bd2091c6e
          throw CancelSendSignal.INSTANCE; // Always throw because of profile rewriting
      }
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java
-index f987995e43c12462977b12074ec9c03bd3323e95..6b7f4e2184c4aacc2fd29e789133b9ef4b28809b 100644
+index cdb2d4fb7753d0e18298910d84cafd2d763519f9..31b63a0b7db12d88371de3172b6c2c0d648f271e 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java
 @@ -118,7 +118,7 @@ public class UpstreamBridge extends PacketHandler
@@ -364,10 +364,10 @@ index f987995e43c12462977b12074ec9c03bd3323e95..6b7f4e2184c4aacc2fd29e789133b9ef
          }
      }
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
-index e6afb98db1822d26d239bdfdfc9510fdb220f551..36bb08fc3ab2a061a09279eb9f295ae45c4f3f9f 100644
+index ef2a66fa9567d92b290f8809f2c3d496dd0fb96a..5b76ee070e856f59f81af9667d5b880b08fa8b65 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
-@@ -90,24 +90,28 @@ public abstract class EntityMap
+@@ -93,24 +93,28 @@ public abstract class EntityMap
          }
      }
  

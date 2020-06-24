@@ -165,7 +165,7 @@ index 0000000000000000000000000000000000000000..72f989ca748f08d3e891a5ffd65bb078
 +    }
 +}
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-index e57276a809d07144e3b8820c2d65114845255a16..12001f6a441c69520cd6221fe18b44cc3f92f048 100644
+index f8c83a79db681f3bc6645bf14a1c1ce1cd4c7f85..30168fe18a66a7a81180cab1d722a28ddf782e2d 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 @@ -67,6 +67,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.fire
@@ -188,7 +188,7 @@ index e57276a809d07144e3b8820c2d65114845255a16..12001f6a441c69520cd6221fe18b44cc
  
          // Only reset the Forge client when:
          // 1) The user is switching servers (so has a current server)
-@@ -454,4 +460,34 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.fire
+@@ -481,4 +487,34 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.fire
          return ch.getHandle();
      }
      // Firefly end
