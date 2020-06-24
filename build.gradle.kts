@@ -24,8 +24,8 @@ plugins {
 
 extra["gitHash"] = describe()
 extra["overriddenRootProperties"] = mapOf<String, String>(
-        "log4j2.version" to "2.12.1",
-        "netty.version" to "4.1.49.Final"
+        "log4j2.version" to "2.13.3",
+        "netty.version" to "4.1.50.Final"
 )
 
 val originalGroup = "io.github.waterfallmc"
@@ -33,7 +33,7 @@ val originalProjectNamePrefix = "waterfall"
 
 allprojects {
     group = "eu.mikroskeem.firefly"
-    version = "1.15-SNAPSHOT"
+    version = "1.16-SNAPSHOT"
 }
 
 subprojects {
