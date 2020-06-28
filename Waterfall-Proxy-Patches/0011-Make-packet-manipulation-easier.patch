@@ -148,7 +148,7 @@ index 5e452780573fd590348af1eda4eb688ba89539c3..a3485a3392a054d63e865996ada7ee87
 +    // Firefly end
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-index bb4e7ec2c7a72d57b48b48248de87f75826c945d..f8c83a79db681f3bc6645bf14a1c1ce1cd4c7f85 100644
+index 78401dae2076fc837da463bf987eb8fb85ba17c3..1a82cd334edf47a9445084aa822cc3eeaed7d031 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 @@ -56,7 +56,7 @@ import net.md_5.bungee.util.BufUtil;
@@ -160,7 +160,7 @@ index bb4e7ec2c7a72d57b48b48248de87f75826c945d..f8c83a79db681f3bc6645bf14a1c1ce1
  {
  
      private final ProxyServer bungee;
-@@ -475,4 +475,10 @@ public class ServerConnector extends PacketHandler
+@@ -469,4 +469,10 @@ public class ServerConnector extends PacketHandler
      {
          return "[" + user.getName() + "|" + user.getAddress() + "] <-> ServerConnector [" + target.getName() + "]";
      }

@@ -244,7 +244,7 @@ index 1dfc177b02f03d91a3659a109e07f3761271b609..1c94e7e09503e02d0f3a7daa56c7106c
      @Synchronized("players")
      public void addPlayer(ProxiedPlayer player)
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-index 67bd999787f2260c8b99501fc7f5571acc75adff..6f2028c70ae72f20dc4b93eb2be08867f58d1d71 100644
+index 36c213a7c6e7df7e03ed04d4eb0536261655fd0c..4096b28d97f7e5449da630ad55fb038f9b87b2c6 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 @@ -102,7 +102,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.fire
@@ -265,7 +265,7 @@ index 67bd999787f2260c8b99501fc7f5571acc75adff..6f2028c70ae72f20dc4b93eb2be08867
              throw new QuietException("Your server did not send a forwarding request to the proxy. Is it set up correctly?");
          }
          // Firefly end
-@@ -490,7 +490,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.fire
+@@ -484,7 +484,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.fire
      // Firefly start - Implement Velocity modern forwarding support
      @Override
      public void handle(net.md_5.bungee.protocol.packet.LoginPayloadRequest request) {
@@ -364,7 +364,7 @@ index cdb2d4fb7753d0e18298910d84cafd2d763519f9..31b63a0b7db12d88371de3172b6c2c0d
          }
      }
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
-index 0e6395baa11305d9a19c17faac9e81e839746eb0..7e721fdf80658f7f4bc74c84310d655fc9466876 100644
+index e64a11b57d24443b83807a0f80740b4f9dae4a4c..30d505d1c3ac07404192b96d1b797f4f27b3a198 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
 @@ -94,24 +94,28 @@ public abstract class EntityMap

@@ -5,12 +5,12 @@ Subject: [PATCH] Attempt to make supported protocol id checking faster
 
 
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/ProtocolConstants.java b/protocol/src/main/java/net/md_5/bungee/protocol/ProtocolConstants.java
-index e11076fd57cc4852a2ea721d85389f81ca383e09..323bdad115999b7ff027d493372f682192be579e 100644
+index a82f2ec8256dfa8a8a454e12e58ac82cc2f00e4e..22ee1b3e083fd46f2496068d0caa9e6cbed15fb8 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/ProtocolConstants.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/ProtocolConstants.java
 @@ -67,6 +67,28 @@ public class ProtocolConstants
-             ProtocolConstants.MINECRAFT_1_16, // Waterfall
-             ProtocolConstants.MINECRAFT_1_16_1 // Waterfall
+             ProtocolConstants.MINECRAFT_1_16,
+             ProtocolConstants.MINECRAFT_1_16_1
      );
 +    // Firefly start
 +    public static final int LOWEST_SUPPORTED_VERSION_ID;
