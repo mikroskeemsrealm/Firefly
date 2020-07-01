@@ -8,18 +8,18 @@ diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java b/api/src/ma
 index 525a8071cbb9c5c6d3f73f587c7bdb1ae678654e..54a1e5094ea5212e86be26832389d427824153d9 100644
 --- a/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
 +++ b/api/src/main/java/net/md_5/bungee/api/ProxyServer.java
-@@ -355,6 +355,11 @@ public abstract class ProxyServer
-          */
+@@ -356,6 +356,11 @@ public abstract class ProxyServer
          BUNGEECORD,
  
-+        /**
+         /**
 +         * BungeeCord messages
 +         */
 +        BUNGEECORD_MESSAGES,
 +
-         /**
++        /**
           * Waterfall-specific configuration
           */
+         WATERFALL,
 diff --git a/proxy/src/main/java/eu/mikroskeem/firefly/misc/ResourceBundleConfigurationWrapper.java b/proxy/src/main/java/eu/mikroskeem/firefly/misc/ResourceBundleConfigurationWrapper.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..6ee1f37b91f9962b0e8e390e17b3fd1f02662538
@@ -88,10 +88,10 @@ index 0000000000000000000000000000000000000000..6ee1f37b91f9962b0e8e390e17b3fd1f
 +    }
 +}
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 631ed6b9b04490a5c6343eecbea277f676c5ec42..fe2256f18064aee48afd173f329f6f1329a1df2e 100644
+index f42e4583b95567067da075a92b8614e9ef1d627f..aa82088e876eb9b9254ea373de38cb195982b2a5 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -115,6 +115,7 @@ public class BungeeCord extends ProxyServer
+@@ -114,6 +114,7 @@ public class BungeeCord extends ProxyServer
       */
      private ResourceBundle baseBundle;
      private ResourceBundle customBundle;
@@ -99,7 +99,7 @@ index 631ed6b9b04490a5c6343eecbea277f676c5ec42..fe2256f18064aee48afd173f329f6f13
      public EventLoopGroup bossEventLoopGroup, workerEventLoopGroup;
      /**
       * locations.yml save thread.
-@@ -196,6 +197,8 @@ public class BungeeCord extends ProxyServer
+@@ -195,6 +196,8 @@ public class BungeeCord extends ProxyServer
          switch (configurationType) {
              case BUNGEECORD:
                  return configurationAdapter;
@@ -108,7 +108,7 @@ index 631ed6b9b04490a5c6343eecbea277f676c5ec42..fe2256f18064aee48afd173f329f6f13
              case WATERFALL:
                  return waterfallConfigurationAdapter;
              // Firefly start - Fork specific configuration
-@@ -212,6 +215,9 @@ public class BungeeCord extends ProxyServer
+@@ -211,6 +214,9 @@ public class BungeeCord extends ProxyServer
              case BUNGEECORD:
                  configurationAdapter = adapter;
                  break;
@@ -118,7 +118,7 @@ index 631ed6b9b04490a5c6343eecbea277f676c5ec42..fe2256f18064aee48afd173f329f6f13
              case WATERFALL:
                  waterfallConfigurationAdapter = adapter;
                  break;
-@@ -246,6 +252,7 @@ public class BungeeCord extends ProxyServer
+@@ -245,6 +251,7 @@ public class BungeeCord extends ProxyServer
          {
              baseBundle = ResourceBundle.getBundle( "messages", Locale.ENGLISH );
          }
@@ -126,7 +126,7 @@ index 631ed6b9b04490a5c6343eecbea277f676c5ec42..fe2256f18064aee48afd173f329f6f13
          reloadMessages();
  
          // This is a workaround for quite possibly the weirdest bug I have ever encountered in my life!
-@@ -604,6 +611,7 @@ public class BungeeCord extends ProxyServer
+@@ -603,6 +610,7 @@ public class BungeeCord extends ProxyServer
  
      public void reloadMessages()
      {
@@ -134,7 +134,7 @@ index 631ed6b9b04490a5c6343eecbea277f676c5ec42..fe2256f18064aee48afd173f329f6f13
          File file = new File( "messages.properties" );
          if ( file.isFile() )
          {
-@@ -619,6 +627,16 @@ public class BungeeCord extends ProxyServer
+@@ -618,6 +626,16 @@ public class BungeeCord extends ProxyServer
  
      @Override
      public String getTranslation(String name, Object... args)

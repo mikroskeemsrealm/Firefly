@@ -51,10 +51,10 @@ index 2d5d57bdafa876053a0d17fa9517a03fab93adee..374d68b9ea690a864dec33b9772dbe71
  
      private TCPFastOpenMode setupTfo(int value) {
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 699f40a5643ef9974115d199890199ee40ebe73c..68d7fc5654e195c496b0673e772767d41e565a48 100644
+index c9972507556714e6be8070070ffa90170c1d488f..de20a48e80913f4505d135144144971693b7ebf9 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -497,9 +497,11 @@ public class BungeeCord extends ProxyServer
+@@ -496,9 +496,11 @@ public class BungeeCord extends ProxyServer
          stopListeners();
          getLogger().info( "Closing pending connections" );
  
@@ -66,7 +66,7 @@ index 699f40a5643ef9974115d199890199ee40ebe73c..68d7fc5654e195c496b0673e772767d4
              getLogger().log( Level.INFO, "Disconnecting {0} connections", connections.size() );
              for ( UserConnection user : connections.values() )
              {
-@@ -510,12 +512,32 @@ public class BungeeCord extends ProxyServer
+@@ -509,12 +511,32 @@ public class BungeeCord extends ProxyServer
              connectionLock.readLock().unlock();
          }
  
@@ -99,7 +99,7 @@ index 699f40a5643ef9974115d199890199ee40ebe73c..68d7fc5654e195c496b0673e772767d4
  
          if ( reconnectHandler != null )
          {
-@@ -549,8 +571,8 @@ public class BungeeCord extends ProxyServer
+@@ -548,8 +570,8 @@ public class BungeeCord extends ProxyServer
          }
  
          getLogger().info( "Closing IO threads" );
@@ -111,7 +111,7 @@ index 699f40a5643ef9974115d199890199ee40ebe73c..68d7fc5654e195c496b0673e772767d4
                      try {
                          bossEventLoopGroup.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 diff --git a/proxy/src/main/java/net/md_5/bungee/UserConnection.java b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-index c3a4b56ea7191716a7d7bd3a452420f87e28b050..1d8146bbe96f3166138911c9d4bbc59032b40cb0 100644
+index 47e9b9c38efe945b8f4bc86a0d3fbeb8c4cd8700..ad2b38d287322b6eb0e698cb10e6ebb8d9c17afe 100644
 --- a/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 +++ b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 @@ -152,6 +152,7 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.firefl
@@ -123,7 +123,7 @@ index c3a4b56ea7191716a7d7bd3a452420f87e28b050..1d8146bbe96f3166138911c9d4bbc590
      public void init()
      {
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java
-index 4d8bac5d171e0e0d98b7876aa09c1a9a6d4d20eb..f987995e43c12462977b12074ec9c03bd3323e95 100644
+index 7913d40cc6c966eb576e02dd64d8a82d949e314f..cdb2d4fb7753d0e18298910d84cafd2d763519f9 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java
 @@ -88,6 +88,7 @@ public class UpstreamBridge extends PacketHandler

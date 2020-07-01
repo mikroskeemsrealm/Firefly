@@ -134,10 +134,10 @@ index 6cec0b5a141a41e9f4e36c25f6f7460aa5dacdc2..0dfde6a2e331f4d4166ec6d7ee0b8779
      }
  
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 0b55b8d88bf87073a011d85e2231a741044a3f7f..55368a7e97a84f351b74e1d4dbbe408cf7d0ccf1 100644
+index 7f13eea6bf7245f2b61af584c95c537604be23ca..cbcc3bad233b95bab1728dcf82911cdc2058f05c 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -120,7 +120,7 @@ public class BungeeCord extends ProxyServer
+@@ -119,7 +119,7 @@ public class BungeeCord extends ProxyServer
      /**
       * locations.yml save thread.
       */
@@ -146,7 +146,7 @@ index 0b55b8d88bf87073a011d85e2231a741044a3f7f..55368a7e97a84f351b74e1d4dbbe408c
      // private final Timer metricsThread = new Timer( "Metrics Thread" ); // Waterfall: Disable Metrics
      /**
       * Server socket listener.
-@@ -170,6 +170,7 @@ public class BungeeCord extends ProxyServer
+@@ -169,6 +169,7 @@ public class BungeeCord extends ProxyServer
              .registerTypeAdapter( KeybindComponent.class, new KeybindComponentSerializer() )
              .registerTypeAdapter( ScoreComponent.class, new ScoreComponentSerializer() )
              .registerTypeAdapter( SelectorComponent.class, new SelectorComponentSerializer() )
@@ -154,7 +154,7 @@ index 0b55b8d88bf87073a011d85e2231a741044a3f7f..55368a7e97a84f351b74e1d4dbbe408c
              .registerTypeAdapter( ServerPing.PlayerInfo.class, new PlayerInfoSerializer() )
              .registerTypeAdapter( Favicon.class, Favicon.getFaviconTypeAdapter() ).create();
      @Getter
-@@ -354,9 +355,13 @@ public class BungeeCord extends ProxyServer
+@@ -353,9 +354,13 @@ public class BungeeCord extends ProxyServer
          {
              connectionThrottle = new ConnectionThrottle( config.getThrottle(), config.getThrottleLimit() );
          }
@@ -168,7 +168,7 @@ index 0b55b8d88bf87073a011d85e2231a741044a3f7f..55368a7e97a84f351b74e1d4dbbe408c
          saveThread.scheduleAtFixedRate( new TimerTask()
          {
              @Override
-@@ -548,6 +553,7 @@ public class BungeeCord extends ProxyServer
+@@ -547,6 +552,7 @@ public class BungeeCord extends ProxyServer
              reconnectHandler.save();
              reconnectHandler.close();
          }
@@ -176,7 +176,7 @@ index 0b55b8d88bf87073a011d85e2231a741044a3f7f..55368a7e97a84f351b74e1d4dbbe408c
          saveThread.cancel();
          //metricsThread.cancel(); // Waterfall: Disable Metrics
  
-@@ -900,6 +906,7 @@ public class BungeeCord extends ProxyServer
+@@ -905,6 +911,7 @@ public class BungeeCord extends ProxyServer
              return Collections.singleton( exactMatch );
          }
  
@@ -184,7 +184,7 @@ index 0b55b8d88bf87073a011d85e2231a741044a3f7f..55368a7e97a84f351b74e1d4dbbe408c
          return Sets.newHashSet( Iterables.filter( getPlayers(), new Predicate<ProxiedPlayer>()
          {
  
-@@ -909,6 +916,19 @@ public class BungeeCord extends ProxyServer
+@@ -914,6 +921,19 @@ public class BungeeCord extends ProxyServer
                  return ( input == null ) ? false : input.getName().toLowerCase( Locale.ROOT ).startsWith( partialName.toLowerCase( Locale.ROOT ) );
              }
          } ) );

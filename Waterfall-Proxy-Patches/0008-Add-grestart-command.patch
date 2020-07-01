@@ -148,10 +148,10 @@ index 7f3947e5c955c4bf49a973304b09c66651f32711..1692f8efe71f8e3ac6ae154af46a6d5f
      }
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index 0201b9f1fbfc356d0727476fd4bd40ad542eb824..5dbf005ad51aa49ce24e6372f6709d19124b76f3 100644
+index 3cfb4bdd549fd3acebb8b0c5ca10fa03b126a459..9b617bf324e058562904d907161dc90b1589308f 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -278,6 +278,9 @@ public class BungeeCord extends ProxyServer
+@@ -277,6 +277,9 @@ public class BungeeCord extends ProxyServer
          getPluginManager().registerCommand( null, new CommandIP() );
          getPluginManager().registerCommand( null, new CommandBungee() );
          getPluginManager().registerCommand( null, new CommandPerms() );
@@ -161,7 +161,7 @@ index 0201b9f1fbfc356d0727476fd4bd40ad542eb824..5dbf005ad51aa49ce24e6372f6709d19
  
          if ( !Boolean.getBoolean( "net.md_5.bungee.native.disable" ) )
          {
-@@ -562,6 +565,7 @@ public class BungeeCord extends ProxyServer
+@@ -561,6 +564,7 @@ public class BungeeCord extends ProxyServer
  
          if ( callSystemExit )
          {

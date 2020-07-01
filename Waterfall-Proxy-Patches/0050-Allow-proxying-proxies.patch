@@ -39,10 +39,10 @@ index 0d4608bac359f5e784c0474616821c296de920e2..144d8b4c3f4e93ab9fa917e6e9b4bc70
  
      private TCPFastOpenMode setupTfo(int value) {
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-index dec1a266655251399e572e5bd2091c6ec7e589de..be918eed7e7d0c2205c848b0883becb72741fa4b 100644
+index e397a85f4630aedf222f98eae2ab8a2b4b0839b6..40c31d998390655a68db652c47c9e4e61bd4e488 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-@@ -279,6 +279,7 @@ public class DownstreamBridge extends PacketHandler
+@@ -280,6 +280,7 @@ public class DownstreamBridge extends PacketHandler
              String serverBrand = DefinedPacket.readString( brand );
              brand.release();
  

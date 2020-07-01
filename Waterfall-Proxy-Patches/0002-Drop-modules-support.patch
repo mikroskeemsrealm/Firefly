@@ -5,10 +5,10 @@ Subject: [PATCH] Drop modules support
 
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index c0f5750afaa8cc7ab08d5ae04023ad1edb439457..3c952940fb09572df8ac3c4add4064128260b4ac 100644
+index 20edee9c65446637512bd1bd0bc33f785b2249b3..d7fbe982de0defe35e00b35fb49db4acc94a3944 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-@@ -173,7 +173,7 @@ public class BungeeCord extends ProxyServer
+@@ -172,7 +172,7 @@ public class BungeeCord extends ProxyServer
              .registerTypeAdapter( Favicon.class, Favicon.getFaviconTypeAdapter() ).create();
      @Getter
      private ConnectionThrottle connectionThrottle;
@@ -17,7 +17,7 @@ index c0f5750afaa8cc7ab08d5ae04023ad1edb439457..3c952940fb09572df8ac3c4add406412
  
      {
          // TODO: Proper fallback when we interface the manager
-@@ -268,9 +268,11 @@ public class BungeeCord extends ProxyServer
+@@ -267,9 +267,11 @@ public class BungeeCord extends ProxyServer
          bossEventLoopGroup = PipelineUtils.newEventLoopGroup( 0, new ThreadFactoryBuilder().setNameFormat( "Netty Boss IO Thread #%1$d" ).build() );
          workerEventLoopGroup = PipelineUtils.newEventLoopGroup( 0, new ThreadFactoryBuilder().setNameFormat( "Netty Worker IO Thread #%1$d" ).build() );
  

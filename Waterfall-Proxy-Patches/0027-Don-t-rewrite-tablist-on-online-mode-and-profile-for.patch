@@ -43,10 +43,10 @@ index 374d68b9ea690a864dec33b9772dbe713a688618..7b6a539aace1923651790d90e2bb8e9a
  
      private TCPFastOpenMode setupTfo(int value) {
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-index d7d0fafcb32fb6357c6d4e2c44cd0d7c1c51f7dc..1a33bb8949558ff1b06fc84478cb89caa24ca4aa 100644
+index 8c7e3ab8874c327c3959662d871e3511e9d0a127..0be724753ea847a9d43acb78576bcf427bdf484d 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-@@ -156,6 +156,7 @@ public class DownstreamBridge extends PacketHandler
+@@ -157,6 +157,7 @@ public class DownstreamBridge extends PacketHandler
      @Override
      public void handle(PlayerListItem playerList) throws Exception
      {

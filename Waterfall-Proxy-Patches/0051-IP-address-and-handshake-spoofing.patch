@@ -44,7 +44,7 @@ index 72f989ca748f08d3e891a5ffd65bb078aaff2a7e..19dd4e8db3c21c8fa11e0bf9a3715ab6
              DefinedPacket.writeUUID(user.getPendingConnection().getUniqueId(), forwarded);
              DefinedPacket.writeString(user.getPendingConnection().getName(), forwarded);
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-index df0ebb78114415042545d555a8025c577ac25da5..69917cea166b76dd1f6f0b210daf690d25ccce8f 100644
+index 4096b28d97f7e5449da630ad55fb038f9b87b2c6..ce1d023f40c2fb784bcfa62e376a282c6741181c 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 @@ -102,9 +102,9 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.fire
@@ -60,7 +60,7 @@ index df0ebb78114415042545d555a8025c577ac25da5..69917cea166b76dd1f6f0b210daf690d
              LoginResult profile = user.getPendingConnection().getLoginProfile();
  
 diff --git a/proxy/src/main/java/net/md_5/bungee/UserConnection.java b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-index f8c4e57855f4c65b65520fd28b5f3fe0364eed70..5e7f3fa2c8e4f72bee433ad9d9b932a354c8c276 100644
+index e42e8f9037f3209a5b94f2af5ccd5e41b19e89bf..9686475ae2fb551be8caed46e45c62f890b8eb51 100644
 --- a/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 +++ b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 @@ -153,6 +153,15 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.firefl
@@ -80,10 +80,10 @@ index f8c4e57855f4c65b65520fd28b5f3fe0364eed70..5e7f3fa2c8e4f72bee433ad9d9b932a3
      public void init()
      {
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-index be918eed7e7d0c2205c848b0883becb72741fa4b..74bf27f1b6f6f1c9ad8bfbaad1bb6a9c2b6cda12 100644
+index 40c31d998390655a68db652c47c9e4e61bd4e488..06a7e14286d296c2fd32c507b31985c58f43a80a 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-@@ -388,10 +388,10 @@ public class DownstreamBridge extends PacketHandler
+@@ -389,10 +389,10 @@ public class DownstreamBridge extends PacketHandler
              if ( subChannel.equals( "IP" ) )
              {
                  out.writeUTF( "IP" );
@@ -98,7 +98,7 @@ index be918eed7e7d0c2205c848b0883becb72741fa4b..74bf27f1b6f6f1c9ad8bfbaad1bb6a9c
                  {
                      out.writeUTF( "unix://" + ( (DomainSocketAddress) con.getSocketAddress() ).path() );
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-index 50893057dacd94d58f331869594c45cd3914b3aa..f5c791a2d6aae679353484b94caa4be383408292 100644
+index e914b87beb3db0e6f1d3ff70e061fb1b1fa2b62b..136fcfc5fbdd16ca7b04c79a74260adfa0ad4beb 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 @@ -75,6 +75,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection
