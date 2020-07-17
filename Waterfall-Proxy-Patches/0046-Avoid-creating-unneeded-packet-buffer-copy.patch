@@ -5,7 +5,7 @@ Subject: [PATCH] Avoid creating unneeded packet buffer copy
 
 
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
-index 05e7cdc28bd7bf62ee0db5b6c5dce3c0d737dc3d..5dd9865ad1c12d63ed0a86ad71fa34751241eb3d 100644
+index ead0c334fd892c0157e63f00b867d8ffaad25bce..97a2888c28efa73e4a8576a2adc838f19c15b739 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 @@ -36,6 +36,10 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
@@ -19,7 +19,7 @@ index 05e7cdc28bd7bf62ee0db5b6c5dce3c0d737dc3d..5dd9865ad1c12d63ed0a86ad71fa3475
  
      public MinecraftDecoder(Protocol protocol, boolean server, int protocolVersion) {
          this.protocol = protocol;
-@@ -46,13 +50,21 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
+@@ -46,6 +50,9 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
          this.logPacketDumpOnDecodeError = logPacketDumpOnDecodeErrorSupplier.getAsBoolean();
          this.closeConnectionOnDecodeError = closeConnectionOnDecodeErrorSupplier.getAsBoolean();
          // Firefly end
@@ -29,8 +29,9 @@ index 05e7cdc28bd7bf62ee0db5b6c5dce3c0d737dc3d..5dd9865ad1c12d63ed0a86ad71fa3475
      }
  
      @Override
-     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception
-     {
+@@ -59,7 +66,12 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
+         }
+ 
          Protocol.DirectionData prot = ( server ) ? protocol.TO_SERVER : protocol.TO_CLIENT;
 +        /* Firefly start - Avoid creating unneeded packet buffer copy
          ByteBuf slice = in.copy(); // Can't slice this one due to EntityMap :(
@@ -41,7 +42,7 @@ index 05e7cdc28bd7bf62ee0db5b6c5dce3c0d737dc3d..5dd9865ad1c12d63ed0a86ad71fa3475
  
          Object packetTypeInfo = null;
          try
-@@ -79,12 +91,20 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
+@@ -86,12 +98,20 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
                  }
                  decodedMetric.run(); // Firefly - add Prometheus metrics support
              } else
@@ -63,7 +64,7 @@ index 05e7cdc28bd7bf62ee0db5b6c5dce3c0d737dc3d..5dd9865ad1c12d63ed0a86ad71fa3475
          } catch (BadPacketException | IndexOutOfBoundsException e) {
              invalidPacketMetric.run(); // Firefly - add Prometheus metrics support
              final String packetTypeStr;
-@@ -102,7 +122,7 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
+@@ -109,7 +129,7 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
              /* // Firefly start - add option to disable noisy packet decode exception
              throw new FastDecoderException("Error decoding packet " + packetTypeStr + " with contents:\n" + ByteBufUtil.prettyHexDump(slice), e); // Waterfall
              */

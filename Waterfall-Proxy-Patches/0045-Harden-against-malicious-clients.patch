@@ -78,7 +78,7 @@ index 0000000000000000000000000000000000000000..a496cefd0b590f3ef2f19a878ead4eeb
 +    }
 +}
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
-index 9615de6e74f95abf962177c3ce6e114bb7864687..05e7cdc28bd7bf62ee0db5b6c5dce3c0d737dc3d 100644
+index 17f62d354830269ae2be3248c81c29c2188f6628..ead0c334fd892c0157e63f00b867d8ffaad25bce 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 @@ -30,12 +30,22 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
@@ -104,7 +104,7 @@ index 9615de6e74f95abf962177c3ce6e114bb7864687..05e7cdc28bd7bf62ee0db5b6c5dce3c0
      }
  
      @Override
-@@ -85,6 +95,10 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
+@@ -92,6 +102,10 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
              } else {
                  packetTypeStr = "unknown";
              }
@@ -116,7 +116,7 @@ index 9615de6e74f95abf962177c3ce6e114bb7864687..05e7cdc28bd7bf62ee0db5b6c5dce3c0
              throw new FastDecoderException("Error decoding packet " + packetTypeStr + " with contents:\n" + ByteBufUtil.prettyHexDump(slice), e); // Waterfall
              */
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
-index eff71ed639325acbd5e8f22e31c4f7bb367390f2..e62c88df7e439ca34c897a0f2e09938796c33d8b 100644
+index d95121ca7436eba60d7cce16f497637eda355677..df67b1095c827337d72d249d07aeaa0920b80700 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
 @@ -11,6 +11,10 @@ import java.util.List;
@@ -130,7 +130,7 @@ index eff71ed639325acbd5e8f22e31c4f7bb367390f2..e62c88df7e439ca34c897a0f2e099387
  
      private static boolean DIRECT_WARNING;
  
-@@ -58,6 +62,7 @@ public class Varint21FrameDecoder extends ByteToMessageDecoder
+@@ -68,6 +72,7 @@ public class Varint21FrameDecoder extends ByteToMessageDecoder
              }
          }
  

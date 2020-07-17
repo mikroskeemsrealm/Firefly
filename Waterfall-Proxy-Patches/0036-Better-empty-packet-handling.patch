@@ -5,7 +5,7 @@ Subject: [PATCH] Better empty packet handling
 
 
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
-index 743d65e43549f4db3b1f6785a69ab69e19004285..eff71ed639325acbd5e8f22e31c4f7bb367390f2 100644
+index c0d371426a16565e735015b1f679278e0360ed1c..d95121ca7436eba60d7cce16f497637eda355677 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
 @@ -7,8 +7,10 @@ import io.netty.handler.codec.ByteToMessageDecoder;
@@ -19,7 +19,7 @@ index 743d65e43549f4db3b1f6785a69ab69e19004285..eff71ed639325acbd5e8f22e31c4f7bb
  
      private static boolean DIRECT_WARNING;
  
-@@ -32,6 +34,12 @@ public class Varint21FrameDecoder extends ByteToMessageDecoder
+@@ -42,6 +44,12 @@ public class Varint21FrameDecoder extends ByteToMessageDecoder
                  in.resetReaderIndex();
                  int length = DefinedPacket.readVarInt( in );
                  // Waterfall end
@@ -55,7 +55,7 @@ index 7b002089ef9dd9f365dc0f7db076976b8dc6260c..1dfc177b02f03d91a3659a109e07f376
                  .remoteAddress( socketAddress )
                  .connect()
 diff --git a/proxy/src/main/java/net/md_5/bungee/UserConnection.java b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-index b87b6bc66fb3ad135048d5d4422385110bb499c2..23fa5ca65d575066211657cba93f311a487e4b97 100644
+index 615ab8a6be5d78cd1dfd0a958a9a13ad74629b1d..e42e8f9037f3209a5b94f2af5ccd5e41b19e89bf 100644
 --- a/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 +++ b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 @@ -345,6 +345,7 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.firefl

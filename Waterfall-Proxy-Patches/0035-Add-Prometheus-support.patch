@@ -30,7 +30,7 @@ index 17aa4a1d1a8bc85cf9e15e742e23166d456eaa0e..a6aecceb7bc77b9005a3c28ba2f77392
 +    int getPrometheusListenPort();
  }
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
-index 20e207ce1cb8da13102a155e0e88b92d349793ed..9333b64248c4ab89fe9ce2829dbf09039bdfc064 100644
+index add9b9a14a2124071484bd812ed85e34ca3bd71a..fb68f4100e01c4bbb4e5f79628263d5d7dd5443f 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 @@ -24,6 +24,11 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
@@ -45,7 +45,7 @@ index 20e207ce1cb8da13102a155e0e88b92d349793ed..9333b64248c4ab89fe9ce2829dbf0903
  
      public MinecraftDecoder(Protocol protocol, boolean server, int protocolVersion) {
          this.protocol = protocol;
-@@ -43,6 +48,7 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
+@@ -50,6 +55,7 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
          {
              // Waterfall start
              if (in.readableBytes() == 0) {
@@ -53,7 +53,7 @@ index 20e207ce1cb8da13102a155e0e88b92d349793ed..9333b64248c4ab89fe9ce2829dbf0903
                  return;
              }
              // Waterfall end
-@@ -60,6 +66,7 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
+@@ -67,6 +73,7 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
                  {
                      throw new BadPacketException( "Did not read all bytes from packet " + packet.getClass() + " " + packetId + " Protocol " + protocol + " Direction " + prot.getDirection() );
                  }
@@ -61,7 +61,7 @@ index 20e207ce1cb8da13102a155e0e88b92d349793ed..9333b64248c4ab89fe9ce2829dbf0903
              } else
              {
                  in.skipBytes( in.readableBytes() );
-@@ -68,6 +75,7 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
+@@ -75,6 +82,7 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
              out.add( new PacketWrapper( packet, slice ) );
              slice = null;
          } catch (BadPacketException | IndexOutOfBoundsException e) {

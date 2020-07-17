@@ -19,7 +19,7 @@ index d6eba7208ce9063df112215150a1e42f7274d35f..17aa4a1d1a8bc85cf9e15e742e23166d
 +    boolean isLogNoisyPacketDecodeException();
  }
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
-index 6c3c7ab8d872c7acffa0b1897c10ccdd9b1aefd2..20e207ce1cb8da13102a155e0e88b92d349793ed 100644
+index 1a647f2b935f122e5f8b0c6fa982b26183630abc..add9b9a14a2124071484bd812ed85e34ca3bd71a 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/MinecraftDecoder.java
 @@ -20,11 +20,16 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
@@ -39,7 +39,7 @@ index 6c3c7ab8d872c7acffa0b1897c10ccdd9b1aefd2..20e207ce1cb8da13102a155e0e88b92d
      }
  
      @Override
-@@ -71,7 +76,16 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
+@@ -78,7 +83,16 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf>
              } else {
                  packetTypeStr = "unknown";
              }

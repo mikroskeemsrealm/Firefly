@@ -5,7 +5,7 @@ Subject: [PATCH] Port Velocity's faster varint decoder - take 3
 
 
 diff --git a/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java b/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
-index 0ce0f1b30faebafa4875bc7e8e63844dbc056fe0..7a0a8530c415f5d6985a891b92e259fc47499919 100644
+index df67b1095c827337d72d249d07aeaa0920b80700..ab460c10a3d9b68f5ed47fd0e91dd714b9858c86 100644
 --- a/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
 +++ b/protocol/src/main/java/net/md_5/bungee/protocol/Varint21FrameDecoder.java
 @@ -20,6 +20,95 @@ public class Varint21FrameDecoder extends ByteToMessageDecoder
@@ -102,5 +102,5 @@ index 0ce0f1b30faebafa4875bc7e8e63844dbc056fe0..7a0a8530c415f5d6985a891b92e259fc
 +    protected void old_decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception
 +    // Firefly end
      {
-         // Firefly start - Discard received data after closing the channel
-         if (!ctx.channel().isActive()) {
+         // If we decode an invalid packet and an exception is thrown (thus triggering a close of the connection),
+         // the Netty ByteToMessageDecoder will continue to frame more packets and potentially call fireChannelRead()
