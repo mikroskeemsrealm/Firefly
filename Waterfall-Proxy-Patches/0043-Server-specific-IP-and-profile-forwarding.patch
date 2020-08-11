@@ -10,18 +10,18 @@ diff --git a/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConf
 index a6aecceb7bc77b9005a3c28ba2f773929fbc5746..8b9834ea3a561624cd1aa43ace4b69f1379e8387 100644
 --- a/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
 +++ b/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
-@@ -33,11 +33,6 @@ public interface FireflyProxyConfig {
+@@ -32,11 +32,6 @@ public interface FireflyProxyConfig {
+      */
      boolean isLogInvalidQueryPackets();
  
-     /**
+-    /**
 -     * @return Whether Velocity modern forwarding support is enabled or not
 -     */
 -    boolean isVelocityForwardingSupport();
 -
--    /**
+     /**
       * @return Velocity modern forwarding secret
       */
-     byte @NonNull [] getVelocityForwardingSecret();
 diff --git a/api/src/main/java/eu/mikroskeem/firefly/api/connection/ForwardingType.java b/api/src/main/java/eu/mikroskeem/firefly/api/connection/ForwardingType.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..e1a651748b7f3e7056775e3d3c0c5c7469d206f6
@@ -179,16 +179,16 @@ diff --git a/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration
 index d08986932da4bc4a704feb4de9aeeeeb5bffd638..48d177aa48f9a756aa44aac7ddf75006e355606e 100644
 --- a/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
-@@ -38,9 +38,6 @@ public class FireflyConfiguration extends WaterfallConfiguration {
+@@ -37,9 +37,6 @@ public class FireflyConfiguration extends WaterfallConfiguration {
+     @Getter
      private boolean logInvalidQueryPackets = false;
  
-     @Getter
+-    @Getter
 -    private boolean velocityForwardingSupport = false;
 -
--    @Getter
+     @Getter
      private byte[] velocityForwardingSecret;
  
-     @Getter
 @@ -83,7 +80,6 @@ public class FireflyConfiguration extends WaterfallConfiguration {
          restartScriptPath = config.getString("restart.script_path", restartScriptPath);
          ignoredLogCommands = new HashSet<>(config.getList("log.ignored_commands", () -> ImmutableList.of("login", "register", "changepassword")));
@@ -244,10 +244,10 @@ index 1dfc177b02f03d91a3659a109e07f3761271b609..1c94e7e09503e02d0f3a7daa56c7106c
      @Synchronized("players")
      public void addPlayer(ProxiedPlayer player)
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-index 36c213a7c6e7df7e03ed04d4eb0536261655fd0c..4096b28d97f7e5449da630ad55fb038f9b87b2c6 100644
+index e813d0f900c0b8f13417c83ee2eb33a5f84e2bfe..4e1de8cb71345e5492efa2aebfb4c255069fc6fb 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-@@ -102,7 +102,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.fire
+@@ -103,7 +103,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.fire
          Handshake originalHandshake = user.getPendingConnection().getHandshake();
          Handshake copiedHandshake = new Handshake( originalHandshake.getProtocolVersion(), originalHandshake.getHost(), originalHandshake.getPort(), 2 );
  
@@ -256,7 +256,7 @@ index 36c213a7c6e7df7e03ed04d4eb0536261655fd0c..4096b28d97f7e5449da630ad55fb038f
          {
              String newHost = copiedHandshake.getHost() + "\00" + user.getAddress().getHostString() + "\00" + user.getUUID();
  
-@@ -171,7 +171,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.fire
+@@ -172,7 +172,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.fire
          ch.setProtocol( Protocol.GAME );
          thisState = State.LOGIN;
          // Firefly start - Implement Velocity modern forwarding support
@@ -265,7 +265,7 @@ index 36c213a7c6e7df7e03ed04d4eb0536261655fd0c..4096b28d97f7e5449da630ad55fb038f
              throw new QuietException("Your server did not send a forwarding request to the proxy. Is it set up correctly?");
          }
          // Firefly end
-@@ -484,7 +484,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.fire
+@@ -485,7 +485,7 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.fire
      // Firefly start - Implement Velocity modern forwarding support
      @Override
      public void handle(net.md_5.bungee.protocol.packet.LoginPayloadRequest request) {
@@ -364,10 +364,10 @@ index cdb2d4fb7753d0e18298910d84cafd2d763519f9..31b63a0b7db12d88371de3172b6c2c0d
          }
      }
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
-index e64a11b57d24443b83807a0f80740b4f9dae4a4c..30d505d1c3ac07404192b96d1b797f4f27b3a198 100644
+index 05947c409923e736e1d4f19defb3e1d3589aa124..80e3bab5e3a600cb84bcb25aa7e041a18df1e3f0 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
-@@ -94,24 +94,28 @@ public abstract class EntityMap
+@@ -96,24 +96,28 @@ public abstract class EntityMap
          }
      }
  

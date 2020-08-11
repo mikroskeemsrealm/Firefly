@@ -44,10 +44,10 @@ index 72f989ca748f08d3e891a5ffd65bb078aaff2a7e..19dd4e8db3c21c8fa11e0bf9a3715ab6
              DefinedPacket.writeUUID(user.getPendingConnection().getUniqueId(), forwarded);
              DefinedPacket.writeString(user.getPendingConnection().getName(), forwarded);
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-index 4096b28d97f7e5449da630ad55fb038f9b87b2c6..ce1d023f40c2fb784bcfa62e376a282c6741181c 100644
+index 4e1de8cb71345e5492efa2aebfb4c255069fc6fb..457495a9e0a24f73526667092029a7e1f1f68807 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-@@ -102,9 +102,9 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.fire
+@@ -103,9 +103,9 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.fire
          Handshake originalHandshake = user.getPendingConnection().getHandshake();
          Handshake copiedHandshake = new Handshake( originalHandshake.getProtocolVersion(), originalHandshake.getHost(), originalHandshake.getPort(), 2 );
  
