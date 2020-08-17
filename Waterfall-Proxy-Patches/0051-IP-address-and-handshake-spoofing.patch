@@ -44,10 +44,10 @@ index 72f989ca748f08d3e891a5ffd65bb078aaff2a7e..19dd4e8db3c21c8fa11e0bf9a3715ab6
              DefinedPacket.writeUUID(user.getPendingConnection().getUniqueId(), forwarded);
              DefinedPacket.writeString(user.getPendingConnection().getName(), forwarded);
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-index 4e1de8cb71345e5492efa2aebfb4c255069fc6fb..457495a9e0a24f73526667092029a7e1f1f68807 100644
+index b3e18ea28ad1cddd5ab861560267a2e2c3ce8809..db3714ee8d1b39cd9c6a3a204393f6ac0270b165 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-@@ -103,9 +103,9 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.fire
+@@ -102,9 +102,9 @@ public class ServerConnector extends PacketHandler implements eu.mikroskeem.fire
          Handshake originalHandshake = user.getPendingConnection().getHandshake();
          Handshake copiedHandshake = new Handshake( originalHandshake.getProtocolVersion(), originalHandshake.getHost(), originalHandshake.getPort(), 2 );
  
@@ -80,10 +80,10 @@ index e42e8f9037f3209a5b94f2af5ccd5e41b19e89bf..9686475ae2fb551be8caed46e45c62f8
      public void init()
      {
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-index 40c31d998390655a68db652c47c9e4e61bd4e488..06a7e14286d296c2fd32c507b31985c58f43a80a 100644
+index fcf289bf72c787e45dbfdef03f64df5efa93c3bd..e74d286dd84bb3812c48283f062f22b2dffd6e79 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-@@ -389,10 +389,10 @@ public class DownstreamBridge extends PacketHandler
+@@ -394,10 +394,10 @@ public class DownstreamBridge extends PacketHandler
              if ( subChannel.equals( "IP" ) )
              {
                  out.writeUTF( "IP" );
@@ -98,10 +98,10 @@ index 40c31d998390655a68db652c47c9e4e61bd4e488..06a7e14286d296c2fd32c507b31985c5
                  {
                      out.writeUTF( "unix://" + ( (DomainSocketAddress) con.getSocketAddress() ).path() );
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-index e914b87beb3db0e6f1d3ff70e061fb1b1fa2b62b..136fcfc5fbdd16ca7b04c79a74260adfa0ad4beb 100644
+index 7274a7291ffa4f323271ba3d6c867e12ddbeb803..52cfebea688844e44ec24602249b6fb7fd52568c 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-@@ -75,6 +75,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+@@ -77,6 +77,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection
      @Getter
      private final ListenerInfo listener;
      @Getter

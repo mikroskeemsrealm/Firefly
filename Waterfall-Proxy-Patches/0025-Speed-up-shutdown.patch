@@ -123,10 +123,10 @@ index 47e9b9c38efe945b8f4bc86a0d3fbeb8c4cd8700..ad2b38d287322b6eb0e698cb10e6ebb8
      public void init()
      {
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java
-index 7913d40cc6c966eb576e02dd64d8a82d949e314f..cdb2d4fb7753d0e18298910d84cafd2d763519f9 100644
+index 4d7b1b23e6394ea6a198a957c91e66596d567dee..f157f46abfd101eeda17fe16c300ced606a019ea 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java
-@@ -88,6 +88,7 @@ public class UpstreamBridge extends PacketHandler
+@@ -89,6 +89,7 @@ public class UpstreamBridge extends PacketHandler
              }
              con.getServer().disconnect( "Quitting" );
          }

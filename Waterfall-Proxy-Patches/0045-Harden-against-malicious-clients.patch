@@ -187,10 +187,10 @@ index 48d177aa48f9a756aa44aac7ddf75006e355606e..416507bd8c667e8b48384e5e88eca429
  
      private TCPFastOpenMode setupTfo(int value) {
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-index 56455079566c969bacff4ebffb464e022c125043..2388e0cb0bd6ede8cdd5d3d62026f33289fefc8c 100644
+index 2415630448283eae4c5ea28ded01172b8a16c746..7c1f5e54f2b9de15aab88466c579796844ef5117 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-@@ -146,6 +146,16 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+@@ -148,6 +148,16 @@ public class InitialHandler extends PacketHandler implements PendingConnection
      {
          if ( packet.packet == null )
          {
@@ -207,7 +207,7 @@ index 56455079566c969bacff4ebffb464e022c125043..2388e0cb0bd6ede8cdd5d3d62026f332
              throw new QuietException( "Unexpected packet received during login process! " + BufUtil.dump( packet.buf, 16 ) );
          }
      }
-@@ -231,7 +241,18 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+@@ -233,7 +243,18 @@ public class InitialHandler extends PacketHandler implements PendingConnection
      @Override
      public void handle(StatusRequest statusRequest) throws Exception
      {
@@ -226,7 +226,7 @@ index 56455079566c969bacff4ebffb464e022c125043..2388e0cb0bd6ede8cdd5d3d62026f332
  
          ServerInfo forced = AbstractReconnectHandler.getForcedHost( this );
          final String motd = ( forced != null ) ? forced.getMotd() : listener.getMotd();
-@@ -283,7 +304,18 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+@@ -285,7 +306,18 @@ public class InitialHandler extends PacketHandler implements PendingConnection
      public void handle(PingPacket ping) throws Exception
      {
          if (!ACCEPT_INVALID_PACKETS) {
@@ -245,7 +245,7 @@ index 56455079566c969bacff4ebffb464e022c125043..2388e0cb0bd6ede8cdd5d3d62026f332
          }
          unsafe.sendPacket( ping );
          disconnect( "" );
-@@ -292,7 +324,18 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+@@ -294,7 +326,18 @@ public class InitialHandler extends PacketHandler implements PendingConnection
      @Override
      public void handle(Handshake handshake) throws Exception
      {
@@ -264,7 +264,7 @@ index 56455079566c969bacff4ebffb464e022c125043..2388e0cb0bd6ede8cdd5d3d62026f332
          this.handshake = handshake;
          ch.setVersion( handshake.getProtocolVersion() );
  
-@@ -351,6 +394,11 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+@@ -353,6 +396,11 @@ public class InitialHandler extends PacketHandler implements PendingConnection
                  }
                  break;
              default:
@@ -276,7 +276,7 @@ index 56455079566c969bacff4ebffb464e022c125043..2388e0cb0bd6ede8cdd5d3d62026f332
                  throw new QuietException( "Cannot request protocol " + handshake.getRequestedProtocol() );
          }
      }
-@@ -358,10 +406,21 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+@@ -360,10 +408,21 @@ public class InitialHandler extends PacketHandler implements PendingConnection
      @Override
      public void handle(LoginRequest loginRequest) throws Exception
      {
@@ -299,7 +299,7 @@ index 56455079566c969bacff4ebffb464e022c125043..2388e0cb0bd6ede8cdd5d3d62026f332
          {
              disconnect( bungee.getTranslation( "name_invalid" ) );
              return;
-@@ -421,7 +480,18 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+@@ -423,7 +482,18 @@ public class InitialHandler extends PacketHandler implements PendingConnection
      @Override
      public void handle(final EncryptionResponse encryptResponse) throws Exception
      {

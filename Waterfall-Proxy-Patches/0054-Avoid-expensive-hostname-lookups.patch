@@ -6,10 +6,10 @@ Subject: [PATCH] Avoid expensive hostname lookups
 Pointed out by LinsaFTW in SpigotMC/BungeeCord#2719
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-index 06a7e14286d296c2fd32c507b31985c58f43a80a..b37d5f57e093075a9e4c4cb0d215d7797314742a 100644
+index e74d286dd84bb3812c48283f062f22b2dffd6e79..eedc6de9fc61573d4635a912d6f6c803ba0cb5f2 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-@@ -505,7 +505,7 @@ public class DownstreamBridge extends PacketHandler
+@@ -510,7 +510,7 @@ public class DownstreamBridge extends PacketHandler
                  {
                      out.writeUTF( "ServerIP" );
                      out.writeUTF( info.getName() );
@@ -19,15 +19,15 @@ index 06a7e14286d296c2fd32c507b31985c58f43a80a..b37d5f57e093075a9e4c4cb0d215d779
                  }
              }
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-index 136fcfc5fbdd16ca7b04c79a74260adfa0ad4beb..e40f438ba840afcd75454e9477c1b71febb5835f 100644
+index 52cfebea688844e44ec24602249b6fb7fd52568c..a6bd92351f8a5c9ef9ff7753789078404a72907c 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-@@ -518,7 +518,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+@@ -520,7 +520,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection
          }
          String encodedHash = URLEncoder.encode( new BigInteger( sha.digest() ).toString( 16 ), "UTF-8" );
  
 -        String preventProxy = ( BungeeCord.getInstance().config.isPreventProxyConnections() && getSocketAddress() instanceof InetSocketAddress ) ? "&ip=" + URLEncoder.encode( getAddress().getAddress().getHostAddress(), "UTF-8" ) : "";
 +        String preventProxy = ( BungeeCord.getInstance().config.isPreventProxyConnections() && getSocketAddress() instanceof InetSocketAddress ) ? "&ip=" + URLEncoder.encode( getAddress().getHostString(), "UTF-8" ) : ""; // Firefly - avoid expensive hostname lookups
-         String authURL = "https://sessionserver.mojang.com/session/minecraft/hasJoined?username=" + encName + "&serverId=" + encodedHash + preventProxy;
+         String authURL = String.format( MOJANG_AUTH_URL, encName, encodedHash, preventProxy );
  
          Callback<String> handler = new Callback<String>()

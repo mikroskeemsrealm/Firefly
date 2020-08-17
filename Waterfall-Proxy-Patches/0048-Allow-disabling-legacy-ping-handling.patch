@@ -38,10 +38,10 @@ index f5ec75b2755255c65b8f08600e316e54211c9dbf..0d4608bac359f5e784c0474616821c29
  
      private TCPFastOpenMode setupTfo(int value) {
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-index 2a8b1e5421f4a0fa29145be812d436ad921bd87e..50893057dacd94d58f331869594c45cd3914b3aa 100644
+index 7c1f5e54f2b9de15aab88466c579796844ef5117..7274a7291ffa4f323271ba3d6c867e12ddbeb803 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-@@ -182,6 +182,12 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+@@ -184,6 +184,12 @@ public class InitialHandler extends PacketHandler implements PendingConnection
      {
          this.legacy = true;
          final boolean v1_5 = ping.isV1_5();

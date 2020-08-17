@@ -51,10 +51,10 @@ index 3a3c2fbd39874de0991571fa1f4c84aedc42b68c..476636ee2ced03825d6233fc0d7e584c
  
      @Override
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-index e59c3bd051eeb8ad57cadd04f518abf69a1603a8..56455079566c969bacff4ebffb464e022c125043 100644
+index c69ed1d989d023a895cde8b27c8c4ea50ee2b505..2415630448283eae4c5ea28ded01172b8a16c746 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-@@ -235,7 +235,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+@@ -237,7 +237,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection
  
          ServerInfo forced = AbstractReconnectHandler.getForcedHost( this );
          final String motd = ( forced != null ) ? forced.getMotd() : listener.getMotd();
@@ -63,7 +63,7 @@ index e59c3bd051eeb8ad57cadd04f518abf69a1603a8..56455079566c969bacff4ebffb464e02
  
          Callback<ServerPing> pingBack = new Callback<ServerPing>()
          {
-@@ -338,7 +338,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection
+@@ -340,7 +340,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection
                  thisState = State.USERNAME;
                  ch.setProtocol( Protocol.LOGIN );
  
