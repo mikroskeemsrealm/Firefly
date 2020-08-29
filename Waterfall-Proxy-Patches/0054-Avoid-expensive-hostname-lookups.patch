@@ -6,10 +6,10 @@ Subject: [PATCH] Avoid expensive hostname lookups
 Pointed out by LinsaFTW in SpigotMC/BungeeCord#2719
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-index e74d286dd84bb3812c48283f062f22b2dffd6e79..eedc6de9fc61573d4635a912d6f6c803ba0cb5f2 100644
+index 20dfe6153dd6a5c6102049a5cd3dd55738d5ccb8..4411e187fd4c145188bd3aee5bc7d3b348852fe3 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-@@ -510,7 +510,7 @@ public class DownstreamBridge extends PacketHandler
+@@ -529,7 +529,7 @@ public class DownstreamBridge extends PacketHandler
                  {
                      out.writeUTF( "ServerIP" );
                      out.writeUTF( info.getName() );
