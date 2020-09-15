@@ -329,9 +329,18 @@ index f447a9ed70c14b78daf179d545889dc87af6c49a..da7f0cde52fd7cff87251262f54ad92a
          }
  
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-index fe1df4fcdc273ceee8bc275ca0030370b726b320..bbfeea878115d0c224c58bee50c89b2c7055d2e2 100644
+index fe1df4fcdc273ceee8bc275ca0030370b726b320..e1bb542d067b1e3026e63620ccecd84ff513a88d 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
+@@ -144,7 +144,7 @@ public class DownstreamBridge extends PacketHandler
+         EntityMap rewrite = con.getEntityRewrite();
+         if ( rewrite != null )
+         {
+-            rewrite.rewriteClientbound( packet.buf, con.getServerEntityId(), con.getClientEntityId(), con.getPendingConnection().getVersion() );
++            rewrite.rewriteClientbound( packet.buf, con.getServerEntityId(), con.getClientEntityId(), con.getPendingConnection().getVersion(), con.getServer() ); // Firefly - server specific IP forwarding
+         }
+         con.sendPacket( packet );
+     }
 @@ -163,7 +163,7 @@ public class DownstreamBridge extends PacketHandler
      public void handle(PlayerListItem playerList) throws Exception
      {
