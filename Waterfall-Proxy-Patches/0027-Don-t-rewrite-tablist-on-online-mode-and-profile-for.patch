@@ -43,14 +43,15 @@ index 374d68b9ea690a864dec33b9772dbe713a688618..7b6a539aace1923651790d90e2bb8e9a
  
      private TCPFastOpenMode setupTfo(int value) {
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-index 44e6ed3f15361d5f241f0059208be1cf7a8cd669..a451391f634fcd2a859b53af1403027f4b15c345 100644
+index 9e180c30c05d946e892ae9fbd4d7d796e202d5d4..fe1df4fcdc273ceee8bc275ca0030370b726b320 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-@@ -162,6 +162,7 @@ public class DownstreamBridge extends PacketHandler
-     @Override
+@@ -163,7 +163,7 @@ public class DownstreamBridge extends PacketHandler
      public void handle(PlayerListItem playerList) throws Exception
      {
-+        if (!this.bungee.getConfig().isAllowTablistRewrite() && con.getPendingConnection().isOnlineMode() && (this.bungee.getConfig().isVelocityForwardingSupport() || this.server.getInfo().isIpForward())) { con.getTabListHandler().onUpdate(playerList); return; } // Firefly - don't rewrite tablist on online mode connections
-         con.getTabListHandler().onUpdate( TabList.rewrite( playerList ) );
-         throw CancelSendSignal.INSTANCE; // Always throw because of profile rewriting
-     }
+         //Waterfall start
+-        boolean skipRewrites = bungee.getConfig().isDisableTabListRewrite();
++        boolean skipRewrites = (bungee.getConfig().isDisableTabListRewrite() || !this.bungee.getConfig().isAllowTablistRewrite()) && con.getPendingConnection().isOnlineMode() && (this.bungee.getConfig().isVelocityForwardingSupport() || this.server.getInfo().isIpForward()); // Firefly - don't rewrite tablist on online mode connections
+         con.getTabListHandler().onUpdate( skipRewrites ? playerList : TabList.rewrite( playerList ) );
+         if ( !skipRewrites )
+         {

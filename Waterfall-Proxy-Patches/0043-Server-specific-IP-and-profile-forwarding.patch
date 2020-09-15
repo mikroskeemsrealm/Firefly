@@ -10,18 +10,18 @@ diff --git a/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConf
 index a6aecceb7bc77b9005a3c28ba2f773929fbc5746..8b9834ea3a561624cd1aa43ace4b69f1379e8387 100644
 --- a/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
 +++ b/api/src/main/java/eu/mikroskeem/firefly/api/config/FireflyProxyConfig.java
-@@ -33,11 +33,6 @@ public interface FireflyProxyConfig {
+@@ -32,11 +32,6 @@ public interface FireflyProxyConfig {
+      */
      boolean isLogInvalidQueryPackets();
  
-     /**
+-    /**
 -     * @return Whether Velocity modern forwarding support is enabled or not
 -     */
 -    boolean isVelocityForwardingSupport();
 -
--    /**
+     /**
       * @return Velocity modern forwarding secret
       */
-     byte @NonNull [] getVelocityForwardingSecret();
 diff --git a/api/src/main/java/eu/mikroskeem/firefly/api/connection/ForwardingType.java b/api/src/main/java/eu/mikroskeem/firefly/api/connection/ForwardingType.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..e1a651748b7f3e7056775e3d3c0c5c7469d206f6
@@ -80,7 +80,7 @@ index 0000000000000000000000000000000000000000..e1a651748b7f3e7056775e3d3c0c5c74
 +    }
 +}
 diff --git a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
-index d002a7445e01b3bd5d241b00e819a888acfa4a54..4fb880e6915467cea4ec21ba00c7782aa854f824 100644
+index 836e9a1c32a6a1befea2fe19af495d0a9104142a..acb5820010c100af9b9726998b423c4d8c5aca00 100644
 --- a/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
 +++ b/api/src/main/java/net/md_5/bungee/api/ProxyConfig.java
 @@ -191,6 +191,9 @@ public interface ProxyConfig extends eu.mikroskeem.firefly.api.config.FireflyPro
@@ -179,16 +179,16 @@ diff --git a/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration
 index d08986932da4bc4a704feb4de9aeeeeb5bffd638..48d177aa48f9a756aa44aac7ddf75006e355606e 100644
 --- a/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
 +++ b/proxy/src/main/java/eu/mikroskeem/firefly/conf/FireflyConfiguration.java
-@@ -38,9 +38,6 @@ public class FireflyConfiguration extends WaterfallConfiguration {
+@@ -37,9 +37,6 @@ public class FireflyConfiguration extends WaterfallConfiguration {
+     @Getter
      private boolean logInvalidQueryPackets = false;
  
-     @Getter
+-    @Getter
 -    private boolean velocityForwardingSupport = false;
 -
--    @Getter
+     @Getter
      private byte[] velocityForwardingSecret;
  
-     @Getter
 @@ -83,7 +80,6 @@ public class FireflyConfiguration extends WaterfallConfiguration {
          restartScriptPath = config.getString("restart.script_path", restartScriptPath);
          ignoredLogCommands = new HashSet<>(config.getList("log.ignored_commands", () -> ImmutableList.of("login", "register", "changepassword")));
@@ -329,27 +329,18 @@ index f447a9ed70c14b78daf179d545889dc87af6c49a..da7f0cde52fd7cff87251262f54ad92a
          }
  
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-index 3cdcc23e7e20b7612ba589c3e3934500c21ab041..69bf040f49bd5a75ad4eca3916f9df357d2674db 100644
+index fe1df4fcdc273ceee8bc275ca0030370b726b320..bbfeea878115d0c224c58bee50c89b2c7055d2e2 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-@@ -144,7 +144,7 @@ public class DownstreamBridge extends PacketHandler
-         EntityMap rewrite = con.getEntityRewrite();
-         if ( rewrite != null )
-         {
--            rewrite.rewriteClientbound( packet.buf, con.getServerEntityId(), con.getClientEntityId(), con.getPendingConnection().getVersion() );
-+            rewrite.rewriteClientbound( packet.buf, con.getServerEntityId(), con.getClientEntityId(), con.getPendingConnection().getVersion(), con.getServer() ); // Firefly - server specific IP forwarding
-         }
-         con.sendPacket( packet );
-     }
-@@ -162,7 +162,7 @@ public class DownstreamBridge extends PacketHandler
-     @Override
+@@ -163,7 +163,7 @@ public class DownstreamBridge extends PacketHandler
      public void handle(PlayerListItem playerList) throws Exception
      {
--        if (!this.bungee.getConfig().isAllowTablistRewrite() && con.getPendingConnection().isOnlineMode() && (this.bungee.getConfig().isVelocityForwardingSupport() || this.server.getInfo().isIpForward())) { con.getTabListHandler().onUpdate(playerList); return; } // Firefly - don't rewrite tablist on online mode connections
-+        if (!this.bungee.getConfig().isAllowTablistRewrite() && con.getPendingConnection().isOnlineMode() && !this.server.getInfo().getIpForwardType().isOff()) { con.getTabListHandler().onUpdate(playerList); return; } // Firefly - don't rewrite tablist on online mode connections
-         con.getTabListHandler().onUpdate( TabList.rewrite( playerList ) );
-         throw CancelSendSignal.INSTANCE; // Always throw because of profile rewriting
-     }
+         //Waterfall start
+-        boolean skipRewrites = (bungee.getConfig().isDisableTabListRewrite() || !this.bungee.getConfig().isAllowTablistRewrite()) && con.getPendingConnection().isOnlineMode() && (this.bungee.getConfig().isVelocityForwardingSupport() || this.server.getInfo().isIpForward()); // Firefly - don't rewrite tablist on online mode connections
++        boolean skipRewrites = (bungee.getConfig().isDisableTabListRewrite() || !this.bungee.getConfig().isAllowTablistRewrite()) && con.getPendingConnection().isOnlineMode() && !this.server.getInfo().getIpForwardType().isOff(); // Firefly - don't rewrite tablist on online mode connections
+         con.getTabListHandler().onUpdate( skipRewrites ? playerList : TabList.rewrite( playerList ) );
+         if ( !skipRewrites )
+         {
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java
 index f157f46abfd101eeda17fe16c300ced606a019ea..34579c13263435673beb3a760ffd1945e128c6db 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/UpstreamBridge.java
@@ -364,10 +355,10 @@ index f157f46abfd101eeda17fe16c300ced606a019ea..34579c13263435673beb3a760ffd1945
              con.getServer().getCh().write( packet );
          }
 diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
-index 45f4449cc320b5ed0e88cef34bb580ea9398fa8d..13a5428ef8385096bdf821ab706dfa89d39ce7a0 100644
+index a5acf5127db096d446ac6f929ee7f53bc1a37b64..7f04a05eeeb373635017a6adafae053f05c59b55 100644
 --- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
 +++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap.java
-@@ -92,24 +92,28 @@ public abstract class EntityMap
+@@ -97,24 +97,28 @@ public abstract class EntityMap
          }
      }
  
@@ -644,6 +635,76 @@ index c2cf810f348462b3470da2040fd1102861a20005..b40a378045c9f7e3a5cef2ee83db3e39
  
 -        if ( packetId == 0x2B /* Spectate : PacketPlayInSpectate */ && !BungeeCord.getInstance().getConfig().isIpForward() )
 +        if ( packetId == 0x2B /* Spectate : PacketPlayInSpectate */ && server.getInfo().getIpForwardType().isOff() ) // Firefly - server specific IP forwarding
+         {
+             UUID uuid = DefinedPacket.readUUID( packet );
+             ProxiedPlayer player;
+diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_16.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_16.java
+index c8b067071dae1cc475223e5138d97a6c107f84e0..1ce11747413c25f22cd7a38a510e220f839fb284 100644
+--- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_16.java
++++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_16.java
+@@ -47,9 +47,9 @@ class EntityMap_1_16 extends EntityMap
+ 
+     @Override
+     @SuppressFBWarnings("DLS_DEAD_LOCAL_STORE")
+-    public void rewriteClientbound(ByteBuf packet, int oldId, int newId, int protocolVersion)
++    public void rewriteClientbound(ByteBuf packet, int oldId, int newId, int protocolVersion, net.md_5.bungee.api.connection.Server server) // Firefly - server specific IP forwarding
+     {
+-        super.rewriteClientbound( packet, oldId, newId );
++        super.rewriteClientbound( packet, oldId, newId, server ); // Firefly - server specific IP forwarding
+ 
+         // Special cases
+         int readerIndex = packet.readerIndex();
+@@ -161,15 +161,15 @@ class EntityMap_1_16 extends EntityMap
+     }
+ 
+     @Override
+-    public void rewriteServerbound(ByteBuf packet, int oldId, int newId)
++    public void rewriteServerbound(ByteBuf packet, int oldId, int newId, net.md_5.bungee.api.connection.Server server) // Firefly - server specific IP forwarding
+     {
+-        super.rewriteServerbound( packet, oldId, newId );
++        super.rewriteServerbound( packet, oldId, newId, server ); // Firefly - server specific IP forwarding
+         // Special cases
+         int readerIndex = packet.readerIndex();
+         int packetId = DefinedPacket.readVarInt( packet );
+         int packetIdLength = packet.readerIndex() - readerIndex;
+ 
+-        if ( packetId == 0x2C /* Spectate : PacketPlayInSpectate */ && !BungeeCord.getInstance().getConfig().isIpForward() )
++        if ( packetId == 0x2C /* Spectate : PacketPlayInSpectate */ && server.getInfo().getIpForwardType().isOff() ) // Firefly - server specific IP forwarding
+         {
+             UUID uuid = DefinedPacket.readUUID( packet );
+             ProxiedPlayer player;
+diff --git a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_16_2.java b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_16_2.java
+index 88dd3f4358a1de824165c721459220c780ae759b..76ec2ae5f7353078aedfe42bc456694f85aeaa20 100644
+--- a/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_16_2.java
++++ b/proxy/src/main/java/net/md_5/bungee/entitymap/EntityMap_1_16_2.java
+@@ -47,9 +47,9 @@ class EntityMap_1_16_2 extends EntityMap
+ 
+     @Override
+     @SuppressFBWarnings("DLS_DEAD_LOCAL_STORE")
+-    public void rewriteClientbound(ByteBuf packet, int oldId, int newId, int protocolVersion)
++    public void rewriteClientbound(ByteBuf packet, int oldId, int newId, int protocolVersion, net.md_5.bungee.api.connection.Server server) // Firefly - server specific IP forwarding
+     {
+-        super.rewriteClientbound( packet, oldId, newId );
++        super.rewriteClientbound( packet, oldId, newId, server ); // Firefly - server specific IP forwarding
+ 
+         // Special cases
+         int readerIndex = packet.readerIndex();
+@@ -161,15 +161,15 @@ class EntityMap_1_16_2 extends EntityMap
+     }
+ 
+     @Override
+-    public void rewriteServerbound(ByteBuf packet, int oldId, int newId)
++    public void rewriteServerbound(ByteBuf packet, int oldId, int newId, net.md_5.bungee.api.connection.Server server) // Firefly - server specific IP forwarding
+     {
+-        super.rewriteServerbound( packet, oldId, newId );
++        super.rewriteServerbound( packet, oldId, newId, server ); // Firefly - server specific IP forwarding
+         // Special cases
+         int readerIndex = packet.readerIndex();
+         int packetId = DefinedPacket.readVarInt( packet );
+         int packetIdLength = packet.readerIndex() - readerIndex;
+ 
+-        if ( packetId == 0x2D /* Spectate : PacketPlayInSpectate */ && !BungeeCord.getInstance().getConfig().isIpForward() )
++        if ( packetId == 0x2D /* Spectate : PacketPlayInSpectate */ && server.getInfo().getIpForwardType().isOff() ) // Firefly - server specific IP forwarding
          {
              UUID uuid = DefinedPacket.readUUID( packet );
              ProxiedPlayer player;

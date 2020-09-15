@@ -6,10 +6,10 @@ Subject: [PATCH] Avoid expensive hostname lookups
 Pointed out by LinsaFTW in SpigotMC/BungeeCord#2719
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-index 20dfe6153dd6a5c6102049a5cd3dd55738d5ccb8..4411e187fd4c145188bd3aee5bc7d3b348852fe3 100644
+index c27000045c77f33cc01b57b11e9cefd8a69436a8..b52d9b26dbee439da13029a0369c0d54b6700571 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-@@ -529,7 +529,7 @@ public class DownstreamBridge extends PacketHandler
+@@ -534,7 +534,7 @@ public class DownstreamBridge extends PacketHandler
                  {
                      out.writeUTF( "ServerIP" );
                      out.writeUTF( info.getName() );
@@ -19,7 +19,7 @@ index 20dfe6153dd6a5c6102049a5cd3dd55738d5ccb8..4411e187fd4c145188bd3aee5bc7d3b3
                  }
              }
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-index 52cfebea688844e44ec24602249b6fb7fd52568c..a6bd92351f8a5c9ef9ff7753789078404a72907c 100644
+index 108b0fee4212e1e684a1e531b90760f4f46cd4be..d0d30b33795541298b18217884cb0325ab1de3aa 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 @@ -520,7 +520,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection

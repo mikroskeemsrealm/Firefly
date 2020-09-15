@@ -65,10 +65,10 @@ index a401133595c203de499483ced0d2dda09ab147c8..521fbfa00656e12470e3be514186a31b
 +    // Firefly end
  }
 diff --git a/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java b/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
-index e860214f8d7bedcc98d5f4cc0c2108ea153b80be..83d44abb87fe522e7b8b7a1560968af2883ef974 100644
+index 527f310e7d402c093528b79ce4f2f69eeeeef48b..66acc54712fc6183e2d62e8cbd44245e3b2ad4fb 100644
 --- a/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
 +++ b/proxy/src/main/java/io/github/waterfallmc/waterfall/conf/WaterfallConfiguration.java
-@@ -47,8 +47,13 @@ public class WaterfallConfiguration extends Configuration {
+@@ -48,8 +48,13 @@ public class WaterfallConfiguration extends Configuration {
      @Override
      public void load() {
          super.load();
