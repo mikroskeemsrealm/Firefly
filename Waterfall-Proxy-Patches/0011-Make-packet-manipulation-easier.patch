@@ -172,7 +172,7 @@ index b486f2aaa919a049629ec58aef52bebc15c15ecb..900eb1fa78993928b635f22bdfafbfd8
 +    // Firefly end
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/UserConnection.java b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-index b01252455e6330e7e861e58dc21e4d16256f3589..47e9b9c38efe945b8f4bc86a0d3fbeb8c4cd8700 100644
+index 7ec119ea0b8a6e5ec596b1e8957fbb610c91169c..f5e66ece646388f5279fbd361452a6fac2e87d29 100644
 --- a/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 +++ b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 @@ -67,7 +67,7 @@ import net.md_5.bungee.util.CaseInsensitiveSet;
@@ -184,7 +184,7 @@ index b01252455e6330e7e861e58dc21e4d16256f3589..47e9b9c38efe945b8f4bc86a0d3fbeb8
  {
  
      /*========================================================================*/
-@@ -751,4 +751,10 @@ public final class UserConnection implements ProxiedPlayer
+@@ -759,4 +759,10 @@ public final class UserConnection implements ProxiedPlayer
          return entityRewrite == net.md_5.bungee.entitymap.EntityMap_Dummy.INSTANCE;
      }
      // Waterfall end
@@ -196,7 +196,7 @@ index b01252455e6330e7e861e58dc21e4d16256f3589..47e9b9c38efe945b8f4bc86a0d3fbeb8
 +    // Firefly end
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
-index 4b40b465d59c887e3397fee621c442c47568b8c5..c69ed1d989d023a895cde8b27c8c4ea50ee2b505 100644
+index 7e6027aa6ea4effeda98564c66fb2e66e1a42e0b..2112d9fd5fd04715442a844d4359f3281f258b25 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/InitialHandler.java
 @@ -670,4 +670,10 @@ public class InitialHandler extends PacketHandler implements PendingConnection

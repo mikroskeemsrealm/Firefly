@@ -18,10 +18,10 @@ index f497395eb2587b46fab991f3cf5f6285320126cc..18db187d23dbf99715d56835c336b927
 +    // Firefly end
  }
 diff --git a/api/src/main/java/net/md_5/bungee/api/connection/ProxiedPlayer.java b/api/src/main/java/net/md_5/bungee/api/connection/ProxiedPlayer.java
-index f7459860f9da503cdafceacb31ecd4dd0e9346d2..0de3e34543eb25fe0439a1780606c60cd41ba967 100644
+index 6e908b741a7c0054dd248e37776cfb5fac126316..7e9fd87320f85d5e428b42719b04faf9e29f443d 100644
 --- a/api/src/main/java/net/md_5/bungee/api/connection/ProxiedPlayer.java
 +++ b/api/src/main/java/net/md_5/bungee/api/connection/ProxiedPlayer.java
-@@ -372,4 +372,8 @@ public interface ProxiedPlayer extends Connection, CommandSender
+@@ -388,4 +388,8 @@ public interface ProxiedPlayer extends Connection, CommandSender
       * @return this player's {@link Scoreboard}
       */
      Scoreboard getScoreboard();
@@ -60,7 +60,7 @@ index b3e18ea28ad1cddd5ab861560267a2e2c3ce8809..db3714ee8d1b39cd9c6a3a204393f6ac
              LoginResult profile = user.getPendingConnection().getLoginProfile();
  
 diff --git a/proxy/src/main/java/net/md_5/bungee/UserConnection.java b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
-index e42e8f9037f3209a5b94f2af5ccd5e41b19e89bf..9686475ae2fb551be8caed46e45c62f890b8eb51 100644
+index d4745a6fac091163352dda36000f0f0daf9467bc..2b864d3d3920a2ed4ba042af4e8d52e3c3650157 100644
 --- a/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 +++ b/proxy/src/main/java/net/md_5/bungee/UserConnection.java
 @@ -153,6 +153,15 @@ public final class UserConnection implements ProxiedPlayer, eu.mikroskeem.firefl
@@ -80,7 +80,7 @@ index e42e8f9037f3209a5b94f2af5ccd5e41b19e89bf..9686475ae2fb551be8caed46e45c62f8
      public void init()
      {
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-index 95cef7ba17be03d06d71e545ce712ffdba73fb29..c27000045c77f33cc01b57b11e9cefd8a69436a8 100644
+index 60e1d72729e6b5f8ba7b8ab089374ce7727de294..8be76b161f8e89c5f4347a9b64e9928ed11e258a 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
 @@ -399,10 +399,10 @@ public class DownstreamBridge extends PacketHandler
